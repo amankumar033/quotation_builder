@@ -11,6 +11,12 @@ export interface ClientInfo {
   name: string;
   phone: string;
   email: string;
+  destination?: string;   // New field
+  startDate?: string;     // New field
+  endDate?: string;       // New field
+  adults?: number;        // New field
+  children?: number;      // New field
+  infants?: number;       // New field
 }
 
 export interface TripInfo {
@@ -20,6 +26,8 @@ export interface TripInfo {
   adults: number;
   children: number;
   infants: number;
+  duration?: number; // in days
+  quoteNumber?: string;
 }
 
 export interface ServiceItem {
@@ -39,6 +47,11 @@ export interface QuotationData {
   termsConditions: string;
   specialNotes: string;
   agencyLogo: string | null;
+  discountAmount?: number;
+  paymentTerms?: string;
+  contactInfo?: string;
+  agencyName?: string;
+  quoteNumber?: string;
 }
 
 export default function QuotationBuilder() {
@@ -79,21 +92,13 @@ export default function QuotationBuilder() {
   };
 
   return (
-    <div className=" rounded-xl shadow-lg p-6 border border-gray-100">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-800">Create New Quotation</h2>
-          <p className="text-gray-500 mt-1">Build customized travel packages for your clients</p>
+    <div className=" rounded-xl shadow-lg  border border-gray-100 pb-6">
+<div className='p-6'>
+        <div className="mb-9  ">
+          <h2 className="text-3xl font-bold text-gray-700">Create New Quotation</h2>
         </div>
- {/* <span className={activeStep >= 1 ? 'text-blue-600 font-semibold' : ''}>Step 1 Basic Info</span>
-          <span className={activeStep >= 2 ? 'text-blue-600 font-semibold' : ''}>Package Selection</span>
-          <span className={activeStep >= 3 ? 'text-blue-600 font-semibold' : ''}>Customization</span>
-          <span className={activeStep >= 4 ? 'text-blue-600 font-semibold' : ''}>Preview & Export</span>
-           */}
-
-
-
      {/* Step Indicator */}
-<div className="mb-10 px-6 flex gap-7 items-center">
+<div className="mb-1 mt-5 px-15 flex gap-7  bg-white items-center">
   {/* Step 1 */}
   <div className="flex items-center gap-3 font-medium text-gray-600">
     <div className="h-10 w-10 bg-green-500 rounded-lg flex items-center justify-center">
@@ -154,7 +159,7 @@ export default function QuotationBuilder() {
     </div>
   </div>
 </div>
-
+</div>
 
       {/* Render current step */}
       {activeStep === 1 && (

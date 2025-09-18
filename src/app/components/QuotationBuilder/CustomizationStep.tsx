@@ -1,5 +1,6 @@
 // components/QuotationBuilder/CustomizationStep.tsx
 import { QuotationData } from '../../quotation-builder/page';
+import { useState } from 'react';
 
 interface CustomizationStepProps {
   data: QuotationData;
@@ -32,52 +33,100 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
   };
 
   return (
-    <div className="space-y-6">
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-5 rounded-xl mb-2">
-        <h3 className="text-xl font-semibold text-gray-800 flex items-center">
-          <span className="bg-blue-600 text-white p-2 rounded-lg mr-3">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clipRule="evenodd" />
-            </svg>
-          </span>
-          Customization
-        </h3>
-        <p className="text-gray-600 mt-1 ml-11">Add your agency branding and customize terms</p>
-      </div>
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-10">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Finalize Your Quotation</h1>
+          <p className="text-gray-600">Add your branding and customize the details</p>
+        </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          {/* Agency Logo */}
-          <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
-            <h4 className="font-semibold text-gray-800 mb-4">Agency Branding</h4>
-            <div className="flex items-center">
-              <div className="mr-4">
-                {data.agencyLogo ? (
-                  <img src={data.agencyLogo} alt="Agency Logo" className="w-16 h-16 object-contain border rounded" />
-                ) : (
-                  <div className="w-16 h-16 bg-gray-100 border border-dashed border-gray-300 rounded flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                )}
+        {/* Agency Branding */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="flex items-center mb-6">
+            <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center mr-3">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-semibold text-gray-800">Agency Branding</h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Upload Agency Logo</label>
+              <div className="flex items-center justify-center w-full">
+                <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition">
+                  {data.agencyLogo ? (
+                    <img src={data.agencyLogo} alt="Agency Logo" className="w-full h-full object-contain p-4" />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <p className="text-sm text-gray-500">Click to upload your logo</p>
+                      <p className="text-xs text-gray-400 mt-1">PNG, JPG up to 5MB</p>
+                    </div>
+                  )}
+                  <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
+                </label>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Upload Agency Logo</label>
+              <p className="text-xs text-gray-500 mt-2 text-center">Recommended: 200x200px PNG with transparent background</p>
+            </div>
+
+            <div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Agency Name</label>
                 <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleLogoUpload}
-                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  type="text"
+                  value={data.agencyName || ''}
+                  onChange={(e) => handleInputChange('agencyName', e.target.value)}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                  placeholder="Enter agency name"
                 />
-                <p className="text-xs text-gray-500 mt-1">Recommended: 200x200px PNG with transparent background</p>
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Contact Information</label>
+                <textarea
+                  value={data.contactInfo || ''}
+                  onChange={(e) => handleInputChange('contactInfo', e.target.value)}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                  rows={3}
+                  placeholder="Address, phone, email, etc."
+                />
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Terms & Conditions */}
-          <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
-            <h4 className="font-semibold text-gray-800 mb-4">Terms & Conditions</h4>
+        {/* Terms & Conditions */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="flex items-center mb-6">
+            <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center mr-3">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-semibold text-gray-800">Terms & Conditions</h2>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Payment Terms</label>
+            <select
+              value={data.paymentTerms || ''}
+              onChange={(e) => handleInputChange('paymentTerms', e.target.value)}
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            >
+              <option value="">Select payment terms</option>
+              <option value="Net 15">Net 15</option>
+              <option value="Net 30">Net 30</option>
+              <option value="Due on receipt">Due on receipt</option>
+              <option value="50% advance, 50% on completion">50% advance, 50% on completion</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Terms & Conditions</label>
             <textarea
               value={data.termsConditions}
               onChange={(e) => handleInputChange('termsConditions', e.target.value)}
@@ -85,81 +134,131 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
               rows={6}
               placeholder="Enter your terms and conditions here..."
             />
-          </div>
-
-          {/* Special Notes */}
-          <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
-            <h4 className="font-semibold text-gray-800 mb-4">Special Notes & Discounts</h4>
-            <textarea
-              value={data.specialNotes}
-              onChange={(e) => handleInputChange('specialNotes', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-              rows={3}
-              placeholder="Add any special notes, discounts, or offers here..."
-            />
+            <p className="text-xs text-gray-500 mt-2">Include cancellation policies, liability clauses, and other important terms.</p>
           </div>
         </div>
+{/* Special Notes & Discounts */}
+<section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+  <div className="flex items-center mb-6">
+    <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center mr-3">
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+      </svg>
+    </div>
+    <h2 className="text-xl font-semibold text-gray-800">Special Notes & Discounts</h2>
+  </div>
 
-        {/* Pricing Summary */}
-        <div className="bg-gradient-to-b from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-100 shadow-sm">
-          <h4 className="font-semibold text-gray-800 mb-5">Pricing Summary</h4>
-          <div className="space-y-4">
-            <div className="flex justify-between">
-              <span className="text-gray-600">Subtotal</span>
-              <span className="font-medium">₹{subtotal.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Markup</span>
-              <div className="flex items-center">
-                <input
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={data.markupPercentage}
-                  onChange={(e) => handleInputChange('markupPercentage', parseFloat(e.target.value))}
-                  className="w-16 px-2 py-1 border border-gray-300 rounded-md text-right"
-                />
-                <span className="ml-2 text-gray-600">%</span>
-                <span className="font-medium ml-2">₹{markup.toFixed(2)}</span>
-              </div>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Taxable Amount</span>
-              <span className="font-medium">₹{taxable.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">GST (5%)</span>
-              <span className="font-medium">₹{gst.toFixed(2)}</span>
-            </div>
-            <div className="border-t border-gray-300 pt-4 mt-3">
-              <div className="flex justify-between font-semibold text-lg">
-                <span>Grand Total</span>
-                <span className="text-blue-700">₹{grandTotal.toFixed(2)}</span>
-              </div>
-            </div>
-          </div>
-        </div>
+  {/* Special Notes */}
+  <div className="mb-6">
+    <label className="block text-sm font-medium text-gray-700 mb-2">Special Notes</label>
+    <textarea
+      value={data.specialNotes}
+      onChange={(e) => handleInputChange('specialNotes', e.target.value)}
+      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+      rows={4}
+      placeholder="Add any special notes, discounts, or offers here..."
+    />
+  </div>
+
+  {/* Discount Section */}
+  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    {/* Discount Input */}
+    <div className="flex items-center w-full md:w-[45%]">
+      <span className="px-3 py-2 bg-gray-100 border border-r-0 border-gray-300 rounded-l-lg">₹</span>
+      <input
+        type="number"
+        min="0"
+        value={data.discountAmount || 0}
+        onChange={(e) => handleInputChange('discountAmount', parseFloat(e.target.value))}
+        className="flex-1 px-4 py-2 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+        placeholder="0.00"
+      />
+    </div>
+
+    {/* Quick Add Discounts */}
+    <div className="flex items-center gap-3">
+      <span className="font-medium text-gray-700">Quick Add:</span>
+      {[5, 10, 15, 20].map((d) => (
+        <button
+          key={d}
+          type="button"
+          className="px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition"
+          onClick={() => {
+            const discountValue = (subtotal + markup + gst) * (d / 100);
+            handleInputChange('discountAmount', discountValue);
+          }}
+        >
+          {d}%
+        </button>
+      ))}
+
+      {/* Clear Button */}
+      <button
+        type="button"
+        className="px-3 py-1 ml-4 bg-red-100 text-red-700 rounded hover:bg-red-200 transition"
+        onClick={() => handleInputChange('discountAmount', 0)}
+      >
+        Clear
+      </button>
+    </div>
+  </div>
+</section>
+
+{/* Pricing Summary */}
+<section className="bg-white rounded-xl shadow-sm p-6">
+  <h2 className="text-xl font-semibold text-gray-800 mb-4">Pricing Summary</h2>
+  <div className=" rounded-lg divide-y divide-gray-200">
+    <div className="flex justify-between px-4 py-2">
+      <span>Subtotal</span>
+      <span>₹{subtotal.toFixed(2)}</span>
+    </div>
+    <div className="flex justify-between px-4 py-2 bg-gray-50">
+      <span>Markup ({data.markupPercentage}%)</span>
+      <span>₹{markup.toFixed(2)}</span>
+    </div>
+    <div className="flex justify-between px-4 py-2">
+      <span>Taxable Amount</span>
+      <span>₹{taxable.toFixed(2)}</span>
+    </div>
+    <div className="flex justify-between px-4 py-2 bg-gray-50">
+      <span>GST (5%)</span>
+      <span>₹{gst.toFixed(2)}</span>
+    </div>
+    
+      <div className="flex justify-between px-4 py-2 text-green-700 font-medium">
+        <span>Discount</span>
+        <span>-₹{data.discountAmount?.toFixed(2) || 0}</span>
       </div>
+    
+    <div className="flex justify-between px-4 py-3 font-bold text-blue-700 bg-gray-100 text-lg">
+      <span>Grand Total</span>
+      <span>₹{(grandTotal - (data.discountAmount || 0)).toFixed(2)}</span>
+    </div>
+  </div>
+</section>
 
-      <div className="flex justify-between mt-8">
-        <button
-          onClick={prevStep}
-          className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition flex items-center"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd" />
-          </svg>
-          Back
-        </button>
-        <button
-          onClick={nextStep}
-          className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-md transition flex items-center"
-        >
-          Next: Preview & Export
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-          </svg>
-        </button>
+
+        {/* Navigation Buttons */}
+        <div className="flex justify-between mt-8">
+          <button
+            onClick={prevStep}
+            className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition flex items-center shadow-sm"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd" />
+            </svg>
+            Back to Packages
+          </button>
+          <button
+            onClick={nextStep}
+            className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-md transition flex items-center"
+          >
+            Preview & Export
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   );
