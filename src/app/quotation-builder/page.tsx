@@ -37,6 +37,7 @@ export interface ServiceItem {
   price: number;
   quantity: number;
   details: Record<string, any>;
+  unit?: string; // e.g., "Nights", "Days", "Persons"
 }
 
 export interface QuotationData {
@@ -93,12 +94,32 @@ export default function QuotationBuilder() {
 
   return (
     <div className=" rounded-xl shadow-lg  border border-gray-100 pb-6">
-<div className='p-6'>
-        <div className="mb-9  ">
-          <h2 className="text-3xl font-bold text-gray-700">Create New Quotation</h2>
+
+
+<div className='p-6 mt-1'>
+        <div className="mb-3   ">
+        <h2
+  className={`text-4xl font-bold ${
+    activeStep === 1 ? 'text-green-600' :
+    activeStep === 2 ? 'text-blue-600' :
+    activeStep === 3 ? 'text-yellow-600' :
+    activeStep === 4 ? 'text-red-600' :
+    'text-gray-700'
+  }`}
+>
+  {activeStep === 1 ? '1. Basic Information' :
+   activeStep === 2 ? '2. Package Selection' :
+   activeStep === 3 ? '3. Customization' :
+   activeStep === 4 ? '4. Preview & Export' :
+   ''}
+</h2>
+
+
         </div>
-     {/* Step Indicator */}
-<div className="mb-1 mt-5 px-15 flex gap-7  bg-white items-center">
+    
+</div>
+{/* Step Indicator */}
+<div className=" mt-1 px-15 flex gap-7 shadow-md mb-7 items-center pb-6">
   {/* Step 1 */}
   <div className="flex items-center gap-3 font-medium text-gray-600">
     <div className="h-10 w-10 bg-green-500 rounded-lg flex items-center justify-center">
@@ -113,7 +134,7 @@ export default function QuotationBuilder() {
   </div>
 
   {/* Line */}
-  <div className={`flex-1 h-[2px] w-5 ${completedStep >= 1 ? 'bg-green-500' : 'bg-gray-300'}`} />
+  <div className={`flex-1 h-[2px] w-5 ${completedStep >= 1 ? 'bg-green-500' : 'bg-gray-200'}`} />
 
   {/* Step 2 */}
   <div className="flex items-center gap-3 font-medium text-gray-600">
@@ -128,7 +149,7 @@ export default function QuotationBuilder() {
     </div>
   </div>
   {/* Line */}
-  <div className={`flex-1 h-[2px] mx-2 ${completedStep >= 2 ? 'bg-blue-500' : 'bg-gray-300'}`} />
+  <div className={`flex-1 h-[2px] mx-2 ${completedStep >= 2 ? 'bg-blue-500' : 'bg-gray-200'}`} />
 
   {/* Step 3 */}
   <div className="flex items-center gap-3 font-medium text-gray-600">
@@ -144,7 +165,7 @@ export default function QuotationBuilder() {
   </div>
 
   {/* Line */}
-  <div className={`flex-1 h-[2px] mx-2 ${completedStep >= 3 ? 'bg-yellow-500' : 'bg-gray-300'}`} />
+  <div className={`flex-1 h-[2px] mx-2 ${completedStep >= 3 ? 'bg-yellow-500' : 'bg-gray-200'}`} />
 
   {/* Step 4 */}
   <div className="flex items-center gap-3 font-medium text-gray-600">
@@ -159,7 +180,7 @@ export default function QuotationBuilder() {
     </div>
   </div>
 </div>
-</div>
+
 
       {/* Render current step */}
       {activeStep === 1 && (

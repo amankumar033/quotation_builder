@@ -1,5 +1,9 @@
 // components/QuotationBuilder/ClientInfoStep.tsx
 import { QuotationData } from '../../quotation-builder/page';
+import {MapPinned,Users} from 'lucide-react';
+import DatePicker from "react-datepicker";
+import {Calendar} from 'lucide-react';
+import "react-datepicker/dist/react-datepicker.css";
 
 interface ClientInfoStepProps {
   data: QuotationData;
@@ -28,8 +32,8 @@ export default function ClientInfoStep({ data, updateData, nextStep }: ClientInf
   const cardClass = "bg-white shadow-md rounded-xl p-6 mb-8 border border-gray-200";
 
   return (
-    <div className="space-y-6 bg-gray-50 px-15 pt-7">
-<div className='flex gap-10  mt-10 justify-between
+    <div className="space-y-6 bg-gray-50 px-15">
+<div className='flex gap-10   justify-between
 '>
       {/* Client Information Section */}
       <section className={`${cardClass} w-full md:w-1/2`}>
@@ -79,31 +83,56 @@ export default function ClientInfoStep({ data, updateData, nextStep }: ClientInf
       <section className={`${cardClass} w-full md:w-1/2`}>
         <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
           <span className=" shadow-lg bg-green-400 text-white p-2 rounded-lg mr-3">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-            </svg>
+            <MapPinned className="h-5 w-5" />
           </span>
           Trip Details
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div>
+          <div className='relative'>
             <label className="block text-sm font-medium text-gray-700 mb-1">Start Date *</label>
-            <input
-              type="date"
-              value={data.client.startDate}
-              onChange={(e) => handleInputChange('startDate', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 transition"
-            />
+            <DatePicker
+  selected={data.client.startDate ? new Date(data.client.startDate) : null}
+  onChange={(date: Date | null) => {
+    if (date) {
+      handleInputChange('startDate', date.toISOString());
+    } else {
+      handleInputChange('startDate', ''); // or null, depending on your state type
+    }
+  }}
+  minDate={new Date()} // Only today and future dates
+  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 transition bg-white text-gray-800"
+  dateFormat="dd/MM/yyyy"
+  placeholderText="dd/MM/yyyy"
+/>
+ {/* Calendar icon */}
+  <Calendar 
+    className="h-5 w-5 absolute right-5 top-[48px] transform -translate-y-1/2 text-gray-400 pointer-events-none" 
+  />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">End Date *</label>
-            <input
-              type="date"
-              value={data.client.endDate}
-              onChange={(e) => handleInputChange('endDate', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 transition"
-            />
-          </div>
+          <div className="relative">
+  <label className="block text-sm font-medium text-gray-700 mb-1">End Date *</label>
+  
+  <DatePicker
+    selected={data.client.endDate ? new Date(data.client.endDate) : null}
+    onChange={(date: Date | null) => {
+      if (date) {
+        handleInputChange('endDate', date.toISOString());
+      } else {
+        handleInputChange('endDate', '');
+      }
+    }}
+    minDate={new Date()}
+    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 transition bg-white text-gray-800"
+    dateFormat="dd/MM/yyyy"
+    placeholderText="dd/MM/yyyy"
+  />
+
+  {/* Calendar icon */}
+  <Calendar 
+    className="h-5 w-5 absolute right-5 top-[48px] transform -translate-y-1/2 text-gray-400 pointer-events-none" 
+  />
+</div>
+
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">Trip Destination *</label>
             <input
@@ -121,9 +150,7 @@ export default function ClientInfoStep({ data, updateData, nextStep }: ClientInf
       <section className={cardClass}>
         <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
           <span className="bg-yellow-500 text-white p-2 rounded-lg mr-3">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-            </svg>
+            <Users className="h-5 w-5" />
           </span>
           Number of Travelers
         </h3>

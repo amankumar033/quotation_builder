@@ -1,7 +1,7 @@
 // components/QuotationBuilder/PackageSelectionStep.tsx
 import { QuotationData } from "../../quotation-builder/page";
 import { useState } from "react";
-
+import { Plus } from "lucide-react";
 interface PackageSelectionStepProps {
   data: QuotationData;
   updateData: (data: Partial<QuotationData>) => void;
@@ -89,7 +89,7 @@ export default function PackageSelectionStep({ data, updateData, nextStep, prevS
   };
 
   return (
-    <div className="space-y-8 p-6 min-h-screen bg-gray-50">
+    <div className="space-y-8 px-6 min-h-screen bg-gray-50">
       {/* Header */}
   <div className="bg-white flex flex-col gap-10">
   
@@ -138,9 +138,10 @@ export default function PackageSelectionStep({ data, updateData, nextStep, prevS
           {filteredHotels.map((hotel) => (
             <div 
               key={hotel.id}
-              className={`flex flex-col border rounded-xl overflow-hidden transition-all ${
+               onClick={() => setSelectedHotel(hotel.id)}
+              className={`flex flex-col border rounded-xl overflow-hidden transition-all cursor-pointer hover:shadow-2xl  hover:scale-105 hover:-translate-y-2 z-10 ${
                 selectedHotel === hotel.id 
-                  ? "border-blue-500 shadow-md" 
+                  ? "border-blue-500 shadow-2xl  scale-105 -translate-y-2 z-10" 
                   : "border-gray-200 hover:border-blue-300"
               }`}
             >
@@ -184,7 +185,7 @@ export default function PackageSelectionStep({ data, updateData, nextStep, prevS
                       : "bg-blue-500 text-white hover:bg-blue-100 hover:text-blue-700"
                   }`}
                 >
-                  {selectedHotel === hotel.id ? "Selected" : "Select Hotel"}
+                  {selectedHotel === hotel.id ? "✓ Selected" : "Select Hotel"}
                 </button>
               </div>
             </div>
@@ -223,11 +224,12 @@ export default function PackageSelectionStep({ data, updateData, nextStep, prevS
     {vehicles.map((v) => (
       <div
   key={v.id}
-  className={`rounded-xl p-5 transition-all transform hover:-translate-y-1 hover:shadow-md ${
+  className={`rounded-xl p-5 transition-all transform hover:-translate-y-1 hover:shadow-md cursor-pointer ${
     selectedVehicle === v.id
-      ? "bg-green-50 shadow-md ring-2 ring-green-300 border-0" // remove border when selected
+      ? "bg-green-50 shadow-md ring-2 ring-green-300 border-0 -translate-y-1" // remove border when selected
       : "border border-gray-200 hover:border-green-300" // keep border when unselected
-  }`}
+  }`}    onClick={() => setSelectedVehicle(v.id)}
+
 >
   {/* Vehicle Name */}
   <h4 className="font-mono font-semibold text-green-500 text-2xl  tracking-tight mb-5">{v.name}</h4>
@@ -263,13 +265,13 @@ export default function PackageSelectionStep({ data, updateData, nextStep, prevS
   {/* Select Button */}
   <button 
     onClick={() => setSelectedVehicle(v.id)}
-    className={`w-full py-2.5 rounded-lg transition text-sm font-medium tracking-wide ${
+    className={`w-full py-2.5 rounded-lg transition text-sm font-medium tracking-wide cursor-pointer ${
       selectedVehicle === v.id
-        ? "bg-green-400 text-white hover:bg-green-500 shadow-sm"
+        ? "bg-green-600 text-white hover:bg-green-500 shadow-sm"
         : "bg-green-400 text-white hover:text-green-600 hover:bg-green-200 border border-green-300"
     }`}
   >
-    {selectedVehicle === v.id ? "SELECTED" : "SELECT VEHICLE"}
+    {selectedVehicle === v.id ? " ✓ SELECTED" : "SELECT VEHICLE"}
   </button>
 </div>
 
@@ -311,7 +313,7 @@ export default function PackageSelectionStep({ data, updateData, nextStep, prevS
           {meals.map((meal) => (
             <div
               key={meal.id}
-              className={`flex items-center justify-between border rounded-xl p-4 transition-all ${
+              className={`flex items-center justify-between border rounded-xl p-4 transition-al cursor-pointer ${
                 selectedMeals.includes(meal.id)
                   ? "border-yellow-400 "
                   : "border-gray-200 hover:border-yellow-300"
@@ -322,7 +324,8 @@ export default function PackageSelectionStep({ data, updateData, nextStep, prevS
                 <p className="font-semibold text-xl mb-2 text-gray-800">{meal.name}</p>
                 <p className="text-sm text-gray-500">₹{meal.price} per person</p>
               </div>
-              <label className="inline-flex items-center cursor-pointer">
+              <label className="inline-flex items-center cursor-pointer"               onClick={() => toggleMealSelection(meal.id)}
+>
                 <input 
                   type="checkbox" 
                   checked={selectedMeals.includes(meal.id)}
@@ -358,11 +361,12 @@ export default function PackageSelectionStep({ data, updateData, nextStep, prevS
           {activities.map((act) => (
             <div
               key={act.id}
-              className={`flex flex-col border rounded-xl p-4 transition-all ${
+              className={`flex flex-col border rounded-xl p-4 transition-all cursor-pointer ${
                 selectedActivities.includes(act.id)
-                  ? "border-orange-400 ="
-                  : "border-gray-200 hover:border-orange-300"
-              }`}
+                  ? "border-orange-400 -translate-y-1 shadow-md"
+                  : "border-gray-200 hover:border-orange-300 hover:-translate-y-1 hover:shadow-md"
+              }`}                  onClick={() => toggleActivitySelection(act.id)}
+
             >
               <div className="mb-3">
                 <h4 className="font-semibold text-gray-800 text-lg mb-1">{act.name}</h4>
@@ -373,12 +377,13 @@ export default function PackageSelectionStep({ data, updateData, nextStep, prevS
                 <p className="font-bold text-orange-400">₹{act.price} per person</p>
                 <button 
                   onClick={() => toggleActivitySelection(act.id)}
-                  className={`px-4 py-2 rounded-lg transition text-sm ${
+                  className={`px-4 py-2 rounded-lg transition text-[16px] flex items-center ${
                     selectedActivities.includes(act.id)
                       ? "bg-orange-600 text-white"
-                      : "bg-orange-400 text-white hover:bg-orange-300 hover:text-white"
+                      : "bg-orange-400 text-white  hover:bg-orange-300 hover:text-white"
                   }`}
                 >
+                  {selectedActivities.includes(act.id) ? "" : <Plus className="mr-2 h-5 w-5" />}
                   {selectedActivities.includes(act.id) ? "Added" : "Add Activity"}
                 </button>
               </div>
@@ -395,12 +400,7 @@ export default function PackageSelectionStep({ data, updateData, nextStep, prevS
         >
           ← Back
         </button>
-        <div className="flex items-center text-sm text-gray-600">
-          {selectedHotel && <span className="mx-2">🏨</span>}
-          {selectedVehicle && <span className="mx-2">🚗</span>}
-          {selectedMeals.length > 0 && <span className="mx-2">🍽️×{selectedMeals.length}</span>}
-          {selectedActivities.length > 0 && <span className="mx-2">📍×{selectedActivities.length}</span>}
-        </div>
+       
         <button
           onClick={nextStep}
           className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium shadow-sm"

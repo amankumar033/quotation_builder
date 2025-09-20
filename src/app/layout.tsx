@@ -35,7 +35,7 @@ export default function RootLayout({
         {/* Fixed Sidebar */}
           <Sidebar  />
 
-        <div className="ml-64">
+        <div className="ml-64 pt-15">
           <Providers>{children}</Providers>
         </div>
       </body>
