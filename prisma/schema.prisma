@@ -8,32 +8,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-//////////////////////////
-// NextAuth Models      //
-//////////////////////////
+/// ///////////////////////
+/// ///////////////////////
 model LoginHistory {
   id        String   @id @default(cuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   ip        String?
   userAgent String?
   createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
 model Account {
   id                String  @id @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -54,53 +53,38 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-//////////////////////////
-// User & Agency Models //
-//////////////////////////
-
 model User {
-  id              String    @id @default(cuid())
-  name            String?
-  email           String    @unique
-  emailVerified   DateTime?
-  password        String?   // null if login with Google only
-  image           String?
-  role            Role      @default(EXECUTIVE)
-  agencyId        String?
-  agency          Agency?   @relation(fields: [agencyId], references: [id])
-  accounts        Account[]
-  sessions        Session[]
-  loginHistory    LoginHistory[]   // <-- add this line
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-}
-
-
-enum Role {
-  SUPERADMIN
-  AGENCYADMIN
-  EXECUTIVE
+  id            String         @id @default(cuid())
+  name          String?
+  email         String         @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  role          Role           @default(EXECUTIVE)
+  agencyId      String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  accounts      Account[]
+  loginHistory  LoginHistory[]
+  sessions      Session[]
+  agency        Agency?        @relation(fields: [agencyId], references: [id])
 }
 
 model Agency {
   id         String      @id @default(cuid())
   name       String
   logo       String?
-  settings   Json?       // default markup, GST toggle, rounding rules, terms
-  users      User[]
-  clients    Client[]
-  quotations Quotation[]
-  hotels     Hotel[]
-  cars       Car[]
-  meals      Meal[]
-  activities Activity[]
+  settings   Json?
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+  activities Activity[]
+  transport  Transport[]
+  clients    Client[]
+  hotels     Hotel[]
+  meals      Meal[]
+  quotations Quotation[]
+  users      User[]
 }
-
-//////////////////////////
-// Client & Quotation   //
-//////////////////////////
 
 model Client {
   id         String      @id @default(cuid())
@@ -110,18 +94,16 @@ model Client {
   city       String?
   notes      String?
   agencyId   String
-  agency     Agency      @relation(fields: [agencyId], references: [id])
-  quotations Quotation[]
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+  agency     Agency      @relation(fields: [agencyId], references: [id])
+  quotations Quotation[]
 }
 
 model Quotation {
   id          String          @id @default(cuid())
   clientId    String
-  client      Client          @relation(fields: [clientId], references: [id])
   agencyId    String
-  agency      Agency          @relation(fields: [agencyId], references: [id])
   status      QuotationStatus @default(PENDING)
   destination String
   startDate   DateTime
@@ -129,11 +111,100 @@ model Quotation {
   adults      Int
   children    Int
   infants     Int
-  items       QuotationItem[]
-  itineraries Itinerary[]
   totalAmount Float
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
+  itineraries Itinerary[]
+  agency      Agency          @relation(fields: [agencyId], references: [id])
+  client      Client          @relation(fields: [clientId], references: [id])
+  items       QuotationItem[]
+}
+
+model QuotationItem {
+  id          String      @id @default(cuid())
+  quotationId String
+  serviceType ServiceType
+  serviceId   String
+  description String?
+  price       Float
+  quotation   Quotation   @relation(fields: [quotationId], references: [id])
+}
+
+/// ///////////////////////
+/// ///////////////////////
+model RoomType {
+  id      String  @id @default(cuid())
+  type    String
+  price   Decimal
+  hotelId String
+  hotel   Hotel   @relation(fields: [hotelId], references: [id])
+}
+
+model Hotel {
+  id           String     @id @default(cuid())
+  name         String
+  city         String
+  starCategory Int
+  inclusions   String?
+  cancellation String?
+  photos       String?
+  agencyId     String
+  agency       Agency     @relation(fields: [agencyId], references: [id])
+  roomTypes    RoomType[]
+}
+
+model Transport {
+  id          String  @id @default(cuid())
+  vehicleType String
+  perDay      Float   // use Float or Decimal for prices
+  perKm       Float
+  maxCapacity Int
+  notes       String?
+  photos      String?
+  agencyId    String
+  agency      Agency  @relation(fields: [agencyId], references: [id])
+}
+
+
+model Meal {
+  id        String  @id @default(cuid())
+  type      String
+  vegOption Boolean
+  nonVegOption    Boolean
+  price     Float
+  agencyId  String
+  agency    Agency  @relation(fields: [agencyId], references: [id])
+}
+
+model Activity {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  duration    String?
+  price       Float
+  photos      Json?
+  agencyId    String
+  agency      Agency  @relation(fields: [agencyId], references: [id])
+}
+
+model Itinerary {
+  id          String    @id @default(cuid())
+  quotationId String
+  dayNumber   Int
+  headline    String
+  description String?
+  duration    String?
+  notes       String?
+  images      Json?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  quotation   Quotation @relation(fields: [quotationId], references: [id])
+}
+
+enum Role {
+  SUPERADMIN
+  AGENCYADMIN
+  EXECUTIVE
 }
 
 enum QuotationStatus {
@@ -143,85 +214,9 @@ enum QuotationStatus {
   LOST
 }
 
-model QuotationItem {
-  id          String      @id @default(cuid())
-  quotationId String
-  quotation   Quotation   @relation(fields: [quotationId], references: [id])
-  serviceType ServiceType
-  serviceId   String
-  description String?
-  price       Float
-}
-
 enum ServiceType {
   HOTEL
   CAR
   MEAL
   ACTIVITY
-}
-
-//////////////////////////
-// Services             //
-//////////////////////////
-
-model Hotel {
-  id           String  @id @default(cuid())
-  name         String
-  city         String
-  starCategory Int
-  roomTypes    Json     // e.g. [{ type: "Deluxe", price: 5000 }]
-  inclusions   String?
-  cancellation String?
-  photos       Json?
-  agencyId     String
-  agency       Agency   @relation(fields: [agencyId], references: [id])
-}
-
-model Car {
-  id           String  @id @default(cuid())
-  vehicleType  String
-  pricingModel String // Per Day / Per Km
-  maxCapacity  Int
-  notes        String?
-  photos       Json?
-  agencyId     String
-  agency       Agency   @relation(fields: [agencyId], references: [id])
-}
-
-model Meal {
-  id        String  @id @default(cuid())
-  type      String // Breakfast / Lunch / Dinner
-  vegOption Boolean
-  price     Float
-  agencyId  String
-  agency    Agency   @relation(fields: [agencyId], references: [id])
-}
-
-model Activity {
-  id          String  @id @default(cuid())
-  name        String
-  description String?
-  duration    String? // Half-day / Full-day
-  price       Float
-  photos      Json?
-  agencyId    String
-  agency      Agency   @relation(fields: [agencyId], references: [id])
-}
-
-//////////////////////////
-// Itineraries          //
-//////////////////////////
-
-model Itinerary {
-  id          String    @id @default(cuid())
-  quotationId String
-  quotation   Quotation @relation(fields: [quotationId], references: [id])
-  dayNumber   Int
-  headline    String
-  description String?
-  duration    String?
-  notes       String?
-  images      Json?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
 }

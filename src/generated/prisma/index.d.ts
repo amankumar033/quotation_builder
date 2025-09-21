@@ -60,15 +60,21 @@ export type Quotation = $Result.DefaultSelection<Prisma.$QuotationPayload>
  */
 export type QuotationItem = $Result.DefaultSelection<Prisma.$QuotationItemPayload>
 /**
+ * Model RoomType
+ * ///////////////////////
+ * ///////////////////////
+ */
+export type RoomType = $Result.DefaultSelection<Prisma.$RoomTypePayload>
+/**
  * Model Hotel
  * 
  */
 export type Hotel = $Result.DefaultSelection<Prisma.$HotelPayload>
 /**
- * Model Car
+ * Model Transport
  * 
  */
-export type Car = $Result.DefaultSelection<Prisma.$CarPayload>
+export type Transport = $Result.DefaultSelection<Prisma.$TransportPayload>
 /**
  * Model Meal
  * 
@@ -340,6 +346,16 @@ export class PrismaClient<
   get quotationItem(): Prisma.QuotationItemDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.roomType`: Exposes CRUD operations for the **RoomType** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RoomTypes
+    * const roomTypes = await prisma.roomType.findMany()
+    * ```
+    */
+  get roomType(): Prisma.RoomTypeDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.hotel`: Exposes CRUD operations for the **Hotel** model.
     * Example usage:
     * ```ts
@@ -350,14 +366,14 @@ export class PrismaClient<
   get hotel(): Prisma.HotelDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.car`: Exposes CRUD operations for the **Car** model.
+   * `prisma.transport`: Exposes CRUD operations for the **Transport** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more Cars
-    * const cars = await prisma.car.findMany()
+    * // Fetch zero or more Transports
+    * const transports = await prisma.transport.findMany()
     * ```
     */
-  get car(): Prisma.CarDelegate<ExtArgs, ClientOptions>;
+  get transport(): Prisma.TransportDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.meal`: Exposes CRUD operations for the **Meal** model.
@@ -837,8 +853,9 @@ export namespace Prisma {
     Client: 'Client',
     Quotation: 'Quotation',
     QuotationItem: 'QuotationItem',
+    RoomType: 'RoomType',
     Hotel: 'Hotel',
-    Car: 'Car',
+    Transport: 'Transport',
     Meal: 'Meal',
     Activity: 'Activity',
     Itinerary: 'Itinerary'
@@ -860,7 +877,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "loginHistory" | "account" | "session" | "verificationToken" | "user" | "agency" | "client" | "quotation" | "quotationItem" | "hotel" | "car" | "meal" | "activity" | "itinerary"
+      modelProps: "loginHistory" | "account" | "session" | "verificationToken" | "user" | "agency" | "client" | "quotation" | "quotationItem" | "roomType" | "hotel" | "transport" | "meal" | "activity" | "itinerary"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1530,6 +1547,80 @@ export namespace Prisma {
           }
         }
       }
+      RoomType: {
+        payload: Prisma.$RoomTypePayload<ExtArgs>
+        fields: Prisma.RoomTypeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RoomTypeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomTypePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RoomTypeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomTypePayload>
+          }
+          findFirst: {
+            args: Prisma.RoomTypeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomTypePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RoomTypeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomTypePayload>
+          }
+          findMany: {
+            args: Prisma.RoomTypeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomTypePayload>[]
+          }
+          create: {
+            args: Prisma.RoomTypeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomTypePayload>
+          }
+          createMany: {
+            args: Prisma.RoomTypeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RoomTypeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomTypePayload>[]
+          }
+          delete: {
+            args: Prisma.RoomTypeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomTypePayload>
+          }
+          update: {
+            args: Prisma.RoomTypeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomTypePayload>
+          }
+          deleteMany: {
+            args: Prisma.RoomTypeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RoomTypeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RoomTypeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomTypePayload>[]
+          }
+          upsert: {
+            args: Prisma.RoomTypeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomTypePayload>
+          }
+          aggregate: {
+            args: Prisma.RoomTypeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRoomType>
+          }
+          groupBy: {
+            args: Prisma.RoomTypeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RoomTypeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RoomTypeCountArgs<ExtArgs>
+            result: $Utils.Optional<RoomTypeCountAggregateOutputType> | number
+          }
+        }
+      }
       Hotel: {
         payload: Prisma.$HotelPayload<ExtArgs>
         fields: Prisma.HotelFieldRefs
@@ -1604,77 +1695,77 @@ export namespace Prisma {
           }
         }
       }
-      Car: {
-        payload: Prisma.$CarPayload<ExtArgs>
-        fields: Prisma.CarFieldRefs
+      Transport: {
+        payload: Prisma.$TransportPayload<ExtArgs>
+        fields: Prisma.TransportFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.CarFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CarPayload> | null
+            args: Prisma.TransportFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransportPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.CarFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CarPayload>
+            args: Prisma.TransportFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransportPayload>
           }
           findFirst: {
-            args: Prisma.CarFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CarPayload> | null
+            args: Prisma.TransportFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransportPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.CarFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CarPayload>
+            args: Prisma.TransportFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransportPayload>
           }
           findMany: {
-            args: Prisma.CarFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CarPayload>[]
+            args: Prisma.TransportFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransportPayload>[]
           }
           create: {
-            args: Prisma.CarCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CarPayload>
+            args: Prisma.TransportCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransportPayload>
           }
           createMany: {
-            args: Prisma.CarCreateManyArgs<ExtArgs>
+            args: Prisma.TransportCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.CarCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CarPayload>[]
+            args: Prisma.TransportCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransportPayload>[]
           }
           delete: {
-            args: Prisma.CarDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CarPayload>
+            args: Prisma.TransportDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransportPayload>
           }
           update: {
-            args: Prisma.CarUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CarPayload>
+            args: Prisma.TransportUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransportPayload>
           }
           deleteMany: {
-            args: Prisma.CarDeleteManyArgs<ExtArgs>
+            args: Prisma.TransportDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.CarUpdateManyArgs<ExtArgs>
+            args: Prisma.TransportUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.CarUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CarPayload>[]
+            args: Prisma.TransportUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransportPayload>[]
           }
           upsert: {
-            args: Prisma.CarUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CarPayload>
+            args: Prisma.TransportUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransportPayload>
           }
           aggregate: {
-            args: Prisma.CarAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateCar>
+            args: Prisma.TransportAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTransport>
           }
           groupBy: {
-            args: Prisma.CarGroupByArgs<ExtArgs>
-            result: $Utils.Optional<CarGroupByOutputType>[]
+            args: Prisma.TransportGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TransportGroupByOutputType>[]
           }
           count: {
-            args: Prisma.CarCountArgs<ExtArgs>
-            result: $Utils.Optional<CarCountAggregateOutputType> | number
+            args: Prisma.TransportCountArgs<ExtArgs>
+            result: $Utils.Optional<TransportCountAggregateOutputType> | number
           }
         }
       }
@@ -2005,8 +2096,9 @@ export namespace Prisma {
     client?: ClientOmit
     quotation?: QuotationOmit
     quotationItem?: QuotationItemOmit
+    roomType?: RoomTypeOmit
     hotel?: HotelOmit
-    car?: CarOmit
+    transport?: TransportOmit
     meal?: MealOmit
     activity?: ActivityOmit
     itinerary?: ItineraryOmit
@@ -2091,14 +2183,14 @@ export namespace Prisma {
 
   export type UserCountOutputType = {
     accounts: number
-    sessions: number
     loginHistory: number
+    sessions: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
-    sessions?: boolean | UserCountOutputTypeCountSessionsArgs
     loginHistory?: boolean | UserCountOutputTypeCountLoginHistoryArgs
+    sessions?: boolean | UserCountOutputTypeCountSessionsArgs
   }
 
   // Custom InputTypes
@@ -2122,15 +2214,15 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SessionWhereInput
+  export type UserCountOutputTypeCountLoginHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LoginHistoryWhereInput
   }
 
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountLoginHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: LoginHistoryWhereInput
+  export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SessionWhereInput
   }
 
 
@@ -2139,23 +2231,23 @@ export namespace Prisma {
    */
 
   export type AgencyCountOutputType = {
-    users: number
-    clients: number
-    quotations: number
-    hotels: number
-    cars: number
-    meals: number
     activities: number
+    transport: number
+    clients: number
+    hotels: number
+    meals: number
+    quotations: number
+    users: number
   }
 
   export type AgencyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    users?: boolean | AgencyCountOutputTypeCountUsersArgs
-    clients?: boolean | AgencyCountOutputTypeCountClientsArgs
-    quotations?: boolean | AgencyCountOutputTypeCountQuotationsArgs
-    hotels?: boolean | AgencyCountOutputTypeCountHotelsArgs
-    cars?: boolean | AgencyCountOutputTypeCountCarsArgs
-    meals?: boolean | AgencyCountOutputTypeCountMealsArgs
     activities?: boolean | AgencyCountOutputTypeCountActivitiesArgs
+    transport?: boolean | AgencyCountOutputTypeCountTransportArgs
+    clients?: boolean | AgencyCountOutputTypeCountClientsArgs
+    hotels?: boolean | AgencyCountOutputTypeCountHotelsArgs
+    meals?: boolean | AgencyCountOutputTypeCountMealsArgs
+    quotations?: boolean | AgencyCountOutputTypeCountQuotationsArgs
+    users?: boolean | AgencyCountOutputTypeCountUsersArgs
   }
 
   // Custom InputTypes
@@ -2172,8 +2264,15 @@ export namespace Prisma {
   /**
    * AgencyCountOutputType without action
    */
-  export type AgencyCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: UserWhereInput
+  export type AgencyCountOutputTypeCountActivitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ActivityWhereInput
+  }
+
+  /**
+   * AgencyCountOutputType without action
+   */
+  export type AgencyCountOutputTypeCountTransportArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransportWhereInput
   }
 
   /**
@@ -2186,22 +2285,8 @@ export namespace Prisma {
   /**
    * AgencyCountOutputType without action
    */
-  export type AgencyCountOutputTypeCountQuotationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: QuotationWhereInput
-  }
-
-  /**
-   * AgencyCountOutputType without action
-   */
   export type AgencyCountOutputTypeCountHotelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: HotelWhereInput
-  }
-
-  /**
-   * AgencyCountOutputType without action
-   */
-  export type AgencyCountOutputTypeCountCarsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CarWhereInput
   }
 
   /**
@@ -2214,8 +2299,15 @@ export namespace Prisma {
   /**
    * AgencyCountOutputType without action
    */
-  export type AgencyCountOutputTypeCountActivitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ActivityWhereInput
+  export type AgencyCountOutputTypeCountQuotationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: QuotationWhereInput
+  }
+
+  /**
+   * AgencyCountOutputType without action
+   */
+  export type AgencyCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
   }
 
 
@@ -2255,13 +2347,13 @@ export namespace Prisma {
    */
 
   export type QuotationCountOutputType = {
-    items: number
     itineraries: number
+    items: number
   }
 
   export type QuotationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    items?: boolean | QuotationCountOutputTypeCountItemsArgs
     itineraries?: boolean | QuotationCountOutputTypeCountItinerariesArgs
+    items?: boolean | QuotationCountOutputTypeCountItemsArgs
   }
 
   // Custom InputTypes
@@ -2278,15 +2370,46 @@ export namespace Prisma {
   /**
    * QuotationCountOutputType without action
    */
-  export type QuotationCountOutputTypeCountItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: QuotationItemWhereInput
+  export type QuotationCountOutputTypeCountItinerariesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ItineraryWhereInput
   }
 
   /**
    * QuotationCountOutputType without action
    */
-  export type QuotationCountOutputTypeCountItinerariesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ItineraryWhereInput
+  export type QuotationCountOutputTypeCountItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: QuotationItemWhereInput
+  }
+
+
+  /**
+   * Count Type HotelCountOutputType
+   */
+
+  export type HotelCountOutputType = {
+    roomTypes: number
+  }
+
+  export type HotelCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    roomTypes?: boolean | HotelCountOutputTypeCountRoomTypesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * HotelCountOutputType without action
+   */
+  export type HotelCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HotelCountOutputType
+     */
+    select?: HotelCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * HotelCountOutputType without action
+   */
+  export type HotelCountOutputTypeCountRoomTypesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoomTypeWhereInput
   }
 
 
@@ -6753,10 +6876,10 @@ export namespace Prisma {
     agencyId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    agency?: boolean | User$agencyArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
-    sessions?: boolean | User$sessionsArgs<ExtArgs>
     loginHistory?: boolean | User$loginHistoryArgs<ExtArgs>
+    sessions?: boolean | User$sessionsArgs<ExtArgs>
+    agency?: boolean | User$agencyArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -6803,10 +6926,10 @@ export namespace Prisma {
 
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "password" | "image" | "role" | "agencyId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    agency?: boolean | User$agencyArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
-    sessions?: boolean | User$sessionsArgs<ExtArgs>
     loginHistory?: boolean | User$loginHistoryArgs<ExtArgs>
+    sessions?: boolean | User$sessionsArgs<ExtArgs>
+    agency?: boolean | User$agencyArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6819,10 +6942,10 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
-      agency: Prisma.$AgencyPayload<ExtArgs> | null
       accounts: Prisma.$AccountPayload<ExtArgs>[]
-      sessions: Prisma.$SessionPayload<ExtArgs>[]
       loginHistory: Prisma.$LoginHistoryPayload<ExtArgs>[]
+      sessions: Prisma.$SessionPayload<ExtArgs>[]
+      agency: Prisma.$AgencyPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7229,10 +7352,10 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    agency<T extends User$agencyArgs<ExtArgs> = {}>(args?: Subset<T, User$agencyArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     loginHistory<T extends User$loginHistoryArgs<ExtArgs> = {}>(args?: Subset<T, User$loginHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LoginHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    agency<T extends User$agencyArgs<ExtArgs> = {}>(args?: Subset<T, User$agencyArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7668,25 +7791,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.agency
-   */
-  export type User$agencyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Agency
-     */
-    select?: AgencySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Agency
-     */
-    omit?: AgencyOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AgencyInclude<ExtArgs> | null
-    where?: AgencyWhereInput
-  }
-
-  /**
    * User.accounts
    */
   export type User$accountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7708,6 +7812,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
+  }
+
+  /**
+   * User.loginHistory
+   */
+  export type User$loginHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LoginHistory
+     */
+    select?: LoginHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LoginHistory
+     */
+    omit?: LoginHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LoginHistoryInclude<ExtArgs> | null
+    where?: LoginHistoryWhereInput
+    orderBy?: LoginHistoryOrderByWithRelationInput | LoginHistoryOrderByWithRelationInput[]
+    cursor?: LoginHistoryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LoginHistoryScalarFieldEnum | LoginHistoryScalarFieldEnum[]
   }
 
   /**
@@ -7735,27 +7863,22 @@ export namespace Prisma {
   }
 
   /**
-   * User.loginHistory
+   * User.agency
    */
-  export type User$loginHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$agencyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the LoginHistory
+     * Select specific fields to fetch from the Agency
      */
-    select?: LoginHistorySelect<ExtArgs> | null
+    select?: AgencySelect<ExtArgs> | null
     /**
-     * Omit specific fields from the LoginHistory
+     * Omit specific fields from the Agency
      */
-    omit?: LoginHistoryOmit<ExtArgs> | null
+    omit?: AgencyOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LoginHistoryInclude<ExtArgs> | null
-    where?: LoginHistoryWhereInput
-    orderBy?: LoginHistoryOrderByWithRelationInput | LoginHistoryOrderByWithRelationInput[]
-    cursor?: LoginHistoryWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: LoginHistoryScalarFieldEnum | LoginHistoryScalarFieldEnum[]
+    include?: AgencyInclude<ExtArgs> | null
+    where?: AgencyWhereInput
   }
 
   /**
@@ -7945,13 +8068,13 @@ export namespace Prisma {
     settings?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    users?: boolean | Agency$usersArgs<ExtArgs>
-    clients?: boolean | Agency$clientsArgs<ExtArgs>
-    quotations?: boolean | Agency$quotationsArgs<ExtArgs>
-    hotels?: boolean | Agency$hotelsArgs<ExtArgs>
-    cars?: boolean | Agency$carsArgs<ExtArgs>
-    meals?: boolean | Agency$mealsArgs<ExtArgs>
     activities?: boolean | Agency$activitiesArgs<ExtArgs>
+    transport?: boolean | Agency$transportArgs<ExtArgs>
+    clients?: boolean | Agency$clientsArgs<ExtArgs>
+    hotels?: boolean | Agency$hotelsArgs<ExtArgs>
+    meals?: boolean | Agency$mealsArgs<ExtArgs>
+    quotations?: boolean | Agency$quotationsArgs<ExtArgs>
+    users?: boolean | Agency$usersArgs<ExtArgs>
     _count?: boolean | AgencyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["agency"]>
 
@@ -7984,13 +8107,13 @@ export namespace Prisma {
 
   export type AgencyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "logo" | "settings" | "createdAt" | "updatedAt", ExtArgs["result"]["agency"]>
   export type AgencyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    users?: boolean | Agency$usersArgs<ExtArgs>
-    clients?: boolean | Agency$clientsArgs<ExtArgs>
-    quotations?: boolean | Agency$quotationsArgs<ExtArgs>
-    hotels?: boolean | Agency$hotelsArgs<ExtArgs>
-    cars?: boolean | Agency$carsArgs<ExtArgs>
-    meals?: boolean | Agency$mealsArgs<ExtArgs>
     activities?: boolean | Agency$activitiesArgs<ExtArgs>
+    transport?: boolean | Agency$transportArgs<ExtArgs>
+    clients?: boolean | Agency$clientsArgs<ExtArgs>
+    hotels?: boolean | Agency$hotelsArgs<ExtArgs>
+    meals?: boolean | Agency$mealsArgs<ExtArgs>
+    quotations?: boolean | Agency$quotationsArgs<ExtArgs>
+    users?: boolean | Agency$usersArgs<ExtArgs>
     _count?: boolean | AgencyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AgencyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -7999,13 +8122,13 @@ export namespace Prisma {
   export type $AgencyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Agency"
     objects: {
-      users: Prisma.$UserPayload<ExtArgs>[]
-      clients: Prisma.$ClientPayload<ExtArgs>[]
-      quotations: Prisma.$QuotationPayload<ExtArgs>[]
-      hotels: Prisma.$HotelPayload<ExtArgs>[]
-      cars: Prisma.$CarPayload<ExtArgs>[]
-      meals: Prisma.$MealPayload<ExtArgs>[]
       activities: Prisma.$ActivityPayload<ExtArgs>[]
+      transport: Prisma.$TransportPayload<ExtArgs>[]
+      clients: Prisma.$ClientPayload<ExtArgs>[]
+      hotels: Prisma.$HotelPayload<ExtArgs>[]
+      meals: Prisma.$MealPayload<ExtArgs>[]
+      quotations: Prisma.$QuotationPayload<ExtArgs>[]
+      users: Prisma.$UserPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -8408,13 +8531,13 @@ export namespace Prisma {
    */
   export interface Prisma__AgencyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    users<T extends Agency$usersArgs<ExtArgs> = {}>(args?: Subset<T, Agency$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    clients<T extends Agency$clientsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$clientsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    quotations<T extends Agency$quotationsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$quotationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuotationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    hotels<T extends Agency$hotelsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$hotelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HotelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    cars<T extends Agency$carsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$carsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CarPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    meals<T extends Agency$mealsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$mealsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     activities<T extends Agency$activitiesArgs<ExtArgs> = {}>(args?: Subset<T, Agency$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transport<T extends Agency$transportArgs<ExtArgs> = {}>(args?: Subset<T, Agency$transportArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    clients<T extends Agency$clientsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$clientsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    hotels<T extends Agency$hotelsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$hotelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HotelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    meals<T extends Agency$mealsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$mealsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    quotations<T extends Agency$quotationsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$quotationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuotationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    users<T extends Agency$usersArgs<ExtArgs> = {}>(args?: Subset<T, Agency$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8838,27 +8961,51 @@ export namespace Prisma {
   }
 
   /**
-   * Agency.users
+   * Agency.activities
    */
-  export type Agency$usersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Agency$activitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the User
+     * Select specific fields to fetch from the Activity
      */
-    select?: UserSelect<ExtArgs> | null
+    select?: ActivitySelect<ExtArgs> | null
     /**
-     * Omit specific fields from the User
+     * Omit specific fields from the Activity
      */
-    omit?: UserOmit<ExtArgs> | null
+    omit?: ActivityOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: UserInclude<ExtArgs> | null
-    where?: UserWhereInput
-    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
-    cursor?: UserWhereUniqueInput
+    include?: ActivityInclude<ExtArgs> | null
+    where?: ActivityWhereInput
+    orderBy?: ActivityOrderByWithRelationInput | ActivityOrderByWithRelationInput[]
+    cursor?: ActivityWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+    distinct?: ActivityScalarFieldEnum | ActivityScalarFieldEnum[]
+  }
+
+  /**
+   * Agency.transport
+   */
+  export type Agency$transportArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transport
+     */
+    select?: TransportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transport
+     */
+    omit?: TransportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransportInclude<ExtArgs> | null
+    where?: TransportWhereInput
+    orderBy?: TransportOrderByWithRelationInput | TransportOrderByWithRelationInput[]
+    cursor?: TransportWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransportScalarFieldEnum | TransportScalarFieldEnum[]
   }
 
   /**
@@ -8886,30 +9033,6 @@ export namespace Prisma {
   }
 
   /**
-   * Agency.quotations
-   */
-  export type Agency$quotationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Quotation
-     */
-    select?: QuotationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Quotation
-     */
-    omit?: QuotationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: QuotationInclude<ExtArgs> | null
-    where?: QuotationWhereInput
-    orderBy?: QuotationOrderByWithRelationInput | QuotationOrderByWithRelationInput[]
-    cursor?: QuotationWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: QuotationScalarFieldEnum | QuotationScalarFieldEnum[]
-  }
-
-  /**
    * Agency.hotels
    */
   export type Agency$hotelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8931,30 +9054,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: HotelScalarFieldEnum | HotelScalarFieldEnum[]
-  }
-
-  /**
-   * Agency.cars
-   */
-  export type Agency$carsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Car
-     */
-    select?: CarSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Car
-     */
-    omit?: CarOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CarInclude<ExtArgs> | null
-    where?: CarWhereInput
-    orderBy?: CarOrderByWithRelationInput | CarOrderByWithRelationInput[]
-    cursor?: CarWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: CarScalarFieldEnum | CarScalarFieldEnum[]
   }
 
   /**
@@ -8982,27 +9081,51 @@ export namespace Prisma {
   }
 
   /**
-   * Agency.activities
+   * Agency.quotations
    */
-  export type Agency$activitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Agency$quotationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Activity
+     * Select specific fields to fetch from the Quotation
      */
-    select?: ActivitySelect<ExtArgs> | null
+    select?: QuotationSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Activity
+     * Omit specific fields from the Quotation
      */
-    omit?: ActivityOmit<ExtArgs> | null
+    omit?: QuotationOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ActivityInclude<ExtArgs> | null
-    where?: ActivityWhereInput
-    orderBy?: ActivityOrderByWithRelationInput | ActivityOrderByWithRelationInput[]
-    cursor?: ActivityWhereUniqueInput
+    include?: QuotationInclude<ExtArgs> | null
+    where?: QuotationWhereInput
+    orderBy?: QuotationOrderByWithRelationInput | QuotationOrderByWithRelationInput[]
+    cursor?: QuotationWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: ActivityScalarFieldEnum | ActivityScalarFieldEnum[]
+    distinct?: QuotationScalarFieldEnum | QuotationScalarFieldEnum[]
+  }
+
+  /**
+   * Agency.users
+   */
+  export type Agency$usersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
   }
 
   /**
@@ -10438,10 +10561,10 @@ export namespace Prisma {
     totalAmount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    client?: boolean | ClientDefaultArgs<ExtArgs>
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
-    items?: boolean | Quotation$itemsArgs<ExtArgs>
     itineraries?: boolean | Quotation$itinerariesArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    client?: boolean | ClientDefaultArgs<ExtArgs>
+    items?: boolean | Quotation$itemsArgs<ExtArgs>
     _count?: boolean | QuotationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["quotation"]>
 
@@ -10459,8 +10582,8 @@ export namespace Prisma {
     totalAmount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    client?: boolean | ClientDefaultArgs<ExtArgs>
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    client?: boolean | ClientDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["quotation"]>
 
   export type QuotationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -10477,8 +10600,8 @@ export namespace Prisma {
     totalAmount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    client?: boolean | ClientDefaultArgs<ExtArgs>
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    client?: boolean | ClientDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["quotation"]>
 
   export type QuotationSelectScalar = {
@@ -10499,28 +10622,28 @@ export namespace Prisma {
 
   export type QuotationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clientId" | "agencyId" | "status" | "destination" | "startDate" | "endDate" | "adults" | "children" | "infants" | "totalAmount" | "createdAt" | "updatedAt", ExtArgs["result"]["quotation"]>
   export type QuotationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    client?: boolean | ClientDefaultArgs<ExtArgs>
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
-    items?: boolean | Quotation$itemsArgs<ExtArgs>
     itineraries?: boolean | Quotation$itinerariesArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    client?: boolean | ClientDefaultArgs<ExtArgs>
+    items?: boolean | Quotation$itemsArgs<ExtArgs>
     _count?: boolean | QuotationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type QuotationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    client?: boolean | ClientDefaultArgs<ExtArgs>
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    client?: boolean | ClientDefaultArgs<ExtArgs>
   }
   export type QuotationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    client?: boolean | ClientDefaultArgs<ExtArgs>
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    client?: boolean | ClientDefaultArgs<ExtArgs>
   }
 
   export type $QuotationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Quotation"
     objects: {
-      client: Prisma.$ClientPayload<ExtArgs>
-      agency: Prisma.$AgencyPayload<ExtArgs>
-      items: Prisma.$QuotationItemPayload<ExtArgs>[]
       itineraries: Prisma.$ItineraryPayload<ExtArgs>[]
+      agency: Prisma.$AgencyPayload<ExtArgs>
+      client: Prisma.$ClientPayload<ExtArgs>
+      items: Prisma.$QuotationItemPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -10930,10 +11053,10 @@ export namespace Prisma {
    */
   export interface Prisma__QuotationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    client<T extends ClientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClientDefaultArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    items<T extends Quotation$itemsArgs<ExtArgs> = {}>(args?: Subset<T, Quotation$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuotationItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     itineraries<T extends Quotation$itinerariesArgs<ExtArgs> = {}>(args?: Subset<T, Quotation$itinerariesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ItineraryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    client<T extends ClientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClientDefaultArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    items<T extends Quotation$itemsArgs<ExtArgs> = {}>(args?: Subset<T, Quotation$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuotationItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11372,30 +11495,6 @@ export namespace Prisma {
   }
 
   /**
-   * Quotation.items
-   */
-  export type Quotation$itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QuotationItem
-     */
-    select?: QuotationItemSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the QuotationItem
-     */
-    omit?: QuotationItemOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: QuotationItemInclude<ExtArgs> | null
-    where?: QuotationItemWhereInput
-    orderBy?: QuotationItemOrderByWithRelationInput | QuotationItemOrderByWithRelationInput[]
-    cursor?: QuotationItemWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: QuotationItemScalarFieldEnum | QuotationItemScalarFieldEnum[]
-  }
-
-  /**
    * Quotation.itineraries
    */
   export type Quotation$itinerariesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11417,6 +11516,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ItineraryScalarFieldEnum | ItineraryScalarFieldEnum[]
+  }
+
+  /**
+   * Quotation.items
+   */
+  export type Quotation$itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuotationItem
+     */
+    select?: QuotationItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuotationItem
+     */
+    omit?: QuotationItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuotationItemInclude<ExtArgs> | null
+    where?: QuotationItemWhereInput
+    orderBy?: QuotationItemOrderByWithRelationInput | QuotationItemOrderByWithRelationInput[]
+    cursor?: QuotationItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: QuotationItemScalarFieldEnum | QuotationItemScalarFieldEnum[]
   }
 
   /**
@@ -12544,6 +12667,1085 @@ export namespace Prisma {
 
 
   /**
+   * Model RoomType
+   */
+
+  export type AggregateRoomType = {
+    _count: RoomTypeCountAggregateOutputType | null
+    _avg: RoomTypeAvgAggregateOutputType | null
+    _sum: RoomTypeSumAggregateOutputType | null
+    _min: RoomTypeMinAggregateOutputType | null
+    _max: RoomTypeMaxAggregateOutputType | null
+  }
+
+  export type RoomTypeAvgAggregateOutputType = {
+    price: Decimal | null
+  }
+
+  export type RoomTypeSumAggregateOutputType = {
+    price: Decimal | null
+  }
+
+  export type RoomTypeMinAggregateOutputType = {
+    id: string | null
+    type: string | null
+    price: Decimal | null
+    hotelId: string | null
+  }
+
+  export type RoomTypeMaxAggregateOutputType = {
+    id: string | null
+    type: string | null
+    price: Decimal | null
+    hotelId: string | null
+  }
+
+  export type RoomTypeCountAggregateOutputType = {
+    id: number
+    type: number
+    price: number
+    hotelId: number
+    _all: number
+  }
+
+
+  export type RoomTypeAvgAggregateInputType = {
+    price?: true
+  }
+
+  export type RoomTypeSumAggregateInputType = {
+    price?: true
+  }
+
+  export type RoomTypeMinAggregateInputType = {
+    id?: true
+    type?: true
+    price?: true
+    hotelId?: true
+  }
+
+  export type RoomTypeMaxAggregateInputType = {
+    id?: true
+    type?: true
+    price?: true
+    hotelId?: true
+  }
+
+  export type RoomTypeCountAggregateInputType = {
+    id?: true
+    type?: true
+    price?: true
+    hotelId?: true
+    _all?: true
+  }
+
+  export type RoomTypeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RoomType to aggregate.
+     */
+    where?: RoomTypeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoomTypes to fetch.
+     */
+    orderBy?: RoomTypeOrderByWithRelationInput | RoomTypeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RoomTypeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoomTypes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoomTypes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RoomTypes
+    **/
+    _count?: true | RoomTypeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RoomTypeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RoomTypeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RoomTypeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RoomTypeMaxAggregateInputType
+  }
+
+  export type GetRoomTypeAggregateType<T extends RoomTypeAggregateArgs> = {
+        [P in keyof T & keyof AggregateRoomType]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRoomType[P]>
+      : GetScalarType<T[P], AggregateRoomType[P]>
+  }
+
+
+
+
+  export type RoomTypeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoomTypeWhereInput
+    orderBy?: RoomTypeOrderByWithAggregationInput | RoomTypeOrderByWithAggregationInput[]
+    by: RoomTypeScalarFieldEnum[] | RoomTypeScalarFieldEnum
+    having?: RoomTypeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RoomTypeCountAggregateInputType | true
+    _avg?: RoomTypeAvgAggregateInputType
+    _sum?: RoomTypeSumAggregateInputType
+    _min?: RoomTypeMinAggregateInputType
+    _max?: RoomTypeMaxAggregateInputType
+  }
+
+  export type RoomTypeGroupByOutputType = {
+    id: string
+    type: string
+    price: Decimal
+    hotelId: string
+    _count: RoomTypeCountAggregateOutputType | null
+    _avg: RoomTypeAvgAggregateOutputType | null
+    _sum: RoomTypeSumAggregateOutputType | null
+    _min: RoomTypeMinAggregateOutputType | null
+    _max: RoomTypeMaxAggregateOutputType | null
+  }
+
+  type GetRoomTypeGroupByPayload<T extends RoomTypeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RoomTypeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RoomTypeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RoomTypeGroupByOutputType[P]>
+            : GetScalarType<T[P], RoomTypeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RoomTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    type?: boolean
+    price?: boolean
+    hotelId?: boolean
+    hotel?: boolean | HotelDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roomType"]>
+
+  export type RoomTypeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    type?: boolean
+    price?: boolean
+    hotelId?: boolean
+    hotel?: boolean | HotelDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roomType"]>
+
+  export type RoomTypeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    type?: boolean
+    price?: boolean
+    hotelId?: boolean
+    hotel?: boolean | HotelDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roomType"]>
+
+  export type RoomTypeSelectScalar = {
+    id?: boolean
+    type?: boolean
+    price?: boolean
+    hotelId?: boolean
+  }
+
+  export type RoomTypeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "price" | "hotelId", ExtArgs["result"]["roomType"]>
+  export type RoomTypeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    hotel?: boolean | HotelDefaultArgs<ExtArgs>
+  }
+  export type RoomTypeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    hotel?: boolean | HotelDefaultArgs<ExtArgs>
+  }
+  export type RoomTypeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    hotel?: boolean | HotelDefaultArgs<ExtArgs>
+  }
+
+  export type $RoomTypePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RoomType"
+    objects: {
+      hotel: Prisma.$HotelPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      type: string
+      price: Prisma.Decimal
+      hotelId: string
+    }, ExtArgs["result"]["roomType"]>
+    composites: {}
+  }
+
+  type RoomTypeGetPayload<S extends boolean | null | undefined | RoomTypeDefaultArgs> = $Result.GetResult<Prisma.$RoomTypePayload, S>
+
+  type RoomTypeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RoomTypeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RoomTypeCountAggregateInputType | true
+    }
+
+  export interface RoomTypeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RoomType'], meta: { name: 'RoomType' } }
+    /**
+     * Find zero or one RoomType that matches the filter.
+     * @param {RoomTypeFindUniqueArgs} args - Arguments to find a RoomType
+     * @example
+     * // Get one RoomType
+     * const roomType = await prisma.roomType.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RoomTypeFindUniqueArgs>(args: SelectSubset<T, RoomTypeFindUniqueArgs<ExtArgs>>): Prisma__RoomTypeClient<$Result.GetResult<Prisma.$RoomTypePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RoomType that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RoomTypeFindUniqueOrThrowArgs} args - Arguments to find a RoomType
+     * @example
+     * // Get one RoomType
+     * const roomType = await prisma.roomType.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RoomTypeFindUniqueOrThrowArgs>(args: SelectSubset<T, RoomTypeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RoomTypeClient<$Result.GetResult<Prisma.$RoomTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RoomType that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomTypeFindFirstArgs} args - Arguments to find a RoomType
+     * @example
+     * // Get one RoomType
+     * const roomType = await prisma.roomType.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RoomTypeFindFirstArgs>(args?: SelectSubset<T, RoomTypeFindFirstArgs<ExtArgs>>): Prisma__RoomTypeClient<$Result.GetResult<Prisma.$RoomTypePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RoomType that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomTypeFindFirstOrThrowArgs} args - Arguments to find a RoomType
+     * @example
+     * // Get one RoomType
+     * const roomType = await prisma.roomType.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RoomTypeFindFirstOrThrowArgs>(args?: SelectSubset<T, RoomTypeFindFirstOrThrowArgs<ExtArgs>>): Prisma__RoomTypeClient<$Result.GetResult<Prisma.$RoomTypePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RoomTypes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomTypeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RoomTypes
+     * const roomTypes = await prisma.roomType.findMany()
+     * 
+     * // Get first 10 RoomTypes
+     * const roomTypes = await prisma.roomType.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const roomTypeWithIdOnly = await prisma.roomType.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RoomTypeFindManyArgs>(args?: SelectSubset<T, RoomTypeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RoomType.
+     * @param {RoomTypeCreateArgs} args - Arguments to create a RoomType.
+     * @example
+     * // Create one RoomType
+     * const RoomType = await prisma.roomType.create({
+     *   data: {
+     *     // ... data to create a RoomType
+     *   }
+     * })
+     * 
+     */
+    create<T extends RoomTypeCreateArgs>(args: SelectSubset<T, RoomTypeCreateArgs<ExtArgs>>): Prisma__RoomTypeClient<$Result.GetResult<Prisma.$RoomTypePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RoomTypes.
+     * @param {RoomTypeCreateManyArgs} args - Arguments to create many RoomTypes.
+     * @example
+     * // Create many RoomTypes
+     * const roomType = await prisma.roomType.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RoomTypeCreateManyArgs>(args?: SelectSubset<T, RoomTypeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RoomTypes and returns the data saved in the database.
+     * @param {RoomTypeCreateManyAndReturnArgs} args - Arguments to create many RoomTypes.
+     * @example
+     * // Create many RoomTypes
+     * const roomType = await prisma.roomType.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RoomTypes and only return the `id`
+     * const roomTypeWithIdOnly = await prisma.roomType.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RoomTypeCreateManyAndReturnArgs>(args?: SelectSubset<T, RoomTypeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomTypePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RoomType.
+     * @param {RoomTypeDeleteArgs} args - Arguments to delete one RoomType.
+     * @example
+     * // Delete one RoomType
+     * const RoomType = await prisma.roomType.delete({
+     *   where: {
+     *     // ... filter to delete one RoomType
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RoomTypeDeleteArgs>(args: SelectSubset<T, RoomTypeDeleteArgs<ExtArgs>>): Prisma__RoomTypeClient<$Result.GetResult<Prisma.$RoomTypePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RoomType.
+     * @param {RoomTypeUpdateArgs} args - Arguments to update one RoomType.
+     * @example
+     * // Update one RoomType
+     * const roomType = await prisma.roomType.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RoomTypeUpdateArgs>(args: SelectSubset<T, RoomTypeUpdateArgs<ExtArgs>>): Prisma__RoomTypeClient<$Result.GetResult<Prisma.$RoomTypePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RoomTypes.
+     * @param {RoomTypeDeleteManyArgs} args - Arguments to filter RoomTypes to delete.
+     * @example
+     * // Delete a few RoomTypes
+     * const { count } = await prisma.roomType.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RoomTypeDeleteManyArgs>(args?: SelectSubset<T, RoomTypeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RoomTypes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomTypeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RoomTypes
+     * const roomType = await prisma.roomType.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RoomTypeUpdateManyArgs>(args: SelectSubset<T, RoomTypeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RoomTypes and returns the data updated in the database.
+     * @param {RoomTypeUpdateManyAndReturnArgs} args - Arguments to update many RoomTypes.
+     * @example
+     * // Update many RoomTypes
+     * const roomType = await prisma.roomType.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RoomTypes and only return the `id`
+     * const roomTypeWithIdOnly = await prisma.roomType.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RoomTypeUpdateManyAndReturnArgs>(args: SelectSubset<T, RoomTypeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomTypePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RoomType.
+     * @param {RoomTypeUpsertArgs} args - Arguments to update or create a RoomType.
+     * @example
+     * // Update or create a RoomType
+     * const roomType = await prisma.roomType.upsert({
+     *   create: {
+     *     // ... data to create a RoomType
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RoomType we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RoomTypeUpsertArgs>(args: SelectSubset<T, RoomTypeUpsertArgs<ExtArgs>>): Prisma__RoomTypeClient<$Result.GetResult<Prisma.$RoomTypePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RoomTypes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomTypeCountArgs} args - Arguments to filter RoomTypes to count.
+     * @example
+     * // Count the number of RoomTypes
+     * const count = await prisma.roomType.count({
+     *   where: {
+     *     // ... the filter for the RoomTypes we want to count
+     *   }
+     * })
+    **/
+    count<T extends RoomTypeCountArgs>(
+      args?: Subset<T, RoomTypeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RoomTypeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RoomType.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomTypeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RoomTypeAggregateArgs>(args: Subset<T, RoomTypeAggregateArgs>): Prisma.PrismaPromise<GetRoomTypeAggregateType<T>>
+
+    /**
+     * Group by RoomType.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomTypeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RoomTypeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RoomTypeGroupByArgs['orderBy'] }
+        : { orderBy?: RoomTypeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RoomTypeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRoomTypeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RoomType model
+   */
+  readonly fields: RoomTypeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RoomType.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RoomTypeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    hotel<T extends HotelDefaultArgs<ExtArgs> = {}>(args?: Subset<T, HotelDefaultArgs<ExtArgs>>): Prisma__HotelClient<$Result.GetResult<Prisma.$HotelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RoomType model
+   */
+  interface RoomTypeFieldRefs {
+    readonly id: FieldRef<"RoomType", 'String'>
+    readonly type: FieldRef<"RoomType", 'String'>
+    readonly price: FieldRef<"RoomType", 'Decimal'>
+    readonly hotelId: FieldRef<"RoomType", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RoomType findUnique
+   */
+  export type RoomTypeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomType
+     */
+    select?: RoomTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomType
+     */
+    omit?: RoomTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomTypeInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomType to fetch.
+     */
+    where: RoomTypeWhereUniqueInput
+  }
+
+  /**
+   * RoomType findUniqueOrThrow
+   */
+  export type RoomTypeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomType
+     */
+    select?: RoomTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomType
+     */
+    omit?: RoomTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomTypeInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomType to fetch.
+     */
+    where: RoomTypeWhereUniqueInput
+  }
+
+  /**
+   * RoomType findFirst
+   */
+  export type RoomTypeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomType
+     */
+    select?: RoomTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomType
+     */
+    omit?: RoomTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomTypeInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomType to fetch.
+     */
+    where?: RoomTypeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoomTypes to fetch.
+     */
+    orderBy?: RoomTypeOrderByWithRelationInput | RoomTypeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RoomTypes.
+     */
+    cursor?: RoomTypeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoomTypes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoomTypes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RoomTypes.
+     */
+    distinct?: RoomTypeScalarFieldEnum | RoomTypeScalarFieldEnum[]
+  }
+
+  /**
+   * RoomType findFirstOrThrow
+   */
+  export type RoomTypeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomType
+     */
+    select?: RoomTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomType
+     */
+    omit?: RoomTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomTypeInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomType to fetch.
+     */
+    where?: RoomTypeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoomTypes to fetch.
+     */
+    orderBy?: RoomTypeOrderByWithRelationInput | RoomTypeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RoomTypes.
+     */
+    cursor?: RoomTypeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoomTypes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoomTypes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RoomTypes.
+     */
+    distinct?: RoomTypeScalarFieldEnum | RoomTypeScalarFieldEnum[]
+  }
+
+  /**
+   * RoomType findMany
+   */
+  export type RoomTypeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomType
+     */
+    select?: RoomTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomType
+     */
+    omit?: RoomTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomTypeInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomTypes to fetch.
+     */
+    where?: RoomTypeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoomTypes to fetch.
+     */
+    orderBy?: RoomTypeOrderByWithRelationInput | RoomTypeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RoomTypes.
+     */
+    cursor?: RoomTypeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoomTypes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoomTypes.
+     */
+    skip?: number
+    distinct?: RoomTypeScalarFieldEnum | RoomTypeScalarFieldEnum[]
+  }
+
+  /**
+   * RoomType create
+   */
+  export type RoomTypeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomType
+     */
+    select?: RoomTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomType
+     */
+    omit?: RoomTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomTypeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a RoomType.
+     */
+    data: XOR<RoomTypeCreateInput, RoomTypeUncheckedCreateInput>
+  }
+
+  /**
+   * RoomType createMany
+   */
+  export type RoomTypeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RoomTypes.
+     */
+    data: RoomTypeCreateManyInput | RoomTypeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RoomType createManyAndReturn
+   */
+  export type RoomTypeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomType
+     */
+    select?: RoomTypeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomType
+     */
+    omit?: RoomTypeOmit<ExtArgs> | null
+    /**
+     * The data used to create many RoomTypes.
+     */
+    data: RoomTypeCreateManyInput | RoomTypeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomTypeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RoomType update
+   */
+  export type RoomTypeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomType
+     */
+    select?: RoomTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomType
+     */
+    omit?: RoomTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomTypeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a RoomType.
+     */
+    data: XOR<RoomTypeUpdateInput, RoomTypeUncheckedUpdateInput>
+    /**
+     * Choose, which RoomType to update.
+     */
+    where: RoomTypeWhereUniqueInput
+  }
+
+  /**
+   * RoomType updateMany
+   */
+  export type RoomTypeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RoomTypes.
+     */
+    data: XOR<RoomTypeUpdateManyMutationInput, RoomTypeUncheckedUpdateManyInput>
+    /**
+     * Filter which RoomTypes to update
+     */
+    where?: RoomTypeWhereInput
+    /**
+     * Limit how many RoomTypes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RoomType updateManyAndReturn
+   */
+  export type RoomTypeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomType
+     */
+    select?: RoomTypeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomType
+     */
+    omit?: RoomTypeOmit<ExtArgs> | null
+    /**
+     * The data used to update RoomTypes.
+     */
+    data: XOR<RoomTypeUpdateManyMutationInput, RoomTypeUncheckedUpdateManyInput>
+    /**
+     * Filter which RoomTypes to update
+     */
+    where?: RoomTypeWhereInput
+    /**
+     * Limit how many RoomTypes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomTypeIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RoomType upsert
+   */
+  export type RoomTypeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomType
+     */
+    select?: RoomTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomType
+     */
+    omit?: RoomTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomTypeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the RoomType to update in case it exists.
+     */
+    where: RoomTypeWhereUniqueInput
+    /**
+     * In case the RoomType found by the `where` argument doesn't exist, create a new RoomType with this data.
+     */
+    create: XOR<RoomTypeCreateInput, RoomTypeUncheckedCreateInput>
+    /**
+     * In case the RoomType was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RoomTypeUpdateInput, RoomTypeUncheckedUpdateInput>
+  }
+
+  /**
+   * RoomType delete
+   */
+  export type RoomTypeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomType
+     */
+    select?: RoomTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomType
+     */
+    omit?: RoomTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomTypeInclude<ExtArgs> | null
+    /**
+     * Filter which RoomType to delete.
+     */
+    where: RoomTypeWhereUniqueInput
+  }
+
+  /**
+   * RoomType deleteMany
+   */
+  export type RoomTypeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RoomTypes to delete
+     */
+    where?: RoomTypeWhereInput
+    /**
+     * Limit how many RoomTypes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RoomType without action
+   */
+  export type RoomTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomType
+     */
+    select?: RoomTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomType
+     */
+    omit?: RoomTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomTypeInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Hotel
    */
 
@@ -12570,6 +13772,7 @@ export namespace Prisma {
     starCategory: number | null
     inclusions: string | null
     cancellation: string | null
+    photos: string | null
     agencyId: string | null
   }
 
@@ -12580,6 +13783,7 @@ export namespace Prisma {
     starCategory: number | null
     inclusions: string | null
     cancellation: string | null
+    photos: string | null
     agencyId: string | null
   }
 
@@ -12588,7 +13792,6 @@ export namespace Prisma {
     name: number
     city: number
     starCategory: number
-    roomTypes: number
     inclusions: number
     cancellation: number
     photos: number
@@ -12612,6 +13815,7 @@ export namespace Prisma {
     starCategory?: true
     inclusions?: true
     cancellation?: true
+    photos?: true
     agencyId?: true
   }
 
@@ -12622,6 +13826,7 @@ export namespace Prisma {
     starCategory?: true
     inclusions?: true
     cancellation?: true
+    photos?: true
     agencyId?: true
   }
 
@@ -12630,7 +13835,6 @@ export namespace Prisma {
     name?: true
     city?: true
     starCategory?: true
-    roomTypes?: true
     inclusions?: true
     cancellation?: true
     photos?: true
@@ -12729,10 +13933,9 @@ export namespace Prisma {
     name: string
     city: string
     starCategory: number
-    roomTypes: JsonValue
     inclusions: string | null
     cancellation: string | null
-    photos: JsonValue | null
+    photos: string | null
     agencyId: string
     _count: HotelCountAggregateOutputType | null
     _avg: HotelAvgAggregateOutputType | null
@@ -12760,12 +13963,13 @@ export namespace Prisma {
     name?: boolean
     city?: boolean
     starCategory?: boolean
-    roomTypes?: boolean
     inclusions?: boolean
     cancellation?: boolean
     photos?: boolean
     agencyId?: boolean
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    roomTypes?: boolean | Hotel$roomTypesArgs<ExtArgs>
+    _count?: boolean | HotelCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["hotel"]>
 
   export type HotelSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -12773,7 +13977,6 @@ export namespace Prisma {
     name?: boolean
     city?: boolean
     starCategory?: boolean
-    roomTypes?: boolean
     inclusions?: boolean
     cancellation?: boolean
     photos?: boolean
@@ -12786,7 +13989,6 @@ export namespace Prisma {
     name?: boolean
     city?: boolean
     starCategory?: boolean
-    roomTypes?: boolean
     inclusions?: boolean
     cancellation?: boolean
     photos?: boolean
@@ -12799,16 +14001,17 @@ export namespace Prisma {
     name?: boolean
     city?: boolean
     starCategory?: boolean
-    roomTypes?: boolean
     inclusions?: boolean
     cancellation?: boolean
     photos?: boolean
     agencyId?: boolean
   }
 
-  export type HotelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "city" | "starCategory" | "roomTypes" | "inclusions" | "cancellation" | "photos" | "agencyId", ExtArgs["result"]["hotel"]>
+  export type HotelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "city" | "starCategory" | "inclusions" | "cancellation" | "photos" | "agencyId", ExtArgs["result"]["hotel"]>
   export type HotelInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    roomTypes?: boolean | Hotel$roomTypesArgs<ExtArgs>
+    _count?: boolean | HotelCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type HotelIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
@@ -12821,16 +14024,16 @@ export namespace Prisma {
     name: "Hotel"
     objects: {
       agency: Prisma.$AgencyPayload<ExtArgs>
+      roomTypes: Prisma.$RoomTypePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
       city: string
       starCategory: number
-      roomTypes: Prisma.JsonValue
       inclusions: string | null
       cancellation: string | null
-      photos: Prisma.JsonValue | null
+      photos: string | null
       agencyId: string
     }, ExtArgs["result"]["hotel"]>
     composites: {}
@@ -13227,6 +14430,7 @@ export namespace Prisma {
   export interface Prisma__HotelClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    roomTypes<T extends Hotel$roomTypesArgs<ExtArgs> = {}>(args?: Subset<T, Hotel$roomTypesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -13260,10 +14464,9 @@ export namespace Prisma {
     readonly name: FieldRef<"Hotel", 'String'>
     readonly city: FieldRef<"Hotel", 'String'>
     readonly starCategory: FieldRef<"Hotel", 'Int'>
-    readonly roomTypes: FieldRef<"Hotel", 'Json'>
     readonly inclusions: FieldRef<"Hotel", 'String'>
     readonly cancellation: FieldRef<"Hotel", 'String'>
-    readonly photos: FieldRef<"Hotel", 'Json'>
+    readonly photos: FieldRef<"Hotel", 'String'>
     readonly agencyId: FieldRef<"Hotel", 'String'>
   }
     
@@ -13661,6 +14864,30 @@ export namespace Prisma {
   }
 
   /**
+   * Hotel.roomTypes
+   */
+  export type Hotel$roomTypesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomType
+     */
+    select?: RoomTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomType
+     */
+    omit?: RoomTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomTypeInclude<ExtArgs> | null
+    where?: RoomTypeWhereInput
+    orderBy?: RoomTypeOrderByWithRelationInput | RoomTypeOrderByWithRelationInput[]
+    cursor?: RoomTypeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RoomTypeScalarFieldEnum | RoomTypeScalarFieldEnum[]
+  }
+
+  /**
    * Hotel without action
    */
   export type HotelDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -13680,47 +14907,56 @@ export namespace Prisma {
 
 
   /**
-   * Model Car
+   * Model Transport
    */
 
-  export type AggregateCar = {
-    _count: CarCountAggregateOutputType | null
-    _avg: CarAvgAggregateOutputType | null
-    _sum: CarSumAggregateOutputType | null
-    _min: CarMinAggregateOutputType | null
-    _max: CarMaxAggregateOutputType | null
+  export type AggregateTransport = {
+    _count: TransportCountAggregateOutputType | null
+    _avg: TransportAvgAggregateOutputType | null
+    _sum: TransportSumAggregateOutputType | null
+    _min: TransportMinAggregateOutputType | null
+    _max: TransportMaxAggregateOutputType | null
   }
 
-  export type CarAvgAggregateOutputType = {
+  export type TransportAvgAggregateOutputType = {
+    perDay: number | null
+    perKm: number | null
     maxCapacity: number | null
   }
 
-  export type CarSumAggregateOutputType = {
+  export type TransportSumAggregateOutputType = {
+    perDay: number | null
+    perKm: number | null
     maxCapacity: number | null
   }
 
-  export type CarMinAggregateOutputType = {
+  export type TransportMinAggregateOutputType = {
     id: string | null
     vehicleType: string | null
-    pricingModel: string | null
+    perDay: number | null
+    perKm: number | null
     maxCapacity: number | null
     notes: string | null
+    photos: string | null
     agencyId: string | null
   }
 
-  export type CarMaxAggregateOutputType = {
+  export type TransportMaxAggregateOutputType = {
     id: string | null
     vehicleType: string | null
-    pricingModel: string | null
+    perDay: number | null
+    perKm: number | null
     maxCapacity: number | null
     notes: string | null
+    photos: string | null
     agencyId: string | null
   }
 
-  export type CarCountAggregateOutputType = {
+  export type TransportCountAggregateOutputType = {
     id: number
     vehicleType: number
-    pricingModel: number
+    perDay: number
+    perKm: number
     maxCapacity: number
     notes: number
     photos: number
@@ -13729,36 +14965,45 @@ export namespace Prisma {
   }
 
 
-  export type CarAvgAggregateInputType = {
+  export type TransportAvgAggregateInputType = {
+    perDay?: true
+    perKm?: true
     maxCapacity?: true
   }
 
-  export type CarSumAggregateInputType = {
+  export type TransportSumAggregateInputType = {
+    perDay?: true
+    perKm?: true
     maxCapacity?: true
   }
 
-  export type CarMinAggregateInputType = {
+  export type TransportMinAggregateInputType = {
     id?: true
     vehicleType?: true
-    pricingModel?: true
+    perDay?: true
+    perKm?: true
     maxCapacity?: true
     notes?: true
+    photos?: true
     agencyId?: true
   }
 
-  export type CarMaxAggregateInputType = {
+  export type TransportMaxAggregateInputType = {
     id?: true
     vehicleType?: true
-    pricingModel?: true
+    perDay?: true
+    perKm?: true
     maxCapacity?: true
     notes?: true
+    photos?: true
     agencyId?: true
   }
 
-  export type CarCountAggregateInputType = {
+  export type TransportCountAggregateInputType = {
     id?: true
     vehicleType?: true
-    pricingModel?: true
+    perDay?: true
+    perKm?: true
     maxCapacity?: true
     notes?: true
     photos?: true
@@ -13766,318 +15011,324 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type CarAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TransportAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which Car to aggregate.
+     * Filter which Transport to aggregate.
      */
-    where?: CarWhereInput
+    where?: TransportWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Cars to fetch.
+     * Determine the order of Transports to fetch.
      */
-    orderBy?: CarOrderByWithRelationInput | CarOrderByWithRelationInput[]
+    orderBy?: TransportOrderByWithRelationInput | TransportOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: CarWhereUniqueInput
+    cursor?: TransportWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Cars from the position of the cursor.
+     * Take `±n` Transports from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Cars.
+     * Skip the first `n` Transports.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned Cars
+     * Count returned Transports
     **/
-    _count?: true | CarCountAggregateInputType
+    _count?: true | TransportCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to average
     **/
-    _avg?: CarAvgAggregateInputType
+    _avg?: TransportAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to sum
     **/
-    _sum?: CarSumAggregateInputType
+    _sum?: TransportSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: CarMinAggregateInputType
+    _min?: TransportMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: CarMaxAggregateInputType
+    _max?: TransportMaxAggregateInputType
   }
 
-  export type GetCarAggregateType<T extends CarAggregateArgs> = {
-        [P in keyof T & keyof AggregateCar]: P extends '_count' | 'count'
+  export type GetTransportAggregateType<T extends TransportAggregateArgs> = {
+        [P in keyof T & keyof AggregateTransport]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateCar[P]>
-      : GetScalarType<T[P], AggregateCar[P]>
+        : GetScalarType<T[P], AggregateTransport[P]>
+      : GetScalarType<T[P], AggregateTransport[P]>
   }
 
 
 
 
-  export type CarGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CarWhereInput
-    orderBy?: CarOrderByWithAggregationInput | CarOrderByWithAggregationInput[]
-    by: CarScalarFieldEnum[] | CarScalarFieldEnum
-    having?: CarScalarWhereWithAggregatesInput
+  export type TransportGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransportWhereInput
+    orderBy?: TransportOrderByWithAggregationInput | TransportOrderByWithAggregationInput[]
+    by: TransportScalarFieldEnum[] | TransportScalarFieldEnum
+    having?: TransportScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: CarCountAggregateInputType | true
-    _avg?: CarAvgAggregateInputType
-    _sum?: CarSumAggregateInputType
-    _min?: CarMinAggregateInputType
-    _max?: CarMaxAggregateInputType
+    _count?: TransportCountAggregateInputType | true
+    _avg?: TransportAvgAggregateInputType
+    _sum?: TransportSumAggregateInputType
+    _min?: TransportMinAggregateInputType
+    _max?: TransportMaxAggregateInputType
   }
 
-  export type CarGroupByOutputType = {
+  export type TransportGroupByOutputType = {
     id: string
     vehicleType: string
-    pricingModel: string
+    perDay: number
+    perKm: number
     maxCapacity: number
     notes: string | null
-    photos: JsonValue | null
+    photos: string | null
     agencyId: string
-    _count: CarCountAggregateOutputType | null
-    _avg: CarAvgAggregateOutputType | null
-    _sum: CarSumAggregateOutputType | null
-    _min: CarMinAggregateOutputType | null
-    _max: CarMaxAggregateOutputType | null
+    _count: TransportCountAggregateOutputType | null
+    _avg: TransportAvgAggregateOutputType | null
+    _sum: TransportSumAggregateOutputType | null
+    _min: TransportMinAggregateOutputType | null
+    _max: TransportMaxAggregateOutputType | null
   }
 
-  type GetCarGroupByPayload<T extends CarGroupByArgs> = Prisma.PrismaPromise<
+  type GetTransportGroupByPayload<T extends TransportGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<CarGroupByOutputType, T['by']> &
+      PickEnumerable<TransportGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof CarGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof TransportGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], CarGroupByOutputType[P]>
-            : GetScalarType<T[P], CarGroupByOutputType[P]>
+              : GetScalarType<T[P], TransportGroupByOutputType[P]>
+            : GetScalarType<T[P], TransportGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type CarSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type TransportSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     vehicleType?: boolean
-    pricingModel?: boolean
+    perDay?: boolean
+    perKm?: boolean
     maxCapacity?: boolean
     notes?: boolean
     photos?: boolean
     agencyId?: boolean
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["car"]>
+  }, ExtArgs["result"]["transport"]>
 
-  export type CarSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type TransportSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     vehicleType?: boolean
-    pricingModel?: boolean
+    perDay?: boolean
+    perKm?: boolean
     maxCapacity?: boolean
     notes?: boolean
     photos?: boolean
     agencyId?: boolean
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["car"]>
+  }, ExtArgs["result"]["transport"]>
 
-  export type CarSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type TransportSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     vehicleType?: boolean
-    pricingModel?: boolean
+    perDay?: boolean
+    perKm?: boolean
     maxCapacity?: boolean
     notes?: boolean
     photos?: boolean
     agencyId?: boolean
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["car"]>
+  }, ExtArgs["result"]["transport"]>
 
-  export type CarSelectScalar = {
+  export type TransportSelectScalar = {
     id?: boolean
     vehicleType?: boolean
-    pricingModel?: boolean
+    perDay?: boolean
+    perKm?: boolean
     maxCapacity?: boolean
     notes?: boolean
     photos?: boolean
     agencyId?: boolean
   }
 
-  export type CarOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "vehicleType" | "pricingModel" | "maxCapacity" | "notes" | "photos" | "agencyId", ExtArgs["result"]["car"]>
-  export type CarInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TransportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "vehicleType" | "perDay" | "perKm" | "maxCapacity" | "notes" | "photos" | "agencyId", ExtArgs["result"]["transport"]>
+  export type TransportInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
   }
-  export type CarIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TransportIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
   }
-  export type CarIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TransportIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
   }
 
-  export type $CarPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Car"
+  export type $TransportPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Transport"
     objects: {
       agency: Prisma.$AgencyPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       vehicleType: string
-      pricingModel: string
+      perDay: number
+      perKm: number
       maxCapacity: number
       notes: string | null
-      photos: Prisma.JsonValue | null
+      photos: string | null
       agencyId: string
-    }, ExtArgs["result"]["car"]>
+    }, ExtArgs["result"]["transport"]>
     composites: {}
   }
 
-  type CarGetPayload<S extends boolean | null | undefined | CarDefaultArgs> = $Result.GetResult<Prisma.$CarPayload, S>
+  type TransportGetPayload<S extends boolean | null | undefined | TransportDefaultArgs> = $Result.GetResult<Prisma.$TransportPayload, S>
 
-  type CarCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<CarFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: CarCountAggregateInputType | true
+  type TransportCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TransportFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TransportCountAggregateInputType | true
     }
 
-  export interface CarDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Car'], meta: { name: 'Car' } }
+  export interface TransportDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Transport'], meta: { name: 'Transport' } }
     /**
-     * Find zero or one Car that matches the filter.
-     * @param {CarFindUniqueArgs} args - Arguments to find a Car
+     * Find zero or one Transport that matches the filter.
+     * @param {TransportFindUniqueArgs} args - Arguments to find a Transport
      * @example
-     * // Get one Car
-     * const car = await prisma.car.findUnique({
+     * // Get one Transport
+     * const transport = await prisma.transport.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends CarFindUniqueArgs>(args: SelectSubset<T, CarFindUniqueArgs<ExtArgs>>): Prisma__CarClient<$Result.GetResult<Prisma.$CarPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends TransportFindUniqueArgs>(args: SelectSubset<T, TransportFindUniqueArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one Car that matches the filter or throw an error with `error.code='P2025'`
+     * Find one Transport that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {CarFindUniqueOrThrowArgs} args - Arguments to find a Car
+     * @param {TransportFindUniqueOrThrowArgs} args - Arguments to find a Transport
      * @example
-     * // Get one Car
-     * const car = await prisma.car.findUniqueOrThrow({
+     * // Get one Transport
+     * const transport = await prisma.transport.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends CarFindUniqueOrThrowArgs>(args: SelectSubset<T, CarFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CarClient<$Result.GetResult<Prisma.$CarPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends TransportFindUniqueOrThrowArgs>(args: SelectSubset<T, TransportFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first Car that matches the filter.
+     * Find the first Transport that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CarFindFirstArgs} args - Arguments to find a Car
+     * @param {TransportFindFirstArgs} args - Arguments to find a Transport
      * @example
-     * // Get one Car
-     * const car = await prisma.car.findFirst({
+     * // Get one Transport
+     * const transport = await prisma.transport.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends CarFindFirstArgs>(args?: SelectSubset<T, CarFindFirstArgs<ExtArgs>>): Prisma__CarClient<$Result.GetResult<Prisma.$CarPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends TransportFindFirstArgs>(args?: SelectSubset<T, TransportFindFirstArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first Car that matches the filter or
+     * Find the first Transport that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CarFindFirstOrThrowArgs} args - Arguments to find a Car
+     * @param {TransportFindFirstOrThrowArgs} args - Arguments to find a Transport
      * @example
-     * // Get one Car
-     * const car = await prisma.car.findFirstOrThrow({
+     * // Get one Transport
+     * const transport = await prisma.transport.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends CarFindFirstOrThrowArgs>(args?: SelectSubset<T, CarFindFirstOrThrowArgs<ExtArgs>>): Prisma__CarClient<$Result.GetResult<Prisma.$CarPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends TransportFindFirstOrThrowArgs>(args?: SelectSubset<T, TransportFindFirstOrThrowArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more Cars that matches the filter.
+     * Find zero or more Transports that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CarFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {TransportFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all Cars
-     * const cars = await prisma.car.findMany()
+     * // Get all Transports
+     * const transports = await prisma.transport.findMany()
      * 
-     * // Get first 10 Cars
-     * const cars = await prisma.car.findMany({ take: 10 })
+     * // Get first 10 Transports
+     * const transports = await prisma.transport.findMany({ take: 10 })
      * 
      * // Only select the `id`
-     * const carWithIdOnly = await prisma.car.findMany({ select: { id: true } })
+     * const transportWithIdOnly = await prisma.transport.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends CarFindManyArgs>(args?: SelectSubset<T, CarFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CarPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends TransportFindManyArgs>(args?: SelectSubset<T, TransportFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a Car.
-     * @param {CarCreateArgs} args - Arguments to create a Car.
+     * Create a Transport.
+     * @param {TransportCreateArgs} args - Arguments to create a Transport.
      * @example
-     * // Create one Car
-     * const Car = await prisma.car.create({
+     * // Create one Transport
+     * const Transport = await prisma.transport.create({
      *   data: {
-     *     // ... data to create a Car
+     *     // ... data to create a Transport
      *   }
      * })
      * 
      */
-    create<T extends CarCreateArgs>(args: SelectSubset<T, CarCreateArgs<ExtArgs>>): Prisma__CarClient<$Result.GetResult<Prisma.$CarPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends TransportCreateArgs>(args: SelectSubset<T, TransportCreateArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many Cars.
-     * @param {CarCreateManyArgs} args - Arguments to create many Cars.
+     * Create many Transports.
+     * @param {TransportCreateManyArgs} args - Arguments to create many Transports.
      * @example
-     * // Create many Cars
-     * const car = await prisma.car.createMany({
+     * // Create many Transports
+     * const transport = await prisma.transport.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends CarCreateManyArgs>(args?: SelectSubset<T, CarCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends TransportCreateManyArgs>(args?: SelectSubset<T, TransportCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many Cars and returns the data saved in the database.
-     * @param {CarCreateManyAndReturnArgs} args - Arguments to create many Cars.
+     * Create many Transports and returns the data saved in the database.
+     * @param {TransportCreateManyAndReturnArgs} args - Arguments to create many Transports.
      * @example
-     * // Create many Cars
-     * const car = await prisma.car.createManyAndReturn({
+     * // Create many Transports
+     * const transport = await prisma.transport.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many Cars and only return the `id`
-     * const carWithIdOnly = await prisma.car.createManyAndReturn({
+     * // Create many Transports and only return the `id`
+     * const transportWithIdOnly = await prisma.transport.createManyAndReturn({
      *   select: { id: true },
      *   data: [
      *     // ... provide data here
@@ -14087,28 +15338,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends CarCreateManyAndReturnArgs>(args?: SelectSubset<T, CarCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CarPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends TransportCreateManyAndReturnArgs>(args?: SelectSubset<T, TransportCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Delete a Car.
-     * @param {CarDeleteArgs} args - Arguments to delete one Car.
+     * Delete a Transport.
+     * @param {TransportDeleteArgs} args - Arguments to delete one Transport.
      * @example
-     * // Delete one Car
-     * const Car = await prisma.car.delete({
+     * // Delete one Transport
+     * const Transport = await prisma.transport.delete({
      *   where: {
-     *     // ... filter to delete one Car
+     *     // ... filter to delete one Transport
      *   }
      * })
      * 
      */
-    delete<T extends CarDeleteArgs>(args: SelectSubset<T, CarDeleteArgs<ExtArgs>>): Prisma__CarClient<$Result.GetResult<Prisma.$CarPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends TransportDeleteArgs>(args: SelectSubset<T, TransportDeleteArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one Car.
-     * @param {CarUpdateArgs} args - Arguments to update one Car.
+     * Update one Transport.
+     * @param {TransportUpdateArgs} args - Arguments to update one Transport.
      * @example
-     * // Update one Car
-     * const car = await prisma.car.update({
+     * // Update one Transport
+     * const transport = await prisma.transport.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -14118,30 +15369,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends CarUpdateArgs>(args: SelectSubset<T, CarUpdateArgs<ExtArgs>>): Prisma__CarClient<$Result.GetResult<Prisma.$CarPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends TransportUpdateArgs>(args: SelectSubset<T, TransportUpdateArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more Cars.
-     * @param {CarDeleteManyArgs} args - Arguments to filter Cars to delete.
+     * Delete zero or more Transports.
+     * @param {TransportDeleteManyArgs} args - Arguments to filter Transports to delete.
      * @example
-     * // Delete a few Cars
-     * const { count } = await prisma.car.deleteMany({
+     * // Delete a few Transports
+     * const { count } = await prisma.transport.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends CarDeleteManyArgs>(args?: SelectSubset<T, CarDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends TransportDeleteManyArgs>(args?: SelectSubset<T, TransportDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more Cars.
+     * Update zero or more Transports.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CarUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {TransportUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many Cars
-     * const car = await prisma.car.updateMany({
+     * // Update many Transports
+     * const transport = await prisma.transport.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -14151,14 +15402,14 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends CarUpdateManyArgs>(args: SelectSubset<T, CarUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends TransportUpdateManyArgs>(args: SelectSubset<T, TransportUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more Cars and returns the data updated in the database.
-     * @param {CarUpdateManyAndReturnArgs} args - Arguments to update many Cars.
+     * Update zero or more Transports and returns the data updated in the database.
+     * @param {TransportUpdateManyAndReturnArgs} args - Arguments to update many Transports.
      * @example
-     * // Update many Cars
-     * const car = await prisma.car.updateManyAndReturn({
+     * // Update many Transports
+     * const transport = await prisma.transport.updateManyAndReturn({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -14167,8 +15418,8 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more Cars and only return the `id`
-     * const carWithIdOnly = await prisma.car.updateManyAndReturn({
+     * // Update zero or more Transports and only return the `id`
+     * const transportWithIdOnly = await prisma.transport.updateManyAndReturn({
      *   select: { id: true },
      *   where: {
      *     // ... provide filter here
@@ -14181,56 +15432,56 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends CarUpdateManyAndReturnArgs>(args: SelectSubset<T, CarUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CarPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends TransportUpdateManyAndReturnArgs>(args: SelectSubset<T, TransportUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Create or update one Car.
-     * @param {CarUpsertArgs} args - Arguments to update or create a Car.
+     * Create or update one Transport.
+     * @param {TransportUpsertArgs} args - Arguments to update or create a Transport.
      * @example
-     * // Update or create a Car
-     * const car = await prisma.car.upsert({
+     * // Update or create a Transport
+     * const transport = await prisma.transport.upsert({
      *   create: {
-     *     // ... data to create a Car
+     *     // ... data to create a Transport
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the Car we want to update
+     *     // ... the filter for the Transport we want to update
      *   }
      * })
      */
-    upsert<T extends CarUpsertArgs>(args: SelectSubset<T, CarUpsertArgs<ExtArgs>>): Prisma__CarClient<$Result.GetResult<Prisma.$CarPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends TransportUpsertArgs>(args: SelectSubset<T, TransportUpsertArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of Cars.
+     * Count the number of Transports.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CarCountArgs} args - Arguments to filter Cars to count.
+     * @param {TransportCountArgs} args - Arguments to filter Transports to count.
      * @example
-     * // Count the number of Cars
-     * const count = await prisma.car.count({
+     * // Count the number of Transports
+     * const count = await prisma.transport.count({
      *   where: {
-     *     // ... the filter for the Cars we want to count
+     *     // ... the filter for the Transports we want to count
      *   }
      * })
     **/
-    count<T extends CarCountArgs>(
-      args?: Subset<T, CarCountArgs>,
+    count<T extends TransportCountArgs>(
+      args?: Subset<T, TransportCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], CarCountAggregateOutputType>
+          : GetScalarType<T['select'], TransportCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a Car.
+     * Allows you to perform aggregations operations on a Transport.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CarAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {TransportAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -14250,13 +15501,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends CarAggregateArgs>(args: Subset<T, CarAggregateArgs>): Prisma.PrismaPromise<GetCarAggregateType<T>>
+    aggregate<T extends TransportAggregateArgs>(args: Subset<T, TransportAggregateArgs>): Prisma.PrismaPromise<GetTransportAggregateType<T>>
 
     /**
-     * Group by Car.
+     * Group by Transport.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CarGroupByArgs} args - Group by arguments.
+     * @param {TransportGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -14271,14 +15522,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends CarGroupByArgs,
+      T extends TransportGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: CarGroupByArgs['orderBy'] }
-        : { orderBy?: CarGroupByArgs['orderBy'] },
+        ? { orderBy: TransportGroupByArgs['orderBy'] }
+        : { orderBy?: TransportGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -14327,20 +15578,20 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, CarGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCarGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, TransportGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTransportGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the Car model
+   * Fields of the Transport model
    */
-  readonly fields: CarFieldRefs;
+  readonly fields: TransportFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for Car.
+   * The delegate class that acts as a "Promise-like" for Transport.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__CarClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__TransportClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
@@ -14369,427 +15620,428 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the Car model
+   * Fields of the Transport model
    */
-  interface CarFieldRefs {
-    readonly id: FieldRef<"Car", 'String'>
-    readonly vehicleType: FieldRef<"Car", 'String'>
-    readonly pricingModel: FieldRef<"Car", 'String'>
-    readonly maxCapacity: FieldRef<"Car", 'Int'>
-    readonly notes: FieldRef<"Car", 'String'>
-    readonly photos: FieldRef<"Car", 'Json'>
-    readonly agencyId: FieldRef<"Car", 'String'>
+  interface TransportFieldRefs {
+    readonly id: FieldRef<"Transport", 'String'>
+    readonly vehicleType: FieldRef<"Transport", 'String'>
+    readonly perDay: FieldRef<"Transport", 'Float'>
+    readonly perKm: FieldRef<"Transport", 'Float'>
+    readonly maxCapacity: FieldRef<"Transport", 'Int'>
+    readonly notes: FieldRef<"Transport", 'String'>
+    readonly photos: FieldRef<"Transport", 'String'>
+    readonly agencyId: FieldRef<"Transport", 'String'>
   }
     
 
   // Custom InputTypes
   /**
-   * Car findUnique
+   * Transport findUnique
    */
-  export type CarFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TransportFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Car
+     * Select specific fields to fetch from the Transport
      */
-    select?: CarSelect<ExtArgs> | null
+    select?: TransportSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Car
+     * Omit specific fields from the Transport
      */
-    omit?: CarOmit<ExtArgs> | null
+    omit?: TransportOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CarInclude<ExtArgs> | null
+    include?: TransportInclude<ExtArgs> | null
     /**
-     * Filter, which Car to fetch.
+     * Filter, which Transport to fetch.
      */
-    where: CarWhereUniqueInput
+    where: TransportWhereUniqueInput
   }
 
   /**
-   * Car findUniqueOrThrow
+   * Transport findUniqueOrThrow
    */
-  export type CarFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TransportFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Car
+     * Select specific fields to fetch from the Transport
      */
-    select?: CarSelect<ExtArgs> | null
+    select?: TransportSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Car
+     * Omit specific fields from the Transport
      */
-    omit?: CarOmit<ExtArgs> | null
+    omit?: TransportOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CarInclude<ExtArgs> | null
+    include?: TransportInclude<ExtArgs> | null
     /**
-     * Filter, which Car to fetch.
+     * Filter, which Transport to fetch.
      */
-    where: CarWhereUniqueInput
+    where: TransportWhereUniqueInput
   }
 
   /**
-   * Car findFirst
+   * Transport findFirst
    */
-  export type CarFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TransportFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Car
+     * Select specific fields to fetch from the Transport
      */
-    select?: CarSelect<ExtArgs> | null
+    select?: TransportSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Car
+     * Omit specific fields from the Transport
      */
-    omit?: CarOmit<ExtArgs> | null
+    omit?: TransportOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CarInclude<ExtArgs> | null
+    include?: TransportInclude<ExtArgs> | null
     /**
-     * Filter, which Car to fetch.
+     * Filter, which Transport to fetch.
      */
-    where?: CarWhereInput
+    where?: TransportWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Cars to fetch.
+     * Determine the order of Transports to fetch.
      */
-    orderBy?: CarOrderByWithRelationInput | CarOrderByWithRelationInput[]
+    orderBy?: TransportOrderByWithRelationInput | TransportOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for Cars.
+     * Sets the position for searching for Transports.
      */
-    cursor?: CarWhereUniqueInput
+    cursor?: TransportWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Cars from the position of the cursor.
+     * Take `±n` Transports from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Cars.
+     * Skip the first `n` Transports.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Cars.
+     * Filter by unique combinations of Transports.
      */
-    distinct?: CarScalarFieldEnum | CarScalarFieldEnum[]
+    distinct?: TransportScalarFieldEnum | TransportScalarFieldEnum[]
   }
 
   /**
-   * Car findFirstOrThrow
+   * Transport findFirstOrThrow
    */
-  export type CarFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TransportFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Car
+     * Select specific fields to fetch from the Transport
      */
-    select?: CarSelect<ExtArgs> | null
+    select?: TransportSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Car
+     * Omit specific fields from the Transport
      */
-    omit?: CarOmit<ExtArgs> | null
+    omit?: TransportOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CarInclude<ExtArgs> | null
+    include?: TransportInclude<ExtArgs> | null
     /**
-     * Filter, which Car to fetch.
+     * Filter, which Transport to fetch.
      */
-    where?: CarWhereInput
+    where?: TransportWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Cars to fetch.
+     * Determine the order of Transports to fetch.
      */
-    orderBy?: CarOrderByWithRelationInput | CarOrderByWithRelationInput[]
+    orderBy?: TransportOrderByWithRelationInput | TransportOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for Cars.
+     * Sets the position for searching for Transports.
      */
-    cursor?: CarWhereUniqueInput
+    cursor?: TransportWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Cars from the position of the cursor.
+     * Take `±n` Transports from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Cars.
+     * Skip the first `n` Transports.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Cars.
+     * Filter by unique combinations of Transports.
      */
-    distinct?: CarScalarFieldEnum | CarScalarFieldEnum[]
+    distinct?: TransportScalarFieldEnum | TransportScalarFieldEnum[]
   }
 
   /**
-   * Car findMany
+   * Transport findMany
    */
-  export type CarFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TransportFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Car
+     * Select specific fields to fetch from the Transport
      */
-    select?: CarSelect<ExtArgs> | null
+    select?: TransportSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Car
+     * Omit specific fields from the Transport
      */
-    omit?: CarOmit<ExtArgs> | null
+    omit?: TransportOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CarInclude<ExtArgs> | null
+    include?: TransportInclude<ExtArgs> | null
     /**
-     * Filter, which Cars to fetch.
+     * Filter, which Transports to fetch.
      */
-    where?: CarWhereInput
+    where?: TransportWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Cars to fetch.
+     * Determine the order of Transports to fetch.
      */
-    orderBy?: CarOrderByWithRelationInput | CarOrderByWithRelationInput[]
+    orderBy?: TransportOrderByWithRelationInput | TransportOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing Cars.
+     * Sets the position for listing Transports.
      */
-    cursor?: CarWhereUniqueInput
+    cursor?: TransportWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Cars from the position of the cursor.
+     * Take `±n` Transports from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Cars.
+     * Skip the first `n` Transports.
      */
     skip?: number
-    distinct?: CarScalarFieldEnum | CarScalarFieldEnum[]
+    distinct?: TransportScalarFieldEnum | TransportScalarFieldEnum[]
   }
 
   /**
-   * Car create
+   * Transport create
    */
-  export type CarCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TransportCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Car
+     * Select specific fields to fetch from the Transport
      */
-    select?: CarSelect<ExtArgs> | null
+    select?: TransportSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Car
+     * Omit specific fields from the Transport
      */
-    omit?: CarOmit<ExtArgs> | null
+    omit?: TransportOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CarInclude<ExtArgs> | null
+    include?: TransportInclude<ExtArgs> | null
     /**
-     * The data needed to create a Car.
+     * The data needed to create a Transport.
      */
-    data: XOR<CarCreateInput, CarUncheckedCreateInput>
+    data: XOR<TransportCreateInput, TransportUncheckedCreateInput>
   }
 
   /**
-   * Car createMany
+   * Transport createMany
    */
-  export type CarCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TransportCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many Cars.
+     * The data used to create many Transports.
      */
-    data: CarCreateManyInput | CarCreateManyInput[]
+    data: TransportCreateManyInput | TransportCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * Car createManyAndReturn
+   * Transport createManyAndReturn
    */
-  export type CarCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TransportCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Car
+     * Select specific fields to fetch from the Transport
      */
-    select?: CarSelectCreateManyAndReturn<ExtArgs> | null
+    select?: TransportSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the Car
+     * Omit specific fields from the Transport
      */
-    omit?: CarOmit<ExtArgs> | null
+    omit?: TransportOmit<ExtArgs> | null
     /**
-     * The data used to create many Cars.
+     * The data used to create many Transports.
      */
-    data: CarCreateManyInput | CarCreateManyInput[]
+    data: TransportCreateManyInput | TransportCreateManyInput[]
     skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CarIncludeCreateManyAndReturn<ExtArgs> | null
+    include?: TransportIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * Car update
+   * Transport update
    */
-  export type CarUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TransportUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Car
+     * Select specific fields to fetch from the Transport
      */
-    select?: CarSelect<ExtArgs> | null
+    select?: TransportSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Car
+     * Omit specific fields from the Transport
      */
-    omit?: CarOmit<ExtArgs> | null
+    omit?: TransportOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CarInclude<ExtArgs> | null
+    include?: TransportInclude<ExtArgs> | null
     /**
-     * The data needed to update a Car.
+     * The data needed to update a Transport.
      */
-    data: XOR<CarUpdateInput, CarUncheckedUpdateInput>
+    data: XOR<TransportUpdateInput, TransportUncheckedUpdateInput>
     /**
-     * Choose, which Car to update.
+     * Choose, which Transport to update.
      */
-    where: CarWhereUniqueInput
+    where: TransportWhereUniqueInput
   }
 
   /**
-   * Car updateMany
+   * Transport updateMany
    */
-  export type CarUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TransportUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update Cars.
+     * The data used to update Transports.
      */
-    data: XOR<CarUpdateManyMutationInput, CarUncheckedUpdateManyInput>
+    data: XOR<TransportUpdateManyMutationInput, TransportUncheckedUpdateManyInput>
     /**
-     * Filter which Cars to update
+     * Filter which Transports to update
      */
-    where?: CarWhereInput
+    where?: TransportWhereInput
     /**
-     * Limit how many Cars to update.
+     * Limit how many Transports to update.
      */
     limit?: number
   }
 
   /**
-   * Car updateManyAndReturn
+   * Transport updateManyAndReturn
    */
-  export type CarUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TransportUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Car
+     * Select specific fields to fetch from the Transport
      */
-    select?: CarSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: TransportSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the Car
+     * Omit specific fields from the Transport
      */
-    omit?: CarOmit<ExtArgs> | null
+    omit?: TransportOmit<ExtArgs> | null
     /**
-     * The data used to update Cars.
+     * The data used to update Transports.
      */
-    data: XOR<CarUpdateManyMutationInput, CarUncheckedUpdateManyInput>
+    data: XOR<TransportUpdateManyMutationInput, TransportUncheckedUpdateManyInput>
     /**
-     * Filter which Cars to update
+     * Filter which Transports to update
      */
-    where?: CarWhereInput
+    where?: TransportWhereInput
     /**
-     * Limit how many Cars to update.
+     * Limit how many Transports to update.
      */
     limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CarIncludeUpdateManyAndReturn<ExtArgs> | null
+    include?: TransportIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * Car upsert
+   * Transport upsert
    */
-  export type CarUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TransportUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Car
+     * Select specific fields to fetch from the Transport
      */
-    select?: CarSelect<ExtArgs> | null
+    select?: TransportSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Car
+     * Omit specific fields from the Transport
      */
-    omit?: CarOmit<ExtArgs> | null
+    omit?: TransportOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CarInclude<ExtArgs> | null
+    include?: TransportInclude<ExtArgs> | null
     /**
-     * The filter to search for the Car to update in case it exists.
+     * The filter to search for the Transport to update in case it exists.
      */
-    where: CarWhereUniqueInput
+    where: TransportWhereUniqueInput
     /**
-     * In case the Car found by the `where` argument doesn't exist, create a new Car with this data.
+     * In case the Transport found by the `where` argument doesn't exist, create a new Transport with this data.
      */
-    create: XOR<CarCreateInput, CarUncheckedCreateInput>
+    create: XOR<TransportCreateInput, TransportUncheckedCreateInput>
     /**
-     * In case the Car was found with the provided `where` argument, update it with this data.
+     * In case the Transport was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<CarUpdateInput, CarUncheckedUpdateInput>
+    update: XOR<TransportUpdateInput, TransportUncheckedUpdateInput>
   }
 
   /**
-   * Car delete
+   * Transport delete
    */
-  export type CarDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TransportDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Car
+     * Select specific fields to fetch from the Transport
      */
-    select?: CarSelect<ExtArgs> | null
+    select?: TransportSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Car
+     * Omit specific fields from the Transport
      */
-    omit?: CarOmit<ExtArgs> | null
+    omit?: TransportOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CarInclude<ExtArgs> | null
+    include?: TransportInclude<ExtArgs> | null
     /**
-     * Filter which Car to delete.
+     * Filter which Transport to delete.
      */
-    where: CarWhereUniqueInput
+    where: TransportWhereUniqueInput
   }
 
   /**
-   * Car deleteMany
+   * Transport deleteMany
    */
-  export type CarDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TransportDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which Cars to delete
+     * Filter which Transports to delete
      */
-    where?: CarWhereInput
+    where?: TransportWhereInput
     /**
-     * Limit how many Cars to delete.
+     * Limit how many Transports to delete.
      */
     limit?: number
   }
 
   /**
-   * Car without action
+   * Transport without action
    */
-  export type CarDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TransportDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Car
+     * Select specific fields to fetch from the Transport
      */
-    select?: CarSelect<ExtArgs> | null
+    select?: TransportSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Car
+     * Omit specific fields from the Transport
      */
-    omit?: CarOmit<ExtArgs> | null
+    omit?: TransportOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CarInclude<ExtArgs> | null
+    include?: TransportInclude<ExtArgs> | null
   }
 
 
@@ -14817,6 +16069,7 @@ export namespace Prisma {
     id: string | null
     type: string | null
     vegOption: boolean | null
+    nonVegOption: boolean | null
     price: number | null
     agencyId: string | null
   }
@@ -14825,6 +16078,7 @@ export namespace Prisma {
     id: string | null
     type: string | null
     vegOption: boolean | null
+    nonVegOption: boolean | null
     price: number | null
     agencyId: string | null
   }
@@ -14833,6 +16087,7 @@ export namespace Prisma {
     id: number
     type: number
     vegOption: number
+    nonVegOption: number
     price: number
     agencyId: number
     _all: number
@@ -14851,6 +16106,7 @@ export namespace Prisma {
     id?: true
     type?: true
     vegOption?: true
+    nonVegOption?: true
     price?: true
     agencyId?: true
   }
@@ -14859,6 +16115,7 @@ export namespace Prisma {
     id?: true
     type?: true
     vegOption?: true
+    nonVegOption?: true
     price?: true
     agencyId?: true
   }
@@ -14867,6 +16124,7 @@ export namespace Prisma {
     id?: true
     type?: true
     vegOption?: true
+    nonVegOption?: true
     price?: true
     agencyId?: true
     _all?: true
@@ -14962,6 +16220,7 @@ export namespace Prisma {
     id: string
     type: string
     vegOption: boolean
+    nonVegOption: boolean
     price: number
     agencyId: string
     _count: MealCountAggregateOutputType | null
@@ -14989,6 +16248,7 @@ export namespace Prisma {
     id?: boolean
     type?: boolean
     vegOption?: boolean
+    nonVegOption?: boolean
     price?: boolean
     agencyId?: boolean
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
@@ -14998,6 +16258,7 @@ export namespace Prisma {
     id?: boolean
     type?: boolean
     vegOption?: boolean
+    nonVegOption?: boolean
     price?: boolean
     agencyId?: boolean
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
@@ -15007,6 +16268,7 @@ export namespace Prisma {
     id?: boolean
     type?: boolean
     vegOption?: boolean
+    nonVegOption?: boolean
     price?: boolean
     agencyId?: boolean
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
@@ -15016,11 +16278,12 @@ export namespace Prisma {
     id?: boolean
     type?: boolean
     vegOption?: boolean
+    nonVegOption?: boolean
     price?: boolean
     agencyId?: boolean
   }
 
-  export type MealOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "vegOption" | "price" | "agencyId", ExtArgs["result"]["meal"]>
+  export type MealOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "vegOption" | "nonVegOption" | "price" | "agencyId", ExtArgs["result"]["meal"]>
   export type MealInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
   }
@@ -15040,6 +16303,7 @@ export namespace Prisma {
       id: string
       type: string
       vegOption: boolean
+      nonVegOption: boolean
       price: number
       agencyId: string
     }, ExtArgs["result"]["meal"]>
@@ -15469,6 +16733,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Meal", 'String'>
     readonly type: FieldRef<"Meal", 'String'>
     readonly vegOption: FieldRef<"Meal", 'Boolean'>
+    readonly nonVegOption: FieldRef<"Meal", 'Boolean'>
     readonly price: FieldRef<"Meal", 'Float'>
     readonly agencyId: FieldRef<"Meal", 'String'>
   }
@@ -18288,12 +19553,21 @@ export namespace Prisma {
   export type QuotationItemScalarFieldEnum = (typeof QuotationItemScalarFieldEnum)[keyof typeof QuotationItemScalarFieldEnum]
 
 
+  export const RoomTypeScalarFieldEnum: {
+    id: 'id',
+    type: 'type',
+    price: 'price',
+    hotelId: 'hotelId'
+  };
+
+  export type RoomTypeScalarFieldEnum = (typeof RoomTypeScalarFieldEnum)[keyof typeof RoomTypeScalarFieldEnum]
+
+
   export const HotelScalarFieldEnum: {
     id: 'id',
     name: 'name',
     city: 'city',
     starCategory: 'starCategory',
-    roomTypes: 'roomTypes',
     inclusions: 'inclusions',
     cancellation: 'cancellation',
     photos: 'photos',
@@ -18303,23 +19577,25 @@ export namespace Prisma {
   export type HotelScalarFieldEnum = (typeof HotelScalarFieldEnum)[keyof typeof HotelScalarFieldEnum]
 
 
-  export const CarScalarFieldEnum: {
+  export const TransportScalarFieldEnum: {
     id: 'id',
     vehicleType: 'vehicleType',
-    pricingModel: 'pricingModel',
+    perDay: 'perDay',
+    perKm: 'perKm',
     maxCapacity: 'maxCapacity',
     notes: 'notes',
     photos: 'photos',
     agencyId: 'agencyId'
   };
 
-  export type CarScalarFieldEnum = (typeof CarScalarFieldEnum)[keyof typeof CarScalarFieldEnum]
+  export type TransportScalarFieldEnum = (typeof TransportScalarFieldEnum)[keyof typeof TransportScalarFieldEnum]
 
 
   export const MealScalarFieldEnum: {
     id: 'id',
     type: 'type',
     vegOption: 'vegOption',
+    nonVegOption: 'nonVegOption',
     price: 'price',
     agencyId: 'agencyId'
   };
@@ -18370,13 +19646,6 @@ export namespace Prisma {
   };
 
   export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
-
-
-  export const JsonNullValueInput: {
-    JsonNull: typeof JsonNull
-  };
-
-  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
   export const QueryMode: {
@@ -18518,6 +19787,20 @@ export namespace Prisma {
    * Reference to a field of type 'ServiceType[]'
    */
   export type ListEnumServiceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ServiceType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Decimal'
+   */
+  export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+  /**
+   * Reference to a field of type 'Decimal[]'
+   */
+  export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
     
 
 
@@ -18786,10 +20069,10 @@ export namespace Prisma {
     agencyId?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
     accounts?: AccountListRelationFilter
-    sessions?: SessionListRelationFilter
     loginHistory?: LoginHistoryListRelationFilter
+    sessions?: SessionListRelationFilter
+    agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
   }
 
   export type UserOrderByWithRelationInput = {
@@ -18803,10 +20086,10 @@ export namespace Prisma {
     agencyId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    agency?: AgencyOrderByWithRelationInput
     accounts?: AccountOrderByRelationAggregateInput
-    sessions?: SessionOrderByRelationAggregateInput
     loginHistory?: LoginHistoryOrderByRelationAggregateInput
+    sessions?: SessionOrderByRelationAggregateInput
+    agency?: AgencyOrderByWithRelationInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -18823,10 +20106,10 @@ export namespace Prisma {
     agencyId?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
     accounts?: AccountListRelationFilter
-    sessions?: SessionListRelationFilter
     loginHistory?: LoginHistoryListRelationFilter
+    sessions?: SessionListRelationFilter
+    agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -18871,13 +20154,13 @@ export namespace Prisma {
     settings?: JsonNullableFilter<"Agency">
     createdAt?: DateTimeFilter<"Agency"> | Date | string
     updatedAt?: DateTimeFilter<"Agency"> | Date | string
-    users?: UserListRelationFilter
-    clients?: ClientListRelationFilter
-    quotations?: QuotationListRelationFilter
-    hotels?: HotelListRelationFilter
-    cars?: CarListRelationFilter
-    meals?: MealListRelationFilter
     activities?: ActivityListRelationFilter
+    transport?: TransportListRelationFilter
+    clients?: ClientListRelationFilter
+    hotels?: HotelListRelationFilter
+    meals?: MealListRelationFilter
+    quotations?: QuotationListRelationFilter
+    users?: UserListRelationFilter
   }
 
   export type AgencyOrderByWithRelationInput = {
@@ -18887,13 +20170,13 @@ export namespace Prisma {
     settings?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    users?: UserOrderByRelationAggregateInput
-    clients?: ClientOrderByRelationAggregateInput
-    quotations?: QuotationOrderByRelationAggregateInput
-    hotels?: HotelOrderByRelationAggregateInput
-    cars?: CarOrderByRelationAggregateInput
-    meals?: MealOrderByRelationAggregateInput
     activities?: ActivityOrderByRelationAggregateInput
+    transport?: TransportOrderByRelationAggregateInput
+    clients?: ClientOrderByRelationAggregateInput
+    hotels?: HotelOrderByRelationAggregateInput
+    meals?: MealOrderByRelationAggregateInput
+    quotations?: QuotationOrderByRelationAggregateInput
+    users?: UserOrderByRelationAggregateInput
   }
 
   export type AgencyWhereUniqueInput = Prisma.AtLeast<{
@@ -18906,13 +20189,13 @@ export namespace Prisma {
     settings?: JsonNullableFilter<"Agency">
     createdAt?: DateTimeFilter<"Agency"> | Date | string
     updatedAt?: DateTimeFilter<"Agency"> | Date | string
-    users?: UserListRelationFilter
-    clients?: ClientListRelationFilter
-    quotations?: QuotationListRelationFilter
-    hotels?: HotelListRelationFilter
-    cars?: CarListRelationFilter
-    meals?: MealListRelationFilter
     activities?: ActivityListRelationFilter
+    transport?: TransportListRelationFilter
+    clients?: ClientListRelationFilter
+    hotels?: HotelListRelationFilter
+    meals?: MealListRelationFilter
+    quotations?: QuotationListRelationFilter
+    users?: UserListRelationFilter
   }, "id">
 
   export type AgencyOrderByWithAggregationInput = {
@@ -19034,10 +20317,10 @@ export namespace Prisma {
     totalAmount?: FloatFilter<"Quotation"> | number
     createdAt?: DateTimeFilter<"Quotation"> | Date | string
     updatedAt?: DateTimeFilter<"Quotation"> | Date | string
-    client?: XOR<ClientScalarRelationFilter, ClientWhereInput>
-    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
-    items?: QuotationItemListRelationFilter
     itineraries?: ItineraryListRelationFilter
+    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+    client?: XOR<ClientScalarRelationFilter, ClientWhereInput>
+    items?: QuotationItemListRelationFilter
   }
 
   export type QuotationOrderByWithRelationInput = {
@@ -19054,10 +20337,10 @@ export namespace Prisma {
     totalAmount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    client?: ClientOrderByWithRelationInput
-    agency?: AgencyOrderByWithRelationInput
-    items?: QuotationItemOrderByRelationAggregateInput
     itineraries?: ItineraryOrderByRelationAggregateInput
+    agency?: AgencyOrderByWithRelationInput
+    client?: ClientOrderByWithRelationInput
+    items?: QuotationItemOrderByRelationAggregateInput
   }
 
   export type QuotationWhereUniqueInput = Prisma.AtLeast<{
@@ -19077,10 +20360,10 @@ export namespace Prisma {
     totalAmount?: FloatFilter<"Quotation"> | number
     createdAt?: DateTimeFilter<"Quotation"> | Date | string
     updatedAt?: DateTimeFilter<"Quotation"> | Date | string
-    client?: XOR<ClientScalarRelationFilter, ClientWhereInput>
-    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
-    items?: QuotationItemListRelationFilter
     itineraries?: ItineraryListRelationFilter
+    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+    client?: XOR<ClientScalarRelationFilter, ClientWhereInput>
+    items?: QuotationItemListRelationFilter
   }, "id">
 
   export type QuotationOrderByWithAggregationInput = {
@@ -19185,6 +20468,58 @@ export namespace Prisma {
     price?: FloatWithAggregatesFilter<"QuotationItem"> | number
   }
 
+  export type RoomTypeWhereInput = {
+    AND?: RoomTypeWhereInput | RoomTypeWhereInput[]
+    OR?: RoomTypeWhereInput[]
+    NOT?: RoomTypeWhereInput | RoomTypeWhereInput[]
+    id?: StringFilter<"RoomType"> | string
+    type?: StringFilter<"RoomType"> | string
+    price?: DecimalFilter<"RoomType"> | Decimal | DecimalJsLike | number | string
+    hotelId?: StringFilter<"RoomType"> | string
+    hotel?: XOR<HotelScalarRelationFilter, HotelWhereInput>
+  }
+
+  export type RoomTypeOrderByWithRelationInput = {
+    id?: SortOrder
+    type?: SortOrder
+    price?: SortOrder
+    hotelId?: SortOrder
+    hotel?: HotelOrderByWithRelationInput
+  }
+
+  export type RoomTypeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: RoomTypeWhereInput | RoomTypeWhereInput[]
+    OR?: RoomTypeWhereInput[]
+    NOT?: RoomTypeWhereInput | RoomTypeWhereInput[]
+    type?: StringFilter<"RoomType"> | string
+    price?: DecimalFilter<"RoomType"> | Decimal | DecimalJsLike | number | string
+    hotelId?: StringFilter<"RoomType"> | string
+    hotel?: XOR<HotelScalarRelationFilter, HotelWhereInput>
+  }, "id">
+
+  export type RoomTypeOrderByWithAggregationInput = {
+    id?: SortOrder
+    type?: SortOrder
+    price?: SortOrder
+    hotelId?: SortOrder
+    _count?: RoomTypeCountOrderByAggregateInput
+    _avg?: RoomTypeAvgOrderByAggregateInput
+    _max?: RoomTypeMaxOrderByAggregateInput
+    _min?: RoomTypeMinOrderByAggregateInput
+    _sum?: RoomTypeSumOrderByAggregateInput
+  }
+
+  export type RoomTypeScalarWhereWithAggregatesInput = {
+    AND?: RoomTypeScalarWhereWithAggregatesInput | RoomTypeScalarWhereWithAggregatesInput[]
+    OR?: RoomTypeScalarWhereWithAggregatesInput[]
+    NOT?: RoomTypeScalarWhereWithAggregatesInput | RoomTypeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"RoomType"> | string
+    type?: StringWithAggregatesFilter<"RoomType"> | string
+    price?: DecimalWithAggregatesFilter<"RoomType"> | Decimal | DecimalJsLike | number | string
+    hotelId?: StringWithAggregatesFilter<"RoomType"> | string
+  }
+
   export type HotelWhereInput = {
     AND?: HotelWhereInput | HotelWhereInput[]
     OR?: HotelWhereInput[]
@@ -19193,12 +20528,12 @@ export namespace Prisma {
     name?: StringFilter<"Hotel"> | string
     city?: StringFilter<"Hotel"> | string
     starCategory?: IntFilter<"Hotel"> | number
-    roomTypes?: JsonFilter<"Hotel">
     inclusions?: StringNullableFilter<"Hotel"> | string | null
     cancellation?: StringNullableFilter<"Hotel"> | string | null
-    photos?: JsonNullableFilter<"Hotel">
+    photos?: StringNullableFilter<"Hotel"> | string | null
     agencyId?: StringFilter<"Hotel"> | string
     agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+    roomTypes?: RoomTypeListRelationFilter
   }
 
   export type HotelOrderByWithRelationInput = {
@@ -19206,12 +20541,12 @@ export namespace Prisma {
     name?: SortOrder
     city?: SortOrder
     starCategory?: SortOrder
-    roomTypes?: SortOrder
     inclusions?: SortOrderInput | SortOrder
     cancellation?: SortOrderInput | SortOrder
     photos?: SortOrderInput | SortOrder
     agencyId?: SortOrder
     agency?: AgencyOrderByWithRelationInput
+    roomTypes?: RoomTypeOrderByRelationAggregateInput
   }
 
   export type HotelWhereUniqueInput = Prisma.AtLeast<{
@@ -19222,12 +20557,12 @@ export namespace Prisma {
     name?: StringFilter<"Hotel"> | string
     city?: StringFilter<"Hotel"> | string
     starCategory?: IntFilter<"Hotel"> | number
-    roomTypes?: JsonFilter<"Hotel">
     inclusions?: StringNullableFilter<"Hotel"> | string | null
     cancellation?: StringNullableFilter<"Hotel"> | string | null
-    photos?: JsonNullableFilter<"Hotel">
+    photos?: StringNullableFilter<"Hotel"> | string | null
     agencyId?: StringFilter<"Hotel"> | string
     agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+    roomTypes?: RoomTypeListRelationFilter
   }, "id">
 
   export type HotelOrderByWithAggregationInput = {
@@ -19235,7 +20570,6 @@ export namespace Prisma {
     name?: SortOrder
     city?: SortOrder
     starCategory?: SortOrder
-    roomTypes?: SortOrder
     inclusions?: SortOrderInput | SortOrder
     cancellation?: SortOrderInput | SortOrder
     photos?: SortOrderInput | SortOrder
@@ -19255,31 +20589,32 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Hotel"> | string
     city?: StringWithAggregatesFilter<"Hotel"> | string
     starCategory?: IntWithAggregatesFilter<"Hotel"> | number
-    roomTypes?: JsonWithAggregatesFilter<"Hotel">
     inclusions?: StringNullableWithAggregatesFilter<"Hotel"> | string | null
     cancellation?: StringNullableWithAggregatesFilter<"Hotel"> | string | null
-    photos?: JsonNullableWithAggregatesFilter<"Hotel">
+    photos?: StringNullableWithAggregatesFilter<"Hotel"> | string | null
     agencyId?: StringWithAggregatesFilter<"Hotel"> | string
   }
 
-  export type CarWhereInput = {
-    AND?: CarWhereInput | CarWhereInput[]
-    OR?: CarWhereInput[]
-    NOT?: CarWhereInput | CarWhereInput[]
-    id?: StringFilter<"Car"> | string
-    vehicleType?: StringFilter<"Car"> | string
-    pricingModel?: StringFilter<"Car"> | string
-    maxCapacity?: IntFilter<"Car"> | number
-    notes?: StringNullableFilter<"Car"> | string | null
-    photos?: JsonNullableFilter<"Car">
-    agencyId?: StringFilter<"Car"> | string
+  export type TransportWhereInput = {
+    AND?: TransportWhereInput | TransportWhereInput[]
+    OR?: TransportWhereInput[]
+    NOT?: TransportWhereInput | TransportWhereInput[]
+    id?: StringFilter<"Transport"> | string
+    vehicleType?: StringFilter<"Transport"> | string
+    perDay?: FloatFilter<"Transport"> | number
+    perKm?: FloatFilter<"Transport"> | number
+    maxCapacity?: IntFilter<"Transport"> | number
+    notes?: StringNullableFilter<"Transport"> | string | null
+    photos?: StringNullableFilter<"Transport"> | string | null
+    agencyId?: StringFilter<"Transport"> | string
     agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
   }
 
-  export type CarOrderByWithRelationInput = {
+  export type TransportOrderByWithRelationInput = {
     id?: SortOrder
     vehicleType?: SortOrder
-    pricingModel?: SortOrder
+    perDay?: SortOrder
+    perKm?: SortOrder
     maxCapacity?: SortOrder
     notes?: SortOrderInput | SortOrder
     photos?: SortOrderInput | SortOrder
@@ -19287,46 +20622,49 @@ export namespace Prisma {
     agency?: AgencyOrderByWithRelationInput
   }
 
-  export type CarWhereUniqueInput = Prisma.AtLeast<{
+  export type TransportWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    AND?: CarWhereInput | CarWhereInput[]
-    OR?: CarWhereInput[]
-    NOT?: CarWhereInput | CarWhereInput[]
-    vehicleType?: StringFilter<"Car"> | string
-    pricingModel?: StringFilter<"Car"> | string
-    maxCapacity?: IntFilter<"Car"> | number
-    notes?: StringNullableFilter<"Car"> | string | null
-    photos?: JsonNullableFilter<"Car">
-    agencyId?: StringFilter<"Car"> | string
+    AND?: TransportWhereInput | TransportWhereInput[]
+    OR?: TransportWhereInput[]
+    NOT?: TransportWhereInput | TransportWhereInput[]
+    vehicleType?: StringFilter<"Transport"> | string
+    perDay?: FloatFilter<"Transport"> | number
+    perKm?: FloatFilter<"Transport"> | number
+    maxCapacity?: IntFilter<"Transport"> | number
+    notes?: StringNullableFilter<"Transport"> | string | null
+    photos?: StringNullableFilter<"Transport"> | string | null
+    agencyId?: StringFilter<"Transport"> | string
     agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
   }, "id">
 
-  export type CarOrderByWithAggregationInput = {
+  export type TransportOrderByWithAggregationInput = {
     id?: SortOrder
     vehicleType?: SortOrder
-    pricingModel?: SortOrder
+    perDay?: SortOrder
+    perKm?: SortOrder
     maxCapacity?: SortOrder
     notes?: SortOrderInput | SortOrder
     photos?: SortOrderInput | SortOrder
     agencyId?: SortOrder
-    _count?: CarCountOrderByAggregateInput
-    _avg?: CarAvgOrderByAggregateInput
-    _max?: CarMaxOrderByAggregateInput
-    _min?: CarMinOrderByAggregateInput
-    _sum?: CarSumOrderByAggregateInput
+    _count?: TransportCountOrderByAggregateInput
+    _avg?: TransportAvgOrderByAggregateInput
+    _max?: TransportMaxOrderByAggregateInput
+    _min?: TransportMinOrderByAggregateInput
+    _sum?: TransportSumOrderByAggregateInput
   }
 
-  export type CarScalarWhereWithAggregatesInput = {
-    AND?: CarScalarWhereWithAggregatesInput | CarScalarWhereWithAggregatesInput[]
-    OR?: CarScalarWhereWithAggregatesInput[]
-    NOT?: CarScalarWhereWithAggregatesInput | CarScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Car"> | string
-    vehicleType?: StringWithAggregatesFilter<"Car"> | string
-    pricingModel?: StringWithAggregatesFilter<"Car"> | string
-    maxCapacity?: IntWithAggregatesFilter<"Car"> | number
-    notes?: StringNullableWithAggregatesFilter<"Car"> | string | null
-    photos?: JsonNullableWithAggregatesFilter<"Car">
-    agencyId?: StringWithAggregatesFilter<"Car"> | string
+  export type TransportScalarWhereWithAggregatesInput = {
+    AND?: TransportScalarWhereWithAggregatesInput | TransportScalarWhereWithAggregatesInput[]
+    OR?: TransportScalarWhereWithAggregatesInput[]
+    NOT?: TransportScalarWhereWithAggregatesInput | TransportScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Transport"> | string
+    vehicleType?: StringWithAggregatesFilter<"Transport"> | string
+    perDay?: FloatWithAggregatesFilter<"Transport"> | number
+    perKm?: FloatWithAggregatesFilter<"Transport"> | number
+    maxCapacity?: IntWithAggregatesFilter<"Transport"> | number
+    notes?: StringNullableWithAggregatesFilter<"Transport"> | string | null
+    photos?: StringNullableWithAggregatesFilter<"Transport"> | string | null
+    agencyId?: StringWithAggregatesFilter<"Transport"> | string
   }
 
   export type MealWhereInput = {
@@ -19336,6 +20674,7 @@ export namespace Prisma {
     id?: StringFilter<"Meal"> | string
     type?: StringFilter<"Meal"> | string
     vegOption?: BoolFilter<"Meal"> | boolean
+    nonVegOption?: BoolFilter<"Meal"> | boolean
     price?: FloatFilter<"Meal"> | number
     agencyId?: StringFilter<"Meal"> | string
     agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
@@ -19345,6 +20684,7 @@ export namespace Prisma {
     id?: SortOrder
     type?: SortOrder
     vegOption?: SortOrder
+    nonVegOption?: SortOrder
     price?: SortOrder
     agencyId?: SortOrder
     agency?: AgencyOrderByWithRelationInput
@@ -19357,6 +20697,7 @@ export namespace Prisma {
     NOT?: MealWhereInput | MealWhereInput[]
     type?: StringFilter<"Meal"> | string
     vegOption?: BoolFilter<"Meal"> | boolean
+    nonVegOption?: BoolFilter<"Meal"> | boolean
     price?: FloatFilter<"Meal"> | number
     agencyId?: StringFilter<"Meal"> | string
     agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
@@ -19366,6 +20707,7 @@ export namespace Prisma {
     id?: SortOrder
     type?: SortOrder
     vegOption?: SortOrder
+    nonVegOption?: SortOrder
     price?: SortOrder
     agencyId?: SortOrder
     _count?: MealCountOrderByAggregateInput
@@ -19382,6 +20724,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Meal"> | string
     type?: StringWithAggregatesFilter<"Meal"> | string
     vegOption?: BoolWithAggregatesFilter<"Meal"> | boolean
+    nonVegOption?: BoolWithAggregatesFilter<"Meal"> | boolean
     price?: FloatWithAggregatesFilter<"Meal"> | number
     agencyId?: StringWithAggregatesFilter<"Meal"> | string
   }
@@ -19794,10 +21137,10 @@ export namespace Prisma {
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
-    agency?: AgencyCreateNestedOneWithoutUsersInput
     accounts?: AccountCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
     loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    agency?: AgencyCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -19812,8 +21155,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -19826,10 +21169,10 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    agency?: AgencyUpdateOneWithoutUsersNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
     loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    agency?: AgencyUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -19844,8 +21187,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -19893,13 +21236,13 @@ export namespace Prisma {
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
-    users?: UserCreateNestedManyWithoutAgencyInput
-    clients?: ClientCreateNestedManyWithoutAgencyInput
-    quotations?: QuotationCreateNestedManyWithoutAgencyInput
-    hotels?: HotelCreateNestedManyWithoutAgencyInput
-    cars?: CarCreateNestedManyWithoutAgencyInput
-    meals?: MealCreateNestedManyWithoutAgencyInput
     activities?: ActivityCreateNestedManyWithoutAgencyInput
+    transport?: TransportCreateNestedManyWithoutAgencyInput
+    clients?: ClientCreateNestedManyWithoutAgencyInput
+    hotels?: HotelCreateNestedManyWithoutAgencyInput
+    meals?: MealCreateNestedManyWithoutAgencyInput
+    quotations?: QuotationCreateNestedManyWithoutAgencyInput
+    users?: UserCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateInput = {
@@ -19909,13 +21252,13 @@ export namespace Prisma {
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
-    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    clients?: ClientUncheckedCreateNestedManyWithoutAgencyInput
-    quotations?: QuotationUncheckedCreateNestedManyWithoutAgencyInput
-    hotels?: HotelUncheckedCreateNestedManyWithoutAgencyInput
-    cars?: CarUncheckedCreateNestedManyWithoutAgencyInput
-    meals?: MealUncheckedCreateNestedManyWithoutAgencyInput
     activities?: ActivityUncheckedCreateNestedManyWithoutAgencyInput
+    transport?: TransportUncheckedCreateNestedManyWithoutAgencyInput
+    clients?: ClientUncheckedCreateNestedManyWithoutAgencyInput
+    hotels?: HotelUncheckedCreateNestedManyWithoutAgencyInput
+    meals?: MealUncheckedCreateNestedManyWithoutAgencyInput
+    quotations?: QuotationUncheckedCreateNestedManyWithoutAgencyInput
+    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUpdateInput = {
@@ -19925,13 +21268,13 @@ export namespace Prisma {
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: UserUpdateManyWithoutAgencyNestedInput
-    clients?: ClientUpdateManyWithoutAgencyNestedInput
-    quotations?: QuotationUpdateManyWithoutAgencyNestedInput
-    hotels?: HotelUpdateManyWithoutAgencyNestedInput
-    cars?: CarUpdateManyWithoutAgencyNestedInput
-    meals?: MealUpdateManyWithoutAgencyNestedInput
     activities?: ActivityUpdateManyWithoutAgencyNestedInput
+    transport?: TransportUpdateManyWithoutAgencyNestedInput
+    clients?: ClientUpdateManyWithoutAgencyNestedInput
+    hotels?: HotelUpdateManyWithoutAgencyNestedInput
+    meals?: MealUpdateManyWithoutAgencyNestedInput
+    quotations?: QuotationUpdateManyWithoutAgencyNestedInput
+    users?: UserUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateInput = {
@@ -19941,13 +21284,13 @@ export namespace Prisma {
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    clients?: ClientUncheckedUpdateManyWithoutAgencyNestedInput
-    quotations?: QuotationUncheckedUpdateManyWithoutAgencyNestedInput
-    hotels?: HotelUncheckedUpdateManyWithoutAgencyNestedInput
-    cars?: CarUncheckedUpdateManyWithoutAgencyNestedInput
-    meals?: MealUncheckedUpdateManyWithoutAgencyNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutAgencyNestedInput
+    transport?: TransportUncheckedUpdateManyWithoutAgencyNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutAgencyNestedInput
+    hotels?: HotelUncheckedUpdateManyWithoutAgencyNestedInput
+    meals?: MealUncheckedUpdateManyWithoutAgencyNestedInput
+    quotations?: QuotationUncheckedUpdateManyWithoutAgencyNestedInput
+    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyCreateManyInput = {
@@ -20076,10 +21419,10 @@ export namespace Prisma {
     totalAmount: number
     createdAt?: Date | string
     updatedAt?: Date | string
-    client: ClientCreateNestedOneWithoutQuotationsInput
-    agency: AgencyCreateNestedOneWithoutQuotationsInput
-    items?: QuotationItemCreateNestedManyWithoutQuotationInput
     itineraries?: ItineraryCreateNestedManyWithoutQuotationInput
+    agency: AgencyCreateNestedOneWithoutQuotationsInput
+    client: ClientCreateNestedOneWithoutQuotationsInput
+    items?: QuotationItemCreateNestedManyWithoutQuotationInput
   }
 
   export type QuotationUncheckedCreateInput = {
@@ -20096,8 +21439,8 @@ export namespace Prisma {
     totalAmount: number
     createdAt?: Date | string
     updatedAt?: Date | string
-    items?: QuotationItemUncheckedCreateNestedManyWithoutQuotationInput
     itineraries?: ItineraryUncheckedCreateNestedManyWithoutQuotationInput
+    items?: QuotationItemUncheckedCreateNestedManyWithoutQuotationInput
   }
 
   export type QuotationUpdateInput = {
@@ -20112,10 +21455,10 @@ export namespace Prisma {
     totalAmount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    client?: ClientUpdateOneRequiredWithoutQuotationsNestedInput
-    agency?: AgencyUpdateOneRequiredWithoutQuotationsNestedInput
-    items?: QuotationItemUpdateManyWithoutQuotationNestedInput
     itineraries?: ItineraryUpdateManyWithoutQuotationNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutQuotationsNestedInput
+    client?: ClientUpdateOneRequiredWithoutQuotationsNestedInput
+    items?: QuotationItemUpdateManyWithoutQuotationNestedInput
   }
 
   export type QuotationUncheckedUpdateInput = {
@@ -20132,8 +21475,8 @@ export namespace Prisma {
     totalAmount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    items?: QuotationItemUncheckedUpdateManyWithoutQuotationNestedInput
     itineraries?: ItineraryUncheckedUpdateManyWithoutQuotationNestedInput
+    items?: QuotationItemUncheckedUpdateManyWithoutQuotationNestedInput
   }
 
   export type QuotationCreateManyInput = {
@@ -20244,16 +21587,64 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
   }
 
+  export type RoomTypeCreateInput = {
+    id?: string
+    type: string
+    price: Decimal | DecimalJsLike | number | string
+    hotel: HotelCreateNestedOneWithoutRoomTypesInput
+  }
+
+  export type RoomTypeUncheckedCreateInput = {
+    id?: string
+    type: string
+    price: Decimal | DecimalJsLike | number | string
+    hotelId: string
+  }
+
+  export type RoomTypeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    hotel?: HotelUpdateOneRequiredWithoutRoomTypesNestedInput
+  }
+
+  export type RoomTypeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    hotelId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type RoomTypeCreateManyInput = {
+    id?: string
+    type: string
+    price: Decimal | DecimalJsLike | number | string
+    hotelId: string
+  }
+
+  export type RoomTypeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+  }
+
+  export type RoomTypeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    hotelId?: StringFieldUpdateOperationsInput | string
+  }
+
   export type HotelCreateInput = {
     id?: string
     name: string
     city: string
     starCategory: number
-    roomTypes: JsonNullValueInput | InputJsonValue
     inclusions?: string | null
     cancellation?: string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    photos?: string | null
     agency: AgencyCreateNestedOneWithoutHotelsInput
+    roomTypes?: RoomTypeCreateNestedManyWithoutHotelInput
   }
 
   export type HotelUncheckedCreateInput = {
@@ -20261,11 +21652,11 @@ export namespace Prisma {
     name: string
     city: string
     starCategory: number
-    roomTypes: JsonNullValueInput | InputJsonValue
     inclusions?: string | null
     cancellation?: string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    photos?: string | null
     agencyId: string
+    roomTypes?: RoomTypeUncheckedCreateNestedManyWithoutHotelInput
   }
 
   export type HotelUpdateInput = {
@@ -20273,11 +21664,11 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
     starCategory?: IntFieldUpdateOperationsInput | number
-    roomTypes?: JsonNullValueInput | InputJsonValue
     inclusions?: NullableStringFieldUpdateOperationsInput | string | null
     cancellation?: NullableStringFieldUpdateOperationsInput | string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
     agency?: AgencyUpdateOneRequiredWithoutHotelsNestedInput
+    roomTypes?: RoomTypeUpdateManyWithoutHotelNestedInput
   }
 
   export type HotelUncheckedUpdateInput = {
@@ -20285,11 +21676,11 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
     starCategory?: IntFieldUpdateOperationsInput | number
-    roomTypes?: JsonNullValueInput | InputJsonValue
     inclusions?: NullableStringFieldUpdateOperationsInput | string | null
     cancellation?: NullableStringFieldUpdateOperationsInput | string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
     agencyId?: StringFieldUpdateOperationsInput | string
+    roomTypes?: RoomTypeUncheckedUpdateManyWithoutHotelNestedInput
   }
 
   export type HotelCreateManyInput = {
@@ -20297,10 +21688,9 @@ export namespace Prisma {
     name: string
     city: string
     starCategory: number
-    roomTypes: JsonNullValueInput | InputJsonValue
     inclusions?: string | null
     cancellation?: string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    photos?: string | null
     agencyId: string
   }
 
@@ -20309,10 +21699,9 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
     starCategory?: IntFieldUpdateOperationsInput | number
-    roomTypes?: JsonNullValueInput | InputJsonValue
     inclusions?: NullableStringFieldUpdateOperationsInput | string | null
     cancellation?: NullableStringFieldUpdateOperationsInput | string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type HotelUncheckedUpdateManyInput = {
@@ -20320,79 +21709,85 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
     starCategory?: IntFieldUpdateOperationsInput | number
-    roomTypes?: JsonNullValueInput | InputJsonValue
     inclusions?: NullableStringFieldUpdateOperationsInput | string | null
     cancellation?: NullableStringFieldUpdateOperationsInput | string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
     agencyId?: StringFieldUpdateOperationsInput | string
   }
 
-  export type CarCreateInput = {
+  export type TransportCreateInput = {
     id?: string
     vehicleType: string
-    pricingModel: string
+    perDay: number
+    perKm: number
     maxCapacity: number
     notes?: string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
-    agency: AgencyCreateNestedOneWithoutCarsInput
+    photos?: string | null
+    agency: AgencyCreateNestedOneWithoutTransportInput
   }
 
-  export type CarUncheckedCreateInput = {
+  export type TransportUncheckedCreateInput = {
     id?: string
     vehicleType: string
-    pricingModel: string
+    perDay: number
+    perKm: number
     maxCapacity: number
     notes?: string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    photos?: string | null
     agencyId: string
   }
 
-  export type CarUpdateInput = {
+  export type TransportUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     vehicleType?: StringFieldUpdateOperationsInput | string
-    pricingModel?: StringFieldUpdateOperationsInput | string
+    perDay?: FloatFieldUpdateOperationsInput | number
+    perKm?: FloatFieldUpdateOperationsInput | number
     maxCapacity?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
-    agency?: AgencyUpdateOneRequiredWithoutCarsNestedInput
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    agency?: AgencyUpdateOneRequiredWithoutTransportNestedInput
   }
 
-  export type CarUncheckedUpdateInput = {
+  export type TransportUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     vehicleType?: StringFieldUpdateOperationsInput | string
-    pricingModel?: StringFieldUpdateOperationsInput | string
+    perDay?: FloatFieldUpdateOperationsInput | number
+    perKm?: FloatFieldUpdateOperationsInput | number
     maxCapacity?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
     agencyId?: StringFieldUpdateOperationsInput | string
   }
 
-  export type CarCreateManyInput = {
+  export type TransportCreateManyInput = {
     id?: string
     vehicleType: string
-    pricingModel: string
+    perDay: number
+    perKm: number
     maxCapacity: number
     notes?: string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    photos?: string | null
     agencyId: string
   }
 
-  export type CarUpdateManyMutationInput = {
+  export type TransportUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     vehicleType?: StringFieldUpdateOperationsInput | string
-    pricingModel?: StringFieldUpdateOperationsInput | string
+    perDay?: FloatFieldUpdateOperationsInput | number
+    perKm?: FloatFieldUpdateOperationsInput | number
     maxCapacity?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type CarUncheckedUpdateManyInput = {
+  export type TransportUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     vehicleType?: StringFieldUpdateOperationsInput | string
-    pricingModel?: StringFieldUpdateOperationsInput | string
+    perDay?: FloatFieldUpdateOperationsInput | number
+    perKm?: FloatFieldUpdateOperationsInput | number
     maxCapacity?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
     agencyId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -20400,6 +21795,7 @@ export namespace Prisma {
     id?: string
     type: string
     vegOption: boolean
+    nonVegOption: boolean
     price: number
     agency: AgencyCreateNestedOneWithoutMealsInput
   }
@@ -20408,6 +21804,7 @@ export namespace Prisma {
     id?: string
     type: string
     vegOption: boolean
+    nonVegOption: boolean
     price: number
     agencyId: string
   }
@@ -20416,6 +21813,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     vegOption?: BoolFieldUpdateOperationsInput | boolean
+    nonVegOption?: BoolFieldUpdateOperationsInput | boolean
     price?: FloatFieldUpdateOperationsInput | number
     agency?: AgencyUpdateOneRequiredWithoutMealsNestedInput
   }
@@ -20424,6 +21822,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     vegOption?: BoolFieldUpdateOperationsInput | boolean
+    nonVegOption?: BoolFieldUpdateOperationsInput | boolean
     price?: FloatFieldUpdateOperationsInput | number
     agencyId?: StringFieldUpdateOperationsInput | string
   }
@@ -20432,6 +21831,7 @@ export namespace Prisma {
     id?: string
     type: string
     vegOption: boolean
+    nonVegOption: boolean
     price: number
     agencyId: string
   }
@@ -20440,6 +21840,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     vegOption?: BoolFieldUpdateOperationsInput | boolean
+    nonVegOption?: BoolFieldUpdateOperationsInput | boolean
     price?: FloatFieldUpdateOperationsInput | number
   }
 
@@ -20447,6 +21848,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     vegOption?: BoolFieldUpdateOperationsInput | boolean
+    nonVegOption?: BoolFieldUpdateOperationsInput | boolean
     price?: FloatFieldUpdateOperationsInput | number
     agencyId?: StringFieldUpdateOperationsInput | string
   }
@@ -20882,21 +22284,10 @@ export namespace Prisma {
     not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
   }
 
-  export type AgencyNullableScalarRelationFilter = {
-    is?: AgencyWhereInput | null
-    isNot?: AgencyWhereInput | null
-  }
-
   export type AccountListRelationFilter = {
     every?: AccountWhereInput
     some?: AccountWhereInput
     none?: AccountWhereInput
-  }
-
-  export type SessionListRelationFilter = {
-    every?: SessionWhereInput
-    some?: SessionWhereInput
-    none?: SessionWhereInput
   }
 
   export type LoginHistoryListRelationFilter = {
@@ -20905,15 +22296,26 @@ export namespace Prisma {
     none?: LoginHistoryWhereInput
   }
 
+  export type SessionListRelationFilter = {
+    every?: SessionWhereInput
+    some?: SessionWhereInput
+    none?: SessionWhereInput
+  }
+
+  export type AgencyNullableScalarRelationFilter = {
+    is?: AgencyWhereInput | null
+    isNot?: AgencyWhereInput | null
+  }
+
   export type AccountOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
-  export type SessionOrderByRelationAggregateInput = {
+  export type LoginHistoryOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
-  export type LoginHistoryOrderByRelationAggregateInput = {
+  export type SessionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -21003,10 +22405,16 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type UserListRelationFilter = {
-    every?: UserWhereInput
-    some?: UserWhereInput
-    none?: UserWhereInput
+  export type ActivityListRelationFilter = {
+    every?: ActivityWhereInput
+    some?: ActivityWhereInput
+    none?: ActivityWhereInput
+  }
+
+  export type TransportListRelationFilter = {
+    every?: TransportWhereInput
+    some?: TransportWhereInput
+    none?: TransportWhereInput
   }
 
   export type ClientListRelationFilter = {
@@ -21015,22 +22423,10 @@ export namespace Prisma {
     none?: ClientWhereInput
   }
 
-  export type QuotationListRelationFilter = {
-    every?: QuotationWhereInput
-    some?: QuotationWhereInput
-    none?: QuotationWhereInput
-  }
-
   export type HotelListRelationFilter = {
     every?: HotelWhereInput
     some?: HotelWhereInput
     none?: HotelWhereInput
-  }
-
-  export type CarListRelationFilter = {
-    every?: CarWhereInput
-    some?: CarWhereInput
-    none?: CarWhereInput
   }
 
   export type MealListRelationFilter = {
@@ -21039,13 +22435,23 @@ export namespace Prisma {
     none?: MealWhereInput
   }
 
-  export type ActivityListRelationFilter = {
-    every?: ActivityWhereInput
-    some?: ActivityWhereInput
-    none?: ActivityWhereInput
+  export type QuotationListRelationFilter = {
+    every?: QuotationWhereInput
+    some?: QuotationWhereInput
+    none?: QuotationWhereInput
   }
 
-  export type UserOrderByRelationAggregateInput = {
+  export type UserListRelationFilter = {
+    every?: UserWhereInput
+    some?: UserWhereInput
+    none?: UserWhereInput
+  }
+
+  export type ActivityOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TransportOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -21053,15 +22459,7 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type QuotationOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
   export type HotelOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type CarOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -21069,7 +22467,11 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type ActivityOrderByRelationAggregateInput = {
+  export type QuotationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type UserOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -21194,6 +22596,12 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type ItineraryListRelationFilter = {
+    every?: ItineraryWhereInput
+    some?: ItineraryWhereInput
+    none?: ItineraryWhereInput
+  }
+
   export type ClientScalarRelationFilter = {
     is?: ClientWhereInput
     isNot?: ClientWhereInput
@@ -21205,17 +22613,11 @@ export namespace Prisma {
     none?: QuotationItemWhereInput
   }
 
-  export type ItineraryListRelationFilter = {
-    every?: ItineraryWhereInput
-    some?: ItineraryWhereInput
-    none?: ItineraryWhereInput
-  }
-
-  export type QuotationItemOrderByRelationAggregateInput = {
+  export type ItineraryOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
-  export type ItineraryOrderByRelationAggregateInput = {
+  export type QuotationItemOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -21379,28 +22781,76 @@ export namespace Prisma {
     _min?: NestedEnumServiceTypeFilter<$PrismaModel>
     _max?: NestedEnumServiceTypeFilter<$PrismaModel>
   }
-  export type JsonFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
 
-  export type JsonFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  export type DecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type HotelScalarRelationFilter = {
+    is?: HotelWhereInput
+    isNot?: HotelWhereInput
+  }
+
+  export type RoomTypeCountOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    price?: SortOrder
+    hotelId?: SortOrder
+  }
+
+  export type RoomTypeAvgOrderByAggregateInput = {
+    price?: SortOrder
+  }
+
+  export type RoomTypeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    price?: SortOrder
+    hotelId?: SortOrder
+  }
+
+  export type RoomTypeMinOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    price?: SortOrder
+    hotelId?: SortOrder
+  }
+
+  export type RoomTypeSumOrderByAggregateInput = {
+    price?: SortOrder
+  }
+
+  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
+  }
+
+  export type RoomTypeListRelationFilter = {
+    every?: RoomTypeWhereInput
+    some?: RoomTypeWhereInput
+    none?: RoomTypeWhereInput
+  }
+
+  export type RoomTypeOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type HotelCountOrderByAggregateInput = {
@@ -21408,7 +22858,6 @@ export namespace Prisma {
     name?: SortOrder
     city?: SortOrder
     starCategory?: SortOrder
-    roomTypes?: SortOrder
     inclusions?: SortOrder
     cancellation?: SortOrder
     photos?: SortOrder
@@ -21426,6 +22875,7 @@ export namespace Prisma {
     starCategory?: SortOrder
     inclusions?: SortOrder
     cancellation?: SortOrder
+    photos?: SortOrder
     agencyId?: SortOrder
   }
 
@@ -21436,72 +22886,56 @@ export namespace Prisma {
     starCategory?: SortOrder
     inclusions?: SortOrder
     cancellation?: SortOrder
+    photos?: SortOrder
     agencyId?: SortOrder
   }
 
   export type HotelSumOrderByAggregateInput = {
     starCategory?: SortOrder
   }
-  export type JsonWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
 
-  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedJsonFilter<$PrismaModel>
-    _max?: NestedJsonFilter<$PrismaModel>
-  }
-
-  export type CarCountOrderByAggregateInput = {
+  export type TransportCountOrderByAggregateInput = {
     id?: SortOrder
     vehicleType?: SortOrder
-    pricingModel?: SortOrder
+    perDay?: SortOrder
+    perKm?: SortOrder
     maxCapacity?: SortOrder
     notes?: SortOrder
     photos?: SortOrder
     agencyId?: SortOrder
   }
 
-  export type CarAvgOrderByAggregateInput = {
+  export type TransportAvgOrderByAggregateInput = {
+    perDay?: SortOrder
+    perKm?: SortOrder
     maxCapacity?: SortOrder
   }
 
-  export type CarMaxOrderByAggregateInput = {
+  export type TransportMaxOrderByAggregateInput = {
     id?: SortOrder
     vehicleType?: SortOrder
-    pricingModel?: SortOrder
+    perDay?: SortOrder
+    perKm?: SortOrder
     maxCapacity?: SortOrder
     notes?: SortOrder
+    photos?: SortOrder
     agencyId?: SortOrder
   }
 
-  export type CarMinOrderByAggregateInput = {
+  export type TransportMinOrderByAggregateInput = {
     id?: SortOrder
     vehicleType?: SortOrder
-    pricingModel?: SortOrder
+    perDay?: SortOrder
+    perKm?: SortOrder
     maxCapacity?: SortOrder
     notes?: SortOrder
+    photos?: SortOrder
     agencyId?: SortOrder
   }
 
-  export type CarSumOrderByAggregateInput = {
+  export type TransportSumOrderByAggregateInput = {
+    perDay?: SortOrder
+    perKm?: SortOrder
     maxCapacity?: SortOrder
   }
 
@@ -21514,6 +22948,7 @@ export namespace Prisma {
     id?: SortOrder
     type?: SortOrder
     vegOption?: SortOrder
+    nonVegOption?: SortOrder
     price?: SortOrder
     agencyId?: SortOrder
   }
@@ -21526,6 +22961,7 @@ export namespace Prisma {
     id?: SortOrder
     type?: SortOrder
     vegOption?: SortOrder
+    nonVegOption?: SortOrder
     price?: SortOrder
     agencyId?: SortOrder
   }
@@ -21534,6 +22970,7 @@ export namespace Prisma {
     id?: SortOrder
     type?: SortOrder
     vegOption?: SortOrder
+    nonVegOption?: SortOrder
     price?: SortOrder
     agencyId?: SortOrder
   }
@@ -21693,24 +23130,11 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSessionsInput, UserUpdateWithoutSessionsInput>, UserUncheckedUpdateWithoutSessionsInput>
   }
 
-  export type AgencyCreateNestedOneWithoutUsersInput = {
-    create?: XOR<AgencyCreateWithoutUsersInput, AgencyUncheckedCreateWithoutUsersInput>
-    connectOrCreate?: AgencyCreateOrConnectWithoutUsersInput
-    connect?: AgencyWhereUniqueInput
-  }
-
   export type AccountCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
     createMany?: AccountCreateManyUserInputEnvelope
     connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
-  }
-
-  export type SessionCreateNestedManyWithoutUserInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
   }
 
   export type LoginHistoryCreateNestedManyWithoutUserInput = {
@@ -21720,18 +23144,24 @@ export namespace Prisma {
     connect?: LoginHistoryWhereUniqueInput | LoginHistoryWhereUniqueInput[]
   }
 
+  export type SessionCreateNestedManyWithoutUserInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  }
+
+  export type AgencyCreateNestedOneWithoutUsersInput = {
+    create?: XOR<AgencyCreateWithoutUsersInput, AgencyUncheckedCreateWithoutUsersInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutUsersInput
+    connect?: AgencyWhereUniqueInput
+  }
+
   export type AccountUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
     createMany?: AccountCreateManyUserInputEnvelope
     connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
-  }
-
-  export type SessionUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
   }
 
   export type LoginHistoryUncheckedCreateNestedManyWithoutUserInput = {
@@ -21741,22 +23171,19 @@ export namespace Prisma {
     connect?: LoginHistoryWhereUniqueInput | LoginHistoryWhereUniqueInput[]
   }
 
+  export type SessionUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  }
+
   export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
   }
 
   export type EnumRoleFieldUpdateOperationsInput = {
     set?: $Enums.Role
-  }
-
-  export type AgencyUpdateOneWithoutUsersNestedInput = {
-    create?: XOR<AgencyCreateWithoutUsersInput, AgencyUncheckedCreateWithoutUsersInput>
-    connectOrCreate?: AgencyCreateOrConnectWithoutUsersInput
-    upsert?: AgencyUpsertWithoutUsersInput
-    disconnect?: AgencyWhereInput | boolean
-    delete?: AgencyWhereInput | boolean
-    connect?: AgencyWhereUniqueInput
-    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutUsersInput, AgencyUpdateWithoutUsersInput>, AgencyUncheckedUpdateWithoutUsersInput>
   }
 
   export type AccountUpdateManyWithoutUserNestedInput = {
@@ -21773,6 +23200,20 @@ export namespace Prisma {
     deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
   }
 
+  export type LoginHistoryUpdateManyWithoutUserNestedInput = {
+    create?: XOR<LoginHistoryCreateWithoutUserInput, LoginHistoryUncheckedCreateWithoutUserInput> | LoginHistoryCreateWithoutUserInput[] | LoginHistoryUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: LoginHistoryCreateOrConnectWithoutUserInput | LoginHistoryCreateOrConnectWithoutUserInput[]
+    upsert?: LoginHistoryUpsertWithWhereUniqueWithoutUserInput | LoginHistoryUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: LoginHistoryCreateManyUserInputEnvelope
+    set?: LoginHistoryWhereUniqueInput | LoginHistoryWhereUniqueInput[]
+    disconnect?: LoginHistoryWhereUniqueInput | LoginHistoryWhereUniqueInput[]
+    delete?: LoginHistoryWhereUniqueInput | LoginHistoryWhereUniqueInput[]
+    connect?: LoginHistoryWhereUniqueInput | LoginHistoryWhereUniqueInput[]
+    update?: LoginHistoryUpdateWithWhereUniqueWithoutUserInput | LoginHistoryUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: LoginHistoryUpdateManyWithWhereWithoutUserInput | LoginHistoryUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: LoginHistoryScalarWhereInput | LoginHistoryScalarWhereInput[]
+  }
+
   export type SessionUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -21787,18 +23228,14 @@ export namespace Prisma {
     deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
   }
 
-  export type LoginHistoryUpdateManyWithoutUserNestedInput = {
-    create?: XOR<LoginHistoryCreateWithoutUserInput, LoginHistoryUncheckedCreateWithoutUserInput> | LoginHistoryCreateWithoutUserInput[] | LoginHistoryUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: LoginHistoryCreateOrConnectWithoutUserInput | LoginHistoryCreateOrConnectWithoutUserInput[]
-    upsert?: LoginHistoryUpsertWithWhereUniqueWithoutUserInput | LoginHistoryUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: LoginHistoryCreateManyUserInputEnvelope
-    set?: LoginHistoryWhereUniqueInput | LoginHistoryWhereUniqueInput[]
-    disconnect?: LoginHistoryWhereUniqueInput | LoginHistoryWhereUniqueInput[]
-    delete?: LoginHistoryWhereUniqueInput | LoginHistoryWhereUniqueInput[]
-    connect?: LoginHistoryWhereUniqueInput | LoginHistoryWhereUniqueInput[]
-    update?: LoginHistoryUpdateWithWhereUniqueWithoutUserInput | LoginHistoryUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: LoginHistoryUpdateManyWithWhereWithoutUserInput | LoginHistoryUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: LoginHistoryScalarWhereInput | LoginHistoryScalarWhereInput[]
+  export type AgencyUpdateOneWithoutUsersNestedInput = {
+    create?: XOR<AgencyCreateWithoutUsersInput, AgencyUncheckedCreateWithoutUsersInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutUsersInput
+    upsert?: AgencyUpsertWithoutUsersInput
+    disconnect?: AgencyWhereInput | boolean
+    delete?: AgencyWhereInput | boolean
+    connect?: AgencyWhereUniqueInput
+    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutUsersInput, AgencyUpdateWithoutUsersInput>, AgencyUncheckedUpdateWithoutUsersInput>
   }
 
   export type AccountUncheckedUpdateManyWithoutUserNestedInput = {
@@ -21815,20 +23252,6 @@ export namespace Prisma {
     deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
   }
 
-  export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
-  }
-
   export type LoginHistoryUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<LoginHistoryCreateWithoutUserInput, LoginHistoryUncheckedCreateWithoutUserInput> | LoginHistoryCreateWithoutUserInput[] | LoginHistoryUncheckedCreateWithoutUserInput[]
     connectOrCreate?: LoginHistoryCreateOrConnectWithoutUserInput | LoginHistoryCreateOrConnectWithoutUserInput[]
@@ -21843,46 +23266,18 @@ export namespace Prisma {
     deleteMany?: LoginHistoryScalarWhereInput | LoginHistoryScalarWhereInput[]
   }
 
-  export type UserCreateNestedManyWithoutAgencyInput = {
-    create?: XOR<UserCreateWithoutAgencyInput, UserUncheckedCreateWithoutAgencyInput> | UserCreateWithoutAgencyInput[] | UserUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutAgencyInput | UserCreateOrConnectWithoutAgencyInput[]
-    createMany?: UserCreateManyAgencyInputEnvelope
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-  }
-
-  export type ClientCreateNestedManyWithoutAgencyInput = {
-    create?: XOR<ClientCreateWithoutAgencyInput, ClientUncheckedCreateWithoutAgencyInput> | ClientCreateWithoutAgencyInput[] | ClientUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: ClientCreateOrConnectWithoutAgencyInput | ClientCreateOrConnectWithoutAgencyInput[]
-    createMany?: ClientCreateManyAgencyInputEnvelope
-    connect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
-  }
-
-  export type QuotationCreateNestedManyWithoutAgencyInput = {
-    create?: XOR<QuotationCreateWithoutAgencyInput, QuotationUncheckedCreateWithoutAgencyInput> | QuotationCreateWithoutAgencyInput[] | QuotationUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: QuotationCreateOrConnectWithoutAgencyInput | QuotationCreateOrConnectWithoutAgencyInput[]
-    createMany?: QuotationCreateManyAgencyInputEnvelope
-    connect?: QuotationWhereUniqueInput | QuotationWhereUniqueInput[]
-  }
-
-  export type HotelCreateNestedManyWithoutAgencyInput = {
-    create?: XOR<HotelCreateWithoutAgencyInput, HotelUncheckedCreateWithoutAgencyInput> | HotelCreateWithoutAgencyInput[] | HotelUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: HotelCreateOrConnectWithoutAgencyInput | HotelCreateOrConnectWithoutAgencyInput[]
-    createMany?: HotelCreateManyAgencyInputEnvelope
-    connect?: HotelWhereUniqueInput | HotelWhereUniqueInput[]
-  }
-
-  export type CarCreateNestedManyWithoutAgencyInput = {
-    create?: XOR<CarCreateWithoutAgencyInput, CarUncheckedCreateWithoutAgencyInput> | CarCreateWithoutAgencyInput[] | CarUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: CarCreateOrConnectWithoutAgencyInput | CarCreateOrConnectWithoutAgencyInput[]
-    createMany?: CarCreateManyAgencyInputEnvelope
-    connect?: CarWhereUniqueInput | CarWhereUniqueInput[]
-  }
-
-  export type MealCreateNestedManyWithoutAgencyInput = {
-    create?: XOR<MealCreateWithoutAgencyInput, MealUncheckedCreateWithoutAgencyInput> | MealCreateWithoutAgencyInput[] | MealUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: MealCreateOrConnectWithoutAgencyInput | MealCreateOrConnectWithoutAgencyInput[]
-    createMany?: MealCreateManyAgencyInputEnvelope
-    connect?: MealWhereUniqueInput | MealWhereUniqueInput[]
+  export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
   }
 
   export type ActivityCreateNestedManyWithoutAgencyInput = {
@@ -21892,46 +23287,46 @@ export namespace Prisma {
     connect?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
   }
 
-  export type UserUncheckedCreateNestedManyWithoutAgencyInput = {
-    create?: XOR<UserCreateWithoutAgencyInput, UserUncheckedCreateWithoutAgencyInput> | UserCreateWithoutAgencyInput[] | UserUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutAgencyInput | UserCreateOrConnectWithoutAgencyInput[]
-    createMany?: UserCreateManyAgencyInputEnvelope
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  export type TransportCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<TransportCreateWithoutAgencyInput, TransportUncheckedCreateWithoutAgencyInput> | TransportCreateWithoutAgencyInput[] | TransportUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: TransportCreateOrConnectWithoutAgencyInput | TransportCreateOrConnectWithoutAgencyInput[]
+    createMany?: TransportCreateManyAgencyInputEnvelope
+    connect?: TransportWhereUniqueInput | TransportWhereUniqueInput[]
   }
 
-  export type ClientUncheckedCreateNestedManyWithoutAgencyInput = {
+  export type ClientCreateNestedManyWithoutAgencyInput = {
     create?: XOR<ClientCreateWithoutAgencyInput, ClientUncheckedCreateWithoutAgencyInput> | ClientCreateWithoutAgencyInput[] | ClientUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: ClientCreateOrConnectWithoutAgencyInput | ClientCreateOrConnectWithoutAgencyInput[]
     createMany?: ClientCreateManyAgencyInputEnvelope
     connect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
   }
 
-  export type QuotationUncheckedCreateNestedManyWithoutAgencyInput = {
-    create?: XOR<QuotationCreateWithoutAgencyInput, QuotationUncheckedCreateWithoutAgencyInput> | QuotationCreateWithoutAgencyInput[] | QuotationUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: QuotationCreateOrConnectWithoutAgencyInput | QuotationCreateOrConnectWithoutAgencyInput[]
-    createMany?: QuotationCreateManyAgencyInputEnvelope
-    connect?: QuotationWhereUniqueInput | QuotationWhereUniqueInput[]
-  }
-
-  export type HotelUncheckedCreateNestedManyWithoutAgencyInput = {
+  export type HotelCreateNestedManyWithoutAgencyInput = {
     create?: XOR<HotelCreateWithoutAgencyInput, HotelUncheckedCreateWithoutAgencyInput> | HotelCreateWithoutAgencyInput[] | HotelUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: HotelCreateOrConnectWithoutAgencyInput | HotelCreateOrConnectWithoutAgencyInput[]
     createMany?: HotelCreateManyAgencyInputEnvelope
     connect?: HotelWhereUniqueInput | HotelWhereUniqueInput[]
   }
 
-  export type CarUncheckedCreateNestedManyWithoutAgencyInput = {
-    create?: XOR<CarCreateWithoutAgencyInput, CarUncheckedCreateWithoutAgencyInput> | CarCreateWithoutAgencyInput[] | CarUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: CarCreateOrConnectWithoutAgencyInput | CarCreateOrConnectWithoutAgencyInput[]
-    createMany?: CarCreateManyAgencyInputEnvelope
-    connect?: CarWhereUniqueInput | CarWhereUniqueInput[]
-  }
-
-  export type MealUncheckedCreateNestedManyWithoutAgencyInput = {
+  export type MealCreateNestedManyWithoutAgencyInput = {
     create?: XOR<MealCreateWithoutAgencyInput, MealUncheckedCreateWithoutAgencyInput> | MealCreateWithoutAgencyInput[] | MealUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: MealCreateOrConnectWithoutAgencyInput | MealCreateOrConnectWithoutAgencyInput[]
     createMany?: MealCreateManyAgencyInputEnvelope
     connect?: MealWhereUniqueInput | MealWhereUniqueInput[]
+  }
+
+  export type QuotationCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<QuotationCreateWithoutAgencyInput, QuotationUncheckedCreateWithoutAgencyInput> | QuotationCreateWithoutAgencyInput[] | QuotationUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: QuotationCreateOrConnectWithoutAgencyInput | QuotationCreateOrConnectWithoutAgencyInput[]
+    createMany?: QuotationCreateManyAgencyInputEnvelope
+    connect?: QuotationWhereUniqueInput | QuotationWhereUniqueInput[]
+  }
+
+  export type UserCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<UserCreateWithoutAgencyInput, UserUncheckedCreateWithoutAgencyInput> | UserCreateWithoutAgencyInput[] | UserUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutAgencyInput | UserCreateOrConnectWithoutAgencyInput[]
+    createMany?: UserCreateManyAgencyInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
   export type ActivityUncheckedCreateNestedManyWithoutAgencyInput = {
@@ -21941,88 +23336,46 @@ export namespace Prisma {
     connect?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
   }
 
-  export type UserUpdateManyWithoutAgencyNestedInput = {
-    create?: XOR<UserCreateWithoutAgencyInput, UserUncheckedCreateWithoutAgencyInput> | UserCreateWithoutAgencyInput[] | UserUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutAgencyInput | UserCreateOrConnectWithoutAgencyInput[]
-    upsert?: UserUpsertWithWhereUniqueWithoutAgencyInput | UserUpsertWithWhereUniqueWithoutAgencyInput[]
-    createMany?: UserCreateManyAgencyInputEnvelope
-    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    update?: UserUpdateWithWhereUniqueWithoutAgencyInput | UserUpdateWithWhereUniqueWithoutAgencyInput[]
-    updateMany?: UserUpdateManyWithWhereWithoutAgencyInput | UserUpdateManyWithWhereWithoutAgencyInput[]
-    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  export type TransportUncheckedCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<TransportCreateWithoutAgencyInput, TransportUncheckedCreateWithoutAgencyInput> | TransportCreateWithoutAgencyInput[] | TransportUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: TransportCreateOrConnectWithoutAgencyInput | TransportCreateOrConnectWithoutAgencyInput[]
+    createMany?: TransportCreateManyAgencyInputEnvelope
+    connect?: TransportWhereUniqueInput | TransportWhereUniqueInput[]
   }
 
-  export type ClientUpdateManyWithoutAgencyNestedInput = {
+  export type ClientUncheckedCreateNestedManyWithoutAgencyInput = {
     create?: XOR<ClientCreateWithoutAgencyInput, ClientUncheckedCreateWithoutAgencyInput> | ClientCreateWithoutAgencyInput[] | ClientUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: ClientCreateOrConnectWithoutAgencyInput | ClientCreateOrConnectWithoutAgencyInput[]
-    upsert?: ClientUpsertWithWhereUniqueWithoutAgencyInput | ClientUpsertWithWhereUniqueWithoutAgencyInput[]
     createMany?: ClientCreateManyAgencyInputEnvelope
-    set?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
-    disconnect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
-    delete?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
     connect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
-    update?: ClientUpdateWithWhereUniqueWithoutAgencyInput | ClientUpdateWithWhereUniqueWithoutAgencyInput[]
-    updateMany?: ClientUpdateManyWithWhereWithoutAgencyInput | ClientUpdateManyWithWhereWithoutAgencyInput[]
-    deleteMany?: ClientScalarWhereInput | ClientScalarWhereInput[]
   }
 
-  export type QuotationUpdateManyWithoutAgencyNestedInput = {
-    create?: XOR<QuotationCreateWithoutAgencyInput, QuotationUncheckedCreateWithoutAgencyInput> | QuotationCreateWithoutAgencyInput[] | QuotationUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: QuotationCreateOrConnectWithoutAgencyInput | QuotationCreateOrConnectWithoutAgencyInput[]
-    upsert?: QuotationUpsertWithWhereUniqueWithoutAgencyInput | QuotationUpsertWithWhereUniqueWithoutAgencyInput[]
-    createMany?: QuotationCreateManyAgencyInputEnvelope
-    set?: QuotationWhereUniqueInput | QuotationWhereUniqueInput[]
-    disconnect?: QuotationWhereUniqueInput | QuotationWhereUniqueInput[]
-    delete?: QuotationWhereUniqueInput | QuotationWhereUniqueInput[]
-    connect?: QuotationWhereUniqueInput | QuotationWhereUniqueInput[]
-    update?: QuotationUpdateWithWhereUniqueWithoutAgencyInput | QuotationUpdateWithWhereUniqueWithoutAgencyInput[]
-    updateMany?: QuotationUpdateManyWithWhereWithoutAgencyInput | QuotationUpdateManyWithWhereWithoutAgencyInput[]
-    deleteMany?: QuotationScalarWhereInput | QuotationScalarWhereInput[]
-  }
-
-  export type HotelUpdateManyWithoutAgencyNestedInput = {
+  export type HotelUncheckedCreateNestedManyWithoutAgencyInput = {
     create?: XOR<HotelCreateWithoutAgencyInput, HotelUncheckedCreateWithoutAgencyInput> | HotelCreateWithoutAgencyInput[] | HotelUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: HotelCreateOrConnectWithoutAgencyInput | HotelCreateOrConnectWithoutAgencyInput[]
-    upsert?: HotelUpsertWithWhereUniqueWithoutAgencyInput | HotelUpsertWithWhereUniqueWithoutAgencyInput[]
     createMany?: HotelCreateManyAgencyInputEnvelope
-    set?: HotelWhereUniqueInput | HotelWhereUniqueInput[]
-    disconnect?: HotelWhereUniqueInput | HotelWhereUniqueInput[]
-    delete?: HotelWhereUniqueInput | HotelWhereUniqueInput[]
     connect?: HotelWhereUniqueInput | HotelWhereUniqueInput[]
-    update?: HotelUpdateWithWhereUniqueWithoutAgencyInput | HotelUpdateWithWhereUniqueWithoutAgencyInput[]
-    updateMany?: HotelUpdateManyWithWhereWithoutAgencyInput | HotelUpdateManyWithWhereWithoutAgencyInput[]
-    deleteMany?: HotelScalarWhereInput | HotelScalarWhereInput[]
   }
 
-  export type CarUpdateManyWithoutAgencyNestedInput = {
-    create?: XOR<CarCreateWithoutAgencyInput, CarUncheckedCreateWithoutAgencyInput> | CarCreateWithoutAgencyInput[] | CarUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: CarCreateOrConnectWithoutAgencyInput | CarCreateOrConnectWithoutAgencyInput[]
-    upsert?: CarUpsertWithWhereUniqueWithoutAgencyInput | CarUpsertWithWhereUniqueWithoutAgencyInput[]
-    createMany?: CarCreateManyAgencyInputEnvelope
-    set?: CarWhereUniqueInput | CarWhereUniqueInput[]
-    disconnect?: CarWhereUniqueInput | CarWhereUniqueInput[]
-    delete?: CarWhereUniqueInput | CarWhereUniqueInput[]
-    connect?: CarWhereUniqueInput | CarWhereUniqueInput[]
-    update?: CarUpdateWithWhereUniqueWithoutAgencyInput | CarUpdateWithWhereUniqueWithoutAgencyInput[]
-    updateMany?: CarUpdateManyWithWhereWithoutAgencyInput | CarUpdateManyWithWhereWithoutAgencyInput[]
-    deleteMany?: CarScalarWhereInput | CarScalarWhereInput[]
-  }
-
-  export type MealUpdateManyWithoutAgencyNestedInput = {
+  export type MealUncheckedCreateNestedManyWithoutAgencyInput = {
     create?: XOR<MealCreateWithoutAgencyInput, MealUncheckedCreateWithoutAgencyInput> | MealCreateWithoutAgencyInput[] | MealUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: MealCreateOrConnectWithoutAgencyInput | MealCreateOrConnectWithoutAgencyInput[]
-    upsert?: MealUpsertWithWhereUniqueWithoutAgencyInput | MealUpsertWithWhereUniqueWithoutAgencyInput[]
     createMany?: MealCreateManyAgencyInputEnvelope
-    set?: MealWhereUniqueInput | MealWhereUniqueInput[]
-    disconnect?: MealWhereUniqueInput | MealWhereUniqueInput[]
-    delete?: MealWhereUniqueInput | MealWhereUniqueInput[]
     connect?: MealWhereUniqueInput | MealWhereUniqueInput[]
-    update?: MealUpdateWithWhereUniqueWithoutAgencyInput | MealUpdateWithWhereUniqueWithoutAgencyInput[]
-    updateMany?: MealUpdateManyWithWhereWithoutAgencyInput | MealUpdateManyWithWhereWithoutAgencyInput[]
-    deleteMany?: MealScalarWhereInput | MealScalarWhereInput[]
+  }
+
+  export type QuotationUncheckedCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<QuotationCreateWithoutAgencyInput, QuotationUncheckedCreateWithoutAgencyInput> | QuotationCreateWithoutAgencyInput[] | QuotationUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: QuotationCreateOrConnectWithoutAgencyInput | QuotationCreateOrConnectWithoutAgencyInput[]
+    createMany?: QuotationCreateManyAgencyInputEnvelope
+    connect?: QuotationWhereUniqueInput | QuotationWhereUniqueInput[]
+  }
+
+  export type UserUncheckedCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<UserCreateWithoutAgencyInput, UserUncheckedCreateWithoutAgencyInput> | UserCreateWithoutAgencyInput[] | UserUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutAgencyInput | UserCreateOrConnectWithoutAgencyInput[]
+    createMany?: UserCreateManyAgencyInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
   export type ActivityUpdateManyWithoutAgencyNestedInput = {
@@ -22039,7 +23392,77 @@ export namespace Prisma {
     deleteMany?: ActivityScalarWhereInput | ActivityScalarWhereInput[]
   }
 
-  export type UserUncheckedUpdateManyWithoutAgencyNestedInput = {
+  export type TransportUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<TransportCreateWithoutAgencyInput, TransportUncheckedCreateWithoutAgencyInput> | TransportCreateWithoutAgencyInput[] | TransportUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: TransportCreateOrConnectWithoutAgencyInput | TransportCreateOrConnectWithoutAgencyInput[]
+    upsert?: TransportUpsertWithWhereUniqueWithoutAgencyInput | TransportUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: TransportCreateManyAgencyInputEnvelope
+    set?: TransportWhereUniqueInput | TransportWhereUniqueInput[]
+    disconnect?: TransportWhereUniqueInput | TransportWhereUniqueInput[]
+    delete?: TransportWhereUniqueInput | TransportWhereUniqueInput[]
+    connect?: TransportWhereUniqueInput | TransportWhereUniqueInput[]
+    update?: TransportUpdateWithWhereUniqueWithoutAgencyInput | TransportUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: TransportUpdateManyWithWhereWithoutAgencyInput | TransportUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: TransportScalarWhereInput | TransportScalarWhereInput[]
+  }
+
+  export type ClientUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<ClientCreateWithoutAgencyInput, ClientUncheckedCreateWithoutAgencyInput> | ClientCreateWithoutAgencyInput[] | ClientUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: ClientCreateOrConnectWithoutAgencyInput | ClientCreateOrConnectWithoutAgencyInput[]
+    upsert?: ClientUpsertWithWhereUniqueWithoutAgencyInput | ClientUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: ClientCreateManyAgencyInputEnvelope
+    set?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+    disconnect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+    delete?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+    connect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+    update?: ClientUpdateWithWhereUniqueWithoutAgencyInput | ClientUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: ClientUpdateManyWithWhereWithoutAgencyInput | ClientUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: ClientScalarWhereInput | ClientScalarWhereInput[]
+  }
+
+  export type HotelUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<HotelCreateWithoutAgencyInput, HotelUncheckedCreateWithoutAgencyInput> | HotelCreateWithoutAgencyInput[] | HotelUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: HotelCreateOrConnectWithoutAgencyInput | HotelCreateOrConnectWithoutAgencyInput[]
+    upsert?: HotelUpsertWithWhereUniqueWithoutAgencyInput | HotelUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: HotelCreateManyAgencyInputEnvelope
+    set?: HotelWhereUniqueInput | HotelWhereUniqueInput[]
+    disconnect?: HotelWhereUniqueInput | HotelWhereUniqueInput[]
+    delete?: HotelWhereUniqueInput | HotelWhereUniqueInput[]
+    connect?: HotelWhereUniqueInput | HotelWhereUniqueInput[]
+    update?: HotelUpdateWithWhereUniqueWithoutAgencyInput | HotelUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: HotelUpdateManyWithWhereWithoutAgencyInput | HotelUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: HotelScalarWhereInput | HotelScalarWhereInput[]
+  }
+
+  export type MealUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<MealCreateWithoutAgencyInput, MealUncheckedCreateWithoutAgencyInput> | MealCreateWithoutAgencyInput[] | MealUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: MealCreateOrConnectWithoutAgencyInput | MealCreateOrConnectWithoutAgencyInput[]
+    upsert?: MealUpsertWithWhereUniqueWithoutAgencyInput | MealUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: MealCreateManyAgencyInputEnvelope
+    set?: MealWhereUniqueInput | MealWhereUniqueInput[]
+    disconnect?: MealWhereUniqueInput | MealWhereUniqueInput[]
+    delete?: MealWhereUniqueInput | MealWhereUniqueInput[]
+    connect?: MealWhereUniqueInput | MealWhereUniqueInput[]
+    update?: MealUpdateWithWhereUniqueWithoutAgencyInput | MealUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: MealUpdateManyWithWhereWithoutAgencyInput | MealUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: MealScalarWhereInput | MealScalarWhereInput[]
+  }
+
+  export type QuotationUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<QuotationCreateWithoutAgencyInput, QuotationUncheckedCreateWithoutAgencyInput> | QuotationCreateWithoutAgencyInput[] | QuotationUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: QuotationCreateOrConnectWithoutAgencyInput | QuotationCreateOrConnectWithoutAgencyInput[]
+    upsert?: QuotationUpsertWithWhereUniqueWithoutAgencyInput | QuotationUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: QuotationCreateManyAgencyInputEnvelope
+    set?: QuotationWhereUniqueInput | QuotationWhereUniqueInput[]
+    disconnect?: QuotationWhereUniqueInput | QuotationWhereUniqueInput[]
+    delete?: QuotationWhereUniqueInput | QuotationWhereUniqueInput[]
+    connect?: QuotationWhereUniqueInput | QuotationWhereUniqueInput[]
+    update?: QuotationUpdateWithWhereUniqueWithoutAgencyInput | QuotationUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: QuotationUpdateManyWithWhereWithoutAgencyInput | QuotationUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: QuotationScalarWhereInput | QuotationScalarWhereInput[]
+  }
+
+  export type UserUpdateManyWithoutAgencyNestedInput = {
     create?: XOR<UserCreateWithoutAgencyInput, UserUncheckedCreateWithoutAgencyInput> | UserCreateWithoutAgencyInput[] | UserUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: UserCreateOrConnectWithoutAgencyInput | UserCreateOrConnectWithoutAgencyInput[]
     upsert?: UserUpsertWithWhereUniqueWithoutAgencyInput | UserUpsertWithWhereUniqueWithoutAgencyInput[]
@@ -22051,6 +23474,34 @@ export namespace Prisma {
     update?: UserUpdateWithWhereUniqueWithoutAgencyInput | UserUpdateWithWhereUniqueWithoutAgencyInput[]
     updateMany?: UserUpdateManyWithWhereWithoutAgencyInput | UserUpdateManyWithWhereWithoutAgencyInput[]
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type ActivityUncheckedUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<ActivityCreateWithoutAgencyInput, ActivityUncheckedCreateWithoutAgencyInput> | ActivityCreateWithoutAgencyInput[] | ActivityUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: ActivityCreateOrConnectWithoutAgencyInput | ActivityCreateOrConnectWithoutAgencyInput[]
+    upsert?: ActivityUpsertWithWhereUniqueWithoutAgencyInput | ActivityUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: ActivityCreateManyAgencyInputEnvelope
+    set?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
+    disconnect?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
+    delete?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
+    connect?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
+    update?: ActivityUpdateWithWhereUniqueWithoutAgencyInput | ActivityUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: ActivityUpdateManyWithWhereWithoutAgencyInput | ActivityUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: ActivityScalarWhereInput | ActivityScalarWhereInput[]
+  }
+
+  export type TransportUncheckedUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<TransportCreateWithoutAgencyInput, TransportUncheckedCreateWithoutAgencyInput> | TransportCreateWithoutAgencyInput[] | TransportUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: TransportCreateOrConnectWithoutAgencyInput | TransportCreateOrConnectWithoutAgencyInput[]
+    upsert?: TransportUpsertWithWhereUniqueWithoutAgencyInput | TransportUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: TransportCreateManyAgencyInputEnvelope
+    set?: TransportWhereUniqueInput | TransportWhereUniqueInput[]
+    disconnect?: TransportWhereUniqueInput | TransportWhereUniqueInput[]
+    delete?: TransportWhereUniqueInput | TransportWhereUniqueInput[]
+    connect?: TransportWhereUniqueInput | TransportWhereUniqueInput[]
+    update?: TransportUpdateWithWhereUniqueWithoutAgencyInput | TransportUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: TransportUpdateManyWithWhereWithoutAgencyInput | TransportUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: TransportScalarWhereInput | TransportScalarWhereInput[]
   }
 
   export type ClientUncheckedUpdateManyWithoutAgencyNestedInput = {
@@ -22067,20 +23518,6 @@ export namespace Prisma {
     deleteMany?: ClientScalarWhereInput | ClientScalarWhereInput[]
   }
 
-  export type QuotationUncheckedUpdateManyWithoutAgencyNestedInput = {
-    create?: XOR<QuotationCreateWithoutAgencyInput, QuotationUncheckedCreateWithoutAgencyInput> | QuotationCreateWithoutAgencyInput[] | QuotationUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: QuotationCreateOrConnectWithoutAgencyInput | QuotationCreateOrConnectWithoutAgencyInput[]
-    upsert?: QuotationUpsertWithWhereUniqueWithoutAgencyInput | QuotationUpsertWithWhereUniqueWithoutAgencyInput[]
-    createMany?: QuotationCreateManyAgencyInputEnvelope
-    set?: QuotationWhereUniqueInput | QuotationWhereUniqueInput[]
-    disconnect?: QuotationWhereUniqueInput | QuotationWhereUniqueInput[]
-    delete?: QuotationWhereUniqueInput | QuotationWhereUniqueInput[]
-    connect?: QuotationWhereUniqueInput | QuotationWhereUniqueInput[]
-    update?: QuotationUpdateWithWhereUniqueWithoutAgencyInput | QuotationUpdateWithWhereUniqueWithoutAgencyInput[]
-    updateMany?: QuotationUpdateManyWithWhereWithoutAgencyInput | QuotationUpdateManyWithWhereWithoutAgencyInput[]
-    deleteMany?: QuotationScalarWhereInput | QuotationScalarWhereInput[]
-  }
-
   export type HotelUncheckedUpdateManyWithoutAgencyNestedInput = {
     create?: XOR<HotelCreateWithoutAgencyInput, HotelUncheckedCreateWithoutAgencyInput> | HotelCreateWithoutAgencyInput[] | HotelUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: HotelCreateOrConnectWithoutAgencyInput | HotelCreateOrConnectWithoutAgencyInput[]
@@ -22093,20 +23530,6 @@ export namespace Prisma {
     update?: HotelUpdateWithWhereUniqueWithoutAgencyInput | HotelUpdateWithWhereUniqueWithoutAgencyInput[]
     updateMany?: HotelUpdateManyWithWhereWithoutAgencyInput | HotelUpdateManyWithWhereWithoutAgencyInput[]
     deleteMany?: HotelScalarWhereInput | HotelScalarWhereInput[]
-  }
-
-  export type CarUncheckedUpdateManyWithoutAgencyNestedInput = {
-    create?: XOR<CarCreateWithoutAgencyInput, CarUncheckedCreateWithoutAgencyInput> | CarCreateWithoutAgencyInput[] | CarUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: CarCreateOrConnectWithoutAgencyInput | CarCreateOrConnectWithoutAgencyInput[]
-    upsert?: CarUpsertWithWhereUniqueWithoutAgencyInput | CarUpsertWithWhereUniqueWithoutAgencyInput[]
-    createMany?: CarCreateManyAgencyInputEnvelope
-    set?: CarWhereUniqueInput | CarWhereUniqueInput[]
-    disconnect?: CarWhereUniqueInput | CarWhereUniqueInput[]
-    delete?: CarWhereUniqueInput | CarWhereUniqueInput[]
-    connect?: CarWhereUniqueInput | CarWhereUniqueInput[]
-    update?: CarUpdateWithWhereUniqueWithoutAgencyInput | CarUpdateWithWhereUniqueWithoutAgencyInput[]
-    updateMany?: CarUpdateManyWithWhereWithoutAgencyInput | CarUpdateManyWithWhereWithoutAgencyInput[]
-    deleteMany?: CarScalarWhereInput | CarScalarWhereInput[]
   }
 
   export type MealUncheckedUpdateManyWithoutAgencyNestedInput = {
@@ -22123,18 +23546,32 @@ export namespace Prisma {
     deleteMany?: MealScalarWhereInput | MealScalarWhereInput[]
   }
 
-  export type ActivityUncheckedUpdateManyWithoutAgencyNestedInput = {
-    create?: XOR<ActivityCreateWithoutAgencyInput, ActivityUncheckedCreateWithoutAgencyInput> | ActivityCreateWithoutAgencyInput[] | ActivityUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: ActivityCreateOrConnectWithoutAgencyInput | ActivityCreateOrConnectWithoutAgencyInput[]
-    upsert?: ActivityUpsertWithWhereUniqueWithoutAgencyInput | ActivityUpsertWithWhereUniqueWithoutAgencyInput[]
-    createMany?: ActivityCreateManyAgencyInputEnvelope
-    set?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
-    disconnect?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
-    delete?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
-    connect?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
-    update?: ActivityUpdateWithWhereUniqueWithoutAgencyInput | ActivityUpdateWithWhereUniqueWithoutAgencyInput[]
-    updateMany?: ActivityUpdateManyWithWhereWithoutAgencyInput | ActivityUpdateManyWithWhereWithoutAgencyInput[]
-    deleteMany?: ActivityScalarWhereInput | ActivityScalarWhereInput[]
+  export type QuotationUncheckedUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<QuotationCreateWithoutAgencyInput, QuotationUncheckedCreateWithoutAgencyInput> | QuotationCreateWithoutAgencyInput[] | QuotationUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: QuotationCreateOrConnectWithoutAgencyInput | QuotationCreateOrConnectWithoutAgencyInput[]
+    upsert?: QuotationUpsertWithWhereUniqueWithoutAgencyInput | QuotationUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: QuotationCreateManyAgencyInputEnvelope
+    set?: QuotationWhereUniqueInput | QuotationWhereUniqueInput[]
+    disconnect?: QuotationWhereUniqueInput | QuotationWhereUniqueInput[]
+    delete?: QuotationWhereUniqueInput | QuotationWhereUniqueInput[]
+    connect?: QuotationWhereUniqueInput | QuotationWhereUniqueInput[]
+    update?: QuotationUpdateWithWhereUniqueWithoutAgencyInput | QuotationUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: QuotationUpdateManyWithWhereWithoutAgencyInput | QuotationUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: QuotationScalarWhereInput | QuotationScalarWhereInput[]
+  }
+
+  export type UserUncheckedUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<UserCreateWithoutAgencyInput, UserUncheckedCreateWithoutAgencyInput> | UserCreateWithoutAgencyInput[] | UserUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutAgencyInput | UserCreateOrConnectWithoutAgencyInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutAgencyInput | UserUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: UserCreateManyAgencyInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutAgencyInput | UserUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutAgencyInput | UserUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
   export type AgencyCreateNestedOneWithoutClientsInput = {
@@ -22193,10 +23630,11 @@ export namespace Prisma {
     deleteMany?: QuotationScalarWhereInput | QuotationScalarWhereInput[]
   }
 
-  export type ClientCreateNestedOneWithoutQuotationsInput = {
-    create?: XOR<ClientCreateWithoutQuotationsInput, ClientUncheckedCreateWithoutQuotationsInput>
-    connectOrCreate?: ClientCreateOrConnectWithoutQuotationsInput
-    connect?: ClientWhereUniqueInput
+  export type ItineraryCreateNestedManyWithoutQuotationInput = {
+    create?: XOR<ItineraryCreateWithoutQuotationInput, ItineraryUncheckedCreateWithoutQuotationInput> | ItineraryCreateWithoutQuotationInput[] | ItineraryUncheckedCreateWithoutQuotationInput[]
+    connectOrCreate?: ItineraryCreateOrConnectWithoutQuotationInput | ItineraryCreateOrConnectWithoutQuotationInput[]
+    createMany?: ItineraryCreateManyQuotationInputEnvelope
+    connect?: ItineraryWhereUniqueInput | ItineraryWhereUniqueInput[]
   }
 
   export type AgencyCreateNestedOneWithoutQuotationsInput = {
@@ -22205,21 +23643,13 @@ export namespace Prisma {
     connect?: AgencyWhereUniqueInput
   }
 
+  export type ClientCreateNestedOneWithoutQuotationsInput = {
+    create?: XOR<ClientCreateWithoutQuotationsInput, ClientUncheckedCreateWithoutQuotationsInput>
+    connectOrCreate?: ClientCreateOrConnectWithoutQuotationsInput
+    connect?: ClientWhereUniqueInput
+  }
+
   export type QuotationItemCreateNestedManyWithoutQuotationInput = {
-    create?: XOR<QuotationItemCreateWithoutQuotationInput, QuotationItemUncheckedCreateWithoutQuotationInput> | QuotationItemCreateWithoutQuotationInput[] | QuotationItemUncheckedCreateWithoutQuotationInput[]
-    connectOrCreate?: QuotationItemCreateOrConnectWithoutQuotationInput | QuotationItemCreateOrConnectWithoutQuotationInput[]
-    createMany?: QuotationItemCreateManyQuotationInputEnvelope
-    connect?: QuotationItemWhereUniqueInput | QuotationItemWhereUniqueInput[]
-  }
-
-  export type ItineraryCreateNestedManyWithoutQuotationInput = {
-    create?: XOR<ItineraryCreateWithoutQuotationInput, ItineraryUncheckedCreateWithoutQuotationInput> | ItineraryCreateWithoutQuotationInput[] | ItineraryUncheckedCreateWithoutQuotationInput[]
-    connectOrCreate?: ItineraryCreateOrConnectWithoutQuotationInput | ItineraryCreateOrConnectWithoutQuotationInput[]
-    createMany?: ItineraryCreateManyQuotationInputEnvelope
-    connect?: ItineraryWhereUniqueInput | ItineraryWhereUniqueInput[]
-  }
-
-  export type QuotationItemUncheckedCreateNestedManyWithoutQuotationInput = {
     create?: XOR<QuotationItemCreateWithoutQuotationInput, QuotationItemUncheckedCreateWithoutQuotationInput> | QuotationItemCreateWithoutQuotationInput[] | QuotationItemUncheckedCreateWithoutQuotationInput[]
     connectOrCreate?: QuotationItemCreateOrConnectWithoutQuotationInput | QuotationItemCreateOrConnectWithoutQuotationInput[]
     createMany?: QuotationItemCreateManyQuotationInputEnvelope
@@ -22231,6 +23661,13 @@ export namespace Prisma {
     connectOrCreate?: ItineraryCreateOrConnectWithoutQuotationInput | ItineraryCreateOrConnectWithoutQuotationInput[]
     createMany?: ItineraryCreateManyQuotationInputEnvelope
     connect?: ItineraryWhereUniqueInput | ItineraryWhereUniqueInput[]
+  }
+
+  export type QuotationItemUncheckedCreateNestedManyWithoutQuotationInput = {
+    create?: XOR<QuotationItemCreateWithoutQuotationInput, QuotationItemUncheckedCreateWithoutQuotationInput> | QuotationItemCreateWithoutQuotationInput[] | QuotationItemUncheckedCreateWithoutQuotationInput[]
+    connectOrCreate?: QuotationItemCreateOrConnectWithoutQuotationInput | QuotationItemCreateOrConnectWithoutQuotationInput[]
+    createMany?: QuotationItemCreateManyQuotationInputEnvelope
+    connect?: QuotationItemWhereUniqueInput | QuotationItemWhereUniqueInput[]
   }
 
   export type EnumQuotationStatusFieldUpdateOperationsInput = {
@@ -22253,36 +23690,6 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type ClientUpdateOneRequiredWithoutQuotationsNestedInput = {
-    create?: XOR<ClientCreateWithoutQuotationsInput, ClientUncheckedCreateWithoutQuotationsInput>
-    connectOrCreate?: ClientCreateOrConnectWithoutQuotationsInput
-    upsert?: ClientUpsertWithoutQuotationsInput
-    connect?: ClientWhereUniqueInput
-    update?: XOR<XOR<ClientUpdateToOneWithWhereWithoutQuotationsInput, ClientUpdateWithoutQuotationsInput>, ClientUncheckedUpdateWithoutQuotationsInput>
-  }
-
-  export type AgencyUpdateOneRequiredWithoutQuotationsNestedInput = {
-    create?: XOR<AgencyCreateWithoutQuotationsInput, AgencyUncheckedCreateWithoutQuotationsInput>
-    connectOrCreate?: AgencyCreateOrConnectWithoutQuotationsInput
-    upsert?: AgencyUpsertWithoutQuotationsInput
-    connect?: AgencyWhereUniqueInput
-    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutQuotationsInput, AgencyUpdateWithoutQuotationsInput>, AgencyUncheckedUpdateWithoutQuotationsInput>
-  }
-
-  export type QuotationItemUpdateManyWithoutQuotationNestedInput = {
-    create?: XOR<QuotationItemCreateWithoutQuotationInput, QuotationItemUncheckedCreateWithoutQuotationInput> | QuotationItemCreateWithoutQuotationInput[] | QuotationItemUncheckedCreateWithoutQuotationInput[]
-    connectOrCreate?: QuotationItemCreateOrConnectWithoutQuotationInput | QuotationItemCreateOrConnectWithoutQuotationInput[]
-    upsert?: QuotationItemUpsertWithWhereUniqueWithoutQuotationInput | QuotationItemUpsertWithWhereUniqueWithoutQuotationInput[]
-    createMany?: QuotationItemCreateManyQuotationInputEnvelope
-    set?: QuotationItemWhereUniqueInput | QuotationItemWhereUniqueInput[]
-    disconnect?: QuotationItemWhereUniqueInput | QuotationItemWhereUniqueInput[]
-    delete?: QuotationItemWhereUniqueInput | QuotationItemWhereUniqueInput[]
-    connect?: QuotationItemWhereUniqueInput | QuotationItemWhereUniqueInput[]
-    update?: QuotationItemUpdateWithWhereUniqueWithoutQuotationInput | QuotationItemUpdateWithWhereUniqueWithoutQuotationInput[]
-    updateMany?: QuotationItemUpdateManyWithWhereWithoutQuotationInput | QuotationItemUpdateManyWithWhereWithoutQuotationInput[]
-    deleteMany?: QuotationItemScalarWhereInput | QuotationItemScalarWhereInput[]
-  }
-
   export type ItineraryUpdateManyWithoutQuotationNestedInput = {
     create?: XOR<ItineraryCreateWithoutQuotationInput, ItineraryUncheckedCreateWithoutQuotationInput> | ItineraryCreateWithoutQuotationInput[] | ItineraryUncheckedCreateWithoutQuotationInput[]
     connectOrCreate?: ItineraryCreateOrConnectWithoutQuotationInput | ItineraryCreateOrConnectWithoutQuotationInput[]
@@ -22297,7 +23704,23 @@ export namespace Prisma {
     deleteMany?: ItineraryScalarWhereInput | ItineraryScalarWhereInput[]
   }
 
-  export type QuotationItemUncheckedUpdateManyWithoutQuotationNestedInput = {
+  export type AgencyUpdateOneRequiredWithoutQuotationsNestedInput = {
+    create?: XOR<AgencyCreateWithoutQuotationsInput, AgencyUncheckedCreateWithoutQuotationsInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutQuotationsInput
+    upsert?: AgencyUpsertWithoutQuotationsInput
+    connect?: AgencyWhereUniqueInput
+    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutQuotationsInput, AgencyUpdateWithoutQuotationsInput>, AgencyUncheckedUpdateWithoutQuotationsInput>
+  }
+
+  export type ClientUpdateOneRequiredWithoutQuotationsNestedInput = {
+    create?: XOR<ClientCreateWithoutQuotationsInput, ClientUncheckedCreateWithoutQuotationsInput>
+    connectOrCreate?: ClientCreateOrConnectWithoutQuotationsInput
+    upsert?: ClientUpsertWithoutQuotationsInput
+    connect?: ClientWhereUniqueInput
+    update?: XOR<XOR<ClientUpdateToOneWithWhereWithoutQuotationsInput, ClientUpdateWithoutQuotationsInput>, ClientUncheckedUpdateWithoutQuotationsInput>
+  }
+
+  export type QuotationItemUpdateManyWithoutQuotationNestedInput = {
     create?: XOR<QuotationItemCreateWithoutQuotationInput, QuotationItemUncheckedCreateWithoutQuotationInput> | QuotationItemCreateWithoutQuotationInput[] | QuotationItemUncheckedCreateWithoutQuotationInput[]
     connectOrCreate?: QuotationItemCreateOrConnectWithoutQuotationInput | QuotationItemCreateOrConnectWithoutQuotationInput[]
     upsert?: QuotationItemUpsertWithWhereUniqueWithoutQuotationInput | QuotationItemUpsertWithWhereUniqueWithoutQuotationInput[]
@@ -22325,6 +23748,20 @@ export namespace Prisma {
     deleteMany?: ItineraryScalarWhereInput | ItineraryScalarWhereInput[]
   }
 
+  export type QuotationItemUncheckedUpdateManyWithoutQuotationNestedInput = {
+    create?: XOR<QuotationItemCreateWithoutQuotationInput, QuotationItemUncheckedCreateWithoutQuotationInput> | QuotationItemCreateWithoutQuotationInput[] | QuotationItemUncheckedCreateWithoutQuotationInput[]
+    connectOrCreate?: QuotationItemCreateOrConnectWithoutQuotationInput | QuotationItemCreateOrConnectWithoutQuotationInput[]
+    upsert?: QuotationItemUpsertWithWhereUniqueWithoutQuotationInput | QuotationItemUpsertWithWhereUniqueWithoutQuotationInput[]
+    createMany?: QuotationItemCreateManyQuotationInputEnvelope
+    set?: QuotationItemWhereUniqueInput | QuotationItemWhereUniqueInput[]
+    disconnect?: QuotationItemWhereUniqueInput | QuotationItemWhereUniqueInput[]
+    delete?: QuotationItemWhereUniqueInput | QuotationItemWhereUniqueInput[]
+    connect?: QuotationItemWhereUniqueInput | QuotationItemWhereUniqueInput[]
+    update?: QuotationItemUpdateWithWhereUniqueWithoutQuotationInput | QuotationItemUpdateWithWhereUniqueWithoutQuotationInput[]
+    updateMany?: QuotationItemUpdateManyWithWhereWithoutQuotationInput | QuotationItemUpdateManyWithWhereWithoutQuotationInput[]
+    deleteMany?: QuotationItemScalarWhereInput | QuotationItemScalarWhereInput[]
+  }
+
   export type QuotationCreateNestedOneWithoutItemsInput = {
     create?: XOR<QuotationCreateWithoutItemsInput, QuotationUncheckedCreateWithoutItemsInput>
     connectOrCreate?: QuotationCreateOrConnectWithoutItemsInput
@@ -22343,10 +23780,46 @@ export namespace Prisma {
     update?: XOR<XOR<QuotationUpdateToOneWithWhereWithoutItemsInput, QuotationUpdateWithoutItemsInput>, QuotationUncheckedUpdateWithoutItemsInput>
   }
 
+  export type HotelCreateNestedOneWithoutRoomTypesInput = {
+    create?: XOR<HotelCreateWithoutRoomTypesInput, HotelUncheckedCreateWithoutRoomTypesInput>
+    connectOrCreate?: HotelCreateOrConnectWithoutRoomTypesInput
+    connect?: HotelWhereUniqueInput
+  }
+
+  export type DecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
+  }
+
+  export type HotelUpdateOneRequiredWithoutRoomTypesNestedInput = {
+    create?: XOR<HotelCreateWithoutRoomTypesInput, HotelUncheckedCreateWithoutRoomTypesInput>
+    connectOrCreate?: HotelCreateOrConnectWithoutRoomTypesInput
+    upsert?: HotelUpsertWithoutRoomTypesInput
+    connect?: HotelWhereUniqueInput
+    update?: XOR<XOR<HotelUpdateToOneWithWhereWithoutRoomTypesInput, HotelUpdateWithoutRoomTypesInput>, HotelUncheckedUpdateWithoutRoomTypesInput>
+  }
+
   export type AgencyCreateNestedOneWithoutHotelsInput = {
     create?: XOR<AgencyCreateWithoutHotelsInput, AgencyUncheckedCreateWithoutHotelsInput>
     connectOrCreate?: AgencyCreateOrConnectWithoutHotelsInput
     connect?: AgencyWhereUniqueInput
+  }
+
+  export type RoomTypeCreateNestedManyWithoutHotelInput = {
+    create?: XOR<RoomTypeCreateWithoutHotelInput, RoomTypeUncheckedCreateWithoutHotelInput> | RoomTypeCreateWithoutHotelInput[] | RoomTypeUncheckedCreateWithoutHotelInput[]
+    connectOrCreate?: RoomTypeCreateOrConnectWithoutHotelInput | RoomTypeCreateOrConnectWithoutHotelInput[]
+    createMany?: RoomTypeCreateManyHotelInputEnvelope
+    connect?: RoomTypeWhereUniqueInput | RoomTypeWhereUniqueInput[]
+  }
+
+  export type RoomTypeUncheckedCreateNestedManyWithoutHotelInput = {
+    create?: XOR<RoomTypeCreateWithoutHotelInput, RoomTypeUncheckedCreateWithoutHotelInput> | RoomTypeCreateWithoutHotelInput[] | RoomTypeUncheckedCreateWithoutHotelInput[]
+    connectOrCreate?: RoomTypeCreateOrConnectWithoutHotelInput | RoomTypeCreateOrConnectWithoutHotelInput[]
+    createMany?: RoomTypeCreateManyHotelInputEnvelope
+    connect?: RoomTypeWhereUniqueInput | RoomTypeWhereUniqueInput[]
   }
 
   export type AgencyUpdateOneRequiredWithoutHotelsNestedInput = {
@@ -22357,18 +23830,46 @@ export namespace Prisma {
     update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutHotelsInput, AgencyUpdateWithoutHotelsInput>, AgencyUncheckedUpdateWithoutHotelsInput>
   }
 
-  export type AgencyCreateNestedOneWithoutCarsInput = {
-    create?: XOR<AgencyCreateWithoutCarsInput, AgencyUncheckedCreateWithoutCarsInput>
-    connectOrCreate?: AgencyCreateOrConnectWithoutCarsInput
+  export type RoomTypeUpdateManyWithoutHotelNestedInput = {
+    create?: XOR<RoomTypeCreateWithoutHotelInput, RoomTypeUncheckedCreateWithoutHotelInput> | RoomTypeCreateWithoutHotelInput[] | RoomTypeUncheckedCreateWithoutHotelInput[]
+    connectOrCreate?: RoomTypeCreateOrConnectWithoutHotelInput | RoomTypeCreateOrConnectWithoutHotelInput[]
+    upsert?: RoomTypeUpsertWithWhereUniqueWithoutHotelInput | RoomTypeUpsertWithWhereUniqueWithoutHotelInput[]
+    createMany?: RoomTypeCreateManyHotelInputEnvelope
+    set?: RoomTypeWhereUniqueInput | RoomTypeWhereUniqueInput[]
+    disconnect?: RoomTypeWhereUniqueInput | RoomTypeWhereUniqueInput[]
+    delete?: RoomTypeWhereUniqueInput | RoomTypeWhereUniqueInput[]
+    connect?: RoomTypeWhereUniqueInput | RoomTypeWhereUniqueInput[]
+    update?: RoomTypeUpdateWithWhereUniqueWithoutHotelInput | RoomTypeUpdateWithWhereUniqueWithoutHotelInput[]
+    updateMany?: RoomTypeUpdateManyWithWhereWithoutHotelInput | RoomTypeUpdateManyWithWhereWithoutHotelInput[]
+    deleteMany?: RoomTypeScalarWhereInput | RoomTypeScalarWhereInput[]
+  }
+
+  export type RoomTypeUncheckedUpdateManyWithoutHotelNestedInput = {
+    create?: XOR<RoomTypeCreateWithoutHotelInput, RoomTypeUncheckedCreateWithoutHotelInput> | RoomTypeCreateWithoutHotelInput[] | RoomTypeUncheckedCreateWithoutHotelInput[]
+    connectOrCreate?: RoomTypeCreateOrConnectWithoutHotelInput | RoomTypeCreateOrConnectWithoutHotelInput[]
+    upsert?: RoomTypeUpsertWithWhereUniqueWithoutHotelInput | RoomTypeUpsertWithWhereUniqueWithoutHotelInput[]
+    createMany?: RoomTypeCreateManyHotelInputEnvelope
+    set?: RoomTypeWhereUniqueInput | RoomTypeWhereUniqueInput[]
+    disconnect?: RoomTypeWhereUniqueInput | RoomTypeWhereUniqueInput[]
+    delete?: RoomTypeWhereUniqueInput | RoomTypeWhereUniqueInput[]
+    connect?: RoomTypeWhereUniqueInput | RoomTypeWhereUniqueInput[]
+    update?: RoomTypeUpdateWithWhereUniqueWithoutHotelInput | RoomTypeUpdateWithWhereUniqueWithoutHotelInput[]
+    updateMany?: RoomTypeUpdateManyWithWhereWithoutHotelInput | RoomTypeUpdateManyWithWhereWithoutHotelInput[]
+    deleteMany?: RoomTypeScalarWhereInput | RoomTypeScalarWhereInput[]
+  }
+
+  export type AgencyCreateNestedOneWithoutTransportInput = {
+    create?: XOR<AgencyCreateWithoutTransportInput, AgencyUncheckedCreateWithoutTransportInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutTransportInput
     connect?: AgencyWhereUniqueInput
   }
 
-  export type AgencyUpdateOneRequiredWithoutCarsNestedInput = {
-    create?: XOR<AgencyCreateWithoutCarsInput, AgencyUncheckedCreateWithoutCarsInput>
-    connectOrCreate?: AgencyCreateOrConnectWithoutCarsInput
-    upsert?: AgencyUpsertWithoutCarsInput
+  export type AgencyUpdateOneRequiredWithoutTransportNestedInput = {
+    create?: XOR<AgencyCreateWithoutTransportInput, AgencyUncheckedCreateWithoutTransportInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutTransportInput
+    upsert?: AgencyUpsertWithoutTransportInput
     connect?: AgencyWhereUniqueInput
-    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutCarsInput, AgencyUpdateWithoutCarsInput>, AgencyUncheckedUpdateWithoutCarsInput>
+    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutTransportInput, AgencyUpdateWithoutTransportInput>, AgencyUncheckedUpdateWithoutTransportInput>
   }
 
   export type AgencyCreateNestedOneWithoutMealsInput = {
@@ -22694,28 +24195,32 @@ export namespace Prisma {
     _min?: NestedEnumServiceTypeFilter<$PrismaModel>
     _max?: NestedEnumServiceTypeFilter<$PrismaModel>
   }
-  export type NestedJsonFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
 
-  export type NestedJsonFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  export type NestedDecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type NestedBoolFilter<$PrismaModel = never> = {
@@ -22741,9 +24246,9 @@ export namespace Prisma {
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
-    agency?: AgencyCreateNestedOneWithoutUsersInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
+    agency?: AgencyCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutLoginHistoryInput = {
@@ -22787,9 +24292,9 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    agency?: AgencyUpdateOneWithoutUsersNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    agency?: AgencyUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLoginHistoryInput = {
@@ -22817,9 +24322,9 @@ export namespace Prisma {
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
-    agency?: AgencyCreateNestedOneWithoutUsersInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
     loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    agency?: AgencyCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -22833,8 +24338,8 @@ export namespace Prisma {
     agencyId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -22863,9 +24368,9 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    agency?: AgencyUpdateOneWithoutUsersNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
     loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    agency?: AgencyUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -22879,8 +24384,8 @@ export namespace Prisma {
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -22893,9 +24398,9 @@ export namespace Prisma {
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
-    agency?: AgencyCreateNestedOneWithoutUsersInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    agency?: AgencyCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -22939,9 +24444,9 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    agency?: AgencyUpdateOneWithoutUsersNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    agency?: AgencyUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -22957,41 +24462,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
-  }
-
-  export type AgencyCreateWithoutUsersInput = {
-    id?: string
-    name: string
-    logo?: string | null
-    settings?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    clients?: ClientCreateNestedManyWithoutAgencyInput
-    quotations?: QuotationCreateNestedManyWithoutAgencyInput
-    hotels?: HotelCreateNestedManyWithoutAgencyInput
-    cars?: CarCreateNestedManyWithoutAgencyInput
-    meals?: MealCreateNestedManyWithoutAgencyInput
-    activities?: ActivityCreateNestedManyWithoutAgencyInput
-  }
-
-  export type AgencyUncheckedCreateWithoutUsersInput = {
-    id?: string
-    name: string
-    logo?: string | null
-    settings?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    clients?: ClientUncheckedCreateNestedManyWithoutAgencyInput
-    quotations?: QuotationUncheckedCreateNestedManyWithoutAgencyInput
-    hotels?: HotelUncheckedCreateNestedManyWithoutAgencyInput
-    cars?: CarUncheckedCreateNestedManyWithoutAgencyInput
-    meals?: MealUncheckedCreateNestedManyWithoutAgencyInput
-    activities?: ActivityUncheckedCreateNestedManyWithoutAgencyInput
-  }
-
-  export type AgencyCreateOrConnectWithoutUsersInput = {
-    where: AgencyWhereUniqueInput
-    create: XOR<AgencyCreateWithoutUsersInput, AgencyUncheckedCreateWithoutUsersInput>
   }
 
   export type AccountCreateWithoutUserInput = {
@@ -23032,28 +24502,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type SessionCreateWithoutUserInput = {
-    id?: string
-    sessionToken: string
-    expires: Date | string
-  }
-
-  export type SessionUncheckedCreateWithoutUserInput = {
-    id?: string
-    sessionToken: string
-    expires: Date | string
-  }
-
-  export type SessionCreateOrConnectWithoutUserInput = {
-    where: SessionWhereUniqueInput
-    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
-  }
-
-  export type SessionCreateManyUserInputEnvelope = {
-    data: SessionCreateManyUserInput | SessionCreateManyUserInput[]
-    skipDuplicates?: boolean
-  }
-
   export type LoginHistoryCreateWithoutUserInput = {
     id?: string
     ip?: string | null
@@ -23078,45 +24526,61 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type AgencyUpsertWithoutUsersInput = {
-    update: XOR<AgencyUpdateWithoutUsersInput, AgencyUncheckedUpdateWithoutUsersInput>
+  export type SessionCreateWithoutUserInput = {
+    id?: string
+    sessionToken: string
+    expires: Date | string
+  }
+
+  export type SessionUncheckedCreateWithoutUserInput = {
+    id?: string
+    sessionToken: string
+    expires: Date | string
+  }
+
+  export type SessionCreateOrConnectWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
+  }
+
+  export type SessionCreateManyUserInputEnvelope = {
+    data: SessionCreateManyUserInput | SessionCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AgencyCreateWithoutUsersInput = {
+    id?: string
+    name: string
+    logo?: string | null
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    activities?: ActivityCreateNestedManyWithoutAgencyInput
+    transport?: TransportCreateNestedManyWithoutAgencyInput
+    clients?: ClientCreateNestedManyWithoutAgencyInput
+    hotels?: HotelCreateNestedManyWithoutAgencyInput
+    meals?: MealCreateNestedManyWithoutAgencyInput
+    quotations?: QuotationCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyUncheckedCreateWithoutUsersInput = {
+    id?: string
+    name: string
+    logo?: string | null
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    activities?: ActivityUncheckedCreateNestedManyWithoutAgencyInput
+    transport?: TransportUncheckedCreateNestedManyWithoutAgencyInput
+    clients?: ClientUncheckedCreateNestedManyWithoutAgencyInput
+    hotels?: HotelUncheckedCreateNestedManyWithoutAgencyInput
+    meals?: MealUncheckedCreateNestedManyWithoutAgencyInput
+    quotations?: QuotationUncheckedCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyCreateOrConnectWithoutUsersInput = {
+    where: AgencyWhereUniqueInput
     create: XOR<AgencyCreateWithoutUsersInput, AgencyUncheckedCreateWithoutUsersInput>
-    where?: AgencyWhereInput
-  }
-
-  export type AgencyUpdateToOneWithWhereWithoutUsersInput = {
-    where?: AgencyWhereInput
-    data: XOR<AgencyUpdateWithoutUsersInput, AgencyUncheckedUpdateWithoutUsersInput>
-  }
-
-  export type AgencyUpdateWithoutUsersInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
-    settings?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    clients?: ClientUpdateManyWithoutAgencyNestedInput
-    quotations?: QuotationUpdateManyWithoutAgencyNestedInput
-    hotels?: HotelUpdateManyWithoutAgencyNestedInput
-    cars?: CarUpdateManyWithoutAgencyNestedInput
-    meals?: MealUpdateManyWithoutAgencyNestedInput
-    activities?: ActivityUpdateManyWithoutAgencyNestedInput
-  }
-
-  export type AgencyUncheckedUpdateWithoutUsersInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
-    settings?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    clients?: ClientUncheckedUpdateManyWithoutAgencyNestedInput
-    quotations?: QuotationUncheckedUpdateManyWithoutAgencyNestedInput
-    hotels?: HotelUncheckedUpdateManyWithoutAgencyNestedInput
-    cars?: CarUncheckedUpdateManyWithoutAgencyNestedInput
-    meals?: MealUncheckedUpdateManyWithoutAgencyNestedInput
-    activities?: ActivityUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type AccountUpsertWithWhereUniqueWithoutUserInput = {
@@ -23153,32 +24617,6 @@ export namespace Prisma {
     session_state?: StringNullableFilter<"Account"> | string | null
   }
 
-  export type SessionUpsertWithWhereUniqueWithoutUserInput = {
-    where: SessionWhereUniqueInput
-    update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
-    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
-  }
-
-  export type SessionUpdateWithWhereUniqueWithoutUserInput = {
-    where: SessionWhereUniqueInput
-    data: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
-  }
-
-  export type SessionUpdateManyWithWhereWithoutUserInput = {
-    where: SessionScalarWhereInput
-    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyWithoutUserInput>
-  }
-
-  export type SessionScalarWhereInput = {
-    AND?: SessionScalarWhereInput | SessionScalarWhereInput[]
-    OR?: SessionScalarWhereInput[]
-    NOT?: SessionScalarWhereInput | SessionScalarWhereInput[]
-    id?: StringFilter<"Session"> | string
-    sessionToken?: StringFilter<"Session"> | string
-    userId?: StringFilter<"Session"> | string
-    expires?: DateTimeFilter<"Session"> | Date | string
-  }
-
   export type LoginHistoryUpsertWithWhereUniqueWithoutUserInput = {
     where: LoginHistoryWhereUniqueInput
     update: XOR<LoginHistoryUpdateWithoutUserInput, LoginHistoryUncheckedUpdateWithoutUserInput>
@@ -23206,43 +24644,128 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"LoginHistory"> | Date | string
   }
 
-  export type UserCreateWithoutAgencyInput = {
+  export type SessionUpsertWithWhereUniqueWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
+    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
+  }
+
+  export type SessionUpdateWithWhereUniqueWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    data: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type SessionUpdateManyWithWhereWithoutUserInput = {
+    where: SessionScalarWhereInput
+    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type SessionScalarWhereInput = {
+    AND?: SessionScalarWhereInput | SessionScalarWhereInput[]
+    OR?: SessionScalarWhereInput[]
+    NOT?: SessionScalarWhereInput | SessionScalarWhereInput[]
+    id?: StringFilter<"Session"> | string
+    sessionToken?: StringFilter<"Session"> | string
+    userId?: StringFilter<"Session"> | string
+    expires?: DateTimeFilter<"Session"> | Date | string
+  }
+
+  export type AgencyUpsertWithoutUsersInput = {
+    update: XOR<AgencyUpdateWithoutUsersInput, AgencyUncheckedUpdateWithoutUsersInput>
+    create: XOR<AgencyCreateWithoutUsersInput, AgencyUncheckedCreateWithoutUsersInput>
+    where?: AgencyWhereInput
+  }
+
+  export type AgencyUpdateToOneWithWhereWithoutUsersInput = {
+    where?: AgencyWhereInput
+    data: XOR<AgencyUpdateWithoutUsersInput, AgencyUncheckedUpdateWithoutUsersInput>
+  }
+
+  export type AgencyUpdateWithoutUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activities?: ActivityUpdateManyWithoutAgencyNestedInput
+    transport?: TransportUpdateManyWithoutAgencyNestedInput
+    clients?: ClientUpdateManyWithoutAgencyNestedInput
+    hotels?: HotelUpdateManyWithoutAgencyNestedInput
+    meals?: MealUpdateManyWithoutAgencyNestedInput
+    quotations?: QuotationUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type AgencyUncheckedUpdateWithoutUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activities?: ActivityUncheckedUpdateManyWithoutAgencyNestedInput
+    transport?: TransportUncheckedUpdateManyWithoutAgencyNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutAgencyNestedInput
+    hotels?: HotelUncheckedUpdateManyWithoutAgencyNestedInput
+    meals?: MealUncheckedUpdateManyWithoutAgencyNestedInput
+    quotations?: QuotationUncheckedUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type ActivityCreateWithoutAgencyInput = {
     id?: string
-    name?: string | null
-    email: string
-    emailVerified?: Date | string | null
-    password?: string | null
-    image?: string | null
-    role?: $Enums.Role
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    accounts?: AccountCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
-    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    name: string
+    description?: string | null
+    duration?: string | null
+    price: number
+    photos?: NullableJsonNullValueInput | InputJsonValue
   }
 
-  export type UserUncheckedCreateWithoutAgencyInput = {
+  export type ActivityUncheckedCreateWithoutAgencyInput = {
     id?: string
-    name?: string | null
-    email: string
-    emailVerified?: Date | string | null
-    password?: string | null
-    image?: string | null
-    role?: $Enums.Role
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    name: string
+    description?: string | null
+    duration?: string | null
+    price: number
+    photos?: NullableJsonNullValueInput | InputJsonValue
   }
 
-  export type UserCreateOrConnectWithoutAgencyInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutAgencyInput, UserUncheckedCreateWithoutAgencyInput>
+  export type ActivityCreateOrConnectWithoutAgencyInput = {
+    where: ActivityWhereUniqueInput
+    create: XOR<ActivityCreateWithoutAgencyInput, ActivityUncheckedCreateWithoutAgencyInput>
   }
 
-  export type UserCreateManyAgencyInputEnvelope = {
-    data: UserCreateManyAgencyInput | UserCreateManyAgencyInput[]
+  export type ActivityCreateManyAgencyInputEnvelope = {
+    data: ActivityCreateManyAgencyInput | ActivityCreateManyAgencyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransportCreateWithoutAgencyInput = {
+    id?: string
+    vehicleType: string
+    perDay: number
+    perKm: number
+    maxCapacity: number
+    notes?: string | null
+    photos?: string | null
+  }
+
+  export type TransportUncheckedCreateWithoutAgencyInput = {
+    id?: string
+    vehicleType: string
+    perDay: number
+    perKm: number
+    maxCapacity: number
+    notes?: string | null
+    photos?: string | null
+  }
+
+  export type TransportCreateOrConnectWithoutAgencyInput = {
+    where: TransportWhereUniqueInput
+    create: XOR<TransportCreateWithoutAgencyInput, TransportUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type TransportCreateManyAgencyInputEnvelope = {
+    data: TransportCreateManyAgencyInput | TransportCreateManyAgencyInput[]
     skipDuplicates?: boolean
   }
 
@@ -23280,6 +24803,64 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type HotelCreateWithoutAgencyInput = {
+    id?: string
+    name: string
+    city: string
+    starCategory: number
+    inclusions?: string | null
+    cancellation?: string | null
+    photos?: string | null
+    roomTypes?: RoomTypeCreateNestedManyWithoutHotelInput
+  }
+
+  export type HotelUncheckedCreateWithoutAgencyInput = {
+    id?: string
+    name: string
+    city: string
+    starCategory: number
+    inclusions?: string | null
+    cancellation?: string | null
+    photos?: string | null
+    roomTypes?: RoomTypeUncheckedCreateNestedManyWithoutHotelInput
+  }
+
+  export type HotelCreateOrConnectWithoutAgencyInput = {
+    where: HotelWhereUniqueInput
+    create: XOR<HotelCreateWithoutAgencyInput, HotelUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type HotelCreateManyAgencyInputEnvelope = {
+    data: HotelCreateManyAgencyInput | HotelCreateManyAgencyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MealCreateWithoutAgencyInput = {
+    id?: string
+    type: string
+    vegOption: boolean
+    nonVegOption: boolean
+    price: number
+  }
+
+  export type MealUncheckedCreateWithoutAgencyInput = {
+    id?: string
+    type: string
+    vegOption: boolean
+    nonVegOption: boolean
+    price: number
+  }
+
+  export type MealCreateOrConnectWithoutAgencyInput = {
+    where: MealWhereUniqueInput
+    create: XOR<MealCreateWithoutAgencyInput, MealUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type MealCreateManyAgencyInputEnvelope = {
+    data: MealCreateManyAgencyInput | MealCreateManyAgencyInput[]
+    skipDuplicates?: boolean
+  }
+
   export type QuotationCreateWithoutAgencyInput = {
     id?: string
     status?: $Enums.QuotationStatus
@@ -23292,9 +24873,9 @@ export namespace Prisma {
     totalAmount: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    itineraries?: ItineraryCreateNestedManyWithoutQuotationInput
     client: ClientCreateNestedOneWithoutQuotationsInput
     items?: QuotationItemCreateNestedManyWithoutQuotationInput
-    itineraries?: ItineraryCreateNestedManyWithoutQuotationInput
   }
 
   export type QuotationUncheckedCreateWithoutAgencyInput = {
@@ -23310,8 +24891,8 @@ export namespace Prisma {
     totalAmount: number
     createdAt?: Date | string
     updatedAt?: Date | string
-    items?: QuotationItemUncheckedCreateNestedManyWithoutQuotationInput
     itineraries?: ItineraryUncheckedCreateNestedManyWithoutQuotationInput
+    items?: QuotationItemUncheckedCreateNestedManyWithoutQuotationInput
   }
 
   export type QuotationCreateOrConnectWithoutAgencyInput = {
@@ -23324,148 +24905,103 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type HotelCreateWithoutAgencyInput = {
+  export type UserCreateWithoutAgencyInput = {
     id?: string
-    name: string
-    city: string
-    starCategory: number
-    roomTypes: JsonNullValueInput | InputJsonValue
-    inclusions?: string | null
-    cancellation?: string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    name?: string | null
+    email: string
+    emailVerified?: Date | string | null
+    password?: string | null
+    image?: string | null
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
   }
 
-  export type HotelUncheckedCreateWithoutAgencyInput = {
+  export type UserUncheckedCreateWithoutAgencyInput = {
     id?: string
-    name: string
-    city: string
-    starCategory: number
-    roomTypes: JsonNullValueInput | InputJsonValue
-    inclusions?: string | null
-    cancellation?: string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    name?: string | null
+    email: string
+    emailVerified?: Date | string | null
+    password?: string | null
+    image?: string | null
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
   }
 
-  export type HotelCreateOrConnectWithoutAgencyInput = {
-    where: HotelWhereUniqueInput
-    create: XOR<HotelCreateWithoutAgencyInput, HotelUncheckedCreateWithoutAgencyInput>
-  }
-
-  export type HotelCreateManyAgencyInputEnvelope = {
-    data: HotelCreateManyAgencyInput | HotelCreateManyAgencyInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type CarCreateWithoutAgencyInput = {
-    id?: string
-    vehicleType: string
-    pricingModel: string
-    maxCapacity: number
-    notes?: string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
-  }
-
-  export type CarUncheckedCreateWithoutAgencyInput = {
-    id?: string
-    vehicleType: string
-    pricingModel: string
-    maxCapacity: number
-    notes?: string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
-  }
-
-  export type CarCreateOrConnectWithoutAgencyInput = {
-    where: CarWhereUniqueInput
-    create: XOR<CarCreateWithoutAgencyInput, CarUncheckedCreateWithoutAgencyInput>
-  }
-
-  export type CarCreateManyAgencyInputEnvelope = {
-    data: CarCreateManyAgencyInput | CarCreateManyAgencyInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type MealCreateWithoutAgencyInput = {
-    id?: string
-    type: string
-    vegOption: boolean
-    price: number
-  }
-
-  export type MealUncheckedCreateWithoutAgencyInput = {
-    id?: string
-    type: string
-    vegOption: boolean
-    price: number
-  }
-
-  export type MealCreateOrConnectWithoutAgencyInput = {
-    where: MealWhereUniqueInput
-    create: XOR<MealCreateWithoutAgencyInput, MealUncheckedCreateWithoutAgencyInput>
-  }
-
-  export type MealCreateManyAgencyInputEnvelope = {
-    data: MealCreateManyAgencyInput | MealCreateManyAgencyInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type ActivityCreateWithoutAgencyInput = {
-    id?: string
-    name: string
-    description?: string | null
-    duration?: string | null
-    price: number
-    photos?: NullableJsonNullValueInput | InputJsonValue
-  }
-
-  export type ActivityUncheckedCreateWithoutAgencyInput = {
-    id?: string
-    name: string
-    description?: string | null
-    duration?: string | null
-    price: number
-    photos?: NullableJsonNullValueInput | InputJsonValue
-  }
-
-  export type ActivityCreateOrConnectWithoutAgencyInput = {
-    where: ActivityWhereUniqueInput
-    create: XOR<ActivityCreateWithoutAgencyInput, ActivityUncheckedCreateWithoutAgencyInput>
-  }
-
-  export type ActivityCreateManyAgencyInputEnvelope = {
-    data: ActivityCreateManyAgencyInput | ActivityCreateManyAgencyInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type UserUpsertWithWhereUniqueWithoutAgencyInput = {
+  export type UserCreateOrConnectWithoutAgencyInput = {
     where: UserWhereUniqueInput
-    update: XOR<UserUpdateWithoutAgencyInput, UserUncheckedUpdateWithoutAgencyInput>
     create: XOR<UserCreateWithoutAgencyInput, UserUncheckedCreateWithoutAgencyInput>
   }
 
-  export type UserUpdateWithWhereUniqueWithoutAgencyInput = {
-    where: UserWhereUniqueInput
-    data: XOR<UserUpdateWithoutAgencyInput, UserUncheckedUpdateWithoutAgencyInput>
+  export type UserCreateManyAgencyInputEnvelope = {
+    data: UserCreateManyAgencyInput | UserCreateManyAgencyInput[]
+    skipDuplicates?: boolean
   }
 
-  export type UserUpdateManyWithWhereWithoutAgencyInput = {
-    where: UserScalarWhereInput
-    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutAgencyInput>
+  export type ActivityUpsertWithWhereUniqueWithoutAgencyInput = {
+    where: ActivityWhereUniqueInput
+    update: XOR<ActivityUpdateWithoutAgencyInput, ActivityUncheckedUpdateWithoutAgencyInput>
+    create: XOR<ActivityCreateWithoutAgencyInput, ActivityUncheckedCreateWithoutAgencyInput>
   }
 
-  export type UserScalarWhereInput = {
-    AND?: UserScalarWhereInput | UserScalarWhereInput[]
-    OR?: UserScalarWhereInput[]
-    NOT?: UserScalarWhereInput | UserScalarWhereInput[]
-    id?: StringFilter<"User"> | string
-    name?: StringNullableFilter<"User"> | string | null
-    email?: StringFilter<"User"> | string
-    emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
-    password?: StringNullableFilter<"User"> | string | null
-    image?: StringNullableFilter<"User"> | string | null
-    role?: EnumRoleFilter<"User"> | $Enums.Role
-    agencyId?: StringNullableFilter<"User"> | string | null
-    createdAt?: DateTimeFilter<"User"> | Date | string
-    updatedAt?: DateTimeFilter<"User"> | Date | string
+  export type ActivityUpdateWithWhereUniqueWithoutAgencyInput = {
+    where: ActivityWhereUniqueInput
+    data: XOR<ActivityUpdateWithoutAgencyInput, ActivityUncheckedUpdateWithoutAgencyInput>
+  }
+
+  export type ActivityUpdateManyWithWhereWithoutAgencyInput = {
+    where: ActivityScalarWhereInput
+    data: XOR<ActivityUpdateManyMutationInput, ActivityUncheckedUpdateManyWithoutAgencyInput>
+  }
+
+  export type ActivityScalarWhereInput = {
+    AND?: ActivityScalarWhereInput | ActivityScalarWhereInput[]
+    OR?: ActivityScalarWhereInput[]
+    NOT?: ActivityScalarWhereInput | ActivityScalarWhereInput[]
+    id?: StringFilter<"Activity"> | string
+    name?: StringFilter<"Activity"> | string
+    description?: StringNullableFilter<"Activity"> | string | null
+    duration?: StringNullableFilter<"Activity"> | string | null
+    price?: FloatFilter<"Activity"> | number
+    photos?: JsonNullableFilter<"Activity">
+    agencyId?: StringFilter<"Activity"> | string
+  }
+
+  export type TransportUpsertWithWhereUniqueWithoutAgencyInput = {
+    where: TransportWhereUniqueInput
+    update: XOR<TransportUpdateWithoutAgencyInput, TransportUncheckedUpdateWithoutAgencyInput>
+    create: XOR<TransportCreateWithoutAgencyInput, TransportUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type TransportUpdateWithWhereUniqueWithoutAgencyInput = {
+    where: TransportWhereUniqueInput
+    data: XOR<TransportUpdateWithoutAgencyInput, TransportUncheckedUpdateWithoutAgencyInput>
+  }
+
+  export type TransportUpdateManyWithWhereWithoutAgencyInput = {
+    where: TransportScalarWhereInput
+    data: XOR<TransportUpdateManyMutationInput, TransportUncheckedUpdateManyWithoutAgencyInput>
+  }
+
+  export type TransportScalarWhereInput = {
+    AND?: TransportScalarWhereInput | TransportScalarWhereInput[]
+    OR?: TransportScalarWhereInput[]
+    NOT?: TransportScalarWhereInput | TransportScalarWhereInput[]
+    id?: StringFilter<"Transport"> | string
+    vehicleType?: StringFilter<"Transport"> | string
+    perDay?: FloatFilter<"Transport"> | number
+    perKm?: FloatFilter<"Transport"> | number
+    maxCapacity?: IntFilter<"Transport"> | number
+    notes?: StringNullableFilter<"Transport"> | string | null
+    photos?: StringNullableFilter<"Transport"> | string | null
+    agencyId?: StringFilter<"Transport"> | string
   }
 
   export type ClientUpsertWithWhereUniqueWithoutAgencyInput = {
@@ -23497,6 +25033,64 @@ export namespace Prisma {
     agencyId?: StringFilter<"Client"> | string
     createdAt?: DateTimeFilter<"Client"> | Date | string
     updatedAt?: DateTimeFilter<"Client"> | Date | string
+  }
+
+  export type HotelUpsertWithWhereUniqueWithoutAgencyInput = {
+    where: HotelWhereUniqueInput
+    update: XOR<HotelUpdateWithoutAgencyInput, HotelUncheckedUpdateWithoutAgencyInput>
+    create: XOR<HotelCreateWithoutAgencyInput, HotelUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type HotelUpdateWithWhereUniqueWithoutAgencyInput = {
+    where: HotelWhereUniqueInput
+    data: XOR<HotelUpdateWithoutAgencyInput, HotelUncheckedUpdateWithoutAgencyInput>
+  }
+
+  export type HotelUpdateManyWithWhereWithoutAgencyInput = {
+    where: HotelScalarWhereInput
+    data: XOR<HotelUpdateManyMutationInput, HotelUncheckedUpdateManyWithoutAgencyInput>
+  }
+
+  export type HotelScalarWhereInput = {
+    AND?: HotelScalarWhereInput | HotelScalarWhereInput[]
+    OR?: HotelScalarWhereInput[]
+    NOT?: HotelScalarWhereInput | HotelScalarWhereInput[]
+    id?: StringFilter<"Hotel"> | string
+    name?: StringFilter<"Hotel"> | string
+    city?: StringFilter<"Hotel"> | string
+    starCategory?: IntFilter<"Hotel"> | number
+    inclusions?: StringNullableFilter<"Hotel"> | string | null
+    cancellation?: StringNullableFilter<"Hotel"> | string | null
+    photos?: StringNullableFilter<"Hotel"> | string | null
+    agencyId?: StringFilter<"Hotel"> | string
+  }
+
+  export type MealUpsertWithWhereUniqueWithoutAgencyInput = {
+    where: MealWhereUniqueInput
+    update: XOR<MealUpdateWithoutAgencyInput, MealUncheckedUpdateWithoutAgencyInput>
+    create: XOR<MealCreateWithoutAgencyInput, MealUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type MealUpdateWithWhereUniqueWithoutAgencyInput = {
+    where: MealWhereUniqueInput
+    data: XOR<MealUpdateWithoutAgencyInput, MealUncheckedUpdateWithoutAgencyInput>
+  }
+
+  export type MealUpdateManyWithWhereWithoutAgencyInput = {
+    where: MealScalarWhereInput
+    data: XOR<MealUpdateManyMutationInput, MealUncheckedUpdateManyWithoutAgencyInput>
+  }
+
+  export type MealScalarWhereInput = {
+    AND?: MealScalarWhereInput | MealScalarWhereInput[]
+    OR?: MealScalarWhereInput[]
+    NOT?: MealScalarWhereInput | MealScalarWhereInput[]
+    id?: StringFilter<"Meal"> | string
+    type?: StringFilter<"Meal"> | string
+    vegOption?: BoolFilter<"Meal"> | boolean
+    nonVegOption?: BoolFilter<"Meal"> | boolean
+    price?: FloatFilter<"Meal"> | number
+    agencyId?: StringFilter<"Meal"> | string
   }
 
   export type QuotationUpsertWithWhereUniqueWithoutAgencyInput = {
@@ -23534,120 +25128,36 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Quotation"> | Date | string
   }
 
-  export type HotelUpsertWithWhereUniqueWithoutAgencyInput = {
-    where: HotelWhereUniqueInput
-    update: XOR<HotelUpdateWithoutAgencyInput, HotelUncheckedUpdateWithoutAgencyInput>
-    create: XOR<HotelCreateWithoutAgencyInput, HotelUncheckedCreateWithoutAgencyInput>
+  export type UserUpsertWithWhereUniqueWithoutAgencyInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutAgencyInput, UserUncheckedUpdateWithoutAgencyInput>
+    create: XOR<UserCreateWithoutAgencyInput, UserUncheckedCreateWithoutAgencyInput>
   }
 
-  export type HotelUpdateWithWhereUniqueWithoutAgencyInput = {
-    where: HotelWhereUniqueInput
-    data: XOR<HotelUpdateWithoutAgencyInput, HotelUncheckedUpdateWithoutAgencyInput>
+  export type UserUpdateWithWhereUniqueWithoutAgencyInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutAgencyInput, UserUncheckedUpdateWithoutAgencyInput>
   }
 
-  export type HotelUpdateManyWithWhereWithoutAgencyInput = {
-    where: HotelScalarWhereInput
-    data: XOR<HotelUpdateManyMutationInput, HotelUncheckedUpdateManyWithoutAgencyInput>
+  export type UserUpdateManyWithWhereWithoutAgencyInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutAgencyInput>
   }
 
-  export type HotelScalarWhereInput = {
-    AND?: HotelScalarWhereInput | HotelScalarWhereInput[]
-    OR?: HotelScalarWhereInput[]
-    NOT?: HotelScalarWhereInput | HotelScalarWhereInput[]
-    id?: StringFilter<"Hotel"> | string
-    name?: StringFilter<"Hotel"> | string
-    city?: StringFilter<"Hotel"> | string
-    starCategory?: IntFilter<"Hotel"> | number
-    roomTypes?: JsonFilter<"Hotel">
-    inclusions?: StringNullableFilter<"Hotel"> | string | null
-    cancellation?: StringNullableFilter<"Hotel"> | string | null
-    photos?: JsonNullableFilter<"Hotel">
-    agencyId?: StringFilter<"Hotel"> | string
-  }
-
-  export type CarUpsertWithWhereUniqueWithoutAgencyInput = {
-    where: CarWhereUniqueInput
-    update: XOR<CarUpdateWithoutAgencyInput, CarUncheckedUpdateWithoutAgencyInput>
-    create: XOR<CarCreateWithoutAgencyInput, CarUncheckedCreateWithoutAgencyInput>
-  }
-
-  export type CarUpdateWithWhereUniqueWithoutAgencyInput = {
-    where: CarWhereUniqueInput
-    data: XOR<CarUpdateWithoutAgencyInput, CarUncheckedUpdateWithoutAgencyInput>
-  }
-
-  export type CarUpdateManyWithWhereWithoutAgencyInput = {
-    where: CarScalarWhereInput
-    data: XOR<CarUpdateManyMutationInput, CarUncheckedUpdateManyWithoutAgencyInput>
-  }
-
-  export type CarScalarWhereInput = {
-    AND?: CarScalarWhereInput | CarScalarWhereInput[]
-    OR?: CarScalarWhereInput[]
-    NOT?: CarScalarWhereInput | CarScalarWhereInput[]
-    id?: StringFilter<"Car"> | string
-    vehicleType?: StringFilter<"Car"> | string
-    pricingModel?: StringFilter<"Car"> | string
-    maxCapacity?: IntFilter<"Car"> | number
-    notes?: StringNullableFilter<"Car"> | string | null
-    photos?: JsonNullableFilter<"Car">
-    agencyId?: StringFilter<"Car"> | string
-  }
-
-  export type MealUpsertWithWhereUniqueWithoutAgencyInput = {
-    where: MealWhereUniqueInput
-    update: XOR<MealUpdateWithoutAgencyInput, MealUncheckedUpdateWithoutAgencyInput>
-    create: XOR<MealCreateWithoutAgencyInput, MealUncheckedCreateWithoutAgencyInput>
-  }
-
-  export type MealUpdateWithWhereUniqueWithoutAgencyInput = {
-    where: MealWhereUniqueInput
-    data: XOR<MealUpdateWithoutAgencyInput, MealUncheckedUpdateWithoutAgencyInput>
-  }
-
-  export type MealUpdateManyWithWhereWithoutAgencyInput = {
-    where: MealScalarWhereInput
-    data: XOR<MealUpdateManyMutationInput, MealUncheckedUpdateManyWithoutAgencyInput>
-  }
-
-  export type MealScalarWhereInput = {
-    AND?: MealScalarWhereInput | MealScalarWhereInput[]
-    OR?: MealScalarWhereInput[]
-    NOT?: MealScalarWhereInput | MealScalarWhereInput[]
-    id?: StringFilter<"Meal"> | string
-    type?: StringFilter<"Meal"> | string
-    vegOption?: BoolFilter<"Meal"> | boolean
-    price?: FloatFilter<"Meal"> | number
-    agencyId?: StringFilter<"Meal"> | string
-  }
-
-  export type ActivityUpsertWithWhereUniqueWithoutAgencyInput = {
-    where: ActivityWhereUniqueInput
-    update: XOR<ActivityUpdateWithoutAgencyInput, ActivityUncheckedUpdateWithoutAgencyInput>
-    create: XOR<ActivityCreateWithoutAgencyInput, ActivityUncheckedCreateWithoutAgencyInput>
-  }
-
-  export type ActivityUpdateWithWhereUniqueWithoutAgencyInput = {
-    where: ActivityWhereUniqueInput
-    data: XOR<ActivityUpdateWithoutAgencyInput, ActivityUncheckedUpdateWithoutAgencyInput>
-  }
-
-  export type ActivityUpdateManyWithWhereWithoutAgencyInput = {
-    where: ActivityScalarWhereInput
-    data: XOR<ActivityUpdateManyMutationInput, ActivityUncheckedUpdateManyWithoutAgencyInput>
-  }
-
-  export type ActivityScalarWhereInput = {
-    AND?: ActivityScalarWhereInput | ActivityScalarWhereInput[]
-    OR?: ActivityScalarWhereInput[]
-    NOT?: ActivityScalarWhereInput | ActivityScalarWhereInput[]
-    id?: StringFilter<"Activity"> | string
-    name?: StringFilter<"Activity"> | string
-    description?: StringNullableFilter<"Activity"> | string | null
-    duration?: StringNullableFilter<"Activity"> | string | null
-    price?: FloatFilter<"Activity"> | number
-    photos?: JsonNullableFilter<"Activity">
-    agencyId?: StringFilter<"Activity"> | string
+  export type UserScalarWhereInput = {
+    AND?: UserScalarWhereInput | UserScalarWhereInput[]
+    OR?: UserScalarWhereInput[]
+    NOT?: UserScalarWhereInput | UserScalarWhereInput[]
+    id?: StringFilter<"User"> | string
+    name?: StringNullableFilter<"User"> | string | null
+    email?: StringFilter<"User"> | string
+    emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
+    password?: StringNullableFilter<"User"> | string | null
+    image?: StringNullableFilter<"User"> | string | null
+    role?: EnumRoleFilter<"User"> | $Enums.Role
+    agencyId?: StringNullableFilter<"User"> | string | null
+    createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
   }
 
   export type AgencyCreateWithoutClientsInput = {
@@ -23657,12 +25167,12 @@ export namespace Prisma {
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
-    users?: UserCreateNestedManyWithoutAgencyInput
-    quotations?: QuotationCreateNestedManyWithoutAgencyInput
-    hotels?: HotelCreateNestedManyWithoutAgencyInput
-    cars?: CarCreateNestedManyWithoutAgencyInput
-    meals?: MealCreateNestedManyWithoutAgencyInput
     activities?: ActivityCreateNestedManyWithoutAgencyInput
+    transport?: TransportCreateNestedManyWithoutAgencyInput
+    hotels?: HotelCreateNestedManyWithoutAgencyInput
+    meals?: MealCreateNestedManyWithoutAgencyInput
+    quotations?: QuotationCreateNestedManyWithoutAgencyInput
+    users?: UserCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutClientsInput = {
@@ -23672,12 +25182,12 @@ export namespace Prisma {
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
-    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    quotations?: QuotationUncheckedCreateNestedManyWithoutAgencyInput
-    hotels?: HotelUncheckedCreateNestedManyWithoutAgencyInput
-    cars?: CarUncheckedCreateNestedManyWithoutAgencyInput
-    meals?: MealUncheckedCreateNestedManyWithoutAgencyInput
     activities?: ActivityUncheckedCreateNestedManyWithoutAgencyInput
+    transport?: TransportUncheckedCreateNestedManyWithoutAgencyInput
+    hotels?: HotelUncheckedCreateNestedManyWithoutAgencyInput
+    meals?: MealUncheckedCreateNestedManyWithoutAgencyInput
+    quotations?: QuotationUncheckedCreateNestedManyWithoutAgencyInput
+    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutClientsInput = {
@@ -23697,9 +25207,9 @@ export namespace Prisma {
     totalAmount: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    itineraries?: ItineraryCreateNestedManyWithoutQuotationInput
     agency: AgencyCreateNestedOneWithoutQuotationsInput
     items?: QuotationItemCreateNestedManyWithoutQuotationInput
-    itineraries?: ItineraryCreateNestedManyWithoutQuotationInput
   }
 
   export type QuotationUncheckedCreateWithoutClientInput = {
@@ -23715,8 +25225,8 @@ export namespace Prisma {
     totalAmount: number
     createdAt?: Date | string
     updatedAt?: Date | string
-    items?: QuotationItemUncheckedCreateNestedManyWithoutQuotationInput
     itineraries?: ItineraryUncheckedCreateNestedManyWithoutQuotationInput
+    items?: QuotationItemUncheckedCreateNestedManyWithoutQuotationInput
   }
 
   export type QuotationCreateOrConnectWithoutClientInput = {
@@ -23747,12 +25257,12 @@ export namespace Prisma {
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: UserUpdateManyWithoutAgencyNestedInput
-    quotations?: QuotationUpdateManyWithoutAgencyNestedInput
-    hotels?: HotelUpdateManyWithoutAgencyNestedInput
-    cars?: CarUpdateManyWithoutAgencyNestedInput
-    meals?: MealUpdateManyWithoutAgencyNestedInput
     activities?: ActivityUpdateManyWithoutAgencyNestedInput
+    transport?: TransportUpdateManyWithoutAgencyNestedInput
+    hotels?: HotelUpdateManyWithoutAgencyNestedInput
+    meals?: MealUpdateManyWithoutAgencyNestedInput
+    quotations?: QuotationUpdateManyWithoutAgencyNestedInput
+    users?: UserUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutClientsInput = {
@@ -23762,12 +25272,12 @@ export namespace Prisma {
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    quotations?: QuotationUncheckedUpdateManyWithoutAgencyNestedInput
-    hotels?: HotelUncheckedUpdateManyWithoutAgencyNestedInput
-    cars?: CarUncheckedUpdateManyWithoutAgencyNestedInput
-    meals?: MealUncheckedUpdateManyWithoutAgencyNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutAgencyNestedInput
+    transport?: TransportUncheckedUpdateManyWithoutAgencyNestedInput
+    hotels?: HotelUncheckedUpdateManyWithoutAgencyNestedInput
+    meals?: MealUncheckedUpdateManyWithoutAgencyNestedInput
+    quotations?: QuotationUncheckedUpdateManyWithoutAgencyNestedInput
+    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type QuotationUpsertWithWhereUniqueWithoutClientInput = {
@@ -23784,96 +25294,6 @@ export namespace Prisma {
   export type QuotationUpdateManyWithWhereWithoutClientInput = {
     where: QuotationScalarWhereInput
     data: XOR<QuotationUpdateManyMutationInput, QuotationUncheckedUpdateManyWithoutClientInput>
-  }
-
-  export type ClientCreateWithoutQuotationsInput = {
-    id?: string
-    name: string
-    email?: string | null
-    phone?: string | null
-    city?: string | null
-    notes?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    agency: AgencyCreateNestedOneWithoutClientsInput
-  }
-
-  export type ClientUncheckedCreateWithoutQuotationsInput = {
-    id?: string
-    name: string
-    email?: string | null
-    phone?: string | null
-    city?: string | null
-    notes?: string | null
-    agencyId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type ClientCreateOrConnectWithoutQuotationsInput = {
-    where: ClientWhereUniqueInput
-    create: XOR<ClientCreateWithoutQuotationsInput, ClientUncheckedCreateWithoutQuotationsInput>
-  }
-
-  export type AgencyCreateWithoutQuotationsInput = {
-    id?: string
-    name: string
-    logo?: string | null
-    settings?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    users?: UserCreateNestedManyWithoutAgencyInput
-    clients?: ClientCreateNestedManyWithoutAgencyInput
-    hotels?: HotelCreateNestedManyWithoutAgencyInput
-    cars?: CarCreateNestedManyWithoutAgencyInput
-    meals?: MealCreateNestedManyWithoutAgencyInput
-    activities?: ActivityCreateNestedManyWithoutAgencyInput
-  }
-
-  export type AgencyUncheckedCreateWithoutQuotationsInput = {
-    id?: string
-    name: string
-    logo?: string | null
-    settings?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    clients?: ClientUncheckedCreateNestedManyWithoutAgencyInput
-    hotels?: HotelUncheckedCreateNestedManyWithoutAgencyInput
-    cars?: CarUncheckedCreateNestedManyWithoutAgencyInput
-    meals?: MealUncheckedCreateNestedManyWithoutAgencyInput
-    activities?: ActivityUncheckedCreateNestedManyWithoutAgencyInput
-  }
-
-  export type AgencyCreateOrConnectWithoutQuotationsInput = {
-    where: AgencyWhereUniqueInput
-    create: XOR<AgencyCreateWithoutQuotationsInput, AgencyUncheckedCreateWithoutQuotationsInput>
-  }
-
-  export type QuotationItemCreateWithoutQuotationInput = {
-    id?: string
-    serviceType: $Enums.ServiceType
-    serviceId: string
-    description?: string | null
-    price: number
-  }
-
-  export type QuotationItemUncheckedCreateWithoutQuotationInput = {
-    id?: string
-    serviceType: $Enums.ServiceType
-    serviceId: string
-    description?: string | null
-    price: number
-  }
-
-  export type QuotationItemCreateOrConnectWithoutQuotationInput = {
-    where: QuotationItemWhereUniqueInput
-    create: XOR<QuotationItemCreateWithoutQuotationInput, QuotationItemUncheckedCreateWithoutQuotationInput>
-  }
-
-  export type QuotationItemCreateManyQuotationInputEnvelope = {
-    data: QuotationItemCreateManyQuotationInput | QuotationItemCreateManyQuotationInput[]
-    skipDuplicates?: boolean
   }
 
   export type ItineraryCreateWithoutQuotationInput = {
@@ -23908,6 +25328,169 @@ export namespace Prisma {
   export type ItineraryCreateManyQuotationInputEnvelope = {
     data: ItineraryCreateManyQuotationInput | ItineraryCreateManyQuotationInput[]
     skipDuplicates?: boolean
+  }
+
+  export type AgencyCreateWithoutQuotationsInput = {
+    id?: string
+    name: string
+    logo?: string | null
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    activities?: ActivityCreateNestedManyWithoutAgencyInput
+    transport?: TransportCreateNestedManyWithoutAgencyInput
+    clients?: ClientCreateNestedManyWithoutAgencyInput
+    hotels?: HotelCreateNestedManyWithoutAgencyInput
+    meals?: MealCreateNestedManyWithoutAgencyInput
+    users?: UserCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyUncheckedCreateWithoutQuotationsInput = {
+    id?: string
+    name: string
+    logo?: string | null
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    activities?: ActivityUncheckedCreateNestedManyWithoutAgencyInput
+    transport?: TransportUncheckedCreateNestedManyWithoutAgencyInput
+    clients?: ClientUncheckedCreateNestedManyWithoutAgencyInput
+    hotels?: HotelUncheckedCreateNestedManyWithoutAgencyInput
+    meals?: MealUncheckedCreateNestedManyWithoutAgencyInput
+    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyCreateOrConnectWithoutQuotationsInput = {
+    where: AgencyWhereUniqueInput
+    create: XOR<AgencyCreateWithoutQuotationsInput, AgencyUncheckedCreateWithoutQuotationsInput>
+  }
+
+  export type ClientCreateWithoutQuotationsInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    city?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agency: AgencyCreateNestedOneWithoutClientsInput
+  }
+
+  export type ClientUncheckedCreateWithoutQuotationsInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    city?: string | null
+    notes?: string | null
+    agencyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ClientCreateOrConnectWithoutQuotationsInput = {
+    where: ClientWhereUniqueInput
+    create: XOR<ClientCreateWithoutQuotationsInput, ClientUncheckedCreateWithoutQuotationsInput>
+  }
+
+  export type QuotationItemCreateWithoutQuotationInput = {
+    id?: string
+    serviceType: $Enums.ServiceType
+    serviceId: string
+    description?: string | null
+    price: number
+  }
+
+  export type QuotationItemUncheckedCreateWithoutQuotationInput = {
+    id?: string
+    serviceType: $Enums.ServiceType
+    serviceId: string
+    description?: string | null
+    price: number
+  }
+
+  export type QuotationItemCreateOrConnectWithoutQuotationInput = {
+    where: QuotationItemWhereUniqueInput
+    create: XOR<QuotationItemCreateWithoutQuotationInput, QuotationItemUncheckedCreateWithoutQuotationInput>
+  }
+
+  export type QuotationItemCreateManyQuotationInputEnvelope = {
+    data: QuotationItemCreateManyQuotationInput | QuotationItemCreateManyQuotationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ItineraryUpsertWithWhereUniqueWithoutQuotationInput = {
+    where: ItineraryWhereUniqueInput
+    update: XOR<ItineraryUpdateWithoutQuotationInput, ItineraryUncheckedUpdateWithoutQuotationInput>
+    create: XOR<ItineraryCreateWithoutQuotationInput, ItineraryUncheckedCreateWithoutQuotationInput>
+  }
+
+  export type ItineraryUpdateWithWhereUniqueWithoutQuotationInput = {
+    where: ItineraryWhereUniqueInput
+    data: XOR<ItineraryUpdateWithoutQuotationInput, ItineraryUncheckedUpdateWithoutQuotationInput>
+  }
+
+  export type ItineraryUpdateManyWithWhereWithoutQuotationInput = {
+    where: ItineraryScalarWhereInput
+    data: XOR<ItineraryUpdateManyMutationInput, ItineraryUncheckedUpdateManyWithoutQuotationInput>
+  }
+
+  export type ItineraryScalarWhereInput = {
+    AND?: ItineraryScalarWhereInput | ItineraryScalarWhereInput[]
+    OR?: ItineraryScalarWhereInput[]
+    NOT?: ItineraryScalarWhereInput | ItineraryScalarWhereInput[]
+    id?: StringFilter<"Itinerary"> | string
+    quotationId?: StringFilter<"Itinerary"> | string
+    dayNumber?: IntFilter<"Itinerary"> | number
+    headline?: StringFilter<"Itinerary"> | string
+    description?: StringNullableFilter<"Itinerary"> | string | null
+    duration?: StringNullableFilter<"Itinerary"> | string | null
+    notes?: StringNullableFilter<"Itinerary"> | string | null
+    images?: JsonNullableFilter<"Itinerary">
+    createdAt?: DateTimeFilter<"Itinerary"> | Date | string
+    updatedAt?: DateTimeFilter<"Itinerary"> | Date | string
+  }
+
+  export type AgencyUpsertWithoutQuotationsInput = {
+    update: XOR<AgencyUpdateWithoutQuotationsInput, AgencyUncheckedUpdateWithoutQuotationsInput>
+    create: XOR<AgencyCreateWithoutQuotationsInput, AgencyUncheckedCreateWithoutQuotationsInput>
+    where?: AgencyWhereInput
+  }
+
+  export type AgencyUpdateToOneWithWhereWithoutQuotationsInput = {
+    where?: AgencyWhereInput
+    data: XOR<AgencyUpdateWithoutQuotationsInput, AgencyUncheckedUpdateWithoutQuotationsInput>
+  }
+
+  export type AgencyUpdateWithoutQuotationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activities?: ActivityUpdateManyWithoutAgencyNestedInput
+    transport?: TransportUpdateManyWithoutAgencyNestedInput
+    clients?: ClientUpdateManyWithoutAgencyNestedInput
+    hotels?: HotelUpdateManyWithoutAgencyNestedInput
+    meals?: MealUpdateManyWithoutAgencyNestedInput
+    users?: UserUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type AgencyUncheckedUpdateWithoutQuotationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activities?: ActivityUncheckedUpdateManyWithoutAgencyNestedInput
+    transport?: TransportUncheckedUpdateManyWithoutAgencyNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutAgencyNestedInput
+    hotels?: HotelUncheckedUpdateManyWithoutAgencyNestedInput
+    meals?: MealUncheckedUpdateManyWithoutAgencyNestedInput
+    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type ClientUpsertWithoutQuotationsInput = {
@@ -23945,47 +25528,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type AgencyUpsertWithoutQuotationsInput = {
-    update: XOR<AgencyUpdateWithoutQuotationsInput, AgencyUncheckedUpdateWithoutQuotationsInput>
-    create: XOR<AgencyCreateWithoutQuotationsInput, AgencyUncheckedCreateWithoutQuotationsInput>
-    where?: AgencyWhereInput
-  }
-
-  export type AgencyUpdateToOneWithWhereWithoutQuotationsInput = {
-    where?: AgencyWhereInput
-    data: XOR<AgencyUpdateWithoutQuotationsInput, AgencyUncheckedUpdateWithoutQuotationsInput>
-  }
-
-  export type AgencyUpdateWithoutQuotationsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
-    settings?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: UserUpdateManyWithoutAgencyNestedInput
-    clients?: ClientUpdateManyWithoutAgencyNestedInput
-    hotels?: HotelUpdateManyWithoutAgencyNestedInput
-    cars?: CarUpdateManyWithoutAgencyNestedInput
-    meals?: MealUpdateManyWithoutAgencyNestedInput
-    activities?: ActivityUpdateManyWithoutAgencyNestedInput
-  }
-
-  export type AgencyUncheckedUpdateWithoutQuotationsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
-    settings?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    clients?: ClientUncheckedUpdateManyWithoutAgencyNestedInput
-    hotels?: HotelUncheckedUpdateManyWithoutAgencyNestedInput
-    cars?: CarUncheckedUpdateManyWithoutAgencyNestedInput
-    meals?: MealUncheckedUpdateManyWithoutAgencyNestedInput
-    activities?: ActivityUncheckedUpdateManyWithoutAgencyNestedInput
-  }
-
   export type QuotationItemUpsertWithWhereUniqueWithoutQuotationInput = {
     where: QuotationItemWhereUniqueInput
     update: XOR<QuotationItemUpdateWithoutQuotationInput, QuotationItemUncheckedUpdateWithoutQuotationInput>
@@ -24014,38 +25556,6 @@ export namespace Prisma {
     price?: FloatFilter<"QuotationItem"> | number
   }
 
-  export type ItineraryUpsertWithWhereUniqueWithoutQuotationInput = {
-    where: ItineraryWhereUniqueInput
-    update: XOR<ItineraryUpdateWithoutQuotationInput, ItineraryUncheckedUpdateWithoutQuotationInput>
-    create: XOR<ItineraryCreateWithoutQuotationInput, ItineraryUncheckedCreateWithoutQuotationInput>
-  }
-
-  export type ItineraryUpdateWithWhereUniqueWithoutQuotationInput = {
-    where: ItineraryWhereUniqueInput
-    data: XOR<ItineraryUpdateWithoutQuotationInput, ItineraryUncheckedUpdateWithoutQuotationInput>
-  }
-
-  export type ItineraryUpdateManyWithWhereWithoutQuotationInput = {
-    where: ItineraryScalarWhereInput
-    data: XOR<ItineraryUpdateManyMutationInput, ItineraryUncheckedUpdateManyWithoutQuotationInput>
-  }
-
-  export type ItineraryScalarWhereInput = {
-    AND?: ItineraryScalarWhereInput | ItineraryScalarWhereInput[]
-    OR?: ItineraryScalarWhereInput[]
-    NOT?: ItineraryScalarWhereInput | ItineraryScalarWhereInput[]
-    id?: StringFilter<"Itinerary"> | string
-    quotationId?: StringFilter<"Itinerary"> | string
-    dayNumber?: IntFilter<"Itinerary"> | number
-    headline?: StringFilter<"Itinerary"> | string
-    description?: StringNullableFilter<"Itinerary"> | string | null
-    duration?: StringNullableFilter<"Itinerary"> | string | null
-    notes?: StringNullableFilter<"Itinerary"> | string | null
-    images?: JsonNullableFilter<"Itinerary">
-    createdAt?: DateTimeFilter<"Itinerary"> | Date | string
-    updatedAt?: DateTimeFilter<"Itinerary"> | Date | string
-  }
-
   export type QuotationCreateWithoutItemsInput = {
     id?: string
     status?: $Enums.QuotationStatus
@@ -24058,9 +25568,9 @@ export namespace Prisma {
     totalAmount: number
     createdAt?: Date | string
     updatedAt?: Date | string
-    client: ClientCreateNestedOneWithoutQuotationsInput
-    agency: AgencyCreateNestedOneWithoutQuotationsInput
     itineraries?: ItineraryCreateNestedManyWithoutQuotationInput
+    agency: AgencyCreateNestedOneWithoutQuotationsInput
+    client: ClientCreateNestedOneWithoutQuotationsInput
   }
 
   export type QuotationUncheckedCreateWithoutItemsInput = {
@@ -24108,9 +25618,9 @@ export namespace Prisma {
     totalAmount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    client?: ClientUpdateOneRequiredWithoutQuotationsNestedInput
-    agency?: AgencyUpdateOneRequiredWithoutQuotationsNestedInput
     itineraries?: ItineraryUpdateManyWithoutQuotationNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutQuotationsNestedInput
+    client?: ClientUpdateOneRequiredWithoutQuotationsNestedInput
   }
 
   export type QuotationUncheckedUpdateWithoutItemsInput = {
@@ -24130,6 +25640,66 @@ export namespace Prisma {
     itineraries?: ItineraryUncheckedUpdateManyWithoutQuotationNestedInput
   }
 
+  export type HotelCreateWithoutRoomTypesInput = {
+    id?: string
+    name: string
+    city: string
+    starCategory: number
+    inclusions?: string | null
+    cancellation?: string | null
+    photos?: string | null
+    agency: AgencyCreateNestedOneWithoutHotelsInput
+  }
+
+  export type HotelUncheckedCreateWithoutRoomTypesInput = {
+    id?: string
+    name: string
+    city: string
+    starCategory: number
+    inclusions?: string | null
+    cancellation?: string | null
+    photos?: string | null
+    agencyId: string
+  }
+
+  export type HotelCreateOrConnectWithoutRoomTypesInput = {
+    where: HotelWhereUniqueInput
+    create: XOR<HotelCreateWithoutRoomTypesInput, HotelUncheckedCreateWithoutRoomTypesInput>
+  }
+
+  export type HotelUpsertWithoutRoomTypesInput = {
+    update: XOR<HotelUpdateWithoutRoomTypesInput, HotelUncheckedUpdateWithoutRoomTypesInput>
+    create: XOR<HotelCreateWithoutRoomTypesInput, HotelUncheckedCreateWithoutRoomTypesInput>
+    where?: HotelWhereInput
+  }
+
+  export type HotelUpdateToOneWithWhereWithoutRoomTypesInput = {
+    where?: HotelWhereInput
+    data: XOR<HotelUpdateWithoutRoomTypesInput, HotelUncheckedUpdateWithoutRoomTypesInput>
+  }
+
+  export type HotelUpdateWithoutRoomTypesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    starCategory?: IntFieldUpdateOperationsInput | number
+    inclusions?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellation?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    agency?: AgencyUpdateOneRequiredWithoutHotelsNestedInput
+  }
+
+  export type HotelUncheckedUpdateWithoutRoomTypesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    starCategory?: IntFieldUpdateOperationsInput | number
+    inclusions?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellation?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    agencyId?: StringFieldUpdateOperationsInput | string
+  }
+
   export type AgencyCreateWithoutHotelsInput = {
     id?: string
     name: string
@@ -24137,12 +25707,12 @@ export namespace Prisma {
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
-    users?: UserCreateNestedManyWithoutAgencyInput
-    clients?: ClientCreateNestedManyWithoutAgencyInput
-    quotations?: QuotationCreateNestedManyWithoutAgencyInput
-    cars?: CarCreateNestedManyWithoutAgencyInput
-    meals?: MealCreateNestedManyWithoutAgencyInput
     activities?: ActivityCreateNestedManyWithoutAgencyInput
+    transport?: TransportCreateNestedManyWithoutAgencyInput
+    clients?: ClientCreateNestedManyWithoutAgencyInput
+    meals?: MealCreateNestedManyWithoutAgencyInput
+    quotations?: QuotationCreateNestedManyWithoutAgencyInput
+    users?: UserCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutHotelsInput = {
@@ -24152,17 +25722,39 @@ export namespace Prisma {
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
-    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    clients?: ClientUncheckedCreateNestedManyWithoutAgencyInput
-    quotations?: QuotationUncheckedCreateNestedManyWithoutAgencyInput
-    cars?: CarUncheckedCreateNestedManyWithoutAgencyInput
-    meals?: MealUncheckedCreateNestedManyWithoutAgencyInput
     activities?: ActivityUncheckedCreateNestedManyWithoutAgencyInput
+    transport?: TransportUncheckedCreateNestedManyWithoutAgencyInput
+    clients?: ClientUncheckedCreateNestedManyWithoutAgencyInput
+    meals?: MealUncheckedCreateNestedManyWithoutAgencyInput
+    quotations?: QuotationUncheckedCreateNestedManyWithoutAgencyInput
+    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutHotelsInput = {
     where: AgencyWhereUniqueInput
     create: XOR<AgencyCreateWithoutHotelsInput, AgencyUncheckedCreateWithoutHotelsInput>
+  }
+
+  export type RoomTypeCreateWithoutHotelInput = {
+    id?: string
+    type: string
+    price: Decimal | DecimalJsLike | number | string
+  }
+
+  export type RoomTypeUncheckedCreateWithoutHotelInput = {
+    id?: string
+    type: string
+    price: Decimal | DecimalJsLike | number | string
+  }
+
+  export type RoomTypeCreateOrConnectWithoutHotelInput = {
+    where: RoomTypeWhereUniqueInput
+    create: XOR<RoomTypeCreateWithoutHotelInput, RoomTypeUncheckedCreateWithoutHotelInput>
+  }
+
+  export type RoomTypeCreateManyHotelInputEnvelope = {
+    data: RoomTypeCreateManyHotelInput | RoomTypeCreateManyHotelInput[]
+    skipDuplicates?: boolean
   }
 
   export type AgencyUpsertWithoutHotelsInput = {
@@ -24183,12 +25775,12 @@ export namespace Prisma {
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: UserUpdateManyWithoutAgencyNestedInput
-    clients?: ClientUpdateManyWithoutAgencyNestedInput
-    quotations?: QuotationUpdateManyWithoutAgencyNestedInput
-    cars?: CarUpdateManyWithoutAgencyNestedInput
-    meals?: MealUpdateManyWithoutAgencyNestedInput
     activities?: ActivityUpdateManyWithoutAgencyNestedInput
+    transport?: TransportUpdateManyWithoutAgencyNestedInput
+    clients?: ClientUpdateManyWithoutAgencyNestedInput
+    meals?: MealUpdateManyWithoutAgencyNestedInput
+    quotations?: QuotationUpdateManyWithoutAgencyNestedInput
+    users?: UserUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutHotelsInput = {
@@ -24198,88 +25790,114 @@ export namespace Prisma {
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    clients?: ClientUncheckedUpdateManyWithoutAgencyNestedInput
-    quotations?: QuotationUncheckedUpdateManyWithoutAgencyNestedInput
-    cars?: CarUncheckedUpdateManyWithoutAgencyNestedInput
-    meals?: MealUncheckedUpdateManyWithoutAgencyNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutAgencyNestedInput
+    transport?: TransportUncheckedUpdateManyWithoutAgencyNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutAgencyNestedInput
+    meals?: MealUncheckedUpdateManyWithoutAgencyNestedInput
+    quotations?: QuotationUncheckedUpdateManyWithoutAgencyNestedInput
+    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
-  export type AgencyCreateWithoutCarsInput = {
+  export type RoomTypeUpsertWithWhereUniqueWithoutHotelInput = {
+    where: RoomTypeWhereUniqueInput
+    update: XOR<RoomTypeUpdateWithoutHotelInput, RoomTypeUncheckedUpdateWithoutHotelInput>
+    create: XOR<RoomTypeCreateWithoutHotelInput, RoomTypeUncheckedCreateWithoutHotelInput>
+  }
+
+  export type RoomTypeUpdateWithWhereUniqueWithoutHotelInput = {
+    where: RoomTypeWhereUniqueInput
+    data: XOR<RoomTypeUpdateWithoutHotelInput, RoomTypeUncheckedUpdateWithoutHotelInput>
+  }
+
+  export type RoomTypeUpdateManyWithWhereWithoutHotelInput = {
+    where: RoomTypeScalarWhereInput
+    data: XOR<RoomTypeUpdateManyMutationInput, RoomTypeUncheckedUpdateManyWithoutHotelInput>
+  }
+
+  export type RoomTypeScalarWhereInput = {
+    AND?: RoomTypeScalarWhereInput | RoomTypeScalarWhereInput[]
+    OR?: RoomTypeScalarWhereInput[]
+    NOT?: RoomTypeScalarWhereInput | RoomTypeScalarWhereInput[]
+    id?: StringFilter<"RoomType"> | string
+    type?: StringFilter<"RoomType"> | string
+    price?: DecimalFilter<"RoomType"> | Decimal | DecimalJsLike | number | string
+    hotelId?: StringFilter<"RoomType"> | string
+  }
+
+  export type AgencyCreateWithoutTransportInput = {
     id?: string
     name: string
     logo?: string | null
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
-    users?: UserCreateNestedManyWithoutAgencyInput
+    activities?: ActivityCreateNestedManyWithoutAgencyInput
     clients?: ClientCreateNestedManyWithoutAgencyInput
-    quotations?: QuotationCreateNestedManyWithoutAgencyInput
     hotels?: HotelCreateNestedManyWithoutAgencyInput
     meals?: MealCreateNestedManyWithoutAgencyInput
-    activities?: ActivityCreateNestedManyWithoutAgencyInput
+    quotations?: QuotationCreateNestedManyWithoutAgencyInput
+    users?: UserCreateNestedManyWithoutAgencyInput
   }
 
-  export type AgencyUncheckedCreateWithoutCarsInput = {
+  export type AgencyUncheckedCreateWithoutTransportInput = {
     id?: string
     name: string
     logo?: string | null
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
-    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    activities?: ActivityUncheckedCreateNestedManyWithoutAgencyInput
     clients?: ClientUncheckedCreateNestedManyWithoutAgencyInput
-    quotations?: QuotationUncheckedCreateNestedManyWithoutAgencyInput
     hotels?: HotelUncheckedCreateNestedManyWithoutAgencyInput
     meals?: MealUncheckedCreateNestedManyWithoutAgencyInput
-    activities?: ActivityUncheckedCreateNestedManyWithoutAgencyInput
+    quotations?: QuotationUncheckedCreateNestedManyWithoutAgencyInput
+    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
   }
 
-  export type AgencyCreateOrConnectWithoutCarsInput = {
+  export type AgencyCreateOrConnectWithoutTransportInput = {
     where: AgencyWhereUniqueInput
-    create: XOR<AgencyCreateWithoutCarsInput, AgencyUncheckedCreateWithoutCarsInput>
+    create: XOR<AgencyCreateWithoutTransportInput, AgencyUncheckedCreateWithoutTransportInput>
   }
 
-  export type AgencyUpsertWithoutCarsInput = {
-    update: XOR<AgencyUpdateWithoutCarsInput, AgencyUncheckedUpdateWithoutCarsInput>
-    create: XOR<AgencyCreateWithoutCarsInput, AgencyUncheckedCreateWithoutCarsInput>
+  export type AgencyUpsertWithoutTransportInput = {
+    update: XOR<AgencyUpdateWithoutTransportInput, AgencyUncheckedUpdateWithoutTransportInput>
+    create: XOR<AgencyCreateWithoutTransportInput, AgencyUncheckedCreateWithoutTransportInput>
     where?: AgencyWhereInput
   }
 
-  export type AgencyUpdateToOneWithWhereWithoutCarsInput = {
+  export type AgencyUpdateToOneWithWhereWithoutTransportInput = {
     where?: AgencyWhereInput
-    data: XOR<AgencyUpdateWithoutCarsInput, AgencyUncheckedUpdateWithoutCarsInput>
+    data: XOR<AgencyUpdateWithoutTransportInput, AgencyUncheckedUpdateWithoutTransportInput>
   }
 
-  export type AgencyUpdateWithoutCarsInput = {
+  export type AgencyUpdateWithoutTransportInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: UserUpdateManyWithoutAgencyNestedInput
+    activities?: ActivityUpdateManyWithoutAgencyNestedInput
     clients?: ClientUpdateManyWithoutAgencyNestedInput
-    quotations?: QuotationUpdateManyWithoutAgencyNestedInput
     hotels?: HotelUpdateManyWithoutAgencyNestedInput
     meals?: MealUpdateManyWithoutAgencyNestedInput
-    activities?: ActivityUpdateManyWithoutAgencyNestedInput
+    quotations?: QuotationUpdateManyWithoutAgencyNestedInput
+    users?: UserUpdateManyWithoutAgencyNestedInput
   }
 
-  export type AgencyUncheckedUpdateWithoutCarsInput = {
+  export type AgencyUncheckedUpdateWithoutTransportInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    activities?: ActivityUncheckedUpdateManyWithoutAgencyNestedInput
     clients?: ClientUncheckedUpdateManyWithoutAgencyNestedInput
-    quotations?: QuotationUncheckedUpdateManyWithoutAgencyNestedInput
     hotels?: HotelUncheckedUpdateManyWithoutAgencyNestedInput
     meals?: MealUncheckedUpdateManyWithoutAgencyNestedInput
-    activities?: ActivityUncheckedUpdateManyWithoutAgencyNestedInput
+    quotations?: QuotationUncheckedUpdateManyWithoutAgencyNestedInput
+    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyCreateWithoutMealsInput = {
@@ -24289,12 +25907,12 @@ export namespace Prisma {
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
-    users?: UserCreateNestedManyWithoutAgencyInput
-    clients?: ClientCreateNestedManyWithoutAgencyInput
-    quotations?: QuotationCreateNestedManyWithoutAgencyInput
-    hotels?: HotelCreateNestedManyWithoutAgencyInput
-    cars?: CarCreateNestedManyWithoutAgencyInput
     activities?: ActivityCreateNestedManyWithoutAgencyInput
+    transport?: TransportCreateNestedManyWithoutAgencyInput
+    clients?: ClientCreateNestedManyWithoutAgencyInput
+    hotels?: HotelCreateNestedManyWithoutAgencyInput
+    quotations?: QuotationCreateNestedManyWithoutAgencyInput
+    users?: UserCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutMealsInput = {
@@ -24304,12 +25922,12 @@ export namespace Prisma {
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
-    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    clients?: ClientUncheckedCreateNestedManyWithoutAgencyInput
-    quotations?: QuotationUncheckedCreateNestedManyWithoutAgencyInput
-    hotels?: HotelUncheckedCreateNestedManyWithoutAgencyInput
-    cars?: CarUncheckedCreateNestedManyWithoutAgencyInput
     activities?: ActivityUncheckedCreateNestedManyWithoutAgencyInput
+    transport?: TransportUncheckedCreateNestedManyWithoutAgencyInput
+    clients?: ClientUncheckedCreateNestedManyWithoutAgencyInput
+    hotels?: HotelUncheckedCreateNestedManyWithoutAgencyInput
+    quotations?: QuotationUncheckedCreateNestedManyWithoutAgencyInput
+    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutMealsInput = {
@@ -24335,12 +25953,12 @@ export namespace Prisma {
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: UserUpdateManyWithoutAgencyNestedInput
-    clients?: ClientUpdateManyWithoutAgencyNestedInput
-    quotations?: QuotationUpdateManyWithoutAgencyNestedInput
-    hotels?: HotelUpdateManyWithoutAgencyNestedInput
-    cars?: CarUpdateManyWithoutAgencyNestedInput
     activities?: ActivityUpdateManyWithoutAgencyNestedInput
+    transport?: TransportUpdateManyWithoutAgencyNestedInput
+    clients?: ClientUpdateManyWithoutAgencyNestedInput
+    hotels?: HotelUpdateManyWithoutAgencyNestedInput
+    quotations?: QuotationUpdateManyWithoutAgencyNestedInput
+    users?: UserUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutMealsInput = {
@@ -24350,12 +25968,12 @@ export namespace Prisma {
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    clients?: ClientUncheckedUpdateManyWithoutAgencyNestedInput
-    quotations?: QuotationUncheckedUpdateManyWithoutAgencyNestedInput
-    hotels?: HotelUncheckedUpdateManyWithoutAgencyNestedInput
-    cars?: CarUncheckedUpdateManyWithoutAgencyNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutAgencyNestedInput
+    transport?: TransportUncheckedUpdateManyWithoutAgencyNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutAgencyNestedInput
+    hotels?: HotelUncheckedUpdateManyWithoutAgencyNestedInput
+    quotations?: QuotationUncheckedUpdateManyWithoutAgencyNestedInput
+    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyCreateWithoutActivitiesInput = {
@@ -24365,12 +25983,12 @@ export namespace Prisma {
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
-    users?: UserCreateNestedManyWithoutAgencyInput
+    transport?: TransportCreateNestedManyWithoutAgencyInput
     clients?: ClientCreateNestedManyWithoutAgencyInput
-    quotations?: QuotationCreateNestedManyWithoutAgencyInput
     hotels?: HotelCreateNestedManyWithoutAgencyInput
-    cars?: CarCreateNestedManyWithoutAgencyInput
     meals?: MealCreateNestedManyWithoutAgencyInput
+    quotations?: QuotationCreateNestedManyWithoutAgencyInput
+    users?: UserCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutActivitiesInput = {
@@ -24380,12 +25998,12 @@ export namespace Prisma {
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
-    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    transport?: TransportUncheckedCreateNestedManyWithoutAgencyInput
     clients?: ClientUncheckedCreateNestedManyWithoutAgencyInput
-    quotations?: QuotationUncheckedCreateNestedManyWithoutAgencyInput
     hotels?: HotelUncheckedCreateNestedManyWithoutAgencyInput
-    cars?: CarUncheckedCreateNestedManyWithoutAgencyInput
     meals?: MealUncheckedCreateNestedManyWithoutAgencyInput
+    quotations?: QuotationUncheckedCreateNestedManyWithoutAgencyInput
+    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutActivitiesInput = {
@@ -24411,12 +26029,12 @@ export namespace Prisma {
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: UserUpdateManyWithoutAgencyNestedInput
+    transport?: TransportUpdateManyWithoutAgencyNestedInput
     clients?: ClientUpdateManyWithoutAgencyNestedInput
-    quotations?: QuotationUpdateManyWithoutAgencyNestedInput
     hotels?: HotelUpdateManyWithoutAgencyNestedInput
-    cars?: CarUpdateManyWithoutAgencyNestedInput
     meals?: MealUpdateManyWithoutAgencyNestedInput
+    quotations?: QuotationUpdateManyWithoutAgencyNestedInput
+    users?: UserUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutActivitiesInput = {
@@ -24426,12 +26044,12 @@ export namespace Prisma {
     settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    transport?: TransportUncheckedUpdateManyWithoutAgencyNestedInput
     clients?: ClientUncheckedUpdateManyWithoutAgencyNestedInput
-    quotations?: QuotationUncheckedUpdateManyWithoutAgencyNestedInput
     hotels?: HotelUncheckedUpdateManyWithoutAgencyNestedInput
-    cars?: CarUncheckedUpdateManyWithoutAgencyNestedInput
     meals?: MealUncheckedUpdateManyWithoutAgencyNestedInput
+    quotations?: QuotationUncheckedUpdateManyWithoutAgencyNestedInput
+    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type QuotationCreateWithoutItinerariesInput = {
@@ -24446,8 +26064,8 @@ export namespace Prisma {
     totalAmount: number
     createdAt?: Date | string
     updatedAt?: Date | string
-    client: ClientCreateNestedOneWithoutQuotationsInput
     agency: AgencyCreateNestedOneWithoutQuotationsInput
+    client: ClientCreateNestedOneWithoutQuotationsInput
     items?: QuotationItemCreateNestedManyWithoutQuotationInput
   }
 
@@ -24496,8 +26114,8 @@ export namespace Prisma {
     totalAmount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    client?: ClientUpdateOneRequiredWithoutQuotationsNestedInput
     agency?: AgencyUpdateOneRequiredWithoutQuotationsNestedInput
+    client?: ClientUpdateOneRequiredWithoutQuotationsNestedInput
     items?: QuotationItemUpdateManyWithoutQuotationNestedInput
   }
 
@@ -24532,17 +26150,17 @@ export namespace Prisma {
     session_state?: string | null
   }
 
-  export type SessionCreateManyUserInput = {
-    id?: string
-    sessionToken: string
-    expires: Date | string
-  }
-
   export type LoginHistoryCreateManyUserInput = {
     id?: string
     ip?: string | null
     userAgent?: string | null
     createdAt?: Date | string
+  }
+
+  export type SessionCreateManyUserInput = {
+    id?: string
+    sessionToken: string
+    expires: Date | string
   }
 
   export type AccountUpdateWithoutUserInput = {
@@ -24587,24 +26205,6 @@ export namespace Prisma {
     session_state?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type SessionUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    sessionToken?: StringFieldUpdateOperationsInput | string
-    expires?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type SessionUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    sessionToken?: StringFieldUpdateOperationsInput | string
-    expires?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type SessionUncheckedUpdateManyWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    sessionToken?: StringFieldUpdateOperationsInput | string
-    expires?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type LoginHistoryUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     ip?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24626,16 +26226,41 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type UserCreateManyAgencyInput = {
+  export type SessionUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionToken?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SessionUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionToken?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SessionUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionToken?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ActivityCreateManyAgencyInput = {
     id?: string
-    name?: string | null
-    email: string
-    emailVerified?: Date | string | null
-    password?: string | null
-    image?: string | null
-    role?: $Enums.Role
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    name: string
+    description?: string | null
+    duration?: string | null
+    price: number
+    photos?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type TransportCreateManyAgencyInput = {
+    id?: string
+    vehicleType: string
+    perDay: number
+    perKm: number
+    maxCapacity: number
+    notes?: string | null
+    photos?: string | null
   }
 
   export type ClientCreateManyAgencyInput = {
@@ -24647,6 +26272,24 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type HotelCreateManyAgencyInput = {
+    id?: string
+    name: string
+    city: string
+    starCategory: number
+    inclusions?: string | null
+    cancellation?: string | null
+    photos?: string | null
+  }
+
+  export type MealCreateManyAgencyInput = {
+    id?: string
+    type: string
+    vegOption: boolean
+    nonVegOption: boolean
+    price: number
   }
 
   export type QuotationCreateManyAgencyInput = {
@@ -24664,82 +26307,73 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type HotelCreateManyAgencyInput = {
+  export type UserCreateManyAgencyInput = {
     id?: string
-    name: string
-    city: string
-    starCategory: number
-    roomTypes: JsonNullValueInput | InputJsonValue
-    inclusions?: string | null
-    cancellation?: string | null
+    name?: string | null
+    email: string
+    emailVerified?: Date | string | null
+    password?: string | null
+    image?: string | null
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ActivityUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    duration?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     photos?: NullableJsonNullValueInput | InputJsonValue
   }
 
-  export type CarCreateManyAgencyInput = {
-    id?: string
-    vehicleType: string
-    pricingModel: string
-    maxCapacity: number
-    notes?: string | null
+  export type ActivityUncheckedUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    duration?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     photos?: NullableJsonNullValueInput | InputJsonValue
   }
 
-  export type MealCreateManyAgencyInput = {
-    id?: string
-    type: string
-    vegOption: boolean
-    price: number
-  }
-
-  export type ActivityCreateManyAgencyInput = {
-    id?: string
-    name: string
-    description?: string | null
-    duration?: string | null
-    price: number
+  export type ActivityUncheckedUpdateManyWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    duration?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     photos?: NullableJsonNullValueInput | InputJsonValue
   }
 
-  export type UserUpdateWithoutAgencyInput = {
+  export type TransportUpdateWithoutAgencyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    accounts?: AccountUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    vehicleType?: StringFieldUpdateOperationsInput | string
+    perDay?: FloatFieldUpdateOperationsInput | number
+    perKm?: FloatFieldUpdateOperationsInput | number
+    maxCapacity?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type UserUncheckedUpdateWithoutAgencyInput = {
+  export type TransportUncheckedUpdateWithoutAgencyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    vehicleType?: StringFieldUpdateOperationsInput | string
+    perDay?: FloatFieldUpdateOperationsInput | number
+    perKm?: FloatFieldUpdateOperationsInput | number
+    maxCapacity?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type UserUncheckedUpdateManyWithoutAgencyInput = {
+  export type TransportUncheckedUpdateManyWithoutAgencyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    vehicleType?: StringFieldUpdateOperationsInput | string
+    perDay?: FloatFieldUpdateOperationsInput | number
+    perKm?: FloatFieldUpdateOperationsInput | number
+    maxCapacity?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ClientUpdateWithoutAgencyInput = {
@@ -24777,6 +26411,62 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type HotelUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    starCategory?: IntFieldUpdateOperationsInput | number
+    inclusions?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellation?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    roomTypes?: RoomTypeUpdateManyWithoutHotelNestedInput
+  }
+
+  export type HotelUncheckedUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    starCategory?: IntFieldUpdateOperationsInput | number
+    inclusions?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellation?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    roomTypes?: RoomTypeUncheckedUpdateManyWithoutHotelNestedInput
+  }
+
+  export type HotelUncheckedUpdateManyWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    starCategory?: IntFieldUpdateOperationsInput | number
+    inclusions?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellation?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MealUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    vegOption?: BoolFieldUpdateOperationsInput | boolean
+    nonVegOption?: BoolFieldUpdateOperationsInput | boolean
+    price?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type MealUncheckedUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    vegOption?: BoolFieldUpdateOperationsInput | boolean
+    nonVegOption?: BoolFieldUpdateOperationsInput | boolean
+    price?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type MealUncheckedUpdateManyWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    vegOption?: BoolFieldUpdateOperationsInput | boolean
+    nonVegOption?: BoolFieldUpdateOperationsInput | boolean
+    price?: FloatFieldUpdateOperationsInput | number
+  }
+
   export type QuotationUpdateWithoutAgencyInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumQuotationStatusFieldUpdateOperationsInput | $Enums.QuotationStatus
@@ -24789,9 +26479,9 @@ export namespace Prisma {
     totalAmount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    itineraries?: ItineraryUpdateManyWithoutQuotationNestedInput
     client?: ClientUpdateOneRequiredWithoutQuotationsNestedInput
     items?: QuotationItemUpdateManyWithoutQuotationNestedInput
-    itineraries?: ItineraryUpdateManyWithoutQuotationNestedInput
   }
 
   export type QuotationUncheckedUpdateWithoutAgencyInput = {
@@ -24807,8 +26497,8 @@ export namespace Prisma {
     totalAmount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    items?: QuotationItemUncheckedUpdateManyWithoutQuotationNestedInput
     itineraries?: ItineraryUncheckedUpdateManyWithoutQuotationNestedInput
+    items?: QuotationItemUncheckedUpdateManyWithoutQuotationNestedInput
   }
 
   export type QuotationUncheckedUpdateManyWithoutAgencyInput = {
@@ -24826,112 +26516,46 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type HotelUpdateWithoutAgencyInput = {
+  export type UserUpdateWithoutAgencyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    city?: StringFieldUpdateOperationsInput | string
-    starCategory?: IntFieldUpdateOperationsInput | number
-    roomTypes?: JsonNullValueInput | InputJsonValue
-    inclusions?: NullableStringFieldUpdateOperationsInput | string | null
-    cancellation?: NullableStringFieldUpdateOperationsInput | string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
   }
 
-  export type HotelUncheckedUpdateWithoutAgencyInput = {
+  export type UserUncheckedUpdateWithoutAgencyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    city?: StringFieldUpdateOperationsInput | string
-    starCategory?: IntFieldUpdateOperationsInput | number
-    roomTypes?: JsonNullValueInput | InputJsonValue
-    inclusions?: NullableStringFieldUpdateOperationsInput | string | null
-    cancellation?: NullableStringFieldUpdateOperationsInput | string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type HotelUncheckedUpdateManyWithoutAgencyInput = {
+  export type UserUncheckedUpdateManyWithoutAgencyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    city?: StringFieldUpdateOperationsInput | string
-    starCategory?: IntFieldUpdateOperationsInput | number
-    roomTypes?: JsonNullValueInput | InputJsonValue
-    inclusions?: NullableStringFieldUpdateOperationsInput | string | null
-    cancellation?: NullableStringFieldUpdateOperationsInput | string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
-  }
-
-  export type CarUpdateWithoutAgencyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    vehicleType?: StringFieldUpdateOperationsInput | string
-    pricingModel?: StringFieldUpdateOperationsInput | string
-    maxCapacity?: IntFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
-  }
-
-  export type CarUncheckedUpdateWithoutAgencyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    vehicleType?: StringFieldUpdateOperationsInput | string
-    pricingModel?: StringFieldUpdateOperationsInput | string
-    maxCapacity?: IntFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
-  }
-
-  export type CarUncheckedUpdateManyWithoutAgencyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    vehicleType?: StringFieldUpdateOperationsInput | string
-    pricingModel?: StringFieldUpdateOperationsInput | string
-    maxCapacity?: IntFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    photos?: NullableJsonNullValueInput | InputJsonValue
-  }
-
-  export type MealUpdateWithoutAgencyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    type?: StringFieldUpdateOperationsInput | string
-    vegOption?: BoolFieldUpdateOperationsInput | boolean
-    price?: FloatFieldUpdateOperationsInput | number
-  }
-
-  export type MealUncheckedUpdateWithoutAgencyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    type?: StringFieldUpdateOperationsInput | string
-    vegOption?: BoolFieldUpdateOperationsInput | boolean
-    price?: FloatFieldUpdateOperationsInput | number
-  }
-
-  export type MealUncheckedUpdateManyWithoutAgencyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    type?: StringFieldUpdateOperationsInput | string
-    vegOption?: BoolFieldUpdateOperationsInput | boolean
-    price?: FloatFieldUpdateOperationsInput | number
-  }
-
-  export type ActivityUpdateWithoutAgencyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    duration?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: FloatFieldUpdateOperationsInput | number
-    photos?: NullableJsonNullValueInput | InputJsonValue
-  }
-
-  export type ActivityUncheckedUpdateWithoutAgencyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    duration?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: FloatFieldUpdateOperationsInput | number
-    photos?: NullableJsonNullValueInput | InputJsonValue
-  }
-
-  export type ActivityUncheckedUpdateManyWithoutAgencyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    duration?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: FloatFieldUpdateOperationsInput | number
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type QuotationCreateManyClientInput = {
@@ -24961,9 +26585,9 @@ export namespace Prisma {
     totalAmount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    itineraries?: ItineraryUpdateManyWithoutQuotationNestedInput
     agency?: AgencyUpdateOneRequiredWithoutQuotationsNestedInput
     items?: QuotationItemUpdateManyWithoutQuotationNestedInput
-    itineraries?: ItineraryUpdateManyWithoutQuotationNestedInput
   }
 
   export type QuotationUncheckedUpdateWithoutClientInput = {
@@ -24979,8 +26603,8 @@ export namespace Prisma {
     totalAmount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    items?: QuotationItemUncheckedUpdateManyWithoutQuotationNestedInput
     itineraries?: ItineraryUncheckedUpdateManyWithoutQuotationNestedInput
+    items?: QuotationItemUncheckedUpdateManyWithoutQuotationNestedInput
   }
 
   export type QuotationUncheckedUpdateManyWithoutClientInput = {
@@ -24998,14 +26622,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type QuotationItemCreateManyQuotationInput = {
-    id?: string
-    serviceType: $Enums.ServiceType
-    serviceId: string
-    description?: string | null
-    price: number
-  }
-
   export type ItineraryCreateManyQuotationInput = {
     id?: string
     dayNumber: number
@@ -25018,28 +26634,12 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type QuotationItemUpdateWithoutQuotationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    serviceType?: EnumServiceTypeFieldUpdateOperationsInput | $Enums.ServiceType
-    serviceId?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: FloatFieldUpdateOperationsInput | number
-  }
-
-  export type QuotationItemUncheckedUpdateWithoutQuotationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    serviceType?: EnumServiceTypeFieldUpdateOperationsInput | $Enums.ServiceType
-    serviceId?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: FloatFieldUpdateOperationsInput | number
-  }
-
-  export type QuotationItemUncheckedUpdateManyWithoutQuotationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    serviceType?: EnumServiceTypeFieldUpdateOperationsInput | $Enums.ServiceType
-    serviceId?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: FloatFieldUpdateOperationsInput | number
+  export type QuotationItemCreateManyQuotationInput = {
+    id?: string
+    serviceType: $Enums.ServiceType
+    serviceId: string
+    description?: string | null
+    price: number
   }
 
   export type ItineraryUpdateWithoutQuotationInput = {
@@ -25076,6 +26676,54 @@ export namespace Prisma {
     images?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type QuotationItemUpdateWithoutQuotationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    serviceType?: EnumServiceTypeFieldUpdateOperationsInput | $Enums.ServiceType
+    serviceId?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type QuotationItemUncheckedUpdateWithoutQuotationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    serviceType?: EnumServiceTypeFieldUpdateOperationsInput | $Enums.ServiceType
+    serviceId?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type QuotationItemUncheckedUpdateManyWithoutQuotationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    serviceType?: EnumServiceTypeFieldUpdateOperationsInput | $Enums.ServiceType
+    serviceId?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type RoomTypeCreateManyHotelInput = {
+    id?: string
+    type: string
+    price: Decimal | DecimalJsLike | number | string
+  }
+
+  export type RoomTypeUpdateWithoutHotelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+  }
+
+  export type RoomTypeUncheckedUpdateWithoutHotelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+  }
+
+  export type RoomTypeUncheckedUpdateManyWithoutHotelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
   }
 
 

@@ -215,22 +215,29 @@ exports.Prisma.QuotationItemScalarFieldEnum = {
   price: 'price'
 };
 
+exports.Prisma.RoomTypeScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  price: 'price',
+  hotelId: 'hotelId'
+};
+
 exports.Prisma.HotelScalarFieldEnum = {
   id: 'id',
   name: 'name',
   city: 'city',
   starCategory: 'starCategory',
-  roomTypes: 'roomTypes',
   inclusions: 'inclusions',
   cancellation: 'cancellation',
   photos: 'photos',
   agencyId: 'agencyId'
 };
 
-exports.Prisma.CarScalarFieldEnum = {
+exports.Prisma.TransportScalarFieldEnum = {
   id: 'id',
   vehicleType: 'vehicleType',
-  pricingModel: 'pricingModel',
+  perDay: 'perDay',
+  perKm: 'perKm',
   maxCapacity: 'maxCapacity',
   notes: 'notes',
   photos: 'photos',
@@ -241,6 +248,7 @@ exports.Prisma.MealScalarFieldEnum = {
   id: 'id',
   type: 'type',
   vegOption: 'vegOption',
+  nonVegOption: 'nonVegOption',
   price: 'price',
   agencyId: 'agencyId'
 };
@@ -275,10 +283,6 @@ exports.Prisma.SortOrder = {
 
 exports.Prisma.NullableJsonNullValueInput = {
   DbNull: Prisma.DbNull,
-  JsonNull: Prisma.JsonNull
-};
-
-exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -327,8 +331,9 @@ exports.Prisma.ModelName = {
   Client: 'Client',
   Quotation: 'Quotation',
   QuotationItem: 'QuotationItem',
+  RoomType: 'RoomType',
   Hotel: 'Hotel',
-  Car: 'Car',
+  Transport: 'Transport',
   Meal: 'Meal',
   Activity: 'Activity',
   Itinerary: 'Itinerary'

@@ -24,7 +24,7 @@ export default function Header() {
         </nav>
       </div>
 
-      {/* Middle: Search */}
+      {/* Middle: Search
       <div className="flex-1 flex justify-center px-6">
         <div className="flex items-center bg-gray-100 rounded-md px-3 py-1 w-full max-w-md border border-gray-200">
           <Search className="h-4 w-4 text-gray-400" />
@@ -34,7 +34,7 @@ export default function Header() {
             className="bg-transparent outline-none px-2 py-1 text-sm placeholder-gray-400 text-gray-700 w-full"
           />
         </div>
-      </div>
+      </div> */}
 
       {/* Right: Menu + Icons */}
       <div className="flex items-center gap-8">

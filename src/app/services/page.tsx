@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiPlus, FiEdit, FiTrash2, FiSearch, FiDownload, FiHome, FiTruck, FiCoffee, FiActivity} from "react-icons/fi";
 
 interface Hotel {
@@ -41,61 +41,40 @@ export default function ServicesLibraryPage() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
 
+ // Data states
+  const [hotels, setHotels] = useState<Hotel[]>([]);
+  const [transfers, setTransfers] = useState<Transfer[]>([]);
+  const [meals, setMeals] = useState<Meal[]>([]);
+  const [activities, setActivities] = useState<Activity[]>([]);
 
-  // Dummy data
-  const hotels: Hotel[] = [
-    {
-      id: 1,
-      name: "Grand Palace",
-      city: "Goa",
-      category: "5 Star",
-      roomTypes: ["Deluxe", "Suite"],
-      pricePerNight: 12000,
-    },
-    {
-      id: 2,
-      name: "Sea Breeze",
-      city: "Mumbai",
-      category: "4 Star",
-      roomTypes: ["Standard", "Deluxe"],
-      pricePerNight: 8000,
-    },
-    {
-      id: 3,
-      name: "Mountain View",
-      city: "Manali",
-      category: "3 Star",
-      roomTypes: ["Standard"],
-      pricePerNight: 5000,
-    },
-  ];
+// fetch
 
-  const transfers: Transfer[] = [
-    { id: 1, vehicleType: "SUV", pricingModel: "Per Day", maxCapacity: 6, price: 4000 },
-    { id: 2, vehicleType: "Bus", pricingModel: "Per Km", maxCapacity: 40, price: 50 },
-  ];
+  useEffect(() => {
+    // Fetch Hotels
+    fetch("/api/meals")
+  .then(res => res.json())
+  .then(console.log) // log what comes back
 
-  const meals: Meal[] = [
-    {
-      id: 1,
-      mealType: "Breakfast",
-      option: "Veg",
-      pricePerPerson: 500,
-      items: ["Idli", "Dosa", "Sambar"],
-    },
-    {
-      id: 2,
-      mealType: "Dinner",
-      option: "Non-Veg",
-      pricePerPerson: 800,
-      items: ["Chicken Curry", "Rice", "Salad"],
-    },
-  ];
+    fetch("/api/hotels")
+      .then((res) => res.json())
+      .then(setHotels);
 
-  const activities: Activity[] = [
-    { id: 1, name: "Snorkeling", duration: "2h", pricePerPerson: 1500 },
-    { id: 2, name: "City Tour", duration: "4h", pricePerPerson: 1200 },
-  ];
+    // Fetch Transfers
+    fetch("/api/transfers")
+      .then((res) => res.json())
+      .then(setTransfers);
+
+    // Fetch Meals
+    fetch("/api/meals")
+      .then((res) => res.json())
+      .then(result => setMeals(result.data));
+
+    // Fetch Activities
+    fetch("/api/activities")
+      .then((res) => res.json())
+      .then(setActivities);
+  }, []);
+
 
   // Filters
  const filteredHotels = hotels

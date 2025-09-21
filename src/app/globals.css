@@ -36,4 +36,12 @@ a{
     border-color: transparent;
     box-shadow: none;
   }
+
+}
+input::placeholder,
+textarea::placeholder {
+  color: #D1D5DB; /* Tailwind gray-400 */
+}
+textarea::placeholder{
+  outline: none;
 }
