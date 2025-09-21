@@ -40,3 +40,25 @@ export async function GET() {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    // Get activities ID from query params
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ success: false, error: "Activity ID is required" }, { status: 400 });
+    }
+
+    // Delete the activity and its related room types
+    const deletedActivity = await prisma.activity.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ success: true, hotel: deletedActivity });
+  } catch (error) {
+    console.error(" Activity error:", error);
+    return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
+  }
+}

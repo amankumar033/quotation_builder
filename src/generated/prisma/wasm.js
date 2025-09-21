@@ -92,12 +92,17 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.LoginHistoryScalarFieldEnum = {
+exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
-  userId: 'userId',
-  ip: 'ip',
-  userAgent: 'userAgent',
-  createdAt: 'createdAt'
+  name: 'name',
+  email: 'email',
+  emailVerified: 'emailVerified',
+  password: 'password',
+  image: 'image',
+  role: 'role',
+  agencyId: 'agencyId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.AccountScalarFieldEnum = {
@@ -122,23 +127,18 @@ exports.Prisma.SessionScalarFieldEnum = {
   expires: 'expires'
 };
 
+exports.Prisma.LoginHistoryScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  ip: 'ip',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.VerificationTokenScalarFieldEnum = {
   identifier: 'identifier',
   token: 'token',
   expires: 'expires'
-};
-
-exports.Prisma.UserScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  email: 'email',
-  emailVerified: 'emailVerified',
-  password: 'password',
-  image: 'image',
-  role: 'role',
-  agencyId: 'agencyId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.AgencyScalarFieldEnum = {
@@ -162,10 +162,91 @@ exports.Prisma.ClientScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.HotelScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  city: 'city',
+  starCategory: 'starCategory',
+  inclusions: 'inclusions',
+  cancellation: 'cancellation',
+  photos: 'photos',
+  agencyId: 'agencyId'
+};
+
+exports.Prisma.RoomTypeScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  price: 'price',
+  hotelId: 'hotelId'
+};
+
+exports.Prisma.QuotationHotelScalarFieldEnum = {
+  id: 'id',
+  quotationId: 'quotationId',
+  hotelId: 'hotelId',
+  roomTypeId: 'roomTypeId',
+  price: 'price'
+};
+
+exports.Prisma.TransportScalarFieldEnum = {
+  id: 'id',
+  vehicleType: 'vehicleType',
+  perDay: 'perDay',
+  perKm: 'perKm',
+  maxCapacity: 'maxCapacity',
+  notes: 'notes',
+  photos: 'photos',
+  agencyId: 'agencyId'
+};
+
+exports.Prisma.QuotationTransportScalarFieldEnum = {
+  id: 'id',
+  quotationId: 'quotationId',
+  transportId: 'transportId',
+  pricePerDay: 'pricePerDay',
+  pricePerKm: 'pricePerKm'
+};
+
+exports.Prisma.MealScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  vegOption: 'vegOption',
+  nonVegOption: 'nonVegOption',
+  price: 'price',
+  agencyId: 'agencyId'
+};
+
+exports.Prisma.QuotationMealScalarFieldEnum = {
+  id: 'id',
+  quotationId: 'quotationId',
+  mealId: 'mealId',
+  price: 'price'
+};
+
+exports.Prisma.ActivityScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  duration: 'duration',
+  price: 'price',
+  photos: 'photos',
+  agencyId: 'agencyId'
+};
+
+exports.Prisma.QuotationActivityScalarFieldEnum = {
+  id: 'id',
+  quotationId: 'quotationId',
+  activityId: 'activityId',
+  price: 'price'
+};
+
 exports.Prisma.QuotationScalarFieldEnum = {
   id: 'id',
   clientId: 'clientId',
   agencyId: 'agencyId',
+  clientName: 'clientName',
+  phoneNumber: 'phoneNumber',
+  emailAddress: 'emailAddress',
   status: 'status',
   destination: 'destination',
   startDate: 'startDate',
@@ -185,54 +266,6 @@ exports.Prisma.QuotationItemScalarFieldEnum = {
   serviceId: 'serviceId',
   description: 'description',
   price: 'price'
-};
-
-exports.Prisma.RoomTypeScalarFieldEnum = {
-  id: 'id',
-  type: 'type',
-  price: 'price',
-  hotelId: 'hotelId'
-};
-
-exports.Prisma.HotelScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  city: 'city',
-  starCategory: 'starCategory',
-  inclusions: 'inclusions',
-  cancellation: 'cancellation',
-  photos: 'photos',
-  agencyId: 'agencyId'
-};
-
-exports.Prisma.TransportScalarFieldEnum = {
-  id: 'id',
-  vehicleType: 'vehicleType',
-  perDay: 'perDay',
-  perKm: 'perKm',
-  maxCapacity: 'maxCapacity',
-  notes: 'notes',
-  photos: 'photos',
-  agencyId: 'agencyId'
-};
-
-exports.Prisma.MealScalarFieldEnum = {
-  id: 'id',
-  type: 'type',
-  vegOption: 'vegOption',
-  nonVegOption: 'nonVegOption',
-  price: 'price',
-  agencyId: 'agencyId'
-};
-
-exports.Prisma.ActivityScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  description: 'description',
-  duration: 'duration',
-  price: 'price',
-  photos: 'photos',
-  agencyId: 'agencyId'
 };
 
 exports.Prisma.ItineraryScalarFieldEnum = {
@@ -255,6 +288,10 @@ exports.Prisma.SortOrder = {
 
 exports.Prisma.NullableJsonNullValueInput = {
   DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -294,20 +331,24 @@ exports.ServiceType = exports.$Enums.ServiceType = {
 };
 
 exports.Prisma.ModelName = {
-  LoginHistory: 'LoginHistory',
+  User: 'User',
   Account: 'Account',
   Session: 'Session',
+  LoginHistory: 'LoginHistory',
   VerificationToken: 'VerificationToken',
-  User: 'User',
   Agency: 'Agency',
   Client: 'Client',
+  Hotel: 'Hotel',
+  RoomType: 'RoomType',
+  QuotationHotel: 'QuotationHotel',
+  Transport: 'Transport',
+  QuotationTransport: 'QuotationTransport',
+  Meal: 'Meal',
+  QuotationMeal: 'QuotationMeal',
+  Activity: 'Activity',
+  QuotationActivity: 'QuotationActivity',
   Quotation: 'Quotation',
   QuotationItem: 'QuotationItem',
-  RoomType: 'RoomType',
-  Hotel: 'Hotel',
-  Transport: 'Transport',
-  Meal: 'Meal',
-  Activity: 'Activity',
   Itinerary: 'Itinerary'
 };
 /**
@@ -357,13 +398,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\n/// ///////////////////////\n/// ///////////////////////\nmodel LoginHistory {\n  id        String   @id @default(cuid())\n  userId    String\n  ip        String?\n  userAgent String?\n  createdAt DateTime @default(now())\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n}\n\nmodel Account {\n  id                String  @id @default(cuid())\n  userId            String\n  type              String\n  provider          String\n  providerAccountId String\n  refresh_token     String?\n  access_token      String?\n  expires_at        Int?\n  token_type        String?\n  scope             String?\n  id_token          String?\n  session_state     String?\n  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([provider, providerAccountId])\n}\n\nmodel Session {\n  id           String   @id @default(cuid())\n  sessionToken String   @unique\n  userId       String\n  expires      DateTime\n  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n}\n\nmodel VerificationToken {\n  identifier String\n  token      String   @unique\n  expires    DateTime\n\n  @@unique([identifier, token])\n}\n\nmodel User {\n  id            String         @id @default(cuid())\n  name          String?\n  email         String         @unique\n  emailVerified DateTime?\n  password      String?\n  image         String?\n  role          Role           @default(EXECUTIVE)\n  agencyId      String?\n  createdAt     DateTime       @default(now())\n  updatedAt     DateTime       @updatedAt\n  accounts      Account[]\n  loginHistory  LoginHistory[]\n  sessions      Session[]\n  agency        Agency?        @relation(fields: [agencyId], references: [id])\n}\n\nmodel Agency {\n  id         String      @id @default(cuid())\n  name       String\n  logo       String?\n  settings   Json?\n  createdAt  DateTime    @default(now())\n  updatedAt  DateTime    @updatedAt\n  activities Activity[]\n  transport  Transport[]\n  clients    Client[]\n  hotels     Hotel[]\n  meals      Meal[]\n  quotations Quotation[]\n  users      User[]\n}\n\nmodel Client {\n  id         String      @id @default(cuid())\n  name       String\n  email      String?\n  phone      String?\n  city       String?\n  notes      String?\n  agencyId   String\n  createdAt  DateTime    @default(now())\n  updatedAt  DateTime    @updatedAt\n  agency     Agency      @relation(fields: [agencyId], references: [id])\n  quotations Quotation[]\n}\n\nmodel Quotation {\n  id          String          @id @default(cuid())\n  clientId    String\n  agencyId    String\n  status      QuotationStatus @default(PENDING)\n  destination String\n  startDate   DateTime\n  endDate     DateTime\n  adults      Int\n  children    Int\n  infants     Int\n  totalAmount Float\n  createdAt   DateTime        @default(now())\n  updatedAt   DateTime        @updatedAt\n  itineraries Itinerary[]\n  agency      Agency          @relation(fields: [agencyId], references: [id])\n  client      Client          @relation(fields: [clientId], references: [id])\n  items       QuotationItem[]\n}\n\nmodel QuotationItem {\n  id          String      @id @default(cuid())\n  quotationId String\n  serviceType ServiceType\n  serviceId   String\n  description String?\n  price       Float\n  quotation   Quotation   @relation(fields: [quotationId], references: [id])\n}\n\n/// ///////////////////////\n/// ///////////////////////\nmodel RoomType {\n  id      String  @id @default(cuid())\n  type    String\n  price   Decimal\n  hotelId String\n  hotel   Hotel   @relation(fields: [hotelId], references: [id])\n}\n\nmodel Hotel {\n  id           String     @id @default(cuid())\n  name         String\n  city         String\n  starCategory Int\n  inclusions   String?\n  cancellation String?\n  photos       String?\n  agencyId     String\n  agency       Agency     @relation(fields: [agencyId], references: [id])\n  roomTypes    RoomType[]\n}\n\nmodel Transport {\n  id          String  @id @default(cuid())\n  vehicleType String\n  perDay      Float // use Float or Decimal for prices\n  perKm       Float\n  maxCapacity Int\n  notes       String?\n  photos      String?\n  agencyId    String\n  agency      Agency  @relation(fields: [agencyId], references: [id])\n}\n\nmodel Meal {\n  id           String  @id @default(cuid())\n  type         String\n  vegOption    Boolean\n  nonVegOption Boolean\n  price        Float\n  agencyId     String\n  agency       Agency  @relation(fields: [agencyId], references: [id])\n}\n\nmodel Activity {\n  id          String  @id @default(cuid())\n  name        String\n  description String?\n  duration    String?\n  price       Float\n  photos      Json?\n  agencyId    String\n  agency      Agency  @relation(fields: [agencyId], references: [id])\n}\n\nmodel Itinerary {\n  id          String    @id @default(cuid())\n  quotationId String\n  dayNumber   Int\n  headline    String\n  description String?\n  duration    String?\n  notes       String?\n  images      Json?\n  createdAt   DateTime  @default(now())\n  updatedAt   DateTime  @updatedAt\n  quotation   Quotation @relation(fields: [quotationId], references: [id])\n}\n\nenum Role {\n  SUPERADMIN\n  AGENCYADMIN\n  EXECUTIVE\n}\n\nenum QuotationStatus {\n  PENDING\n  SENT\n  WON\n  LOST\n}\n\nenum ServiceType {\n  HOTEL\n  CAR\n  MEAL\n  ACTIVITY\n}\n",
-  "inlineSchemaHash": "4dc629451d353a65ce6aad4aac00b531c9c3d75ced3b4137bd8aa6654afd3846",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\n/// ================= USER & AUTH =================\nmodel User {\n  id            String    @id @default(cuid())\n  name          String?\n  email         String    @unique\n  emailVerified DateTime?\n  password      String?\n  image         String?\n  role          Role      @default(EXECUTIVE)\n  agencyId      String?\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n\n  accounts     Account[]\n  loginHistory LoginHistory[]\n  sessions     Session[]\n  agency       Agency?        @relation(fields: [agencyId], references: [id], onDelete: Cascade)\n}\n\nmodel Account {\n  id                String  @id @default(cuid())\n  userId            String\n  type              String\n  provider          String\n  providerAccountId String\n  refresh_token     String?\n  access_token      String?\n  expires_at        Int?\n  token_type        String?\n  scope             String?\n  id_token          String?\n  session_state     String?\n  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([provider, providerAccountId])\n}\n\nmodel Session {\n  id           String   @id @default(cuid())\n  sessionToken String   @unique\n  userId       String\n  expires      DateTime\n  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n}\n\nmodel LoginHistory {\n  id        String   @id @default(cuid())\n  userId    String\n  ip        String?\n  userAgent String?\n  createdAt DateTime @default(now())\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n}\n\nmodel VerificationToken {\n  identifier String\n  token      String   @unique\n  expires    DateTime\n\n  @@unique([identifier, token])\n}\n\nenum Role {\n  SUPERADMIN\n  AGENCYADMIN\n  EXECUTIVE\n}\n\n/// ================= AGENCY =================\nmodel Agency {\n  id        String   @id @default(cuid())\n  name      String\n  logo      String?\n  settings  Json?\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  activities Activity[]\n  transport  Transport[]\n  clients    Client[]\n  hotels     Hotel[]\n  meals      Meal[]\n  quotations Quotation[]\n  users      User[]\n}\n\n/// ================= CLIENT =================\nmodel Client {\n  id        String   @id @default(cuid())\n  name      String\n  email     String?\n  phone     String?\n  city      String?\n  notes     String?\n  agencyId  String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  agency     Agency      @relation(fields: [agencyId], references: [id], onDelete: Cascade)\n  quotations Quotation[]\n}\n\n/// ================= HOTELS & ROOM TYPES =================\nmodel Hotel {\n  id              String           @id @default(cuid())\n  name            String\n  city            String\n  starCategory    Int\n  inclusions      String?\n  cancellation    String?\n  photos          String?\n  agencyId        String\n  agency          Agency           @relation(fields: [agencyId], references: [id], onDelete: Cascade)\n  roomTypes       RoomType[]\n  quotationHotels QuotationHotel[]\n}\n\nmodel RoomType {\n  id              String           @id @default(cuid())\n  type            String\n  price           Decimal\n  hotelId         String\n  hotel           Hotel            @relation(fields: [hotelId], references: [id], onDelete: Cascade)\n  quotationHotels QuotationHotel[]\n}\n\n/// Junction table for Quotation & Hotel\nmodel QuotationHotel {\n  id          String @id @default(cuid())\n  quotationId String\n  hotelId     String\n  roomTypeId  String\n  price       Float\n\n  quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)\n  hotel     Hotel     @relation(fields: [hotelId], references: [id], onDelete: Cascade)\n  roomType  RoomType  @relation(fields: [roomTypeId], references: [id], onDelete: Cascade)\n}\n\n/// ================= TRANSPORT =================\nmodel Transport {\n  id                  String               @id @default(cuid())\n  vehicleType         String\n  perDay              Float\n  perKm               Float\n  maxCapacity         Int\n  notes               String?\n  photos              String?\n  agencyId            String\n  agency              Agency               @relation(fields: [agencyId], references: [id], onDelete: Cascade)\n  quotationTransports QuotationTransport[]\n}\n\n/// Junction table for Quotation & Transport\nmodel QuotationTransport {\n  id          String @id @default(cuid())\n  quotationId String\n  transportId String\n  pricePerDay Float?\n  pricePerKm  Float?\n\n  quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)\n  transport Transport @relation(fields: [transportId], references: [id], onDelete: Cascade)\n}\n\n/// ================= MEALS =================\nmodel Meal {\n  id             String          @id @default(cuid())\n  type           String\n  vegOption      Boolean\n  nonVegOption   Boolean\n  price          Float\n  agencyId       String\n  agency         Agency          @relation(fields: [agencyId], references: [id], onDelete: Cascade)\n  quotationMeals QuotationMeal[]\n}\n\n/// Junction table for Quotation & Meal\nmodel QuotationMeal {\n  id          String @id @default(cuid())\n  quotationId String\n  mealId      String\n  price       Float\n\n  quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)\n  meal      Meal      @relation(fields: [mealId], references: [id], onDelete: Cascade)\n}\n\n/// ================= ACTIVITIES =================\nmodel Activity {\n  id                  String              @id @default(cuid())\n  name                String\n  description         String?\n  duration            String?\n  price               Float\n  photos              Json?\n  agencyId            String\n  agency              Agency              @relation(fields: [agencyId], references: [id], onDelete: Cascade)\n  quotationActivities QuotationActivity[]\n}\n\n/// Junction table for Quotation & Activity\nmodel QuotationActivity {\n  id          String @id @default(cuid())\n  quotationId String\n  activityId  String\n  price       Float\n\n  quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)\n  activity  Activity  @relation(fields: [activityId], references: [id], onDelete: Cascade)\n}\n\n/// ================= QUOTATION =================\nmodel Quotation {\n  id           String          @id @default(cuid())\n  clientId     String?\n  agencyId     String?\n  clientName   String?\n  phoneNumber  Int?\n  emailAddress String?\n  status       QuotationStatus @default(PENDING)\n  destination  Json\n  startDate    DateTime\n  endDate      DateTime\n  adults       Int\n  children     Int\n  infants      Int\n  totalAmount  Float\n  createdAt    DateTime        @default(now())\n  updatedAt    DateTime        @updatedAt\n\n  // Relations\n  agency      Agency?         @relation(fields: [agencyId], references: [id], onDelete: Cascade)\n  client      Client?         @relation(fields: [clientId], references: [id], onDelete: Cascade)\n  items       QuotationItem[]\n  itineraries Itinerary[]\n\n  hotels     QuotationHotel[]\n  transports QuotationTransport[]\n  meals      QuotationMeal[]\n  activities QuotationActivity[]\n}\n\nmodel QuotationItem {\n  id          String      @id @default(cuid())\n  quotationId String\n  serviceType ServiceType\n  serviceId   String\n  description String?\n  price       Float\n  quotation   Quotation   @relation(fields: [quotationId], references: [id], onDelete: Cascade)\n}\n\nmodel Itinerary {\n  id          String    @id @default(cuid())\n  quotationId String\n  dayNumber   Int\n  headline    String\n  description String?\n  duration    String?\n  notes       String?\n  images      Json?\n  createdAt   DateTime  @default(now())\n  updatedAt   DateTime  @updatedAt\n  quotation   Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)\n}\n\nenum QuotationStatus {\n  PENDING\n  SENT\n  WON\n  LOST\n}\n\nenum ServiceType {\n  HOTEL\n  CAR\n  MEAL\n  ACTIVITY\n}\n",
+  "inlineSchemaHash": "10eff4dcf9b14b0c8838c10a8200525e8cbaae0d1472e5f8708bb9a2f4ce5b01",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"LoginHistory\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"ip\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userAgent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"LoginHistoryToUser\"}],\"dbName\":null},\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"provider\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"providerAccountId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refresh_token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"access_token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expires_at\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"token_type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"scope\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"id_token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"session_state\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AccountToUser\"}],\"dbName\":null},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sessionToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expires\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SessionToUser\"}],\"dbName\":null},\"VerificationToken\":{\"fields\":[{\"name\":\"identifier\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expires\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"agencyId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"accounts\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToUser\"},{\"name\":\"loginHistory\",\"kind\":\"object\",\"type\":\"LoginHistory\",\"relationName\":\"LoginHistoryToUser\"},{\"name\":\"sessions\",\"kind\":\"object\",\"type\":\"Session\",\"relationName\":\"SessionToUser\"},{\"name\":\"agency\",\"kind\":\"object\",\"type\":\"Agency\",\"relationName\":\"AgencyToUser\"}],\"dbName\":null},\"Agency\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"logo\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"settings\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"activities\",\"kind\":\"object\",\"type\":\"Activity\",\"relationName\":\"ActivityToAgency\"},{\"name\":\"transport\",\"kind\":\"object\",\"type\":\"Transport\",\"relationName\":\"AgencyToTransport\"},{\"name\":\"clients\",\"kind\":\"object\",\"type\":\"Client\",\"relationName\":\"AgencyToClient\"},{\"name\":\"hotels\",\"kind\":\"object\",\"type\":\"Hotel\",\"relationName\":\"AgencyToHotel\"},{\"name\":\"meals\",\"kind\":\"object\",\"type\":\"Meal\",\"relationName\":\"AgencyToMeal\"},{\"name\":\"quotations\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"AgencyToQuotation\"},{\"name\":\"users\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AgencyToUser\"}],\"dbName\":null},\"Client\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"city\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"notes\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"agencyId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"agency\",\"kind\":\"object\",\"type\":\"Agency\",\"relationName\":\"AgencyToClient\"},{\"name\":\"quotations\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"ClientToQuotation\"}],\"dbName\":null},\"Quotation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"clientId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"agencyId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"QuotationStatus\"},{\"name\":\"destination\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"startDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"endDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"adults\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"children\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"infants\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"totalAmount\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"itineraries\",\"kind\":\"object\",\"type\":\"Itinerary\",\"relationName\":\"ItineraryToQuotation\"},{\"name\":\"agency\",\"kind\":\"object\",\"type\":\"Agency\",\"relationName\":\"AgencyToQuotation\"},{\"name\":\"client\",\"kind\":\"object\",\"type\":\"Client\",\"relationName\":\"ClientToQuotation\"},{\"name\":\"items\",\"kind\":\"object\",\"type\":\"QuotationItem\",\"relationName\":\"QuotationToQuotationItem\"}],\"dbName\":null},\"QuotationItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quotationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"serviceType\",\"kind\":\"enum\",\"type\":\"ServiceType\"},{\"name\":\"serviceId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"quotation\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"QuotationToQuotationItem\"}],\"dbName\":null},\"RoomType\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"hotelId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"hotel\",\"kind\":\"object\",\"type\":\"Hotel\",\"relationName\":\"HotelToRoomType\"}],\"dbName\":null},\"Hotel\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"city\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"starCategory\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"inclusions\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"cancellation\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"photos\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"agencyId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"agency\",\"kind\":\"object\",\"type\":\"Agency\",\"relationName\":\"AgencyToHotel\"},{\"name\":\"roomTypes\",\"kind\":\"object\",\"type\":\"RoomType\",\"relationName\":\"HotelToRoomType\"}],\"dbName\":null},\"Transport\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"vehicleType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"perDay\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"perKm\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"maxCapacity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"notes\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"photos\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"agencyId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"agency\",\"kind\":\"object\",\"type\":\"Agency\",\"relationName\":\"AgencyToTransport\"}],\"dbName\":null},\"Meal\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"vegOption\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"nonVegOption\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"agencyId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"agency\",\"kind\":\"object\",\"type\":\"Agency\",\"relationName\":\"AgencyToMeal\"}],\"dbName\":null},\"Activity\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"duration\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"photos\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"agencyId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"agency\",\"kind\":\"object\",\"type\":\"Agency\",\"relationName\":\"ActivityToAgency\"}],\"dbName\":null},\"Itinerary\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quotationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"dayNumber\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"headline\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"duration\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"notes\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"images\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"quotation\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"ItineraryToQuotation\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"agencyId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"accounts\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToUser\"},{\"name\":\"loginHistory\",\"kind\":\"object\",\"type\":\"LoginHistory\",\"relationName\":\"LoginHistoryToUser\"},{\"name\":\"sessions\",\"kind\":\"object\",\"type\":\"Session\",\"relationName\":\"SessionToUser\"},{\"name\":\"agency\",\"kind\":\"object\",\"type\":\"Agency\",\"relationName\":\"AgencyToUser\"}],\"dbName\":null},\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"provider\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"providerAccountId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refresh_token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"access_token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expires_at\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"token_type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"scope\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"id_token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"session_state\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AccountToUser\"}],\"dbName\":null},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sessionToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expires\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SessionToUser\"}],\"dbName\":null},\"LoginHistory\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"ip\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userAgent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"LoginHistoryToUser\"}],\"dbName\":null},\"VerificationToken\":{\"fields\":[{\"name\":\"identifier\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expires\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Agency\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"logo\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"settings\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"activities\",\"kind\":\"object\",\"type\":\"Activity\",\"relationName\":\"ActivityToAgency\"},{\"name\":\"transport\",\"kind\":\"object\",\"type\":\"Transport\",\"relationName\":\"AgencyToTransport\"},{\"name\":\"clients\",\"kind\":\"object\",\"type\":\"Client\",\"relationName\":\"AgencyToClient\"},{\"name\":\"hotels\",\"kind\":\"object\",\"type\":\"Hotel\",\"relationName\":\"AgencyToHotel\"},{\"name\":\"meals\",\"kind\":\"object\",\"type\":\"Meal\",\"relationName\":\"AgencyToMeal\"},{\"name\":\"quotations\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"AgencyToQuotation\"},{\"name\":\"users\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AgencyToUser\"}],\"dbName\":null},\"Client\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"city\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"notes\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"agencyId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"agency\",\"kind\":\"object\",\"type\":\"Agency\",\"relationName\":\"AgencyToClient\"},{\"name\":\"quotations\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"ClientToQuotation\"}],\"dbName\":null},\"Hotel\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"city\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"starCategory\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"inclusions\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"cancellation\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"photos\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"agencyId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"agency\",\"kind\":\"object\",\"type\":\"Agency\",\"relationName\":\"AgencyToHotel\"},{\"name\":\"roomTypes\",\"kind\":\"object\",\"type\":\"RoomType\",\"relationName\":\"HotelToRoomType\"},{\"name\":\"quotationHotels\",\"kind\":\"object\",\"type\":\"QuotationHotel\",\"relationName\":\"HotelToQuotationHotel\"}],\"dbName\":null},\"RoomType\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"hotelId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"hotel\",\"kind\":\"object\",\"type\":\"Hotel\",\"relationName\":\"HotelToRoomType\"},{\"name\":\"quotationHotels\",\"kind\":\"object\",\"type\":\"QuotationHotel\",\"relationName\":\"QuotationHotelToRoomType\"}],\"dbName\":null},\"QuotationHotel\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quotationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"hotelId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"roomTypeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"quotation\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"QuotationToQuotationHotel\"},{\"name\":\"hotel\",\"kind\":\"object\",\"type\":\"Hotel\",\"relationName\":\"HotelToQuotationHotel\"},{\"name\":\"roomType\",\"kind\":\"object\",\"type\":\"RoomType\",\"relationName\":\"QuotationHotelToRoomType\"}],\"dbName\":null},\"Transport\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"vehicleType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"perDay\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"perKm\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"maxCapacity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"notes\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"photos\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"agencyId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"agency\",\"kind\":\"object\",\"type\":\"Agency\",\"relationName\":\"AgencyToTransport\"},{\"name\":\"quotationTransports\",\"kind\":\"object\",\"type\":\"QuotationTransport\",\"relationName\":\"QuotationTransportToTransport\"}],\"dbName\":null},\"QuotationTransport\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quotationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"transportId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"pricePerDay\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"pricePerKm\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"quotation\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"QuotationToQuotationTransport\"},{\"name\":\"transport\",\"kind\":\"object\",\"type\":\"Transport\",\"relationName\":\"QuotationTransportToTransport\"}],\"dbName\":null},\"Meal\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"vegOption\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"nonVegOption\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"agencyId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"agency\",\"kind\":\"object\",\"type\":\"Agency\",\"relationName\":\"AgencyToMeal\"},{\"name\":\"quotationMeals\",\"kind\":\"object\",\"type\":\"QuotationMeal\",\"relationName\":\"MealToQuotationMeal\"}],\"dbName\":null},\"QuotationMeal\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quotationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"mealId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"quotation\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"QuotationToQuotationMeal\"},{\"name\":\"meal\",\"kind\":\"object\",\"type\":\"Meal\",\"relationName\":\"MealToQuotationMeal\"}],\"dbName\":null},\"Activity\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"duration\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"photos\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"agencyId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"agency\",\"kind\":\"object\",\"type\":\"Agency\",\"relationName\":\"ActivityToAgency\"},{\"name\":\"quotationActivities\",\"kind\":\"object\",\"type\":\"QuotationActivity\",\"relationName\":\"ActivityToQuotationActivity\"}],\"dbName\":null},\"QuotationActivity\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quotationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"activityId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"quotation\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"QuotationToQuotationActivity\"},{\"name\":\"activity\",\"kind\":\"object\",\"type\":\"Activity\",\"relationName\":\"ActivityToQuotationActivity\"}],\"dbName\":null},\"Quotation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"clientId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"agencyId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"clientName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phoneNumber\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"emailAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"QuotationStatus\"},{\"name\":\"destination\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"startDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"endDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"adults\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"children\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"infants\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"totalAmount\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"agency\",\"kind\":\"object\",\"type\":\"Agency\",\"relationName\":\"AgencyToQuotation\"},{\"name\":\"client\",\"kind\":\"object\",\"type\":\"Client\",\"relationName\":\"ClientToQuotation\"},{\"name\":\"items\",\"kind\":\"object\",\"type\":\"QuotationItem\",\"relationName\":\"QuotationToQuotationItem\"},{\"name\":\"itineraries\",\"kind\":\"object\",\"type\":\"Itinerary\",\"relationName\":\"ItineraryToQuotation\"},{\"name\":\"hotels\",\"kind\":\"object\",\"type\":\"QuotationHotel\",\"relationName\":\"QuotationToQuotationHotel\"},{\"name\":\"transports\",\"kind\":\"object\",\"type\":\"QuotationTransport\",\"relationName\":\"QuotationToQuotationTransport\"},{\"name\":\"meals\",\"kind\":\"object\",\"type\":\"QuotationMeal\",\"relationName\":\"QuotationToQuotationMeal\"},{\"name\":\"activities\",\"kind\":\"object\",\"type\":\"QuotationActivity\",\"relationName\":\"QuotationToQuotationActivity\"}],\"dbName\":null},\"QuotationItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quotationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"serviceType\",\"kind\":\"enum\",\"type\":\"ServiceType\"},{\"name\":\"serviceId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"quotation\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"QuotationToQuotationItem\"}],\"dbName\":null},\"Itinerary\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quotationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"dayNumber\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"headline\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"duration\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"notes\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"images\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"quotation\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"ItineraryToQuotation\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

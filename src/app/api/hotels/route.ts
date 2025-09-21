@@ -42,3 +42,25 @@ export async function GET() {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    // Get hotel ID from query params
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ success: false, error: "Hotel ID is required" }, { status: 400 });
+    }
+
+    // Delete the hotel and its related room types
+    const deletedHotel = await prisma.hotel.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ success: true, hotel: deletedHotel });
+  } catch (error) {
+    console.error("Hotel deletion error:", error);
+    return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
+  }
+}

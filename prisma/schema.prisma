@@ -8,15 +8,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// ///////////////////////
-/// ///////////////////////
-model LoginHistory {
-  id        String   @id @default(cuid())
-  userId    String
-  ip        String?
-  userAgent String?
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+/// ================= USER & AUTH =================
+model User {
+  id            String         @id @default(cuid())
+  name          String?
+  email         String         @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  role          Role           @default(EXECUTIVE)
+  agencyId      String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  accounts      Account[]
+  loginHistory  LoginHistory[]
+  sessions      Session[]
+  agency        Agency?        @relation(fields: [agencyId], references: [id], onDelete: Cascade)
 }
 
 model Account {
@@ -45,6 +53,15 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model LoginHistory {
+  id        String   @id @default(cuid())
+  userId    String
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 model VerificationToken {
   identifier String
   token      String   @unique
@@ -53,23 +70,13 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model User {
-  id            String         @id @default(cuid())
-  name          String?
-  email         String         @unique
-  emailVerified DateTime?
-  password      String?
-  image         String?
-  role          Role           @default(EXECUTIVE)
-  agencyId      String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  accounts      Account[]
-  loginHistory  LoginHistory[]
-  sessions      Session[]
-  agency        Agency?        @relation(fields: [agencyId], references: [id])
+enum Role {
+  SUPERADMIN
+  AGENCYADMIN
+  EXECUTIVE
 }
 
+/// ================= AGENCY =================
 model Agency {
   id         String      @id @default(cuid())
   name       String
@@ -77,6 +84,7 @@ model Agency {
   settings   Json?
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+
   activities Activity[]
   transport  Transport[]
   clients    Client[]
@@ -86,6 +94,7 @@ model Agency {
   users      User[]
 }
 
+/// ================= CLIENT =================
 model Client {
   id         String      @id @default(cuid())
   name       String
@@ -96,16 +105,131 @@ model Client {
   agencyId   String
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
-  agency     Agency      @relation(fields: [agencyId], references: [id])
+
+  agency     Agency      @relation(fields: [agencyId], references: [id], onDelete: Cascade)
   quotations Quotation[]
 }
 
+/// ================= HOTELS & ROOM TYPES =================
+model Hotel {
+  id             String         @id @default(cuid())
+  name           String
+  city           String
+  starCategory   Int
+  inclusions     String?
+  cancellation   String?
+  photos         String?
+  agencyId       String
+  agency         Agency         @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  roomTypes      RoomType[]
+  quotationHotels QuotationHotel[]
+}
+
+model RoomType {
+  id             String  @id @default(cuid())
+  type           String
+  price          Decimal
+  hotelId        String
+  hotel          Hotel   @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  quotationHotels QuotationHotel[]
+}
+
+/// Junction table for Quotation & Hotel
+model QuotationHotel {
+  id          String   @id @default(cuid())
+  quotationId String
+  hotelId     String
+  roomTypeId  String
+  price       Float
+
+  quotation   Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  hotel       Hotel     @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  roomType    RoomType  @relation(fields: [roomTypeId], references: [id], onDelete: Cascade)
+}
+
+/// ================= TRANSPORT =================
+model Transport {
+  id                  String   @id @default(cuid())
+  vehicleType         String
+  perDay              Float
+  perKm               Float
+  maxCapacity         Int
+  notes               String?
+  photos              String?
+  agencyId            String
+  agency              Agency   @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  quotationTransports QuotationTransport[]
+}
+
+/// Junction table for Quotation & Transport
+model QuotationTransport {
+  id          String    @id @default(cuid())
+  quotationId String
+  transportId String
+  pricePerDay Float?
+  pricePerKm  Float?
+
+  quotation  Quotation  @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  transport  Transport  @relation(fields: [transportId], references: [id], onDelete: Cascade)
+}
+
+/// ================= MEALS =================
+model Meal {
+  id             String  @id @default(cuid())
+  type           String
+  vegOption      Boolean
+  nonVegOption   Boolean
+  price          Float
+  agencyId       String
+  agency         Agency  @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  quotationMeals QuotationMeal[]
+}
+
+/// Junction table for Quotation & Meal
+model QuotationMeal {
+  id          String   @id @default(cuid())
+  quotationId String
+  mealId      String
+  price       Float
+
+  quotation  Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  meal       Meal      @relation(fields: [mealId], references: [id], onDelete: Cascade)
+}
+
+/// ================= ACTIVITIES =================
+model Activity {
+  id                  String   @id @default(cuid())
+  name                String
+  description         String?
+  duration            String?
+  price               Float
+  photos              Json?
+  agencyId            String
+  agency              Agency   @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  quotationActivities QuotationActivity[]
+}
+
+/// Junction table for Quotation & Activity
+model QuotationActivity {
+  id          String   @id @default(cuid())
+  quotationId String
+  activityId  String
+  price       Float
+
+  quotation  Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  activity   Activity  @relation(fields: [activityId], references: [id], onDelete: Cascade)
+}
+
+/// ================= QUOTATION =================
 model Quotation {
   id          String          @id @default(cuid())
-  clientId    String
-  agencyId    String
+  clientId    String?
+  agencyId    String?
+  clientName  String?
+  phoneNumber Int?
+  emailAddress String?
   status      QuotationStatus @default(PENDING)
-  destination String
+  destination Json
   startDate   DateTime
   endDate     DateTime
   adults      Int
@@ -114,10 +238,17 @@ model Quotation {
   totalAmount Float
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
-  itineraries Itinerary[]
-  agency      Agency          @relation(fields: [agencyId], references: [id])
-  client      Client          @relation(fields: [clientId], references: [id])
+
+  // Relations
+  agency      Agency?          @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  client      Client?          @relation(fields: [clientId], references: [id], onDelete: Cascade)
   items       QuotationItem[]
+  itineraries Itinerary[]
+
+  hotels      QuotationHotel[]
+  transports  QuotationTransport[]
+  meals       QuotationMeal[]
+  activities  QuotationActivity[]
 }
 
 model QuotationItem {
@@ -127,64 +258,7 @@ model QuotationItem {
   serviceId   String
   description String?
   price       Float
-  quotation   Quotation   @relation(fields: [quotationId], references: [id])
-}
-
-/// ///////////////////////
-/// ///////////////////////
-model RoomType {
-  id      String  @id @default(cuid())
-  type    String
-  price   Decimal
-  hotelId String
-  hotel   Hotel   @relation(fields: [hotelId], references: [id])
-}
-
-model Hotel {
-  id           String     @id @default(cuid())
-  name         String
-  city         String
-  starCategory Int
-  inclusions   String?
-  cancellation String?
-  photos       String?
-  agencyId     String
-  agency       Agency     @relation(fields: [agencyId], references: [id])
-  roomTypes    RoomType[]
-}
-
-model Transport {
-  id          String  @id @default(cuid())
-  vehicleType String
-  perDay      Float   // use Float or Decimal for prices
-  perKm       Float
-  maxCapacity Int
-  notes       String?
-  photos      String?
-  agencyId    String
-  agency      Agency  @relation(fields: [agencyId], references: [id])
-}
-
-
-model Meal {
-  id        String  @id @default(cuid())
-  type      String
-  vegOption Boolean
-  nonVegOption    Boolean
-  price     Float
-  agencyId  String
-  agency    Agency  @relation(fields: [agencyId], references: [id])
-}
-
-model Activity {
-  id          String  @id @default(cuid())
-  name        String
-  description String?
-  duration    String?
-  price       Float
-  photos      Json?
-  agencyId    String
-  agency      Agency  @relation(fields: [agencyId], references: [id])
+  quotation   Quotation   @relation(fields: [quotationId], references: [id], onDelete: Cascade)
 }
 
 model Itinerary {
@@ -198,13 +272,7 @@ model Itinerary {
   images      Json?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  quotation   Quotation @relation(fields: [quotationId], references: [id])
-}
-
-enum Role {
-  SUPERADMIN
-  AGENCYADMIN
-  EXECUTIVE
+  quotation   Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
 }
 
 enum QuotationStatus {

@@ -55,3 +55,25 @@ export async function GET() {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest){
+  try{
+const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ success: false, error: "Transport ID is required" }, { status: 400 });
+    }
+
+    // Delete the Transport and its related types
+    const deletedTransport = await prisma.transport.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ success: true, hotel: deletedTransport });
+  } catch (error) {
+    console.error("Transport deletion error:", error);
+    return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
+  }
+}
+

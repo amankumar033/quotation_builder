@@ -91,7 +91,7 @@ export default function ClientDashboard() {
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="border rounded-lg px-3 border-gray-300 py-[11px] shadow-sm bg-white text-gray-600 cursor-pointer hover:scale-107 transition-all duration-300"
+          className="border rounded-lg px-3 border-gray-300 py-[11px] shadow-sm bg-white text-gray-600 cursor-pointer hover:scale-105 transition-all duration-300"
         >
           <option value="">All Cities</option>
           <option value="Goa">Goa</option>

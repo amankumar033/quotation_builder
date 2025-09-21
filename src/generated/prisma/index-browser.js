@@ -120,12 +120,17 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.LoginHistoryScalarFieldEnum = {
+exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
-  userId: 'userId',
-  ip: 'ip',
-  userAgent: 'userAgent',
-  createdAt: 'createdAt'
+  name: 'name',
+  email: 'email',
+  emailVerified: 'emailVerified',
+  password: 'password',
+  image: 'image',
+  role: 'role',
+  agencyId: 'agencyId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.AccountScalarFieldEnum = {
@@ -150,23 +155,18 @@ exports.Prisma.SessionScalarFieldEnum = {
   expires: 'expires'
 };
 
+exports.Prisma.LoginHistoryScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  ip: 'ip',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.VerificationTokenScalarFieldEnum = {
   identifier: 'identifier',
   token: 'token',
   expires: 'expires'
-};
-
-exports.Prisma.UserScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  email: 'email',
-  emailVerified: 'emailVerified',
-  password: 'password',
-  image: 'image',
-  role: 'role',
-  agencyId: 'agencyId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.AgencyScalarFieldEnum = {
@@ -190,10 +190,91 @@ exports.Prisma.ClientScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.HotelScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  city: 'city',
+  starCategory: 'starCategory',
+  inclusions: 'inclusions',
+  cancellation: 'cancellation',
+  photos: 'photos',
+  agencyId: 'agencyId'
+};
+
+exports.Prisma.RoomTypeScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  price: 'price',
+  hotelId: 'hotelId'
+};
+
+exports.Prisma.QuotationHotelScalarFieldEnum = {
+  id: 'id',
+  quotationId: 'quotationId',
+  hotelId: 'hotelId',
+  roomTypeId: 'roomTypeId',
+  price: 'price'
+};
+
+exports.Prisma.TransportScalarFieldEnum = {
+  id: 'id',
+  vehicleType: 'vehicleType',
+  perDay: 'perDay',
+  perKm: 'perKm',
+  maxCapacity: 'maxCapacity',
+  notes: 'notes',
+  photos: 'photos',
+  agencyId: 'agencyId'
+};
+
+exports.Prisma.QuotationTransportScalarFieldEnum = {
+  id: 'id',
+  quotationId: 'quotationId',
+  transportId: 'transportId',
+  pricePerDay: 'pricePerDay',
+  pricePerKm: 'pricePerKm'
+};
+
+exports.Prisma.MealScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  vegOption: 'vegOption',
+  nonVegOption: 'nonVegOption',
+  price: 'price',
+  agencyId: 'agencyId'
+};
+
+exports.Prisma.QuotationMealScalarFieldEnum = {
+  id: 'id',
+  quotationId: 'quotationId',
+  mealId: 'mealId',
+  price: 'price'
+};
+
+exports.Prisma.ActivityScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  duration: 'duration',
+  price: 'price',
+  photos: 'photos',
+  agencyId: 'agencyId'
+};
+
+exports.Prisma.QuotationActivityScalarFieldEnum = {
+  id: 'id',
+  quotationId: 'quotationId',
+  activityId: 'activityId',
+  price: 'price'
+};
+
 exports.Prisma.QuotationScalarFieldEnum = {
   id: 'id',
   clientId: 'clientId',
   agencyId: 'agencyId',
+  clientName: 'clientName',
+  phoneNumber: 'phoneNumber',
+  emailAddress: 'emailAddress',
   status: 'status',
   destination: 'destination',
   startDate: 'startDate',
@@ -213,54 +294,6 @@ exports.Prisma.QuotationItemScalarFieldEnum = {
   serviceId: 'serviceId',
   description: 'description',
   price: 'price'
-};
-
-exports.Prisma.RoomTypeScalarFieldEnum = {
-  id: 'id',
-  type: 'type',
-  price: 'price',
-  hotelId: 'hotelId'
-};
-
-exports.Prisma.HotelScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  city: 'city',
-  starCategory: 'starCategory',
-  inclusions: 'inclusions',
-  cancellation: 'cancellation',
-  photos: 'photos',
-  agencyId: 'agencyId'
-};
-
-exports.Prisma.TransportScalarFieldEnum = {
-  id: 'id',
-  vehicleType: 'vehicleType',
-  perDay: 'perDay',
-  perKm: 'perKm',
-  maxCapacity: 'maxCapacity',
-  notes: 'notes',
-  photos: 'photos',
-  agencyId: 'agencyId'
-};
-
-exports.Prisma.MealScalarFieldEnum = {
-  id: 'id',
-  type: 'type',
-  vegOption: 'vegOption',
-  nonVegOption: 'nonVegOption',
-  price: 'price',
-  agencyId: 'agencyId'
-};
-
-exports.Prisma.ActivityScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  description: 'description',
-  duration: 'duration',
-  price: 'price',
-  photos: 'photos',
-  agencyId: 'agencyId'
 };
 
 exports.Prisma.ItineraryScalarFieldEnum = {
@@ -283,6 +316,10 @@ exports.Prisma.SortOrder = {
 
 exports.Prisma.NullableJsonNullValueInput = {
   DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -322,20 +359,24 @@ exports.ServiceType = exports.$Enums.ServiceType = {
 };
 
 exports.Prisma.ModelName = {
-  LoginHistory: 'LoginHistory',
+  User: 'User',
   Account: 'Account',
   Session: 'Session',
+  LoginHistory: 'LoginHistory',
   VerificationToken: 'VerificationToken',
-  User: 'User',
   Agency: 'Agency',
   Client: 'Client',
+  Hotel: 'Hotel',
+  RoomType: 'RoomType',
+  QuotationHotel: 'QuotationHotel',
+  Transport: 'Transport',
+  QuotationTransport: 'QuotationTransport',
+  Meal: 'Meal',
+  QuotationMeal: 'QuotationMeal',
+  Activity: 'Activity',
+  QuotationActivity: 'QuotationActivity',
   Quotation: 'Quotation',
   QuotationItem: 'QuotationItem',
-  RoomType: 'RoomType',
-  Hotel: 'Hotel',
-  Transport: 'Transport',
-  Meal: 'Meal',
-  Activity: 'Activity',
   Itinerary: 'Itinerary'
 };
 

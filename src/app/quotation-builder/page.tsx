@@ -53,6 +53,10 @@ export interface QuotationData {
   contactInfo?: string;
   agencyName?: string;
   quoteNumber?: string;
+  selectedHotel?: string | null;       // store the 'id' of the selected hotel
+  selectedVehicle?: string | null;     // store the 'id' of the selected transport
+  selectedMealIds?: string[];          // array of selected meal 'id's
+  selectedActivityIds?: string[]; 
 }
 
 export default function QuotationBuilder() {

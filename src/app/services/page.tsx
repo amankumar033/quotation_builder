@@ -1,181 +1,144 @@
 "use client";
 import { useState, useEffect } from "react";
-import { FiPlus, FiEdit, FiTrash2, FiSearch, FiDownload, FiHome, FiTruck, FiCoffee, FiActivity} from "react-icons/fi";
-
-interface Hotel {
-  id: number;
-  name: string;
-  city: string;
-  category: string;
-  roomTypes: string[];
-  pricePerNight: number;
-}
-
-interface Transfer {
-  id: number;
-  vehicleType: string;
-  pricingModel: string;
-  maxCapacity: number;
-  price: number;
-}
-
-interface Meal {
-  id: number;
-  mealType: string;
-  option: string;
-  pricePerPerson: number;
-  items?: string[];
-}
-
-interface Activity {
-  id: number;
-  name: string;
-  duration: string;
-  pricePerPerson: number;
-}
+import { FiPlus, FiEdit, FiTrash2, FiSearch, FiDownload, FiHome, FiTruck, FiCoffee, FiActivity } from "react-icons/fi";
+import { useRouter } from "next/navigation";
+import type { Hotel, Transport, Meal, Activity } from "@/types/interfaces";
 
 export default function ServicesLibraryPage() {
-  const [activeTab, setActiveTab] = useState<
-    "hotels" | "transfers" | "meals" | "activities"
-  >("hotels");
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState<"hotels" | "transports" | "meals" | "activities">("hotels");
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
 
- // Data states
+  // Data states
   const [hotels, setHotels] = useState<Hotel[]>([]);
-  const [transfers, setTransfers] = useState<Transfer[]>([]);
+  const [transports, setTransports] = useState<Transport[]>([]);
   const [meals, setMeals] = useState<Meal[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
 
-// fetch
-
+  // Fetch data
   useEffect(() => {
-    // Fetch Hotels
-    fetch("/api/meals")
-  .then(res => res.json())
-  .then(console.log) // log what comes back
-
-    fetch("/api/hotels")
-      .then((res) => res.json())
-      .then(setHotels);
-
-    // Fetch Transfers
-    fetch("/api/transfers")
-      .then((res) => res.json())
-      .then(setTransfers);
-
-    // Fetch Meals
-    fetch("/api/meals")
-      .then((res) => res.json())
-      .then(result => setMeals(result.data));
-
-    // Fetch Activities
-    fetch("/api/activities")
-      .then((res) => res.json())
-      .then(setActivities);
+    fetch("/api/hotels").then(res => res.json()).then(result => setHotels(result.data || []));
+    fetch("/api/transports").then(res => res.json()).then(result => setTransports(result.data || []));
+    fetch("/api/meals").then(res => res.json()).then(result => setMeals(result.data || []));
+    fetch("/api/activities").then(res => res.json()).then(result => setActivities(result.data || []));
   }, []);
 
+  // Generic delete function
+  const handleDelete = async (type: "hotels" | "transports" | "meals" | "activities", id: string) => {
+    try {
+      const response = await fetch(`/api/${type}?id=${id}`, { method: "DELETE" });
+      const data = await response.json();
 
-  // Filters
- const filteredHotels = hotels
-  .filter(
-    (h) =>
-      h.name.toLowerCase().includes(search.toLowerCase()) ||
-      h.city.toLowerCase().includes(search.toLowerCase())
-  )
- .filter((a) => {
-    if (!filter) return true;
-    if (filter === "3 Star") return a.category === "3 Star";
-    if (filter === "4 Star") return a.category === "4 Star";
-    if (filter === "5 Star") return a.category === "5 Star";
-    return true;
-  });
-const filteredTransfers = transfers
-  .filter(
-    (t) =>
-      t.vehicleType.toLowerCase().includes(search.toLowerCase()) ||
-      t.pricingModel.toLowerCase().includes(search.toLowerCase())
-  )
- .filter((a) => {
-    if (!filter) return true;
-    if (filter === "Per Day") return a.pricingModel === "Per Day";
-    if (filter === "per Km") return a.pricingModel === "per Km";
-    return true;
-  });
-const filteredMeals = meals
-  .filter(
-    (m) =>
-      m.mealType.toLowerCase().includes(search.toLowerCase()) ||
-      m.option.toLowerCase().includes(search.toLowerCase())
-  )
-  .filter((a) => {
-    if (!filter) return true;
-    if (filter === "Veg") return a.items?.some(item => item.toLowerCase().includes("veg"));
-    if (filter === "Non Veg") return a.items?.some(item => item.toLowerCase().includes("non veg"));
-    return true;
-  });
+      if (data.success) {
+        console.log(`${type.slice(0, -1)} deleted:`, data);
 
-const filteredActivities = activities
-  .filter(
-    (a) =>
-      a.name.toLowerCase().includes(search.toLowerCase()) ||
-      a.duration.toLowerCase().includes(search.toLowerCase())
-  )
-  .filter((a) => {
+        switch (type) {
+          case "hotels":
+            setHotels(prev => prev.filter(item => item.id !== id));
+            break;
+          case "transports":
+            setTransports(prev => prev.filter(item => item.id !== id));
+            break;
+          case "meals":
+            setMeals(prev => prev.filter(item => item.id !== id));
+            break;
+          case "activities":
+            setActivities(prev => prev.filter(item => item.id !== id));
+            break;
+        }
+      } else {
+        console.error(`Failed to delete ${type}:`, data.error);
+      }
+    } catch (error) {
+      console.error(`Error deleting ${type}:`, error);
+    }
+  };
+
+  // Filtered data
+  const filteredHotels = hotels.filter(h =>
+    h.name.toLowerCase().includes(search.toLowerCase()) ||
+    h.city.toLowerCase().includes(search.toLowerCase())
+  ).filter(h => {
     if (!filter) return true;
-    if (filter === "Less than 1h") return parseInt(a.duration) < 1;
-    if (filter === "1-3h") return parseInt(a.duration) >= 1 && parseInt(a.duration) <= 3;
-    if (filter === "More than 3h") return parseInt(a.duration) > 3;
+    if (filter === "3 Star") return h.starCategory === 3;
+    if (filter === "4 Star") return h.starCategory === 4;
+    if (filter === "5 Star") return h.starCategory === 5;
     return true;
   });
 
+  const filteredTransports = transports.filter(t =>
+    t.vehicleType.toLowerCase().includes(search.toLowerCase())
+  ).filter(t => {
+    if (!filter) return true;
+    if (filter.toLowerCase() === "suv") return t.vehicleType.toLowerCase() === "suv";
+    if (filter.toLowerCase() === "bus") return t.vehicleType.toLowerCase() === "bus";
+    if (filter.toLowerCase() === "tempo traveller") return t.vehicleType.toLowerCase() === "tempo traveller";
+    return true;
+  });
 
+  const filteredMeals = meals.filter(m =>
+    m.type.toLowerCase().includes(search.toLowerCase())
+  ).filter(m => {
+    if (!filter) return true;
+    if (filter === "Veg") return m.vegOption;
+    if (filter === "Non-Veg") return m.nonVegOption;
+    return true;
+  });
+
+  const filteredActivities = activities.filter(a =>
+    a.name.toLowerCase().includes(search.toLowerCase())
+  ).filter(a => {
+    if (!filter) return true;
+    const duration = parseInt(a.duration ?? "0");
+    if (filter === "Less than 1h") return duration < 1;
+    if (filter === "1-3h") return duration >= 1 && duration <= 3;
+    if (filter === "More than 3h") return duration > 3;
+    return true;
+  });
+
+  // Render table data dynamically
   const renderTable = () => {
     switch (activeTab) {
       case "hotels":
         return (
           <Table
-            headers={[
-              "Hotel Name",
-              "City",
-              "Category",
-              "Room Types",
-              "Price/Night",
-              "Actions",
-            ]}
-            rows={filteredHotels.map((h) => [
+            headers={["Hotel Name", "City", "Category", "Room Types", "Price/Night", "Actions"]}
+            rows={filteredHotels.map(h => [
               h.name,
               h.city,
-              h.category,
-              h.roomTypes.join(", "),
-              `₹${h.pricePerNight}`,
+              `${h.starCategory} Star`,
+              h.roomTypes.map(r => r.type).join(", "),
+              `₹${Math.min(...h.roomTypes.map(r => Number(r.price)))}`,
               "actions",
+              h.id, // include id
             ])}
           />
         );
-      case "transfers":
+      case "transports":
         return (
           <Table
-            headers={["Vehicle", "Pricing", "Capacity", "Price", "Actions"]}
-            rows={filteredTransfers.map((t) => [
+            headers={["Vehicle", "Capacity", "Price Per Day", "Price Per Km", "Actions"]}
+            rows={filteredTransports.map(t => [
               t.vehicleType,
-              t.pricingModel,
               t.maxCapacity.toString(),
-              `₹${t.price}`,
+              t.perDay > 0 ? `₹${t.perDay}` : "N/A",
+              t.perKm > 0 ? `₹${t.perKm}` : "N/A",
               "actions",
+              t.id,
             ])}
           />
         );
       case "meals":
         return (
           <Table
-            headers={["Meal", "Option", "Price", "Items", "Actions"]}
-            rows={filteredMeals.map((m) => [
-              m.mealType,
-              m.option,
-              `₹${m.pricePerPerson}`,
-              m.items?.join(", ") || "N/A",
+            headers={["Meal", "Option", "Price", "Actions"]}
+            rows={filteredMeals.map(m => [
+              m.type,
+              m.vegOption ? "Veg" : m.nonVegOption ? "Non-Veg" : "N/A",
+              `₹${m.price}`,
               "actions",
+              m.id,
             ])}
           />
         );
@@ -183,80 +146,76 @@ const filteredActivities = activities
         return (
           <Table
             headers={["Activity", "Duration", "Price", "Actions"]}
-            rows={filteredActivities.map((a) => [
+            rows={filteredActivities.map(a => [
               a.name,
-              a.duration,
-              `₹${a.pricePerPerson}`,
+              `${a.duration}`,
+              `₹${a.price}`,
               "actions",
+              a.id,
             ])}
           />
         );
     }
   };
 
-  const Table = ({ headers, rows }: { headers: string[]; rows: string[][] }) => {
-  return (
+  // Generic Table component
+  const Table = ({ headers, rows }: { headers: string[]; rows: string[][] }) => (
     <div className="overflow-x-auto mt-4">
       <div className="bg-white shadow-md rounded-xl overflow-hidden">
         <table className="min-w-full border-collapse">
-          {/* Table Header */}
           <thead className="bg-gradient-to-r from-blue-50 to-blue-100 text-gray-500 text-sm uppercase tracking-wide">
             <tr>
               {headers.map((h, i) => (
-                <th
-                  key={i}
-                  className="px-6 py-4 text-left font-semibold"
-                >
-                  {h}
-                </th>
+                <th key={i} className="px-6 py-4 text-left font-semibold">{h}</th>
               ))}
             </tr>
           </thead>
-
-          {/* Table Body */}
           <tbody className="text-gray-500">
-            {rows.map((row, rowIdx) => (
-              <tr
-                key={rowIdx}
-                className="border-b last:border-none border-gray-100 hover:bg-blue-50 transform transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1"
-              >
-                {row.map((cell, i) => {
-                  if (cell === "actions") {
-                    return (
-                      <td key={i} className="px-6 py-5">
-                        <div className="flex items-center gap-3">
-                          <button
-                            aria-label="edit"
-                            className="text-blue-600 hover:text-blue-800 transition"
-                          >
-                            <FiEdit />
-                          </button>
-                          <button
-                            aria-label="delete"
-                            className="text-red-500 hover:text-red-700 transition"
-                          >
-                            <FiTrash2 />
-                          </button>
-                        </div>
-                      </td>
-                    );
-                  }
-
-                  return (
-                    <td key={i} className="px-6 py-5 whitespace-pre-line">
-                      {cell}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
+            {rows.map((row, rowIdx) => {
+              const rowId = row[row.length - 1]; // last item is id
+              const cells = row.slice(0, -1); // remove id from display
+              return (
+                <tr key={rowId} className="border-b last:border-none border-gray-100 hover:bg-blue-50 transform transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1">
+                  {cells.map((cell, i) => {
+                    if (cell === "actions") {
+                      return (
+                        <td key={i} className="px-6 py-5">
+                          <div className="flex items-center gap-3">
+                            <button
+                              aria-label="edit"
+                              className="text-blue-600 hover:text-blue-800 transition"
+                              onClick={() => {
+                                // Navigate to edit page
+                                const path = activeTab === "hotels" ? "/hotel" :
+                                             activeTab === "transports" ? "/transport" :
+                                             activeTab === "meals" ? "/meal" :
+                                             "/activity";
+                                router.push(`${path}?id=${rowId}`);
+                              }}
+                            >
+                              <FiEdit />
+                            </button>
+                            <button
+                              aria-label="delete"
+                              className="text-red-500 hover:text-red-700 transition"
+                              onClick={() => handleDelete(activeTab, rowId)}
+                            >
+                              <FiTrash2 />
+                            </button>
+                          </div>
+                        </td>
+                      );
+                    }
+                    return <td key={i} className="px-6 py-5 whitespace-pre-line">{cell}</td>;
+                  })}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
     </div>
   );
-};
-
   return (
    <div className="p-6 space-y-6">
   {/* Floating Card for Header, Search & Filter */}
@@ -266,14 +225,34 @@ const filteredActivities = activities
       <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
         Services Management
       </h1>
-      <div className="flex gap-3">
-        <button className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600 hover:scale-107 transition-all duration-300 ">
-          <FiDownload /> Export
-        </button>
-        <button className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 hover:scale-107 transition-all duration-300">
-          <FiPlus /> Add Service
-        </button>
-      </div>
+    <div className="flex gap-3">
+    <button
+      className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600 hover:scale-105 transition-all duration-300"
+    >
+      <FiDownload /> Export
+    </button>
+
+    <button
+      className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 hover:scale-105 transition-all duration-300"
+      onClick={() => {
+        // Redirect based on active tab
+        if (activeTab === "hotels") router.push("/hotel");
+        else if (activeTab === "transports") router.push("/transport");
+        else if (activeTab === "meals") router.push("/meal");
+        else if (activeTab === "activities") router.push("/activity");
+      }}
+    >
+      <FiPlus />{" "}
+      {activeTab === "hotels"
+        ? "Add Hotel"
+        : activeTab === "transports"
+        ? "Add Transport"
+        : activeTab === "meals"
+        ? "Add Meal"
+        : "Add Activity"}
+    </button>
+  </div>
+
     </div>
 
     {/* Row 2: Search + Filter */}
@@ -293,7 +272,7 @@ const filteredActivities = activities
      <select
   value={filter}
   onChange={(e) => setFilter(e.target.value)}
-  className="border rounded-lg px-3 border-gray-300 py-[11px] shadow-sm bg-white text-gray-600 cursor-pointer hover:scale-107 transition-all duration-300"
+  className="border rounded-lg px-3 border-gray-300 py-[11px] shadow-sm bg-white text-gray-600 cursor-pointer hover:scale-105 transition-all duration-300"
 >
   {activeTab === "hotels" ? (
     <>
@@ -302,11 +281,12 @@ const filteredActivities = activities
       <option value="4 Star">4 Star</option>
       <option value="5 Star">5 Star</option>
     </>
-  ) : activeTab === "transfers" ? (
+  ) : activeTab === "transports" ? (
     <>
-      <option value="">All Pricing</option>
-      <option value="Per Day">Per Day</option>
-      <option value="Per Km">Per Km</option>
+      <option value="">All Type</option>
+      <option value="SUV">Suv</option>
+      <option value="BUS">Bus</option>
+      <option value="TEMPO TRAVELLER">Tempo Traveller</option>
     </>
   ) : activeTab === "meals" ? (
     <>
@@ -337,7 +317,7 @@ const filteredActivities = activities
       left:
         activeTab === "hotels"
           ? "0%"
-          : activeTab === "transfers"
+          : activeTab === "transports"
           ? "25%"
           : activeTab === "meals"
           ? "50%"
@@ -348,7 +328,7 @@ const filteredActivities = activities
   {/* Tabs */}
   {[
     { key: "hotels", label: "Hotels", icon: <FiHome /> },
-    { key: "transfers", label: "Transfers", icon: <FiTruck /> },
+    { key: "transports", label: "transports", icon: <FiTruck /> },
     { key: "meals", label: "Meals", icon: <FiCoffee /> },
     { key: "activities", label: "Activities", icon: <FiActivity /> },
   ].map((tab) => (
