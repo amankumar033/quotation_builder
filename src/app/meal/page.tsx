@@ -7,9 +7,8 @@ export default function AddMealPage() {
   const [formData, setFormData] = useState({
     type: "",
     vegOption: false,
-    nonVeg: false,
+    nonVegOption: false,
     price: "",
-    photos: "",
   });
 
   const [submitting, setSubmitting] = useState(false);
@@ -19,9 +18,9 @@ export default function AddMealPage() {
     const { name, value, checked } = target;
 
     if (name === "vegOption") {
-      setFormData({ ...formData, vegOption: checked, nonVeg: checked ? false : formData.nonVeg });
-    } else if (name === "nonVeg") {
-      setFormData({ ...formData, nonVeg: checked, vegOption: checked ? false : formData.vegOption });
+      setFormData({ ...formData, vegOption: checked, nonVegOption: checked ? false : formData.nonVegOption });
+    } else if (name === "nonVegOption") {
+      setFormData({ ...formData, nonVegOption: checked, vegOption: checked ? false : formData.vegOption });
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -31,9 +30,8 @@ export default function AddMealPage() {
     setFormData({
       type: "",
       vegOption: false,
-      nonVeg: false,
+      nonVegOption: false,
       price: "",
-      photos: "",
     });
   };
 
@@ -45,11 +43,10 @@ export default function AddMealPage() {
       const payload = {
         type: formData.type,
         vegOption: formData.vegOption,
-        nonVeg: formData.nonVeg,
+        nonVegOption: formData.nonVegOption,
         price: parseFloat(formData.price),
-        photos: formData.photos
-          ? formData.photos.split("\n").map((p) => p.trim()).filter(Boolean)
-          : [],
+       
+         
         agencyId: "YOUR_AGENCY_ID_HERE",
       };
 
@@ -103,7 +100,7 @@ export default function AddMealPage() {
       </div>
 
       {/* Form */}
-      <div className="flex-1 px-0 lg:px-6 py-8 overflow-y-auto">
+      <div className="flex-1 px-0 lg:px-6 py-8 mt-5 overflow-y-auto">
         <div className="max-w-4xl mx-auto">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Meal Details Section */}
@@ -115,26 +112,7 @@ export default function AddMealPage() {
                   </div>
                   <h2 className="text-lg font-semibold text-gray-900">Meal Details</h2>
                 </div>
-                <div className="flex items-center gap-4">
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      name="vegOption"
-                      checked={formData.vegOption}
-                      onChange={handleChange}
-                    />
-                    Veg
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      name="nonVeg"
-                      checked={formData.nonVeg}
-                      onChange={handleChange}
-                    />
-                    Non-Veg
-                  </label>
-                </div>
+               
               </div>
 
               <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -165,24 +143,56 @@ export default function AddMealPage() {
               </div>
             </div>
 
-            {/* Photos */}
-            <div className="bg-white lg:rounded-xl shadow-sm border border-gray-200">
-              <div className="p-6 border-b border-gray-200 flex items-center gap-3">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <ImageIcon className="w-5 h-5 text-purple-600" />
-                </div>
-                <h2 className="text-lg font-semibold text-gray-900">Photos</h2>
-              </div>
-              <div className="p-6">
-                <textarea
-                  name="photos"
-                  value={formData.photos}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 h-32"
-                  placeholder="Enter photo URL, one per line"
-                />
-              </div>
-            </div>
+            {/* Category Section */}
+<div className="bg-white lg:rounded-xl shadow-sm border border-gray-200 mt-6">
+  <div className="p-6 border-b border-gray-200 flex items-center gap-3">
+    <div className="p-2 bg-green-100 rounded-lg">
+      <ImageIcon className="w-5 h-5 text-green-600" />
+    </div>
+    <h2 className="text-lg font-semibold text-gray-900">Category</h2>
+  </div>
+
+  <div className="p-6 grid grid-cols-2 gap-6">
+    {/* Veg Card */}
+    <div
+      onClick={() =>
+        setFormData({ ...formData, vegOption: !formData.vegOption, nonVegOption: formData.vegOption ? formData.nonVegOption : false })
+      }
+      className={`cursor-pointer border rounded-xl flex items-center justify-center py-4 transition-all duration-300 ${
+        formData.vegOption ? "bg-green-500 text-white border-green-500" : "border-gray-300 hover:border-green-400"
+      }`}
+    >
+      Vegeterian
+      <div
+        className={`ml-3 w-10 h-5 rounded-full p-1 flex items-center transition ${
+          formData.vegOption ? "bg-white justify-end" : "bg-gray-200 justify-start"
+        }`}
+      >
+        <div className="w-4 h-4 bg-green-500 rounded-full"></div>
+      </div>
+    </div>
+
+    {/* Non-Veg Card */}
+    <div
+      onClick={() =>
+        setFormData({ ...formData, nonVegOption: !formData.nonVegOption, vegOption: formData.nonVegOption ? formData.vegOption : false })
+      }
+      className={`cursor-pointer border rounded-xl flex items-center justify-center py-4 transition-all duration-300 ${
+        formData.nonVegOption ? "bg-red-500 text-white border-red-500" : "border-gray-300 hover:border-red-400"
+      }`}
+    >
+      Non-Vegeterian
+      <div
+        className={`ml-3 w-10 h-5 rounded-full p-1 flex items-center transition ${
+          formData.nonVegOption ? "bg-white justify-end" : "bg-gray-200 justify-start"
+        }`}
+      >
+        <div className="w-4 h-4 bg-red-500 rounded-full"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
           </form>
         </div>
       </div>

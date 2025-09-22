@@ -191,7 +191,9 @@ export default function ClientInfoStep({ data, updateData, nextStep }: ClientInf
       {/* Next Button */}
       <div className="flex justify-end mt-6">
         <button
-          onClick={nextStep}
+         onClick={()=>{
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            nextStep()}}
           disabled={!isFormValid}
           className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-md transition flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
         >

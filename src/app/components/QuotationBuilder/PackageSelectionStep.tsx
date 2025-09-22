@@ -4,8 +4,8 @@
 import { QuotationData } from "../../quotation-builder/page";
 import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
-
-interface PackageSelectionStepProps {
+import Image from "next/image";
+  interface PackageSelectionStepProps {
   data: QuotationData;
   updateData: (data: Partial<QuotationData>) => void;
   nextStep: () => void;
@@ -16,24 +16,27 @@ interface Hotel {
   id: number;
   name: string;
   city: string;
-  stars: number;
+  starCategory: number;
   price: number;
-  image: string;
+  photos: string[];   // ✅ use this instead of "image: string"
   inclusions: string[];
 }
 
-interface Vehicle {
+
+interface Transport {
   id: number;
   name: string;
   passengers: number;
   perDay: number;
   perKm: number;
-  logo: string;
+  photos: string;
+  maxCapacity:number;
+  vehicleType:string;
 }
 
 interface Meal {
   id: number;
-  name: string;
+  type: string;
   price: number;
 }
 
@@ -42,7 +45,9 @@ interface Activity {
   name: string;
   desc: string;
   price: number;
+  photos:string;
 }
+
 
 export default function PackageSelectionStep({
   data,
@@ -51,29 +56,56 @@ export default function PackageSelectionStep({
   prevStep,
 }: PackageSelectionStepProps) {
   const [hotels, setHotels] = useState<Hotel[]>([]);
-  const [transports, setTransports] = useState<Vehicle[]>([]);
+  const [transports, setTransports] = useState<Transport[]>([]);
   const [meals, setMeals] = useState<Meal[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
 
   const [hotelSearch, setHotelSearch] = useState("");
   const [starFilter, setStarFilter] = useState<number | null>(null);
   const [selectedHotel, setSelectedHotel] = useState<number | null>(null);
-  const [selectedVehicle, setSelectedVehicle] = useState<number | null>(null);
+  const [selectedTransport, setSelectedTransport] = useState<number | null>(null);
   const [selectedMeals, setSelectedMeals] = useState<number[]>([]);
   const [selectedActivities, setSelectedActivities] = useState<number[]>([]);
 
   // Fetch data
   useEffect(() => {
-    fetch("/api/hotels")
-      .then((res) => res.json())
-      .then((result) => setHotels(result.data || []))
-      .catch(() => setHotels([]));
+   fetch("/api/hotels")
+  .then((res) => res.json())
+  .then((res) => {
+    // Support both array or { data: [...] } response
+    const rawHotels = Array.isArray(res) ? res : res.data || [];
+
+    const normalized = rawHotels.map((h: any) => ({
+      ...h,
+      photos: typeof h.photos === "string" ? JSON.parse(h.photos) : h.photos || [],
+      inclusions: h.inclusions ? JSON.parse(h.inclusions) : [],
+    }));
+
+    console.log("Normalized hotels:", normalized); // 👀 debug
+    setHotels(normalized);
+  })
+  .catch((err) => {
+    console.error("Failed to fetch hotels:", err);
+    setHotels([]);
+  });
+
 
     fetch("/api/transports")
-      .then((res) => res.json())
-      .then((result) => setTransports(result.data || []))
-      .catch(() => setTransports([]));
+  .then((res) => res.json())
+  .then((res) => {
+    const raw = Array.isArray(res) ? res : res.data || [];
 
+    const normalized = raw.map((t: any) => ({
+      ...t,
+      photos: typeof t.photos === "string" ? JSON.parse(t.photos)[0] : t.photos, // take first image
+    }));
+
+    console.log("Normalized transports:", normalized);
+    setTransports(normalized);
+  })
+  .catch(() => setTransports([]));
+
+      
     fetch("/api/meals")
       .then((res) => res.json())
       .then((result) => setMeals(result.data || []))
@@ -83,34 +115,39 @@ export default function PackageSelectionStep({
       .then((res) => res.json())
       .then((result) => setActivities(result.data || []))
       .catch(() => setActivities([]));
+  
   }, []);
 
   // Keep QuotationData updated
 useEffect(() => {
   updateData({
     selectedHotel: selectedHotel ? String(selectedHotel) : null,
-    selectedVehicle: selectedVehicle ? String(selectedVehicle) : null,
+    selectedVehicle: selectedTransport ? String(selectedTransport) : null,
     selectedMealIds: selectedMeals.map(String),        // ✅ correct key
     selectedActivityIds: selectedActivities.map(String) // ✅ correct key
   });
-}, [selectedHotel, selectedVehicle, selectedMeals, selectedActivities]);
+}, [selectedHotel, selectedTransport, selectedMeals, selectedActivities]);
 
 
   const filteredHotels = hotels.filter(
     (hotel) =>
       hotel.name.toLowerCase().includes(hotelSearch.toLowerCase()) &&
-      (starFilter ? hotel.stars === starFilter : true)
+      (starFilter ? hotel.starCategory === starFilter : true)
   );
 
-  const toggleMealSelection = (mealId: number) => {
-    setSelectedMeals((prev) =>
-      prev.includes(mealId)
-        ? prev.filter((id) => id !== mealId)
-        : [...prev, mealId]
-    );
-  };
+  const toggleMealSelection = (mealId: number | null) => {
+  if (mealId === null) return; 
 
-  const toggleActivitySelection = (activityId: number) => {
+  setSelectedMeals((prev) =>
+    prev.includes(mealId)
+      ? prev.filter((id) => id !== mealId)
+      : [...prev, mealId]
+  );
+};
+
+
+  const toggleActivitySelection = (activityId: number | null) => {
+    if(activityId===null ) return;
     setSelectedActivities((prev) =>
       prev.includes(activityId)
         ? prev.filter((id) => id !== activityId)
@@ -154,51 +191,60 @@ useEffect(() => {
                     : "bg-white text-gray-700 border-gray-200 hover:bg-blue-50"
                 }`}
               >
-                {star}★
+                {star}
+                <span className="text-yellow-500 h-4">★</span>
               </button>
             ))}
           </div>
         </div>
 
         {/* Hotel Grid */}
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-6 ">
           {filteredHotels.map((hotel) => (
-            <div
-              key={hotel.id}
+            <div 
               onClick={() => setSelectedHotel(hotel.id)}
-              className={`flex flex-col border rounded-xl overflow-hidden transition-all cursor-pointer ${
-                selectedHotel === hotel.id
-                  ? "border-blue-500 shadow-2xl scale-105 -translate-y-2"
-                  : "border-gray-200 hover:border-blue-300 hover:shadow-lg"
+              key={hotel.id}
+              className={`flex flex-col border rounded-xl overflow-hidden hover:transform hover:scale-105 cursor-pointer  hover:transition-all duration-300 ease-out ${
+                selectedHotel === hotel.id 
+                  ? "border-blue-500 shadow-md hover:transform scale-105 transition-all duration-300 ease-out" 
+                  : "border-gray-200 hover:border-blue-300"
               }`}
             >
-              <div className="h-48 overflow-hidden">
+              <div className="h-48 overflow-hidden ">
                 <img
-                  src={hotel.image}
+                  src={hotel.photos[0]||""}
                   alt={hotel.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover hover:transform hover:scale-107 cursor-pointer  hover:transition-all duration-300 ease-out"
                 />
               </div>
-              <div className="p-4">
+              <div className="p-4 ">
                 <div className="flex justify-between items-start mb-2">
                   <div>
                     <h4 className="font-semibold text-xl text-gray-700">
                       {hotel.name}
                     </h4>
-                    <p className="text-lg text-gray-500">{hotel.city}</p>
+                    <p className="text-lg text-gray-500 mt-2">{hotel.city}</p>
                   </div>
                   <div className="text-blue-600 font-bold">
-                    ₹{hotel.price}/night
+                    ₹3000/night
                   </div>
                 </div>
                 <div className="flex items-center mb-3">
                   <span className="text-yellow-500 text-xl mr-1">
-                    {"★".repeat(hotel.stars)}
+                    {"★".repeat(hotel.starCategory)}
                   </span>
                   <span className="text-gray-300">
-                    {"★".repeat(5 - hotel.stars)}
+                    {"★".repeat(5 - hotel.starCategory)}
                   </span>
                 </div>
+                  <div className="mb-4">
+                    <p className="text-gray-600">Inclusions:</p>
+                     {hotel.inclusions.map((inc, idx) => (
+    <span key={idx} className=" text-gray-500 bg-blue-100 px-2 ml-2 py-[2px]  text-[12px]">
+      {inc}
+    </span>
+  ))}
+                  </div>
                 <button
                   onClick={() => setSelectedHotel(hotel.id)}
                   className={`w-full py-2 rounded-lg transition ${
@@ -219,7 +265,8 @@ useEffect(() => {
       <section className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
         <div className="flex items-center mb-8">
           <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center mr-3 shadow-md">
-            <img src="/sedan.png" alt="" />
+            
+            <img src="/sedan.png" alt="kkkk" />
           </div>
           <h3 className="text-3xl font-semibold text-green-500">
             Transportation
@@ -229,19 +276,28 @@ useEffect(() => {
           {transports.map((v) => (
             <div
               key={v.id}
-              className={`rounded-xl p-5 transition-all cursor-pointer ${
-                selectedVehicle === v.id
-                  ? "bg-green-50 ring-2 ring-green-300"
+              className={`rounded-xl transition-all cursor-pointer hover:scale-105  hover:transform hover:transition-all duration-300 ${
+                selectedTransport === v.id
+                  ? "bg-green-50 ring-2 ring-green-300 scale-103"
                   : "border border-gray-200 hover:border-green-300"
               }`}
-              onClick={() => setSelectedVehicle(v.id)}
+              onClick={() => setSelectedTransport(v.id)}
             >
+             <div className="h-48 w-full overflow-hidden rounded-t-xl relative">
+  <img
+    src={v.photos || "/placeholder.png"}
+    alt={v.name}
+    className="w-full h-full object-cover hover:transform hover:transition-all hover:scale-102 duration-300 ease-out"
+  />
+</div>
+<div className="p-5">
+
               <h4 className="font-mono font-semibold text-green-500 text-2xl mb-5">
-                {v.name}
+                {v.vehicleType}
               </h4>
               <div className="text-sm text-gray-600 mb-4">
-                Capacity: {v.passengers}{" "}
-                {v.passengers === 1 ? "person" : "people"}
+                Capacity: {v.maxCapacity}{" "}
+                {v.maxCapacity === 1 ? "person" : "people"}
               </div>
               <div className="space-y-2 mb-5">
                 <div className="flex justify-between items-center">
@@ -254,97 +310,135 @@ useEffect(() => {
                 </div>
               </div>
               <button
-                onClick={() => setSelectedVehicle(v.id)}
+                onClick={() => setSelectedTransport (v.id)}
                 className={`w-full py-2 rounded-lg transition ${
-                  selectedVehicle === v.id
+                  selectedTransport  === v.id
                     ? "bg-green-600 text-white"
                     : "bg-green-400 text-white hover:bg-green-200"
                 }`}
               >
-                {selectedVehicle === v.id ? "✓ Selected" : "Select Vehicle"}
+                {selectedTransport === v.id ? "✓ Selected" : "Select Vehicle"}
               </button>
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Meals Section */}
-      <section className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-        <div className="flex items-center mb-6">
-          <div className="h-12 w-12 rounded-lg bg-yellow-400 flex items-center justify-center mr-3">
-            <img src="/meal.png" alt="" className="h-9 w-9" />
-          </div>
-          <h3 className="text-3xl font-semibold text-yellow-500">Meals</h3>
-        </div>
-        <div className="grid md:grid-cols-3 gap-4">
-          {meals.map((meal) => (
-            <div
-              key={meal.id}
-              className={`flex items-center justify-between border rounded-xl p-4 cursor-pointer ${
-                selectedMeals.includes(meal.id)
-                  ? "border-yellow-400"
-                  : "border-gray-200 hover:border-yellow-300"
-              }`}
-              onClick={() => toggleMealSelection(meal.id)}
-            >
-              <div>
-                <p className="font-semibold text-xl text-gray-800">{meal.name}</p>
-                <p className="text-sm text-gray-500">₹{meal.price} per person</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={selectedMeals.includes(meal.id)}
-                readOnly
-              />
             </div>
           ))}
         </div>
       </section>
+
+    {/* Meals Section */}
+<section className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+  <div className="flex items-center mb-6">
+    <div className="h-12 w-12 rounded-lg bg-yellow-400 flex items-center justify-center mr-3">
+      <img src="/meal.png" alt="" className="h-9 w-9" />
+    </div>
+    <h3 className="text-3xl font-semibold text-yellow-500">Meals</h3>
+  </div>
+  <div className="grid md:grid-cols-3 gap-4">
+    {meals.map((meal) => {
+      const isSelected = selectedMeals.includes(meal.id);
+      return (
+        <div
+          key={meal.id}
+          className={`flex items-center justify-between border rounded-xl p-4 cursor-pointer transition ${
+            isSelected
+              ? "border-yellow-400"
+              : "border-gray-200 hover:border-yellow-300"
+          }`}
+          onClick={() => toggleMealSelection(meal.id)}
+        >
+          <div>
+            <p className="font-semibold text-xl text-gray-800">{meal.type}</p>
+            <p className="text-sm text-gray-500">₹{meal.price} per person</p>
+          </div>
+
+          {/* Toggle */}
+          <button
+            type="button"
+            onClick={() => toggleMealSelection(meal.id)}
+            className={`relative w-12 h-6 rounded-full transition-colors ${
+              isSelected ? "bg-yellow-400" : "bg-gray-300"
+            }`}
+          >
+            <span
+              className={`absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
+                isSelected ? "translate-x-6" : "translate-x-0"
+              }`}
+            />
+          </button>
+        </div>
+      );
+    })}
+  </div>
+</section>
+
 
       {/* Activities Section */}
-      <section className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-        <div className="flex items-center mb-6">
-          <div className="h-12 w-12 rounded-lg bg-orange-400 flex items-center justify-center mr-3">
-            <img src="/sticky-note.png" alt="" className="h-7 w-7" />
-          </div>
-          <h3 className="text-3xl font-semibold text-orange-500">
-            Activities & Add-ons
-          </h3>
-        </div>
-        <div className="grid md:grid-cols-2 gap-4">
-          {activities.map((act) => (
-            <div
-              key={act.id}
-              className={`flex flex-col border rounded-xl p-4 cursor-pointer ${
-                selectedActivities.includes(act.id)
-                  ? "border-orange-400"
-                  : "border-gray-200 hover:border-orange-300"
-              }`}
-              onClick={() => toggleActivitySelection(act.id)}
-            >
-              <h4 className="font-semibold text-gray-800 text-lg mb-1">
-                {act.name}
-              </h4>
-              <p className="text-sm text-gray-500">{act.desc}</p>
-              <div className="mt-auto flex justify-between items-center">
-                <p className="font-bold text-orange-400">
-                  ₹{act.price} per person
-                </p>
-                <button
-                  onClick={() => toggleActivitySelection(act.id)}
-                  className={`px-4 py-2 rounded-lg transition text-sm flex items-center ${
-                    selectedActivities.includes(act.id)
-                      ? "bg-orange-600 text-white"
-                      : "bg-orange-400 text-white"
-                  }`}
-                >
-                  {selectedActivities.includes(act.id) ? "Added" : "Add"}
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+<section className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+  <div className="flex items-center mb-6">
+    <div className="h-12 w-12 rounded-lg bg-orange-400 flex items-center justify-center mr-3">
+      <img src="/sticky-note.png" alt="" className="h-7 w-7" />
+    </div>
+    <h3 className="text-3xl font-semibold text-orange-500">
+      Activities & Add-ons
+    </h3>
+  </div>
+
+  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+>
+    {activities.map((act) => {
+      const isSelected = selectedActivities.includes(act.id);
+      const imageUrl = Array.isArray(act.photos)
+        ? act.photos[0] || "/placeholder.png"
+        : act.photos || "/placeholder.png";
+
+      return (
+     <div
+  key={act.id}
+  className={`flex flex-col border rounded-xl overflow-hidden cursor-pointer transition-all hover:scale-104 ${
+    isSelected
+      ? "border-orange-400 shadow-md scale-104"
+      : "border-gray-200 hover:border-orange-300"
+  }`}
+  onClick={() => toggleActivitySelection(act.id)} // whole card toggles
+>
+  {/* Image */}
+  <div className="h-48 w-full overflow-hidden relative">
+    <img
+      src={imageUrl}
+      alt={act.name}
+      className="w-full h-full object-cover transition-transform duration-300 ease-out hover:scale-105"
+    />
+  </div>
+
+  {/* Card Content */}
+  <div className="p-4 flex flex-col flex-1">
+    <h4 className="font-semibold text-gray-800 text-lg mb-1">{act.name}</h4>
+    <p className="text-sm text-gray-500 mb-4">{act.desc}</p>
+
+    <div className="mt-auto flex justify-between items-center">
+      <p className="font-bold text-orange-400">₹{act.price} per person</p>
+      <button
+        onClick={(e) => {
+          e.stopPropagation(); // prevent double toggle
+          toggleActivitySelection(act.id);
+        }}
+        className={`px-4 py-2 rounded-lg transition text-sm flex items-center ${
+          isSelected
+            ? "bg-orange-600 text-white"
+            : "bg-orange-400 text-white hover:bg-orange-200 hover:text-orange-700"
+        }`}
+      >
+        {isSelected ? "Added" : "Add Activity"}
+      </button>
+    </div>
+  </div>
+</div>
+
+      );
+    })}
+  </div>
+</section>
+
 
       {/* Navigation */}
       <div className="flex justify-between pt-6 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
@@ -355,7 +449,9 @@ useEffect(() => {
           ← Back
         </button>
         <button
-          onClick={nextStep}
+          onClick={()=>{
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            nextStep()}}
           className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
         >
           Continue →

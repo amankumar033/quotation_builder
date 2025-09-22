@@ -14,12 +14,18 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
     updateData({ [field]: value });
   };
 
-  // Calculate pricing
+  // Helper function to recalc pricing live
+const calculateTotals = () => {
   const subtotal = data.services.reduce((sum, service) => sum + (service.price * service.quantity), 0);
   const markup = (subtotal * data.markupPercentage) / 100;
   const taxable = subtotal + markup;
   const gst = taxable * 0.05;
   const grandTotal = taxable + gst;
+  return { subtotal, markup, taxable, gst, grandTotal };
+};
+
+const { subtotal, markup, taxable, gst, grandTotal } = calculateTotals();
+
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -31,6 +37,9 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
       reader.readAsDataURL(file);
     }
   };
+
+
+
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
@@ -157,46 +166,36 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
   </div>
 
   {/* Discount Section */}
-  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+  <div className="flex flex-col md:flex-row md:items-center  gap-4">
     {/* Discount Input */}
     <div className="flex items-center w-full md:w-[45%]">
       <span className="px-3 py-2 bg-gray-100 border border-r-0 border-gray-300 rounded-l-lg">₹</span>
       <input
-        type="number"
-        min="0"
-        value={data.discountAmount || 0}
-        onChange={(e) => handleInputChange('discountAmount', parseFloat(e.target.value))}
-        className="flex-1 px-4 py-2 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-        placeholder="0.00"
-      />
+  type="number"
+  min="0"
+  value={data.discountAmount ?? 0}
+  onChange={(e) => {
+    const val = parseFloat(e.target.value);
+    handleInputChange('discountAmount', isNaN(val) ? 0 : val);
+  }}
+  className="flex-1 px-4 py-2 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+  placeholder="0.00"
+/>
+
     </div>
 
     {/* Quick Add Discounts */}
-    <div className="flex items-center gap-3">
-      <span className="font-medium text-gray-700">Quick Add:</span>
-      {[5, 10, 15, 20].map((d) => (
-        <button
-          key={d}
-          type="button"
-          className="px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition"
-          onClick={() => {
-            const discountValue = (subtotal + markup + gst) * (d / 100);
-            handleInputChange('discountAmount', discountValue);
-          }}
-        >
-          {d}%
-        </button>
-      ))}
+  
+
 
       {/* Clear Button */}
       <button
         type="button"
-        className="px-3 py-1 ml-4 bg-red-100 text-red-700 rounded hover:bg-red-200 transition"
+        className="px-3 py-2  bg-red-100 text-red-700 rounded hover:bg-red-200 transition"
         onClick={() => handleInputChange('discountAmount', 0)}
       >
         Clear
       </button>
-    </div>
   </div>
 </section>
 
@@ -244,7 +243,9 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
         </button>
        
         <button
-          onClick={nextStep}
+          onClick={()=>{
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            nextStep()}}
           className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium shadow-sm"
         >
           Continue to Review →

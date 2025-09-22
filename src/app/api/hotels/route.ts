@@ -37,6 +37,7 @@ export async function GET() {
     const hotels = await prisma.hotel.findMany({
       include: { roomTypes: true }, // include room types
     });
+    console.log(hotels)
     return NextResponse.json({ success: true, data: hotels });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

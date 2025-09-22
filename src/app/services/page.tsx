@@ -159,63 +159,82 @@ export default function ServicesLibraryPage() {
   };
 
   // Generic Table component
-  const Table = ({ headers, rows }: { headers: string[]; rows: string[][] }) => (
-    <div className="overflow-x-auto mt-4">
-      <div className="bg-white shadow-md rounded-xl overflow-hidden">
-        <table className="min-w-full border-collapse">
-          <thead className="bg-gradient-to-r from-blue-50 to-blue-100 text-gray-500 text-sm uppercase tracking-wide">
-            <tr>
-              {headers.map((h, i) => (
-                <th key={i} className="px-6 py-4 text-left font-semibold">{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="text-gray-500">
-            {rows.map((row, rowIdx) => {
-              const rowId = row[row.length - 1]; // last item is id
-              const cells = row.slice(0, -1); // remove id from display
-              return (
-                <tr key={rowId} className="border-b last:border-none border-gray-100 hover:bg-blue-50 transform transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1">
-                  {cells.map((cell, i) => {
-                    if (cell === "actions") {
-                      return (
-                        <td key={i} className="px-6 py-5">
-                          <div className="flex items-center gap-3">
-                            <button
-                              aria-label="edit"
-                              className="text-blue-600 hover:text-blue-800 transition"
-                              onClick={() => {
-                                // Navigate to edit page
-                                const path = activeTab === "hotels" ? "/hotel" :
-                                             activeTab === "transports" ? "/transport" :
-                                             activeTab === "meals" ? "/meal" :
-                                             "/activity";
-                                router.push(`${path}?id=${rowId}`);
-                              }}
-                            >
-                              <FiEdit />
-                            </button>
-                            <button
-                              aria-label="delete"
-                              className="text-red-500 hover:text-red-700 transition"
-                              onClick={() => handleDelete(activeTab, rowId)}
-                            >
-                              <FiTrash2 />
-                            </button>
-                          </div>
-                        </td>
-                      );
-                    }
-                    return <td key={i} className="px-6 py-5 whitespace-pre-line">{cell}</td>;
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+ const Table = ({ headers, rows }: { headers: string[]; rows: string[][] }) => (
+  <div className="overflow-x-auto mt-4">
+    <div className="bg-white shadow-md rounded-xl overflow-hidden">
+      <table className="min-w-full w-full table-fixed border-collapse">
+        <thead className="bg-gradient-to-r from-blue-50 to-blue-100 text-gray-500 text-sm uppercase tracking-wide">
+          <tr>
+            {headers.map((h, i) => (
+              <th
+                key={i}
+                className="px-6 py-4 text-left font-semibold w-[calc(100%/6)]"
+              >
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="text-gray-500">
+          {rows.map((row, rowIdx) => {
+            const rowId = row[row.length - 1]; // last item is id
+            const cells = row.slice(0, -1); // remove id from display
+            return (
+              <tr
+                key={rowId}
+                className="border-b last:border-none border-gray-100 hover:bg-blue-50 transform transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1"
+              >
+                {cells.map((cell, i) => {
+                  if (cell === "actions") {
+                    return (
+                      <td key={i} className="px-6 py-5 w-[calc(100%/6)]">
+                        <div className="flex items-center  gap-3">
+                          {/* Edit Button */}
+                          <button
+                            aria-label="edit"
+                            className="text-blue-600 hover:text-blue-800 transition"
+                            onClick={() => {
+                              const path =
+                                activeTab === "hotels"
+                                  ? "/hotel"
+                                  : activeTab === "transports"
+                                  ? "/transport"
+                                  : activeTab === "meals"
+                                  ? "/meal"
+                                  : "/activity";
+                              router.push(`${path}?id=${rowId}`);
+                            }}
+                          >
+                            <FiEdit />
+                          </button>
+
+                          {/* Delete Button */}
+                          <button
+                            aria-label="delete"
+                            className="text-red-500 hover:text-red-700 transition"
+                            onClick={() => handleDelete(activeTab, rowId)}
+                          >
+                            <FiTrash2 />
+                          </button>
+                        </div>
+                      </td>
+                    );
+                  }
+                  return (
+                    <td key={i} className="px-6 py-5 w-[calc(100%/6)] whitespace-pre-line">
+                      {cell}
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
-  );
+  </div>
+);
+
   return (
    <div className="p-6 space-y-6">
   {/* Floating Card for Header, Search & Filter */}
