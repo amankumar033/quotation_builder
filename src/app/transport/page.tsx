@@ -1,10 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft, X, Truck, Image as ImageIcon, FileText } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation"; // for app router
+import axios from "axios";
+interface TransportData {
+  id?: string;
+  vehicleType: string;
+  perDay: string;
+  perKm: string;
+  maxCapacity: string;
+  notes: string;
+  photos: string;
+}
 
-export default function TransportPage() {
-  const [formData, setFormData] = useState({
+interface TransportPageProps {
+  id?: string;
+  onCancel?: () => void;
+  onSubmitSuccess?: () => void;
+}
+
+export default function TransportPage({  onCancel, onSubmitSuccess }: TransportPageProps) {
+
+
+   const router = useRouter();
+    const searchParams = useSearchParams();
+    const id = searchParams.get("id"); // gets ?id=xyz
+  
+  
+  const [formData, setFormData] = useState<TransportData>({
     vehicleType: "",
     perDay: "",
     perKm: "",
@@ -14,6 +38,34 @@ export default function TransportPage() {
   });
 
   const [submitting, setSubmitting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+
+
+
+   useEffect(() => {
+  if (!id) return;
+
+  axios
+    .get(`/api/transports/${id}`)
+    .then((res) => {
+      const data = res.data;
+
+      setFormData({
+          vehicleType: data.data.vehicleType || "",
+          perDay: data.data.perDay?.toString() || "",
+          perKm: data.data.perKm?.toString() || "",
+          maxCapacity: data.data.maxCapacity?.toString() || "",
+          notes: data.data.notes || "",
+          photos:  data.data.photos ? JSON.parse(data.data.photos).join("\n") : "",
+        });
+        setIsEditing(true);
+      
+    })
+    .catch((err) => console.error(err));
+}, [id]);
+
+  // Load transport data when editing
+ 
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -39,21 +91,26 @@ export default function TransportPage() {
               .map((p) => p.trim())
               .filter(Boolean)
           : [],
-        agencyId: "YOUR_AGENCY_ID_HERE", // replace dynamically if needed
+        agencyId: "cmfntj4f60000nq4wt321fgsa",
       };
 
-      const res = await fetch("/api/transports", {
-        method: "POST",
+      // Use PUT for update, POST for create
+      const url = id ? `/api/transports/${id}` : "/api/transports";
+      const method = id ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
       const data = await res.json();
       if (data.success) {
-        alert("Transport created successfully!");
+        alert(`Transport ${id ? 'updated' : 'created'} successfully!`);
         resetForm();
+        onSubmitSuccess?.();
       } else {
-        alert("Failed to create transport: " + data.error);
+        alert(`Failed to ${id ? 'update' : 'create'} transport: ` + data.error);
       }
     } catch (err) {
       console.error(err);
@@ -72,6 +129,12 @@ export default function TransportPage() {
       notes: "",
       photos: "",
     });
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    resetForm();
+    onCancel?.();
   };
 
   return (
@@ -83,19 +146,19 @@ export default function TransportPage() {
             <div className="flex items-center">
               <button
                 type="button"
-                onClick={resetForm}
+                onClick={handleCancel}
                 className="mr-4 text-gray-600 hover:text-gray-900"
                 disabled={submitting}
               >
                 <ArrowLeft className="h-6 w-6" />
               </button>
               <h1 className="text-2xl font-bold text-gray-900">
-                Add New Transport
+                {id ? "Edit Transport" : "Add New Transport"}
               </h1>
             </div>
             <button
               type="button"
-              onClick={resetForm}
+              onClick={handleCancel}
               className="text-gray-600 hover:text-gray-900"
               disabled={submitting}
             >
@@ -103,7 +166,7 @@ export default function TransportPage() {
             </button>
           </div>
           <p className="text-sm text-gray-600 mt-1">
-            Create a new transport record
+            {id ? "Update transport record" : "Create a new transport record"}
           </p>
         </div>
       </div>
@@ -149,6 +212,7 @@ export default function TransportPage() {
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                     placeholder="₹ per day"
+                    required
                   />
                 </div>               
                 <div>
@@ -162,9 +226,10 @@ export default function TransportPage() {
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                     placeholder="e.g. 20"
+                    required
                   />
                 </div>
-                  <div>
+                <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Price Per KM
                   </label>
@@ -175,6 +240,7 @@ export default function TransportPage() {
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                     placeholder="₹ per km"
+                    required
                   />
                 </div>
               </div>
@@ -233,7 +299,7 @@ export default function TransportPage() {
           <div className="flex gap-4">
             <button
               type="button"
-              onClick={resetForm}
+              onClick={handleCancel}
               disabled={submitting}
               className="flex-1 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
             >
@@ -245,7 +311,10 @@ export default function TransportPage() {
               disabled={submitting}
               className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-50 flex items-center justify-center"
             >
-              {submitting ? "Saving..." : "Save Transport"}
+              {submitting 
+                ? (id ? "Updating..." : "Saving...") 
+                : (id ? "Update Transport" : "Save Transport")
+              }
             </button>
           </div>
         </div>

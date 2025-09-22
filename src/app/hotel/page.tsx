@@ -1,6 +1,7 @@
 "use client";
-
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation"; // for app router
+import axios from "axios";
+import { useState, useEffect } from "react";
 import {
   ArrowLeft,
   X,
@@ -16,6 +17,34 @@ interface RoomType {
 }
 
 export default function AddHotelPage() {
+
+ const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id"); // gets ?id=xyz
+
+ useEffect(() => {
+  if (!id) return;
+
+  axios
+    .get(`/api/hotels?id=${id}`)
+    .then((res) => {
+      const data = res.data;
+
+      setFormData({
+        name: data.name || "",
+        city: data.city || "",
+        starCategory: data.starCategory?.toString() || "",
+        cancellation: data.cancellation || "",
+        photos: data.photos ? JSON.parse(data.photos).join("\n") : "",
+      });
+
+      setRoomTypes(data.roomTypes || []);
+      setInclusions(data.inclusions ? JSON.parse(data.inclusions) : []);
+    })
+    .catch((err) => console.error(err));
+}, [id]);
+
+
   const [formData, setFormData] = useState({
     name: "",
     city: "",
@@ -24,6 +53,12 @@ export default function AddHotelPage() {
     photos: "",
   });
 
+
+
+
+
+
+  
   const [submitting, setSubmitting] = useState(false);
 
   // Room Types with price
@@ -78,7 +113,7 @@ export default function AddHotelPage() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+ const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   setSubmitting(true);
 
@@ -87,22 +122,36 @@ export default function AddHotelPage() {
       ...formData,
       roomTypes,
       inclusions,
-      photos: formData.photos ? formData.photos.split("\n").map((p) => p.trim()).filter(Boolean) : [],
+      photos: formData.photos
+        ? formData.photos.split("\n").map((p) => p.trim()).filter(Boolean)
+        : [],
       agencyId: "YOUR_AGENCY_ID_HERE", // replace dynamically if needed
     };
 
-    const res = await fetch("/api/hotels", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    let res;
+    if (id) {
+      // If editing, call PUT API
+      res = await fetch(`/api/hotels/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+    } else {
+      // If creating new, call POST API
+      res = await fetch("/api/hotels", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+    }
 
     const data = await res.json();
     if (data.success) {
-      alert("Hotel created successfully!");
-      resetForm();
+      alert(`Hotel ${id ? "updated" : "created"} successfully!`);
+      if (!id) resetForm(); // only reset form if creating new
+      router.push("/hotels"); // redirect to hotel list after save
     } else {
-      alert("Failed to create hotel: " + data.error);
+      alert("Failed: " + data.error);
     }
   } catch (err) {
     console.error(err);
@@ -111,6 +160,7 @@ export default function AddHotelPage() {
     setSubmitting(false);
   }
 };
+
 
 
   const resetForm = () => {

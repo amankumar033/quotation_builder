@@ -1,6 +1,7 @@
 "use client";
-
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation"; // for app router
+import axios from "axios";
+import { useState, useEffect } from "react";
 import {
   ArrowLeft,
   X,
@@ -11,6 +12,10 @@ import {
 } from "lucide-react";
 
 export default function AddActivityPage() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const id = searchParams.get("id"); // gets ?id=xyz
+  
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -18,6 +23,30 @@ export default function AddActivityPage() {
     price: "",
     photos: "",
   });
+
+
+   useEffect(() => {
+    if (!id) return;
+  
+    axios
+      .get(`/api/activities/${id}`)
+      .then((res) => {
+        const data = res.data;
+  
+        setFormData({
+          name: data.data.name||"",
+    description: data.data.description||"",
+    duration: data.data.duration||"",
+    price: data.data.price||"",
+  photos: Array.isArray(data.data.photos) ? data.data.photos.join("\n") : "",
+
+         
+          });
+        
+        
+      })
+      .catch((err) => console.error(err));
+  }, [id]);
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -28,40 +57,44 @@ export default function AddActivityPage() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setSubmitting(true);
 
-    try {
-      const payload = {
-        ...formData,
-        price: parseFloat(formData.price),
-        photos: formData.photos
-          ? formData.photos.split("\n").map((p) => p.trim()).filter(Boolean)
-          : [],
-        agencyId: "YOUR_AGENCY_ID_HERE", // replace dynamically if needed
-      };
+  try {
+    const payload = {
+      ...formData,
+      price: parseFloat(formData.price),
+      photos: formData.photos
+        ? formData.photos.split("\n").map((p) => p.trim()).filter(Boolean)
+        : [],
+      agencyId: "YOUR_AGENCY_ID_HERE", // replace dynamically if needed
+    };
 
-      const res = await fetch("/api/activities", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+    // decide endpoint + method
+    const url = id ? `/api/activities/${id}` : "/api/activities";
+    const method = id ? "PUT" : "POST";
 
-      const data = await res.json();
-      if (data.success) {
-        alert("Activity created successfully!");
-        resetForm();
-      } else {
-        alert("Failed to create activity: " + data.error);
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong!");
-    } finally {
-      setSubmitting(false);
+    const res = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      alert(`Activity ${id ? "updated" : "created"} successfully!`);
+      resetForm();
+    } else {
+      alert(`Failed to ${id ? "update" : "create"} activity: ` + data.error);
     }
-  };
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong!");
+  } finally {
+    setSubmitting(false);
+  }
+};
 
   const resetForm = () => {
     setFormData({
