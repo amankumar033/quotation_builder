@@ -226,6 +226,11 @@ export default function PackageSelectionStep({
           const theme = getDayTheme(daySelection.day);
           const isActive = activeDay === daySelection.day;
           
+          return (
+            <div key={daySelection.day} className={`bg-white rounded-xl shadow-sm border ${theme.border} transition-all duration-300`}>
+              {/* Accordion Header */}
+              <div 
+                className={`px-6 py-3 cursor-pointer rounded-t-xl ${isActive ? 'bg-gradient-to-r ' + theme.bg + ' text-white' : 'hover:bg-gray-50'}`}
                 onClick={() => toggleDayAccordion(daySelection.day)}
               >
                 <div className="flex items-center justify-between">
