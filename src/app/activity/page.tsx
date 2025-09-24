@@ -2,6 +2,7 @@
 import { useRouter, useSearchParams } from "next/navigation"; // for app router
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useToast } from "../components/Toast";
 import {
   ArrowLeft,
   X,
@@ -10,8 +11,8 @@ import {
   Image as ImageIcon,
   Tag,
 } from "lucide-react";
-
 export default function AddActivityPage() {
+    const { success, error, info, warning } = useToast();
     const router = useRouter();
     const searchParams = useSearchParams();
     const id = searchParams.get("id"); // gets ?id=xyz
@@ -83,14 +84,15 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     const data = await res.json();
     if (data.success) {
-      alert(`Activity ${id ? "updated" : "created"} successfully!`);
+      {id?success('Activity Updated','Activity was updated successfully'):success('Activity Added','Activity was added successfully')}
       resetForm();
     } else {
+     {id?error('Updation Failed','Please try again later'):error('Creation Failed','Please try again later ')}
       alert(`Failed to ${id ? "update" : "create"} activity: ` + data.error);
     }
   } catch (err) {
     console.error(err);
-    alert("Something went wrong!");
+    error("Something went wrong!","Please try again later");
   } finally {
     setSubmitting(false);
   }
@@ -127,7 +129,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             </div>
             <button
               type="button"
-              onClick={resetForm}
+              onClick={()=>{router.push('/services')}}
               className="text-gray-600 hover:text-gray-900"
               disabled={submitting}
             >
@@ -268,7 +270,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           <div className="flex gap-4">
             <button
               type="button"
-              onClick={resetForm}
+              onClick={()=>{router.push('/services')}}
               disabled={submitting}
               className="flex-1 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
             >

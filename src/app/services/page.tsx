@@ -3,12 +3,20 @@ import { useState, useEffect } from "react";
 import { FiPlus, FiEdit, FiTrash2, FiSearch, FiDownload, FiHome, FiTruck, FiCoffee, FiActivity } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import type { Hotel, Transport, Meal, Activity } from "@/types/interfaces";
-
+import LoadingSpinner from "../components/ui/LoadingSpinner";
+import { useToast } from "../components/Toast";
 export default function ServicesLibraryPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<"hotels" | "transports" | "meals" | "activities">("hotels");
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
+   const { success, error, info, warning } = useToast();
+  
+
+  //Loading State
+  const [isLoading, setIsLoading] = useState(true);
+const [loadingEditId, setLoadingEditId] = useState<string | null>(null);
+const [loadingDeleteId, setLoadingDeleteId] = useState<string | null>(null);
 
   // Data states
   const [hotels, setHotels] = useState<Hotel[]>([]);
@@ -18,20 +26,46 @@ export default function ServicesLibraryPage() {
 
   // Fetch data
   useEffect(() => {
-    fetch("/api/hotels").then(res => res.json()).then(result => setHotels(result.data || []));
-    fetch("/api/transports").then(res => res.json()).then(result => setTransports(result.data || []));
-    fetch("/api/meals").then(res => res.json()).then(result => setMeals(result.data || []));
-    fetch("/api/activities").then(res => res.json()).then(result => setActivities(result.data || []));
-  }, []);
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+
+      const [hotelsRes, transportsRes, mealsRes, activitiesRes] =
+        await Promise.all([
+          fetch("/api/hotels").then((res) => res.json()),
+          fetch("/api/transports").then((res) => res.json()),
+          fetch("/api/meals").then((res) => res.json()),
+          fetch("/api/activities").then((res) => res.json()),
+        ]);
+
+      setHotels(hotelsRes.data || []);
+      setTransports(transportsRes.data || []);
+      setMeals(mealsRes.data || []);
+      setActivities(activitiesRes.data || []);
+    } catch (err) {
+      console.log("Table Rendering Error:", err);
+    } finally {
+      setIsLoading(false); // ✅ runs only after all data is loaded
+    }
+  };
+
+  fetchData();
+}, []);
+
 
   // Generic delete function
   const handleDelete = async (type: "hotels" | "transports" | "meals" | "activities", id: string) => {
     try {
-      const response = await fetch(`/api/${type}?id=${id}`, { method: "DELETE" });
+      setLoadingDeleteId(id);
+      const response = await fetch(`/api/${type}/${id}`, { method: "DELETE" });
+    
       const data = await response.json();
-
       if (data.success) {
         console.log(`${type.slice(0, -1)} deleted:`, data);
+        // Capitalize first letter and make singular
+      const singularType = type.slice(0, -1); // remove last 's'
+      const capitalizedType = singularType.charAt(0).toUpperCase() + singularType.slice(1);
+      success(`${capitalizedType} deleted Successfully`,`Selected ${capitalizedType} deleted successfully`);
 
         switch (type) {
           case "hotels":
@@ -48,12 +82,37 @@ export default function ServicesLibraryPage() {
             break;
         }
       } else {
+          const singularType = type.slice(0, -1); // remove last 's'
+      const capitalizedType = singularType.charAt(0).toUpperCase() + singularType.slice(1);
+        error(`Failed`,`Failed to Delete${capitalizedType}  `);
         console.error(`Failed to delete ${type}:`, data.error);
       }
-    } catch (error) {
-      console.error(`Error deleting ${type}:`, error);
+    } catch (err) {
+      const singularType = type.slice(0, -1); // remove last 's'
+      const capitalizedType = singularType.charAt(0).toUpperCase() + singularType.slice(1);
+        error(`Failed`,`Failed to Delete${capitalizedType}  `);
+      
+    }
+    finally{
+       setLoadingDeleteId(null);
     }
   };
+  
+  //handle edit
+  const handleEdit = (rowId: string) => {
+  setLoadingEditId(rowId); // Set THIS specific row ID
+  const path =
+                 activeTab === "hotels"
+                 ? "/hotel"
+                  : activeTab === "transports"
+                 ? "/transport"
+                 : activeTab === "meals"
+                 ? "/meal"
+                 : "/activity";
+
+  router.push(`${path}?id=${rowId}`);
+};
+
 
   // Filtered data
   const filteredHotels = hotels.filter(h =>
@@ -97,8 +156,44 @@ export default function ServicesLibraryPage() {
     return true;
   });
 
+
+  
+  // Check if current tab has data
+  const currentData = {
+    hotels: filteredHotels,
+    transports: filteredTransports,
+    meals: filteredMeals,
+    activities: filteredActivities
+  }[activeTab];
+
+
   // Render table data dynamically
   const renderTable = () => {
+        if (isLoading) {
+      return (
+        <div className="flex justify-center items-center py-20">
+          <div className="text-center">
+            <LoadingSpinner size={48} color="#3b82f6" />
+            <p className="mt-4 text-gray-600">Loading {activeTab}...</p>
+          </div>
+        </div>
+      );
+    }
+
+    if (currentData.length === 0) {
+      return (
+        <div className="flex justify-center items-center py-20">
+          <div className="text-center">
+            <div className="text-6xl text-gray-300 mb-4">🏨</div>
+            <p className="text-gray-500 text-lg">No {activeTab} Found</p>
+            <p className="text-gray-400 text-sm mt-2">
+              {search || filter ? "Try adjusting your search or filter" : `Add your first ${activeTab.slice(0, -1)} to get started`}
+            </p>
+          </div>
+        </div>
+      );
+    }
+
     switch (activeTab) {
       case "hotels":
         return (
@@ -107,7 +202,7 @@ export default function ServicesLibraryPage() {
             rows={filteredHotels.map(h => [
               h.name,
               h.city,
-              `${h.starCategory} Star`,
+              `${h.starCategory} ⭐`,
               h.roomTypes.map(r => r.type).join(", "),
               `₹${Math.min(...h.roomTypes.map(r => Number(r.price)))}`,
               "actions",
@@ -179,6 +274,8 @@ export default function ServicesLibraryPage() {
           {rows.map((row, rowIdx) => {
             const rowId = row[row.length - 1]; // last item is id
             const cells = row.slice(0, -1); // remove id from display
+            const isThisRowEditing = loadingEditId === rowId;    // Check if THIS row is editing
+            const isThisRowDeleting = loadingDeleteId === rowId; // Check if THIS row is deleting
             return (
               <tr
                 key={rowId}
@@ -193,19 +290,11 @@ export default function ServicesLibraryPage() {
                           <button
                             aria-label="edit"
                             className="text-blue-600 hover:text-blue-800 transition"
-                            onClick={() => {
-                              const path =
-                                activeTab === "hotels"
-                                  ? "/hotel"
-                                  : activeTab === "transports"
-                                  ? "/transport"
-                                  : activeTab === "meals"
-                                  ? "/meal"
-                                  : "/activity";
-                              router.push(`${path}?id=${rowId}`);
-                            }}
-                          >
-                            <FiEdit />
+                            onClick={() => handleEdit(rowId)}
+                            disabled={isThisRowEditing || isThisRowDeleting} // Prevent clicks while loading
+                            >
+                           {isThisRowEditing ? <LoadingSpinner size={15}/> : <FiEdit />}
+
                           </button>
 
                           {/* Delete Button */}
@@ -213,8 +302,9 @@ export default function ServicesLibraryPage() {
                             aria-label="delete"
                             className="text-red-500 hover:text-red-700 transition"
                             onClick={() => handleDelete(activeTab, rowId)}
-                          >
-                            <FiTrash2 />
+                             disabled={isThisRowEditing || isThisRowDeleting} // Prevent clicks while loading
+                             >
+                            {isThisRowDeleting ? <LoadingSpinner  size={15}/> : <FiTrash2 />}
                           </button>
                         </div>
                       </td>

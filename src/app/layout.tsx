@@ -4,6 +4,9 @@ import "./globals.css";
 import { Providers } from "./components/Providers";
 import Header from "./components/Header";
 import Sidebar from "./components/SideBar";
+import RouteProgress from "./components/RouteProgress";
+import { ToastProvider } from "./components/Toast";
+import { DestinationProvider } from "../context/QuotationContext";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -15,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Quoatation Builder",
+  title: "Quotation Builder",
   description: "Generate Quotation.",
 };
 
@@ -27,16 +30,24 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {/* Header*/}
-          <Header />
-          
-        {/* Fixed Sidebar */}
-          <Sidebar  />
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}  >
 
-        <div className="ml-64 pt-15">
-          <Providers>{children}</Providers>
+        <RouteProgress />
+
+        {/* Header*/}
+        <Header />
+
+        {/* Fixed Sidebar */}
+        <Sidebar />
+
+        <div className="ml-64 pt-14">
+          <ToastProvider>
+            <Providers>
+                <DestinationProvider>
+                  {children}
+                  </DestinationProvider>
+            </Providers>
+          </ToastProvider>
         </div>
       </body>
     </html>

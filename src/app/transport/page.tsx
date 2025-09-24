@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { ArrowLeft, X, Truck, Image as ImageIcon, FileText } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation"; // for app router
+import { useToast } from "../components/Toast";
 import axios from "axios";
 interface TransportData {
   id?: string;
@@ -21,11 +22,12 @@ interface TransportPageProps {
 }
 
 export default function TransportPage({  onCancel, onSubmitSuccess }: TransportPageProps) {
-
+  
+   const { success, error, info, warning } = useToast();
 
    const router = useRouter();
-    const searchParams = useSearchParams();
-    const id = searchParams.get("id"); // gets ?id=xyz
+   const searchParams = useSearchParams();
+   const id = searchParams.get("id"); // gets ?id=xyz
   
   
   const [formData, setFormData] = useState<TransportData>({
@@ -64,8 +66,7 @@ export default function TransportPage({  onCancel, onSubmitSuccess }: TransportP
     .catch((err) => console.error(err));
 }, [id]);
 
-  // Load transport data when editing
- 
+  // Load transport data when editing 
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -86,7 +87,7 @@ export default function TransportPage({  onCancel, onSubmitSuccess }: TransportP
         maxCapacity: Number(formData.maxCapacity),
         notes: formData.notes || null,
         photos: formData.photos
-          ? formData.photos
+            ? formData.photos
               .split("\n")
               .map((p) => p.trim())
               .filter(Boolean)
@@ -106,15 +107,18 @@ export default function TransportPage({  onCancel, onSubmitSuccess }: TransportP
 
       const data = await res.json();
       if (data.success) {
-        alert(`Transport ${id ? 'updated' : 'created'} successfully!`);
-        resetForm();
+        {id?success('Transport Updated',"Transport was updated successfully!"):success('transport Created',"Transport was created successfully!")}
+       
         onSubmitSuccess?.();
+              router.push("/services")
       } else {
         alert(`Failed to ${id ? 'update' : 'create'} transport: ` + data.error);
+        {id?error('Updation Failed',"Transport was not updated!"):error('Creation Failed',"Transport was not created!")}
+
       }
     } catch (err) {
       console.error(err);
-      alert("Something went wrong!");
+      error("Something went wrong","Please try again later!");
     } finally {
       setSubmitting(false);
     }
@@ -129,7 +133,7 @@ export default function TransportPage({  onCancel, onSubmitSuccess }: TransportP
       notes: "",
       photos: "",
     });
-    setIsEditing(false);
+    info('Form Reset',"Form was resetted sucessfully!")
   };
 
   const handleCancel = () => {
@@ -152,20 +156,20 @@ export default function TransportPage({  onCancel, onSubmitSuccess }: TransportP
               >
                 <ArrowLeft className="h-6 w-6" />
               </button>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-gray-700">
                 {id ? "Edit Transport" : "Add New Transport"}
               </h1>
             </div>
             <button
               type="button"
-              onClick={handleCancel}
-              className="text-gray-600 hover:text-gray-900"
+                  onClick={()=>{router.push("/services");}}
+              className="text-gray-600 hover:text-gray-700"
               disabled={submitting}
             >
               <X className="h-6 w-6" />
             </button>
           </div>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-sm text-gray-600 mt-1 ml-10">
             {id ? "Update transport record" : "Create a new transport record"}
           </p>
         </div>
@@ -299,7 +303,7 @@ export default function TransportPage({  onCancel, onSubmitSuccess }: TransportP
           <div className="flex gap-4">
             <button
               type="button"
-              onClick={handleCancel}
+                   onClick={()=>{router.push("/services");}}
               disabled={submitting}
               className="flex-1 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
             >
@@ -312,8 +316,8 @@ export default function TransportPage({  onCancel, onSubmitSuccess }: TransportP
               className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-50 flex items-center justify-center"
             >
               {submitting 
-                ? (id ? "Updating..." : "Saving...") 
-                : (id ? "Update Transport" : "Save Transport")
+                ? (id ? "Updating..." : "Adding...") 
+                : (id ? "Update Transport" : "Add Transport")
               }
             </button>
           </div>

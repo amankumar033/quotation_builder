@@ -2,6 +2,7 @@
 import { useRouter, useSearchParams } from "next/navigation"; // for app router
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useToast } from "../components/Toast";
 import {
   ArrowLeft,
   X,
@@ -17,34 +18,7 @@ interface RoomType {
 }
 
 export default function AddHotelPage() {
-
- const router = useRouter();
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id"); // gets ?id=xyz
-
- useEffect(() => {
-  if (!id) return;
-
-  axios
-    .get(`/api/hotels?id=${id}`)
-    .then((res) => {
-      const data = res.data;
-
-      setFormData({
-        name: data.name || "",
-        city: data.city || "",
-        starCategory: data.starCategory?.toString() || "",
-        cancellation: data.cancellation || "",
-        photos: data.photos ? JSON.parse(data.photos).join("\n") : "",
-      });
-
-      setRoomTypes(data.roomTypes || []);
-      setInclusions(data.inclusions ? JSON.parse(data.inclusions) : []);
-    })
-    .catch((err) => console.error(err));
-}, [id]);
-
-
+  const { success, error, info, warning } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     city: "",
@@ -52,19 +26,37 @@ export default function AddHotelPage() {
     cancellation: "",
     photos: "",
   });
-
-
-
-
-
-
-  
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id"); // gets ?id=xyz
   const [submitting, setSubmitting] = useState(false);
 
   // Room Types with price
   const [roomTypeInput, setRoomTypeInput] = useState("");
   const [roomTypePriceInput, setRoomTypePriceInput] = useState("");
   const [roomTypes, setRoomTypes] = useState<RoomType[]>([]);
+
+ useEffect(() => {
+  if (!id) return;
+
+  axios
+    .get(`/api/hotels/${id}`)
+    .then((res) => {
+      const data = res.data;
+        console.log(data)
+      setFormData({
+        name: data.data.name || "",
+        city: data.data.city || "",
+        starCategory: data.data.starCategory?.toString() || "",
+        cancellation: data.data.cancellation || "",
+        photos: data.data.photos ? JSON.parse(data.data.photos).join("\n") : "",
+      });
+
+      setRoomTypes(data.data.roomTypes || []);
+      setInclusions(data.data.inclusions ? JSON.parse(data.data.inclusions) : []);
+    })
+    .catch((err) => console.error(err));
+}, [id]); 
 
   const handleRoomTypeAdd = () => {
     if (roomTypeInput.trim() !== "" && roomTypePriceInput.trim() !== "") {
@@ -131,7 +123,9 @@ export default function AddHotelPage() {
     let res;
     if (id) {
       // If editing, call PUT API
-      res = await fetch(`/api/hotels/${id}`, {
+       
+     
+        res = await fetch(`/api/hotels/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -147,15 +141,18 @@ export default function AddHotelPage() {
 
     const data = await res.json();
     if (data.success) {
-      alert(`Hotel ${id ? "updated" : "created"} successfully!`);
+      {Boolean(id) ? success('Hotel Updated', 'Your hotel details was updated successfully!')
+        :success('Hotel Added', 'Your Hhtel was created successfully!');}
+     
       if (!id) resetForm(); // only reset form if creating new
-      router.push("/hotels"); // redirect to hotel list after save
+      router.push("/services"); // redirect to hotel list after save
     } else {
       alert("Failed: " + data.error);
     }
   } catch (err) {
     console.error(err);
-    alert("Something went wrong!");
+    error('Error creating', 'Please try again Later')
+    
   } finally {
     setSubmitting(false);
   }
@@ -164,6 +161,7 @@ export default function AddHotelPage() {
 
 
   const resetForm = () => {
+
     setFormData({
       name: "",
       city: "",
@@ -175,6 +173,7 @@ export default function AddHotelPage() {
     setInclusions([]);
     setRoomTypeInput("");
     setRoomTypePriceInput("");
+    info('Form Reset',"Form was rested successfully!")
   };
 
   return (
@@ -192,21 +191,22 @@ export default function AddHotelPage() {
               >
                 <ArrowLeft className="h-6 w-6" />
               </button>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-gray-700">
                 Add New Hotel
               </h1>
             </div>
+           
             <button
               type="button"
-              onClick={resetForm}
+              onClick={()=>{router.push("/services");}}
               className="text-gray-600 hover:text-gray-900"
               disabled={submitting}
             >
               <X className="h-6 w-6" />
             </button>
           </div>
-          <p className="text-sm text-gray-600 mt-1">
-            Create a new hotel record
+          <p className="text-sm text-gray-600 mt-1 ml-10">
+            {Boolean(id) ?"Edit hotel details":" Create a new hotel record"}          
           </p>
         </div>
       </div>
@@ -427,7 +427,7 @@ export default function AddHotelPage() {
           <div className="flex gap-4">
             <button
               type="button"
-              onClick={resetForm}
+              onClick={()=>{router.push("/services");}}
               disabled={submitting}
               className="flex-1 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
             >
@@ -437,9 +437,9 @@ export default function AddHotelPage() {
               type="submit"
               onClick={handleSubmit}
               disabled={submitting}
-              className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-50 flex items-center justify-center"
-            >
-              {submitting ? "Saving..." : "Save Hotel"}
+              className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-50 flex items-center justify-center"  >
+              {Boolean(id) ?`${submitting ? "Saving..." : "Save Hotel"}`:`${submitting ? "Adding..." : "Add Hotel"}`}
+              
             </button>
           </div>
         </div>

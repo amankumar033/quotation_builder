@@ -3,8 +3,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { ArrowLeft, X, FileText, Image as ImageIcon } from "lucide-react";
-
+import {useToast} from "../components/Toast"
 export default function AddMealPage() {
+  const { success, error, info, warning } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
@@ -85,14 +86,15 @@ export default function AddMealPage() {
 
       const data = await res.json();
       if (data.success) {
-        alert(`Meal ${id ? "updated" : "created"} successfully!`);
+        {id?success('Meal Updated','Meal was updated successfully!'):success('Meal Added','Meal Was Added Successfully!')}
         router.push("/services");
       } else {
         alert("Failed: " + data.error);
       }
     } catch (err) {
       console.error(err);
-      alert("Something went wrong!");
+       {id?error('Updation Failed','Please try again later!'):error('Creation Failed','Please try again later!')}
+
     } finally {
       setSubmitting(false);
     }
@@ -175,7 +177,7 @@ export default function AddMealPage() {
             {/* Footer */}
             <div className="bg-white border-t border-gray-200 px-6 py-4 mt-6">
               <div className="max-w-4xl mx-auto flex gap-4">
-                <button type="button" onClick={resetForm} disabled={submitting} className="flex-1 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 disabled:opacity-50">Cancel</button>
+                <button type="button" onClick={()=>{router.push('/services')}} disabled={submitting} className="flex-1 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 disabled:opacity-50">Cancel</button>
 
                 <button type="submit"
                  disabled={submitting} 

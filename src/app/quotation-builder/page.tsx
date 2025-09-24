@@ -1,7 +1,8 @@
 // components/QuotationBuilder/QuotationBuilder.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import DestinationSelectionStep from '../components/QuotationBuilder/DestinationSelection';
 import ClientInfoStep from '../components/QuotationBuilder/ClientInfoStep';
 import PackageSelectionStep from '../components/QuotationBuilder/PackageSelectionStep';
 import CustomizationStep from '../components/QuotationBuilder/CustomizationStep';
@@ -11,12 +12,12 @@ export interface ClientInfo {
   name: string;
   phone: string;
   email: string;
-  destination?: string;   // New field
-  startDate?: string;     // New field
-  endDate?: string;       // New field
-  adults?: number;        // New field
-  children?: number;      // New field
-  infants?: number;       // New field
+  destination?: string;
+  startDate?: string;
+  endDate?: string;
+  adults?: number;
+  children?: number;
+  infants?: number;
 }
 
 export interface TripInfo {
@@ -26,7 +27,7 @@ export interface TripInfo {
   adults: number;
   children: number;
   infants: number;
-  duration?: number; // in days
+  duration?: number;
   quoteNumber?: string;
 }
 
@@ -37,7 +38,7 @@ export interface ServiceItem {
   price: number;
   quantity: number;
   details: Record<string, any>;
-  unit?: string; // e.g., "Nights", "Days", "Persons"
+  unit?: string;
 }
 
 export interface QuotationData {
@@ -53,15 +54,25 @@ export interface QuotationData {
   contactInfo?: string;
   agencyName?: string;
   quoteNumber?: string;
-  selectedHotel?: string | null;       // store the 'id' of the selected hotel
-  selectedVehicle?: string | null;     // store the 'id' of the selected transport
-  selectedMealIds?: string[];          // array of selected meal 'id's
-  selectedActivityIds?: string[]; 
+  selectedHotel?: string | null;
+  selectedVehicle?: string | null;
+  selectedMealIds?: string[];
+  selectedActivityIds?: string[];
 }
 
+// Storage keys
+const STORAGE_KEYS = {
+  ACTIVE_STEP: 'quotation_active_step',
+  COMPLETED_STEP: 'quotation_completed_step',
+  QUOTATION_DATA: 'quotation_data'
+};
+
 export default function QuotationBuilder() {
-  const [activeStep, setActiveStep] = useState(1);
+  // Initialize state with values from localStorage or defaults
+  const [activeStep, setActiveStep] = useState(0);
   const [completedStep, setCompletedStep] = useState(0);
+  const [destinationSelected, setDestinationSelected] = useState(false);
+
   const [quotationData, setQuotationData] = useState<QuotationData>({
     client: {
       name: '',
@@ -83,115 +94,170 @@ export default function QuotationBuilder() {
     agencyLogo: null,
   });
 
+  // Load saved state on component mount
+  useEffect(() => {
+    const savedActiveStep = localStorage.getItem(STORAGE_KEYS.ACTIVE_STEP);
+    const savedCompletedStep = localStorage.getItem(STORAGE_KEYS.COMPLETED_STEP);
+    const savedQuotationData = localStorage.getItem(STORAGE_KEYS.QUOTATION_DATA);
+
+    if (savedActiveStep) {
+      setActiveStep(Number(savedActiveStep));
+    }
+    
+    if (savedCompletedStep) {
+      setCompletedStep(Number(savedCompletedStep));
+    }
+    
+    if (savedQuotationData) {
+      try {
+        const parsedData = JSON.parse(savedQuotationData);
+        setQuotationData(parsedData);
+      } catch (error) {
+        console.error('Error parsing saved quotation data:', error);
+        // Clear invalid data
+        localStorage.removeItem(STORAGE_KEYS.QUOTATION_DATA);
+      }
+    }
+  }, []);
+
+  // Save state whenever it changes
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.ACTIVE_STEP, activeStep.toString());
+  }, [activeStep]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.COMPLETED_STEP, completedStep.toString());
+  }, [completedStep]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.QUOTATION_DATA, JSON.stringify(quotationData));
+  }, [quotationData]);
+
   const nextStep = () => {
     setActiveStep(prev => prev + 1);
-    setCompletedStep(prev => prev + 1);
+    setCompletedStep(prev => Math.max(prev, prev + 1));
   };
+
   const prevStep = () => {
     setActiveStep(prev => prev - 1);
-    setCompletedStep(prev => prev - 1);
+    // Don't decrease completedStep when going back
   };
 
   const updateQuotationData = (newData: Partial<QuotationData>) => {
     setQuotationData(prev => ({ ...prev, ...newData }));
   };
 
+  // Optional: Add a function to clear storage when quotation is completed/exported
+  const clearStorage = () => {
+    localStorage.removeItem(STORAGE_KEYS.ACTIVE_STEP);
+    localStorage.removeItem(STORAGE_KEYS.COMPLETED_STEP);
+    localStorage.removeItem(STORAGE_KEYS.QUOTATION_DATA);
+  };
+
   return (
-    <div className=" rounded-xl shadow-lg  border border-gray-100 pb-6">
+    <div>
+       {activeStep === 0 ? (
+  <DestinationSelectionStep
+   nextStep={nextStep}
+   
+  />
+):
+    <div className="rounded-xl shadow-lg border border-gray-100 pb-6">
 
-
-<div className='p-6 mt-1'>
-        <div className="mb-3   ">
-        <h2
-  className={`text-4xl font-bold ${
-    activeStep === 1 ? 'text-green-600' :
-    activeStep === 2 ? 'text-blue-600' :
-    activeStep === 3 ? 'text-yellow-600' :
-    activeStep === 4 ? 'text-red-600' :
-    'text-gray-700'
-  }`}
->
-  {activeStep === 1 ? '1. Basic Information' :
-   activeStep === 2 ? '2. Package Selection' :
-   activeStep === 3 ? '3. Customization' :
-   activeStep === 4 ? '4. Preview & Export' :
-   ''}
-</h2>
-
-
+      <div className='p-6 mt-1'>
+        <div className="mb-3">
+          <h2
+            className={`text-4xl font-bold ${
+              activeStep === 1 ? 'text-green-600' :
+              activeStep === 2 ? 'text-blue-600' :
+              activeStep === 3 ? 'text-yellow-600' :
+              activeStep === 4 ? 'text-red-600' :
+              'text-gray-700'
+            }`}
+          >
+            {activeStep === 1 ? '1. Basic Information' :
+             activeStep === 2 ? '2. Package Selection' :
+             activeStep === 3 ? '3. Customization' :
+             activeStep === 4 ? '4. Preview & Export' :
+             ''}
+          </h2>
         </div>
-    
-</div>
-{/* Step Indicator */}
-<div className=" mt-1 px-15 flex gap-7 shadow-md mb-7 items-center pb-6">
-  {/* Step 1 */}
-  <div className="flex items-center gap-3 font-medium text-gray-600">
-    <div className="h-10 w-10 bg-green-500 rounded-lg flex items-center justify-center">
-      <span className="text-white text-xl font-bold">
-        {completedStep >= 1 ? '✓' : '1'}
-      </span>
-    </div>
-    <div className="flex flex-col">
-      <span className="font-bold">Step 1</span>
-      <span className="text-sm">Basic Information</span>
-    </div>
-  </div>
+      </div>
 
-  {/* Line */}
-  <div className={`flex-1 h-[2px] w-5 ${completedStep >= 1 ? 'bg-green-500' : 'bg-gray-200'}`} />
+      {/* Step Indicator */}
+      <div className="mt-1 px-15 flex gap-7 shadow-md mb-7 items-center pb-6">
+        {/* Step 1 */}
+        <div className="flex items-center gap-3 font-medium text-gray-600">
+          <div className="h-10 w-10 bg-green-500 rounded-lg flex items-center justify-center">
+            <span className="text-white text-xl font-bold">
+              {completedStep >= 1 ? '✓' : '1'}
+            </span>
+          </div>
+          <div className="flex flex-col">
+            <span className="font-bold">Step 1</span>
+            <span className="text-sm">Basic Information</span>
+          </div>
+        </div>
 
-  {/* Step 2 */}
-  <div className="flex items-center gap-3 font-medium text-gray-600">
-    <div className="h-10 w-10 bg-blue-500 rounded-lg flex items-center justify-center">
-      <span className="text-white text-xl font-bold">
-        {completedStep >= 2 ? '✓' : '2'}
-      </span>
-    </div>
-    <div className="flex flex-col">
-      <span className="font-bold">Step 2</span>
-      <span className="text-sm">Package Selection</span>
-    </div>
-  </div>
-  {/* Line */}
-  <div className={`flex-1 h-[2px] mx-2 ${completedStep >= 2 ? 'bg-blue-500' : 'bg-gray-200'}`} />
+        {/* Line */}
+        <div className={`flex-1 h-[2px] w-5 ${completedStep >= 1 ? 'bg-green-500' : 'bg-gray-200'}`} />
 
-  {/* Step 3 */}
-  <div className="flex items-center gap-3 font-medium text-gray-600">
-    <div className="h-10 w-10 bg-yellow-500 rounded-lg flex items-center justify-center">
-      <span className="text-white text-xl font-bold">
-        {completedStep >= 3 ? '✓' : '3'}
-      </span>
-    </div>
-    <div className="flex flex-col">
-      <span className="font-bold">Step 3</span>
-      <span className="text-sm">Customization</span>
-    </div>
-  </div>
+        {/* Step 2 */}
+        <div className="flex items-center gap-3 font-medium text-gray-600">
+          <div className="h-10 w-10 bg-blue-500 rounded-lg flex items-center justify-center">
+            <span className="text-white text-xl font-bold">
+              {completedStep >= 2 ? '✓' : '2'}
+            </span>
+          </div>
+          <div className="flex flex-col">
+            <span className="font-bold">Step 2</span>
+            <span className="text-sm">Package Selection</span>
+          </div>
+        </div>
+        
+        {/* Line */}
+        <div className={`flex-1 h-[2px] mx-2 ${completedStep >= 2 ? 'bg-blue-500' : 'bg-gray-200'}`} />
 
-  {/* Line */}
-  <div className={`flex-1 h-[2px] mx-2 ${completedStep >= 3 ? 'bg-yellow-500' : 'bg-gray-200'}`} />
+        {/* Step 3 */}
+        <div className="flex items-center gap-3 font-medium text-gray-600">
+          <div className="h-10 w-10 bg-yellow-500 rounded-lg flex items-center justify-center">
+            <span className="text-white text-xl font-bold">
+              {completedStep >= 3 ? '✓' : '3'}
+            </span>
+          </div>
+          <div className="flex flex-col">
+            <span className="font-bold">Step 3</span>
+            <span className="text-sm">Customization</span>
+          </div>
+        </div>
 
-  {/* Step 4 */}
-  <div className="flex items-center gap-3 font-medium text-gray-600">
-    <div className="h-10 w-10 bg-red-500 rounded-lg flex items-center justify-center">
-      <span className="text-white text-xl font-bold">
-        {completedStep >= 4 ? '✓' : '4'}
-      </span>
-    </div>
-    <div className="flex flex-col">
-      <span className="font-bold">Step 4</span>
-      <span className="text-sm">Preview & Export</span>
-    </div>
-  </div>
-</div>
+        {/* Line */}
+        <div className={`flex-1 h-[2px] mx-2 ${completedStep >= 3 ? 'bg-yellow-500' : 'bg-gray-200'}`} />
 
+        {/* Step 4 */}
+        <div className="flex items-center gap-3 font-medium text-gray-600">
+          <div className="h-10 w-10 bg-red-500 rounded-lg flex items-center justify-center">
+            <span className="text-white text-xl font-bold">
+              {completedStep >= 4 ? '✓' : '4'}
+            </span>
+          </div>
+          <div className="flex flex-col">
+            <span className="font-bold">Step 4</span>
+            <span className="text-sm">Preview & Export</span>
+          </div>
+        </div>
+      </div>
+
+       
 
       {/* Render current step */}
+
       {activeStep === 1 && (
         <ClientInfoStep 
           data={quotationData}
           updateData={updateQuotationData}
           nextStep={nextStep}
+           prevStep={prevStep}
         />
       )}
       
@@ -218,8 +284,10 @@ export default function QuotationBuilder() {
           data={quotationData}
           updateData={updateQuotationData}
           prevStep={prevStep}
+         // Clear storage when done
         />
       )}
+    </div>}
     </div>
   );
 }

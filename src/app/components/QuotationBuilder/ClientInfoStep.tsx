@@ -1,17 +1,20 @@
 // components/QuotationBuilder/ClientInfoStep.tsx
 import { QuotationData } from '../../quotation-builder/page';
-import {MapPinned,Users} from 'lucide-react';
-import DatePicker from "react-datepicker";
+import {MapPinned,Users,ArrowLeft} from 'lucide-react';
 import {Calendar} from 'lucide-react';
-import "react-datepicker/dist/react-datepicker.css";
+import CustomDatePicker from '../ui/CustomDatePicker';
+import { useDestination } from "@/context/QuotationContext"; // ✅ new
 
 interface ClientInfoStepProps {
   data: QuotationData;
   updateData: (data: Partial<QuotationData>) => void;
   nextStep: () => void;
+  prevStep: ()=> void;
 }
 
-export default function ClientInfoStep({ data, updateData, nextStep }: ClientInfoStepProps) {
+export default function ClientInfoStep({ data, updateData, nextStep, prevStep }: ClientInfoStepProps) {
+    const { selectedDestination, setSelectedDestination } = useDestination();        
+    
   const handleInputChange = (field: string, value: any) => {
     updateData({
       client: {
@@ -25,7 +28,7 @@ export default function ClientInfoStep({ data, updateData, nextStep }: ClientInf
     data.client.name && 
     data.client.phone && 
     data.client.email && 
-    data.client.destination && 
+  
     data.client.startDate && 
     data.client.endDate;
 
@@ -35,6 +38,7 @@ export default function ClientInfoStep({ data, updateData, nextStep }: ClientInf
     <div className="space-y-6 bg-gray-50 px-15">
 <div className='flex gap-10   justify-between
 '>
+
       {/* Client Information Section */}
       <section className={`${cardClass} w-full md:w-1/2`}>
         <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
@@ -90,58 +94,38 @@ export default function ClientInfoStep({ data, updateData, nextStep }: ClientInf
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className='relative'>
             <label className="block text-sm font-medium text-gray-700 mb-1">Start Date *</label>
-            <DatePicker
-  selected={data.client.startDate ? new Date(data.client.startDate) : null}
-  onChange={(date: Date | null) => {
-    if (date) {
-      handleInputChange('startDate', date.toISOString());
-    } else {
-      handleInputChange('startDate', ''); // or null, depending on your state type
-    }
-  }}
-  minDate={new Date()} // Only today and future dates
-  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 transition bg-white text-gray-800"
-  dateFormat="dd/MM/yyyy"
-  placeholderText="dd/MM/yyyy"
-/>
- {/* Calendar icon */}
-  <Calendar 
-    className="h-5 w-5 absolute right-5 top-[48px] transform -translate-y-1/2 text-gray-400 pointer-events-none" 
-  />
+            
+            <CustomDatePicker
+                selectedDate={data.client.startDate ? new Date(data.client.startDate) : null}
+                onChange={(date) => handleInputChange('startDate', date ? date.toISOString() : '')}
+                placeholder="dd/MM/yyyy"
+              />
+
           </div>
           <div className="relative">
   <label className="block text-sm font-medium text-gray-700 mb-1">End Date *</label>
   
-  <DatePicker
-    selected={data.client.endDate ? new Date(data.client.endDate) : null}
-    onChange={(date: Date | null) => {
-      if (date) {
-        handleInputChange('endDate', date.toISOString());
-      } else {
-        handleInputChange('endDate', '');
-      }
-    }}
-    minDate={new Date()}
-    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 transition bg-white text-gray-800"
-    dateFormat="dd/MM/yyyy"
-    placeholderText="dd/MM/yyyy"
-  />
+   <CustomDatePicker
+                selectedDate={data.client.endDate ? new Date(data.client.endDate) : null}
+                onChange={(date) => handleInputChange('endDate', date ? date.toISOString() : '')}
+                placeholder="dd/MM/yyyy"
+              />
 
   {/* Calendar icon */}
-  <Calendar 
+  {/* <Calendar 
     className="h-5 w-5 absolute right-5 top-[48px] transform -translate-y-1/2 text-gray-400 pointer-events-none" 
-  />
+  /> */}
 </div>
 
-          <div className="md:col-span-2">
+           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">Trip Destination *</label>
-            <input
-              type="text"
-              value={data.client.destination}
-              onChange={(e) => handleInputChange('destination', e.target.value)}
-              placeholder="e.g., Goa, Kerala, Rajasthan"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 transition"
-            />
+          <input
+  type="text"
+  value={ selectedDestination?.name||"Maldives"}
+  disabled
+  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-700 cursor-not-allowed"
+/>
+
           </div>
         </div>
       </section>
@@ -187,7 +171,18 @@ export default function ClientInfoStep({ data, updateData, nextStep }: ClientInf
           </div>
         </div>
       </section>
-
+<div className='flex justify-between'>
+      {/* PREV Button */}
+      <div className="flex justify-end mt-6">
+        <button
+         onClick={()=>{
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            prevStep()}}
+          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-md transition flex items-center disabled:opacity-50 disabled:cursor-not-allowed">
+          <ArrowLeft size={22} className='mr-3'/>
+          Back
+        </button>
+      </div>
       {/* Next Button */}
       <div className="flex justify-end mt-6">
         <button
@@ -203,7 +198,7 @@ export default function ClientInfoStep({ data, updateData, nextStep }: ClientInf
           </svg>
         </button>
       </div>
-
+</div>
     </div>
   );
 }

@@ -14,6 +14,7 @@ import {
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const serviceRoutes = ["/services", "/hotel", "/meal", "/activity", "/transport"]; // all routes that belong to Services
 
   const links = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -25,13 +26,18 @@ export default function Sidebar() {
   ];
 
   return (
-  <div className="fixed top-0 left-0 h-screen w-64 bg-gray-50 border-r border-gray-200 text-gray-600 pt-20 flex flex-col  shadow-[4px_0_6px_-2px_rgba(0,0,0,0.05),0_4px_6px_-2px_rgba(0,0,0,0.05)]">
-
+    <div className="fixed top-0 left-0 h-screen w-64 bg-gray-50 border-r border-gray-200 text-gray-600 pt-20 flex flex-col  shadow-[4px_0_6px_-2px_rgba(0,0,0,0.05),0_4px_6px_-2px_rgba(0,0,0,0.05)]">
 
       {/* Nav Links */}
       <nav className="flex-1 px-4 space-y-4">
         {links.map(({ href, label, icon: Icon }) => {
-          const isActive = pathname === href;
+          // Improved active state logic
+         const isActive =
+         (href === "/services" && serviceRoutes.some(r => pathname.startsWith(r))) ||
+         pathname === href ||
+         pathname.startsWith(href + "/") ||
+         (pathname === "/" && href === "/dashboard"); // Handle root path
+
           return (
             <Link
               key={href}

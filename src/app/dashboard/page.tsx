@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { TrendingUp,UserPlus, Plus, Hotel } from "lucide-react";
+import Link from 'next/link';
 import {
   PieChart,
   Pie,
@@ -83,7 +84,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 mt-4">
+    <div className="min-h-screen bg-gray-50 p-6 mt-1">
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {/* Card 1 */}
@@ -161,31 +162,45 @@ export default function Dashboard() {
       {/* Quick Actions */}
     <div className="flex flex-wrap gap-3 mb-8">
   {/* Primary Button */}
-  <button className="bg-blue-600 flex items-center hover:bg-blue-700 text-white font-medium py-2.5 px-5 rounded-lg shadow-md 
-    transition-all duration-300 ease-out transform hover:scale-110 hover:shadow-lg active:scale-95">
-    <span className="mr-2 text-2xl"> <Plus size={26}/></span> Create New Quotation
-  </button>
+ <Link
+      href="/quotation-builder"
+      className="bg-blue-600 flex items-center hover:bg-blue-700 text-white font-medium py-2.5 px-5 rounded-lg shadow-md 
+      transition-all duration-300 ease-out transform hover:scale-110 hover:shadow-lg active:scale-95"
+    >
+      <span className="mr-2 text-2xl">
+        <Plus size={26} />
+      </span>
+      Create New Quotation
+    </Link>
 
   {/* Secondary Buttons */}
-  <button className="bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-5 rounded-lg shadow-sm 
+  <Link
+   href="/hotel"
+    className="bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-5 rounded-lg shadow-sm 
     transition-all duration-300 ease-out transform hover:scale-110 hover:shadow-md hover:border-blue-300 hover:text-blue-600 active:scale-95 flex items-center ">
    <img src="/hotels.png" alt="" className="w-5 h-5 mr-2" /> Add Hotel
-  </button>
+  </Link>
 
-  <button className="bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-5 rounded-lg shadow-sm 
+  <Link
+   href="/transport"
+  className="bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-5 rounded-lg shadow-sm 
     transition-all duration-300 ease-out transform hover:scale-110 hover:shadow-md hover:border-blue-300 hover:text-blue-600 active:scale-95 flex items-center">
-    <img src="cars.png" alt="" className="w-7 h-7 mr-2" /> Add Car
-  </button>
+    <img src="cars.png" alt="" className="w-7 h-7 mr-2" /> Add Transport
+  </Link>
 
-  <button className="bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-5 rounded-lg shadow-sm 
+  <Link
+   href="/meal"
+  className="bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-5 rounded-lg shadow-sm 
     transition-all duration-300 ease-out transform hover:scale-110 hover:shadow-md hover:border-blue-300 hover:text-blue-600 active:scale-95 flex items-center">
   <img src="/fork.png" alt="" className="w-5 h-5 mr-2" /> Add Meal
-  </button>
+  </Link>
 
-  <button className="bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-5 rounded-lg shadow-sm 
+  <Link
+   href="/activity"
+    className="bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-5 rounded-lg shadow-sm 
     transition-all duration-300 ease-out transform hover:scale-110 hover:shadow-md hover:border-blue-300 hover:text-blue-600 active:scale-95">
     <span className="mr-2 text-lg">⛰️</span> Add Activity
-  </button>
+  </Link>
 </div>
 
 
