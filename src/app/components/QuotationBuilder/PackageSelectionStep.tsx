@@ -12,7 +12,12 @@ interface PackageSelectionStepProps {
   data: QuotationData;
   updateData: (data: Partial<QuotationData>) => void;
   nextStep: () => void;
-  prevStep: () => void;export default function PackageSelectionStep({
+  prevStep: () => void;
+}
+
+type RoomSelectionState = 'browsing' | 'selecting-meals' | 'selecting-rooms' | 'confirmed';
+
+export default function PackageSelectionStep({
   data,
   updateData,
   nextStep,
