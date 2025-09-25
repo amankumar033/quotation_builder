@@ -8,7 +8,8 @@ import { ChevronDown, ChevronUp, X, ArrowLeft, Check, Edit, Users, Crown, Bed, S
 import { useQuotation } from "@/context/QuotationContext";
 import HotelSummary from "./PackageSelection/HotelSummary";
 import RoomSelect from "./PackageSelection/RoomSelection";
-interface Pac
+interface PackageSelectionStepProps {
+  data: QuotationData;
   updateData: (data: Partial<QuotationData>) => void;
   nextStep: () => void;
   prevStep: () => void;
