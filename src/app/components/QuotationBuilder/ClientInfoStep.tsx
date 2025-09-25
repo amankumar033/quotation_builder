@@ -3,7 +3,7 @@ import { QuotationData } from '../../quotation-builder/page';
 import {MapPinned,Users,ArrowLeft} from 'lucide-react';
 import {Calendar} from 'lucide-react';
 import CustomDatePicker from '../ui/CustomDatePicker';
-import { useDestination } from "@/context/QuotationContext"; // ✅ new
+import { useQuotation } from "@/context/QuotationContext"; // adjust import
 
 interface ClientInfoStepProps {
   data: QuotationData;
@@ -13,7 +13,7 @@ interface ClientInfoStepProps {
 }
 
 export default function ClientInfoStep({ data, updateData, nextStep, prevStep }: ClientInfoStepProps) {
-    const { selectedDestination, setSelectedDestination } = useDestination();        
+    const { selectedDestination, setSelectedDestination } = useQuotation();        
     
   const handleInputChange = (field: string, value: any) => {
     updateData({

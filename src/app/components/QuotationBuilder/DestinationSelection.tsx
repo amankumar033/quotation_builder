@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useDestination } from "@/context/QuotationContext"; // ✅ new
+import { useQuotation } from "@/context/QuotationContext"; // ✅ new
 
 interface Destination {
   id: string;
@@ -20,7 +20,7 @@ interface Destinationprops{
 export default function DestinationSelectionStep({ nextStep}:Destinationprops){
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const { setSelectedDestination } = useDestination(); // ✅ new
+  const { setSelectedDestination } = useQuotation(); // ✅ new
 
 
   // ✅ Define destinations inside component

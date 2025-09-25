@@ -6,7 +6,7 @@ import Header from "./components/Header";
 import Sidebar from "./components/SideBar";
 import RouteProgress from "./components/RouteProgress";
 import { ToastProvider } from "./components/Toast";
-import { DestinationProvider } from "../context/QuotationContext";
+import { QuotationProvider } from "../context/QuotationContext";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -43,9 +43,9 @@ export default function RootLayout({
         <div className="ml-64 pt-14">
           <ToastProvider>
             <Providers>
-                <DestinationProvider>
+                <QuotationProvider>
                   {children}
-                  </DestinationProvider>
+                  </QuotationProvider>
             </Providers>
           </ToastProvider>
         </div>
