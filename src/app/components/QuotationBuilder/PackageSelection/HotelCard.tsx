@@ -36,7 +36,7 @@ export default function HotelCard({ hotel, isSelected, onSelect, onViewDetails, 
             <h4 className="font-semibold text-xl text-gray-700">{hotel.name}</h4>
             <p className="text-lg text-gray-500 mt-2">{hotel.city}</p>
           </div>
-          <div className="text-blue-600 font-bold">₹{hotel.price}/night</div>
+          {/* <div className="text-blue-600 font-bold">₹{hotel.price}/night</div> */}
         </div>
         <div className="flex items-center mb-3">
           <span className="text-yellow-500 text-xl mr-1">

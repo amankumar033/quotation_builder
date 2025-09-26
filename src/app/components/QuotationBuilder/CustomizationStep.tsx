@@ -1,6 +1,7 @@
 // components/QuotationBuilder/CustomizationStep.tsx
 import { QuotationData } from '../../quotation-builder/page';
 import { useState } from 'react';
+import { useAgencySettings } from '@/context/AgencySettingsContext';
 
 interface CustomizationStepProps {
   data: QuotationData;
@@ -10,119 +11,136 @@ interface CustomizationStepProps {
 }
 
 export default function CustomizationStep({ data, updateData, nextStep, prevStep }: CustomizationStepProps) {
+  const { agencySettings } = useAgencySettings();
+  const [isEditingPricing, setIsEditingPricing] = useState(false);
+  const [isEditingGrandTotal, setIsEditingGrandTotal] = useState(false);
+  const [tempPricing, setTempPricing] = useState({
+    markupPercentage: 0,
+    gstPercentage: 0,
+    discountAmount: 0
+  });
+  const [tempGrandTotal, setTempGrandTotal] = useState(0);
+
+  // Safe access to agency settings with fallbacks
+  const safeAgencySettings = {
+    pricing: agencySettings?.pricing || {
+      subtotal: 1000,
+      markupPercentage: 20,
+      gstPercentage: 5,
+      discountAmount: 0
+    },
+    paymentTerms: agencySettings?.paymentTerms || 'Net 30',
+    termsConditions: agencySettings?.termsConditions || `• Payment due within 30 days of invoice date
+• 50% advance required for project commencement
+• Late payments subject to 1.5% monthly interest`
+  };
+
   const handleInputChange = (field: string, value: any) => {
     updateData({ [field]: value });
   };
 
-  // Helper function to recalc pricing live
-const calculateTotals = () => {
-  const subtotal = data.services.reduce((sum, service) => sum + (service.price * service.quantity), 0);
-  const markup = (subtotal * data.markupPercentage) / 100;
-  const taxable = subtotal + markup;
-  const gst = taxable * 0.05;
-  const grandTotal = taxable + gst;
-  return { subtotal, markup, taxable, gst, grandTotal };
-};
-
-const { subtotal, markup, taxable, gst, grandTotal } = calculateTotals();
-
-
-  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        updateData({ agencyLogo: event.target?.result as string });
-      };
-      reader.readAsDataURL(file);
-    }
+  const startEditingPricing = () => {
+    setTempPricing({
+      markupPercentage: data.markupPercentage || safeAgencySettings.pricing.markupPercentage,
+      gstPercentage: safeAgencySettings.pricing.gstPercentage,
+      discountAmount: data.discountAmount || 0
+    });
+    setIsEditingPricing(true);
   };
 
+  const savePricing = () => {
+    updateData({
+      markupPercentage: tempPricing.markupPercentage,
+      discountAmount: tempPricing.discountAmount
+    });
+    setIsEditingPricing(false);
+  };
 
+  const cancelEditingPricing = () => {
+    setIsEditingPricing(false);
+  };
 
+  const startEditingGrandTotal = () => {
+    const currentTotals = calculateTotals();
+    setTempGrandTotal(currentTotals.grandTotal);
+    setIsEditingGrandTotal(true);
+  };
+
+  const saveGrandTotal = () => {
+    const currentTotals = calculateTotals();
+    const subtotal = currentTotals.subtotal;
+    const gstPercentage = safeAgencySettings.pricing.gstPercentage;
+    const discountAmount = data.discountAmount || 0;
+    
+    // Calculate required markup to achieve the desired grand total
+    // Formula: grandTotal = (subtotal + markup) * (1 + gstPercentage/100) - discountAmount
+    // Rearranged: markup = ((grandTotal + discountAmount) / (1 + gstPercentage/100)) - subtotal
+    const requiredTaxable = (tempGrandTotal + discountAmount) / (1 + gstPercentage / 100);
+    const requiredMarkup = requiredTaxable - subtotal;
+    const requiredMarkupPercentage = subtotal > 0 ? (requiredMarkup / subtotal) * 100 : 0;
+
+    updateData({
+      markupPercentage: Math.max(0, requiredMarkupPercentage)
+    });
+    setIsEditingGrandTotal(false);
+  };
+
+  const cancelEditingGrandTotal = () => {
+    setIsEditingGrandTotal(false);
+  };
+
+  // Helper function to recalc pricing live with safe defaults
+  const calculateTotals = () => {
+    const subtotal = 7000;
+    const markupPercentage = data.markupPercentage || safeAgencySettings.pricing.markupPercentage;
+    const markup = (subtotal * markupPercentage) / 100;
+    const taxable = subtotal + markup;
+    const gstPercentage = safeAgencySettings.pricing.gstPercentage;
+    const gst = (taxable * gstPercentage) / 100;
+    const discountAmount = data.discountAmount || 0;
+    const grandTotal = taxable + gst - discountAmount;
+    
+    return { 
+      subtotal, 
+      markup, 
+      taxable, 
+      gst, 
+      grandTotal, 
+      markupPercentage, 
+      gstPercentage, 
+      discountAmount 
+    };
+  };
+
+  const { subtotal, markup, taxable, gst, grandTotal, markupPercentage, gstPercentage, discountAmount } = calculateTotals();
+
+  // Calculate the difference when editing grand total
+  const grandTotalDifference = tempGrandTotal - grandTotal;
+  const adjustedMarkupPercentage = subtotal > 0 ? ((tempGrandTotal + discountAmount) / (1 + gstPercentage / 100) - subtotal) / subtotal * 100 : 0;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-   
-
-        {/* Agency Branding */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-          <div className="flex items-center mb-6">
-            <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center mr-3">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
-              </svg>
-            </div>
-            <h2 className="text-xl font-semibold text-gray-800">Agency Branding</h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Upload Agency Logo</label>
-              <div className="flex items-center justify-center w-full">
-                <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition">
-                  {data.agencyLogo ? (
-                    <img src={data.agencyLogo} alt="Agency Logo" className="w-full h-full object-contain p-4" />
-                  ) : (
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <p className="text-sm text-gray-500">Click to upload your logo</p>
-                      <p className="text-xs text-gray-400 mt-1">PNG, JPG up to 5MB</p>
-                    </div>
-                  )}
-                  <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
-                </label>
-              </div>
-              <p className="text-xs text-gray-500 mt-2 text-center">Recommended: 200x200px PNG with transparent background</p>
-            </div>
-
-            <div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Agency Name</label>
-                <input
-                  type="text"
-                  value={data.agencyName || ''}
-                  onChange={(e) => handleInputChange('agencyName', e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                  placeholder="Enter agency name"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Contact Information</label>
-                <textarea
-                  value={data.contactInfo || ''}
-                  onChange={(e) => handleInputChange('contactInfo', e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                  rows={3}
-                  placeholder="Address, phone, email, etc."
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Terms & Conditions */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-          <div className="flex items-center mb-6">
-            <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center mr-3">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center">
+              <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h2 className="text-xl font-semibold text-gray-800">Terms & Conditions</h2>
             </div>
-            <h2 className="text-xl font-semibold text-gray-800">Terms & Conditions</h2>
           </div>
 
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">Payment Terms</label>
             <select
-              value={data.paymentTerms || ''}
+              value={data.paymentTerms || safeAgencySettings.paymentTerms}
               onChange={(e) => handleInputChange('paymentTerms', e.target.value)}
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
             >
-              <option value="">Select payment terms</option>
               <option value="Net 15">Net 15</option>
               <option value="Net 30">Net 30</option>
               <option value="Due on receipt">Due on receipt</option>
@@ -133,7 +151,7 @@ const { subtotal, markup, taxable, gst, grandTotal } = calculateTotals();
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Terms & Conditions</label>
             <textarea
-              value={data.termsConditions}
+              value={data.termsConditions || safeAgencySettings.termsConditions}
               onChange={(e) => handleInputChange('termsConditions', e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
               rows={6}
@@ -142,115 +160,256 @@ const { subtotal, markup, taxable, gst, grandTotal } = calculateTotals();
             <p className="text-xs text-gray-500 mt-2">Include cancellation policies, liability clauses, and other important terms.</p>
           </div>
         </div>
-{/* Special Notes & Discounts */}
-<section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-  <div className="flex items-center mb-6">
-    <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center mr-3">
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-      </svg>
-    </div>
-    <h2 className="text-xl font-semibold text-gray-800">Special Notes & Discounts</h2>
-  </div>
 
-  {/* Special Notes */}
-  <div className="mb-6">
-    <label className="block text-sm font-medium text-gray-700 mb-2">Special Notes</label>
-    <textarea
-      value={data.specialNotes}
-      onChange={(e) => handleInputChange('specialNotes', e.target.value)}
-      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-      rows={4}
-      placeholder="Add any special notes, discounts, or offers here..."
-    />
-  </div>
+        {/* Special Notes */}
+        <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="flex items-center mb-6">
+            <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center mr-3">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-semibold text-gray-800">Special Notes</h2>
+          </div>
 
-  {/* Discount Section */}
-  <div className="flex flex-col md:flex-row md:items-center  gap-4">
-    {/* Discount Input */}
-    <div className="flex items-center w-full md:w-[45%]">
-      <span className="px-3 py-2 bg-gray-100 border border-r-0 border-gray-300 rounded-l-lg">₹</span>
-      <input
-  type="number"
-  min="0"
-  value={data.discountAmount ?? 0}
-  onChange={(e) => {
-    const val = parseFloat(e.target.value);
-    handleInputChange('discountAmount', isNaN(val) ? 0 : val);
-  }}
-  className="flex-1 px-4 py-2 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-  placeholder="0.00"
-/>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Special Notes</label>
+            <textarea
+              value={data.specialNotes || ''}
+              onChange={(e) => handleInputChange('specialNotes', e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+              rows={4}
+              placeholder="Add any special notes, offers, or additional information here..."
+            />
+          </div>
+        </section>
 
-    </div>
+        {/* Pricing Summary */}
+        <section className="bg-white rounded-xl shadow-sm p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-gray-800">Pricing Summary</h2>
+            <button
+              onClick={startEditingPricing}
+              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium text-sm"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              <span>Edit Pricing</span>
+            </button>
+          </div>
+          
+          {!isEditingPricing && (
+            <div className="rounded-lg divide-y divide-gray-200 border border-gray-200">
+              {/* Subtotal */}
+              <div className="flex justify-between items-center px-4 py-3 hover:bg-gray-50">
+                <span className="text-gray-700">Subtotal</span>
+                <span className="font-medium">₹7000</span>
+              </div>
 
-    {/* Quick Add Discounts */}
-  
+              {/* Markup */}
+              <div className="flex justify-between items-center px-4 py-3 bg-gray-50 hover:bg-gray-100">
+                <span className="text-gray-700">Markup</span>
+                <span className="font-medium text-blue-600">{markupPercentage.toFixed(1)}% (₹{markup.toFixed(2)})</span>
+              </div>
 
+              {/* Taxable Amount */}
+              <div className="flex justify-between items-center px-4 py-3 hover:bg-gray-50">
+                <span className="text-gray-700">Taxable Amount</span>
+                <span className="font-medium">₹{taxable.toFixed(2)}</span>
+              </div>
 
-      {/* Clear Button */}
-      <button
-        type="button"
-        className="px-3 py-2  bg-red-100 text-red-700 rounded hover:bg-red-200 transition"
-        onClick={() => handleInputChange('discountAmount', 0)}
-      >
-        Clear
-      </button>
-  </div>
-</section>
+              {/* GST */}
+              <div className="flex justify-between items-center px-4 py-3 bg-gray-50 hover:bg-gray-100">
+                <span className="text-gray-700">GST</span>
+                <span className="font-medium">{gstPercentage}% (₹{gst.toFixed(2)})</span>
+              </div>
 
-{/* Pricing Summary */}
-<section className="bg-white rounded-xl shadow-sm p-6">
-  <h2 className="text-xl font-semibold text-gray-800 mb-4">Pricing Summary</h2>
-  <div className=" rounded-lg divide-y divide-gray-200">
-    <div className="flex justify-between px-4 py-2">
-      <span>Subtotal</span>
-      <span>₹{subtotal.toFixed(2)}</span>
-    </div>
-    <div className="flex justify-between px-4 py-2 bg-gray-50">
-      <span>Markup ({data.markupPercentage}%)</span>
-      <span>₹{markup.toFixed(2)}</span>
-    </div>
-    <div className="flex justify-between px-4 py-2">
-      <span>Taxable Amount</span>
-      <span>₹{taxable.toFixed(2)}</span>
-    </div>
-    <div className="flex justify-between px-4 py-2 bg-gray-50">
-      <span>GST (5%)</span>
-      <span>₹{gst.toFixed(2)}</span>
-    </div>
-    
-      <div className="flex justify-between px-4 py-2 text-green-700 font-medium">
-        <span>Discount</span>
-        <span>-₹{data.discountAmount?.toFixed(2) || 0}</span>
-      </div>
-    
-    <div className="flex justify-between px-4 py-3 font-bold text-blue-700 bg-gray-100 text-lg">
-      <span>Grand Total</span>
-      <span>₹{(grandTotal - (data.discountAmount || 0)).toFixed(2)}</span>
-    </div>
-  </div>
-</section>
+              {/* Discount */}
+              <div className="flex justify-between items-center px-4 py-3 hover:bg-gray-50">
+                <span className="text-gray-700">Discount</span>
+                <span className="font-medium text-green-600">-₹{discountAmount.toFixed(2)}</span>
+              </div>
 
+              {/* Grand Total */}
+              <div className="flex justify-between items-center px-4 py-4 bg-gradient-to-r from-blue-50 to-blue-100 border-t border-gray-200">
+                <div className="flex items-center space-x-3">
+                  <span className="text-lg font-bold text-blue-800">Grand Total</span>
+                  {!isEditingGrandTotal && (
+                    <button
+                      onClick={startEditingGrandTotal}
+                      className="p-1 rounded-full hover:bg-blue-200 transition"
+                      title="Edit Grand Total"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+                <span className="text-xl font-bold text-blue-800">₹{grandTotal.toFixed(2)}</span>
+              </div>
+            </div>
+          )}
+         
+          {/* Pricing Edit Inline */}
+          {isEditingPricing && (
+            <div className="mt-6 border-t border-gray-200 pt-6">
+              <h3 className="text-lg font-semibold mb-4">Edit Pricing Parameters</h3>
+              
+              <div className="space-y-4">
+                {/* Markup Percentage */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Markup Percentage (%)
+                  </label>
+                  <input
+                    type="number"
+                    value={tempPricing.markupPercentage}
+                    onChange={(e) => setTempPricing(prev => ({
+                      ...prev,
+                      markupPercentage: parseFloat(e.target.value) || 0
+                    }))}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                  />
+                </div>
 
-         {/* Navigation */}
-      <div className="flex mt-10 justify-between pt-6 bg-white rounded-xl p-6 w-full shadow-sm border border-gray-100">
-        <button
-          onClick={prevStep}
-          className="px-6 py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition font-medium"
-        >
-          ← Back
-        </button>
-       
-        <button
-          onClick={()=>{
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            nextStep()}}
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium shadow-sm"
-        >
-          Continue to Review →
-        </button>
-      </div>
+                {/* GST Percentage */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    GST Percentage (%)
+                  </label>
+                  <input
+                    type="number"
+                    value={tempPricing.gstPercentage}
+                    onChange={(e) => setTempPricing(prev => ({
+                      ...prev,
+                      gstPercentage: parseFloat(e.target.value) || 0
+                    }))}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                  />
+                </div>
+
+                {/* Discount Amount */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Discount Amount (₹)
+                  </label>
+                  <input
+                    type="number"
+                    value={tempPricing.discountAmount}
+                    onChange={(e) => setTempPricing(prev => ({
+                      ...prev,
+                      discountAmount: parseFloat(e.target.value) || 0
+                    }))}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+              </div>
+
+              <div className="flex space-x-3 mt-6">
+                <button 
+                  onClick={savePricing}
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+                >
+                  Save Changes
+                </button>
+                <button 
+                  onClick={cancelEditingPricing}
+                  className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 font-medium"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Grand Total Edit Inline */}
+          {isEditingGrandTotal && (
+            <div className="mt-4 p-4 border border-blue-200 rounded-lg bg-blue-50">
+              <h3 className="text-lg font-semibold mb-3 text-blue-800">Adjust Grand Total</h3>
+              
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-blue-700 mb-2">
+                    New Grand Total (₹)
+                  </label>
+                  <input
+                    type="number"
+                    value={tempGrandTotal}
+                    onChange={(e) => setTempGrandTotal(parseFloat(e.target.value) || 0)}
+                    className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+
+                {/* Adjustment Preview */}
+                <div className="p-3 bg-white rounded border">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-600">Current Grand Total:</span>
+                    <span className="font-medium">₹{grandTotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm mt-1">
+                    <span className="text-gray-600">Difference:</span>
+                    <span className={`font-medium ${grandTotalDifference >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      {grandTotalDifference >= 0 ? '+' : ''}₹{grandTotalDifference.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm mt-1">
+                    <span className="text-gray-600">Adjusted Markup:</span>
+                    <span className={`font-medium ${adjustedMarkupPercentage >= markupPercentage ? 'text-green-600' : 'text-red-600'}`}>
+                      {adjustedMarkupPercentage.toFixed(1)}% {adjustedMarkupPercentage >= markupPercentage ? '(↑)' : '(↓)'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex space-x-3 mt-4">
+                <button 
+                  onClick={saveGrandTotal}
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+                >
+                  Apply Adjustment
+                </button>
+                <button 
+                  onClick={cancelEditingGrandTotal}
+                  className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 font-medium"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+        </section>
+
+        {/* Navigation */}
+        <div className="flex mt-10 justify-between pt-6 bg-white rounded-xl p-6 w-full shadow-sm border border-gray-100">
+          <button
+            onClick={prevStep}
+            className="px-6 py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition font-medium"
+          >
+            ← Back
+          </button>
+         
+          <button
+            onClick={()=>{
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              nextStep();
+            }}
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium shadow-sm"
+          >
+            Continue to Review →
+          </button>
+        </div>
       </div>
     </div>
   );

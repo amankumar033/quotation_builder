@@ -1,8 +1,6 @@
-// types/quotation.ts
 export interface QuotationData {
   selectedVehicle: string | null;
-  // Add other quotation data properties as needed
-    roomSelections?: {
+  roomSelections?: {
     hotel: Hotel | null;
     day: number;
     selections: RoomSelection[];
@@ -18,7 +16,7 @@ export interface Hotel {
   price: number;
   photos: string[];
   inclusions: string[];
- 
+  isHotelConfirmed: boolean;
 }
 
 export interface Room {
@@ -40,34 +38,45 @@ export interface Transport {
   photos: string;
   maxCapacity: number;
   vehicleType: string;
+  type: string;
+  capacity: number;
+  price: number;
+  features: string[];
+  image?: string;
 }
 
 export interface Meal {
   id: number;
   type: string;
   price: number;
-  quantity:number
-  name:string
-  category:string
-  description:string
-  image:string
-  
+  quantity: number;
+  name: string;
+  category: string;
+  description: string;
+  image: string;
 }
 
 export interface Activity {
-  id: number;
+  id: string;
   name: string;
-  desc: string;
+  description: string;
   price: number;
-  photos: string;
+  duration: string;
+  category?: string;
+  image: string;
+  photos?: string[];
+  agencyId?: string;
 }
 
 export interface DaySelection {
   day: number;
-  selectedHotel: number | null;
-  selectedMeals: number[];
-  selectedTransport?: number | null;
-  selectedActivities: number[];
+  selectedHotel: Hotel | null;  // <-- full hotel object
+  selectedMeals: Meal[];
+  selectedActivities: string[];
+  selectedTransport: Transport | null;
+  selectedVehicleType: string | null;
+  roomSelections?: RoomSelection[];
+  isHotelConfirmed?: boolean;
 }
 
 export interface RoomSelection {
@@ -77,4 +86,7 @@ export interface RoomSelection {
   childrenWithBed: number;
   childrenWithoutBed: number;
   totalPrice: number;
+  isConfirmed?: boolean;
+  confirmedAt?: string;
+  dayNumber: number;
 }

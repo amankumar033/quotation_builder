@@ -21,6 +21,7 @@ export default function Sidebar() {
     { href: "/quotation-builder", label: "Quotation Builder", icon: FileText },
     { href: "/clients", label: "Clients", icon: Users },
     { href: "/services", label: "Services", icon: Bell },
+    { href: "/agency-settings", label: "Agency Settings", icon: Settings },
     { href: "/reports", label: "Reports", icon: BarChart3 },
     { href: "/settings", label: "Settings", icon: Settings },
   ];
