@@ -139,18 +139,21 @@ export default function PackageSelectionStep({
     setRoomSelectionState('browsing');
   };
 
-  const handleProceedToRooms = () => {
-    setRoomSelectionState('selecting-rooms');
-    setRoomSelections([{
-      roomId: 1,
-      roomCount: 1,
-      dayNumber: currentDayForSelection,
-      adults: 2,
-      childrenWithBed: 0,
-      childrenWithoutBed: 0,
-      totalPrice: 3000
-    }]);
-  };
+const handleProceedToRooms = () => {
+  setRoomSelectionState('selecting-rooms');
+  setRoomSelections([{
+    roomId: 1,
+    roomCount: 1,
+    dayNumber: currentDayForSelection,
+    adults: 2,
+    childrenWithBed: 0,
+    childrenWithoutBed: 0,
+    adultsWithExtraBed: 0,
+    totalPrice: 3000,
+    isConfirmed: false, // Add this - set to false initially
+    confirmedAt: "" // Add this - empty string initially
+  }]);
+};
 
   const handleConfirmRoomSelection = () => {
     if (!selectedHotelTemp) return;
@@ -179,10 +182,87 @@ export default function PackageSelectionStep({
     setRoomSelectionState('selecting-rooms');
   };
 
-  const hotelMeals: Meal[] = [
-    { id: 1, name: "Continental Breakfast", type: "breakfast", category: "veg", price: 450, description: "Fresh fruits, cereals, breads, juices and hot beverages", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSIjnT16b72GWq4B8WZ2lhTxQLbT8ki6pdnQ&s", quantity: 0 },
-    { id: 2, name: "Indian Breakfast", type: "breakfast", category: "veg", price: 500, description: "Traditional Indian breakfast", image: "/placeholder.png", quantity: 0 }
-  ];
+ const hotelMeals: Meal[] = [
+  {
+    id: 1,
+    hotelId: "HTL1",
+    name: "Continental Breakfast",
+    type: "breakfast",
+    category: "veg",
+    price: 450,
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSIjnT16b72GWq4B8WZ2lhTxQLbT8ki6pdnQ&s",
+    quantity: 0,
+  },
+  {
+    id: 2,
+    hotelId: "HTL2",
+    name: "Indian Breakfast",
+    type: "breakfast",
+    category: "veg",
+    price: 500,
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm4nTDOsrHZwI3FAcGwx0ZAz8zb8MuHSs42Q&s",
+    quantity: 0,
+  },
+  {
+    id: 3,
+    hotelId: "HTL1",
+    name: "Buffet Lunch",
+    type: "lunch",
+    category: "veg",
+    price: 900,
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvyg6rtmkTDFrWLcHwjNOA02U15bKJ71IhRA&s",
+    quantity: 0,
+  },
+  {
+    id: 4,
+    hotelId: "HTL3",
+    name: "Vegetarian Thali",
+    type: "lunch",
+    category: "veg",
+    price: 700,
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-odM1YeL8AjwW3U3U82eWTk9ghO01egs6VA&s",
+    quantity: 0,
+  },
+  {
+    id: 5,
+    hotelId: "HTL2",
+    name: "Non-Veg Dinner",
+    type: "dinner",
+    category: "non-veg",
+    price: 1200,
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLvTQ0SeNN6VlqI7mcwPUpXXGEZKOTN_nB8A&s",
+    quantity: 0,
+  },
+  {
+    id: 6,
+    hotelId: "HTL3",
+    name: "South Indian Breakfast",
+    type: "breakfast",
+    category: "veg",
+    price: 550,
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH2M9v8uTuQRfbhdp8jU33_J_zAlQDBCsStg&s",
+    quantity: 0,
+  },
+  {
+    id: 7,
+    hotelId: "HTL1",
+    name: "Chinese Dinner",
+    type: "dinner",
+    category: "veg",
+    price: 1000,
+    image:
+      "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400&h=250&fit=crop",
+    quantity: 0,
+  },
+
+];
+
 
   const getDayTheme = (day: number) => {
     const themes = [
