@@ -161,7 +161,7 @@ export default function HotelSection({
         icon: Utensils, 
         active: roomSelectionState === 'selecting-meals',
         completed: roomSelectionState === 'selecting-rooms' || roomSelectionState === 'confirmed',
-        price: getTotalMealPrice(),
+        price: getTotalMealPrice()||'',
         clickable: roomSelectionState === 'selecting-rooms' || roomSelectionState === 'confirmed'
       },
       { 
@@ -301,7 +301,7 @@ export default function HotelSection({
                           >
                             <StepIcon className="h-4 w-4" />
                             <span className="font-medium text-sm">{step.label}</span>
-                            {step.price && step.price > 0 && (
+                            {typeof step.price === 'number' && step.price > 0 && (
                               <span className="bg-white px-2 py-1 rounded text-xs font-bold ml-2">
                                 ₹{formatPrice(step.price)}
                               </span>
