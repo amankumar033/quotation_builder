@@ -9,7 +9,7 @@ export interface QuotationData {
 }
 
 export interface Hotel {
-  id: number;
+  id: string;
   name: string;
   city: string;
   starCategory: number;
@@ -17,6 +17,16 @@ export interface Hotel {
   photos: string[];
   inclusions: string[];
   isHotelConfirmed: boolean;
+  cancellation:string;
+  agencyId:string;
+  
+  roomTypes: {
+    id: string;
+    type: string;
+    price: string;
+    hotelId: string;
+  }[];
+
 }
 
 export interface Room {
@@ -52,8 +62,8 @@ export interface Meal {
   quantity: number;
   name: string;
   category: string;
-  description: string;
   image: string;
+  hotelId:string;
 }
 
 export interface Activity {
@@ -79,14 +89,16 @@ export interface DaySelection {
   isHotelConfirmed?: boolean;
 }
 
+// In your @/types/type file
 export interface RoomSelection {
   roomId: number;
   roomCount: number;
+  dayNumber: number;
   adults: number;
+  adultsWithExtraBed: number; // Make sure this property exists
   childrenWithBed: number;
   childrenWithoutBed: number;
   totalPrice: number;
-  isConfirmed?: boolean;
-  confirmedAt?: string;
-  dayNumber: number;
+  isConfirmed: boolean;
+  confirmedAt: string;
 }
