@@ -18,6 +18,7 @@ interface RoomSelectionProps {
 const professionalRooms = [
   {
     id: 1,
+    hotelId: "HTL1",
     type: "Deluxe Room",
     price: 3000,
     maxAdults: 2,
@@ -25,30 +26,177 @@ const professionalRooms = [
     bedType: "King Size Bed",
     amenities: ["Free WiFi", "AC", "TV", "Breakfast", "King Bed"],
     description: "Spacious room with modern amenities and comfortable bedding",
-    photos: ["https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=400&h=250&fit=crop"]
+    photos: [
+      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=400&h=250&fit=crop",
+    ],
   },
   {
     id: 2,
+    hotelId: "HTL1",
     type: "Super Deluxe Room",
     price: 4500,
     maxAdults: 3,
     maxChildren: 2,
     bedType: "Queen Size Bed",
-    amenities: ["Free WiFi", "AC", "TV", "Breakfast", "Balcony", "Sea View"],
+    amenities: [
+      "Free WiFi",
+      "AC",
+      "TV",
+      "Breakfast",
+      "Balcony",
+      "Sea View",
+    ],
     description: "Luxurious room with premium features and stunning views",
-    photos: ["https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=400&h=250&fit=crop"]
+    photos: [
+      "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=400&h=250&fit=crop",
+    ],
   },
   {
     id: 3,
+    hotelId: "HTL1",
     type: "Suite Room",
     price: 6500,
     maxAdults: 4,
     maxChildren: 3,
     bedType: "King Size + Extra Bed",
-    amenities: ["Free WiFi", "AC", "TV", "Breakfast", "Balcony", "Living Room", "Mini Bar"],
-    description: "Executive suite with separate living area and premium amenities",
-    photos: ["https://images.unsplash.com/photo-1590490360182-c33d57733427?w=400&h=250&fit=crop"]
-  }
+    amenities: [
+      "Free WiFi",
+      "AC",
+      "TV",
+      "Breakfast",
+      "Balcony",
+      "Living Room",
+      "Mini Bar",
+    ],
+    description:
+      "Executive suite with separate living area and premium amenities",
+    photos: [
+      "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=400&h=250&fit=crop",
+    ],
+  },
+  {
+    id: 4,
+    hotelId: "HTL2",
+    type: "Standard Room",
+    price: 2500,
+    maxAdults: 2,
+    maxChildren: 1,
+    bedType: "Double Bed",
+    amenities: ["Free WiFi", "AC", "TV", "Breakfast"],
+    description: "Affordable room with essential amenities for short stays",
+    photos: [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT67zQD7L-AtLFIIpH_kbZLRb_QeU3zwQGXBw&s",
+    ],
+  },
+  {
+    id: 5,
+    hotelId: "HTL2",
+    type: "Executive Room",
+    price: 5200,
+    maxAdults: 3,
+    maxChildren: 2,
+    bedType: "King Bed",
+    amenities: [
+      "Free WiFi",
+      "AC",
+      "TV",
+      "Breakfast",
+      "Work Desk",
+      "Mini Bar",
+    ],
+    description:
+      "Designed for business travelers with work-friendly amenities and comfort",
+    photos: [
+      "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=400&h=250&fit=crop",
+    ],
+  },
+  {
+    id: 6,
+    hotelId: "HTL2",
+    type: "Family Room",
+    price: 5800,
+    maxAdults: 4,
+    maxChildren: 2,
+    bedType: "Two Queen Beds",
+    amenities: [
+      "Free WiFi",
+      "AC",
+      "TV",
+      "Breakfast",
+      "Balcony",
+      "Sofa",
+    ],
+    description:
+      "Spacious family-friendly room with multiple beds and extra seating",
+    photos: [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7BUZcZ6BJZZCgYfGaHaggqOz8i9k2OlSwKQ&s",
+    ],
+  },
+  {
+    id: 7,
+    hotelId: "HTL3",
+    type: "Presidential Suite",
+    price: 12000,
+    maxAdults: 5,
+    maxChildren: 3,
+    bedType: "Super King Bed",
+    amenities: [
+      "Free WiFi",
+      "AC",
+      "TV",
+      "Breakfast",
+      "Jacuzzi",
+      "Private Lounge",
+      "Butler Service",
+    ],
+    description:
+      "Ultimate luxury experience with private lounge, jacuzzi, and butler service",
+    photos: [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRyPq_7UEy9rRKjuGEzFjuRlgOQVG4_W8Szg&s",
+    ],
+  },
+  {
+    id: 8,
+    hotelId: "HTL3",
+    type: "Garden View Room",
+    price: 4000,
+    maxAdults: 2,
+    maxChildren: 1,
+    bedType: "Queen Bed",
+    amenities: [
+      "Free WiFi",
+      "AC",
+      "TV",
+      "Breakfast",
+      "Garden Access",
+    ],
+    description:
+      "Relax with a serene garden view and cozy modern furnishing",
+    photos: [
+      "https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=400&h=250&fit=crop",
+    ],
+  },
+  {
+    id: 9,
+    hotelId: "HTL3",
+    type: "Poolside Room",
+    price: 4800,
+    maxAdults: 2,
+    maxChildren: 2,
+    bedType: "Double Bed",
+    amenities: [
+      "Free WiFi",
+      "AC",
+      "TV",
+      "Breakfast",
+      "Pool Access",
+    ],
+    description:
+      "Stay close to the pool with easy access and refreshing vibes",
+    photos: [
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=250&fit=crop",
+    ],
+  },
 ];
 
 export default function RoomSelect({ hotel, selections, onSelectionsChange, onConfirm, onBack, theme, currentDay }: RoomSelectionProps) {
@@ -57,42 +205,61 @@ export default function RoomSelect({ hotel, selections, onSelectionsChange, onCo
   const [adults, setAdults] = useState<number>(2);
   const [childrenWithBed, setChildrenWithBed] = useState<number>(0);
   const [childrenWithoutBed, setChildrenWithoutBed] = useState<number>(0);
+  const [adultsWithExtraBed, setAdultsWithExtraBed] = useState<number>(0);
   const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
 
-  const selectedRoom = professionalRooms.find(room => room.id === selectedRoomType);
+  const { hotelInfo } = useQuotation();
+// Maybe pick the first one
+const selectedHotel = hotelInfo[0]; 
+
+const filteredRooms = professionalRooms.filter(
+  room => room.hotelId === selectedHotel?.id
+);
+
+  
+  // Set default selected room to first available room
+  useEffect(() => {
+    if (filteredRooms.length > 0 && !filteredRooms.find(room => room.id === selectedRoomType)) {
+      setSelectedRoomType(filteredRooms[0].id);
+    }
+  }, [filteredRooms, selectedRoomType]);
+
+  const selectedRoom = filteredRooms.find(room => room.id === selectedRoomType);
 
   const calculateTotalPrice = () => {
     if (!selectedRoom) return 0;
-    return (selectedRoom.price * roomCount) + (childrenWithBed * 500);
+    return (selectedRoom.price * roomCount) + (childrenWithBed * 500) + (adultsWithExtraBed * 800);
   };
 
-const handleConfirmSelection = () => {
-  if (!selectedRoom) return;
-  
-  const newSelection: RoomSelection = {
-    roomId: selectedRoomType,
-    roomCount,
-    adults,
-    childrenWithBed,
-    childrenWithoutBed,
-    totalPrice: calculateTotalPrice(),
-    isConfirmed: true,
-    confirmedAt: new Date().toISOString(),
-    dayNumber: currentDay // Add this line
+  const handleConfirmSelection = () => {
+    if (!selectedRoom) return;
+    
+    const newSelection: RoomSelection = {
+      roomId: selectedRoomType,
+      roomCount,
+      adults,
+      childrenWithBed,
+      childrenWithoutBed,
+      adultsWithExtraBed,
+      totalPrice: calculateTotalPrice(),
+      isConfirmed: true,
+      confirmedAt: new Date().toISOString(),
+      dayNumber: currentDay
+    };
+     
+    onSelectionsChange([newSelection]);
+    setIsConfirmed(true);
+    
+    // Call onConfirm after a brief delay to ensure state updates
+    setTimeout(() => {
+      onConfirm();
+    }, 100);
   };
-   
-  onSelectionsChange([newSelection]);
-  setIsConfirmed(true);
-  
-  // Call onConfirm after a brief delay to ensure state updates
-  setTimeout(() => {
-    onConfirm();
-  }, 100);
-};
 
-  const totalGuests = adults + childrenWithBed + childrenWithoutBed;
+  const totalGuests = adults + childrenWithBed + childrenWithoutBed + adultsWithExtraBed;
   const canAddMoreAdults = adults < (selectedRoom?.maxAdults || 0);
   const canAddMoreChildren = (childrenWithBed + childrenWithoutBed) < (selectedRoom?.maxChildren || 0);
+  const canAddMoreAdultsWithExtraBed = adultsWithExtraBed < (selectedRoom?.maxAdults || 0);
 
   return (
     <div className="space-y-8">
@@ -123,7 +290,7 @@ const handleConfirmSelection = () => {
       <div>
         <h3 className="text-2xl font-bold text-gray-900 mb-6">Available Room Types</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {professionalRooms.map(room => (
+          {filteredRooms.map(room => (
             <div
               key={room.id}
               className={`border-2 rounded-xl cursor-pointer transition-all duration-300 ${
@@ -259,6 +426,33 @@ const handleConfirmSelection = () => {
                     </div>
                   </div>
 
+                  {/* Adults with Extra Bed */}
+                  <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                    <div className="flex-1">
+                      <div className="font-semibold text-gray-900 flex items-center">
+                        <span className="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
+                        Adults with Extra Bed
+                      </div>
+                      <div className="text-sm text-orange-600 font-medium mt-1">₹800/adult</div>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <button
+                        onClick={() => setAdultsWithExtraBed(Math.max(0, adultsWithExtraBed - 1))}
+                        className="w-10 h-10 rounded-full border-2 border-orange-200 bg-orange-50 flex items-center justify-center hover:bg-orange-100 text-orange-600 font-bold transition-colors duration-200 shadow-sm"
+                      >
+                        -
+                      </button>
+                      <span className="w-8 text-center font-bold text-lg text-gray-900 bg-gray-50 py-1 rounded-md">{adultsWithExtraBed}</span>
+                      <button
+                        onClick={() => setAdultsWithExtraBed(Math.min(selectedRoom.maxAdults, adultsWithExtraBed + 1))}
+                        disabled={!canAddMoreAdultsWithExtraBed}
+                        className="w-10 h-10 rounded-full border-2 border-orange-200 bg-orange-50 flex items-center justify-center hover:bg-orange-100 text-orange-600 font-bold transition-colors duration-200 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-orange-50"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
                   {/* Children with bed */}
                   <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
                     <div className="flex-1">
@@ -326,9 +520,16 @@ const handleConfirmSelection = () => {
                   <span className="font-semibold text-blue-600">₹{selectedRoom.price * roomCount}</span>
                 </div>
                 
+                {adultsWithExtraBed > 0 && (
+                  <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-100">
+                    <span className="text-gray-600 font-medium">Extra beds (adults) × {adultsWithExtraBed}</span>
+                    <span className="font-semibold text-orange-600">₹{adultsWithExtraBed * 800}</span>
+                  </div>
+                )}
+                
                 {childrenWithBed > 0 && (
                   <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-100">
-                    <span className="text-gray-600 font-medium">Extra beds × {childrenWithBed}</span>
+                    <span className="text-gray-600 font-medium">Extra beds (children) × {childrenWithBed}</span>
                     <span className="font-semibold text-green-600">₹{childrenWithBed * 500}</span>
                   </div>
                 )}
