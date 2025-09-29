@@ -2,7 +2,7 @@
 import { QuotationData } from '../../quotation-builder/page';
 import { useState } from 'react';
 import { useAgencySettings } from '@/context/AgencySettingsContext';
-
+import { useQuotation } from '@/context/QuotationContext';
 interface CustomizationStepProps {
   data: QuotationData;
   updateData: (data: Partial<QuotationData>) => void;
@@ -14,6 +14,7 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
   const { agencySettings } = useAgencySettings();
   const [isEditingPricing, setIsEditingPricing] = useState(false);
   const [isEditingGrandTotal, setIsEditingGrandTotal] = useState(false);
+  const { totalPackagePrice } = useQuotation();
   const [tempPricing, setTempPricing] = useState({
     markupPercentage: 0,
     gstPercentage: 0,
@@ -91,7 +92,7 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
 
   // Helper function to recalc pricing live with safe defaults
   const calculateTotals = () => {
-    const subtotal = 7000;
+    const subtotal = totalPackagePrice;
     const markupPercentage = data.markupPercentage || safeAgencySettings.pricing.markupPercentage;
     const markup = (subtotal * markupPercentage) / 100;
     const taxable = subtotal + markup;
@@ -204,7 +205,7 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
               {/* Subtotal */}
               <div className="flex justify-between items-center px-4 py-3 hover:bg-gray-50">
                 <span className="text-gray-700">Subtotal</span>
-                <span className="font-medium">₹7000</span>
+                <span className="font-medium">₹{subtotal}</span>
               </div>
 
               {/* Markup */}

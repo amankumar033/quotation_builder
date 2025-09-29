@@ -234,16 +234,23 @@ export default function RoomSelect({ hotel, selections, onSelectionsChange, onCo
   useEffect(() => {
     if (filteredRooms.length > 0 && !filteredRooms.find((room: Room) => room.id === selectedRoomType)) {
       setSelectedRoomType(filteredRooms[0].id);
+      // Reset counts when room changes
+      setAdults(2);
+      setChildrenWithBed(0);
+      setChildrenWithoutBed(0);
+      setAdultsWithExtraBed(0);
+      setRoomCount(1);
     }
   }, [filteredRooms, selectedRoomType]);
 
   const selectedRoom = filteredRooms.find((room: Room) => room.id === selectedRoomType);
 
-  // Calculate capacity limits
+  // Calculate capacity limits based on room count - FIXED: Only check total quantity
   const calculateCapacityLimits = () => {
     if (!selectedRoom) return { maxTotal: 0, currentTotal: 0 };
     
-    const maxTotal = selectedRoom.maxAdults + selectedRoom.maxChildren;
+    // Multiply max capacity by room count (maxAdults + maxChildren)
+    const maxTotal = (selectedRoom.maxAdults + selectedRoom.maxChildren) * roomCount;
     const currentTotal = adults + childrenWithBed + childrenWithoutBed + adultsWithExtraBed;
     
     return { maxTotal, currentTotal };
@@ -252,26 +259,14 @@ export default function RoomSelect({ hotel, selections, onSelectionsChange, onCo
   const { maxTotal, currentTotal } = calculateCapacityLimits();
   const remainingCapacity = maxTotal - currentTotal;
 
-  // Enhanced validation functions with proper capacity checking
-  const canAddMoreAdults = (): boolean => {
+  // FIXED: Simplified validation - only check total quantity
+  const canAddMorePerson = (): boolean => {
     return remainingCapacity > 0;
   };
 
-  const canAddMoreChildrenWithBed = (): boolean => {
-    return remainingCapacity > 0;
-  };
-
-  const canAddMoreChildrenWithoutBed = (): boolean => {
-    return remainingCapacity > 0;
-  };
-
-  const canAddMoreAdultsWithExtraBed = (): boolean => {
-    return remainingCapacity > 0;
-  };
-
-  // Update handlers to respect capacity limits
+  // Update handlers with simplified validation
   const handleAddAdult = () => {
-    if (canAddMoreAdults()) {
+    if (canAddMorePerson()) {
       setAdults(adults + 1);
     }
   };
@@ -281,7 +276,7 @@ export default function RoomSelect({ hotel, selections, onSelectionsChange, onCo
   };
 
   const handleAddAdultWithExtraBed = () => {
-    if (canAddMoreAdultsWithExtraBed()) {
+    if (canAddMorePerson()) {
       setAdultsWithExtraBed(adultsWithExtraBed + 1);
     }
   };
@@ -291,7 +286,7 @@ export default function RoomSelect({ hotel, selections, onSelectionsChange, onCo
   };
 
   const handleAddChildWithBed = () => {
-    if (canAddMoreChildrenWithBed()) {
+    if (canAddMorePerson()) {
       setChildrenWithBed(childrenWithBed + 1);
     }
   };
@@ -301,7 +296,7 @@ export default function RoomSelect({ hotel, selections, onSelectionsChange, onCo
   };
 
   const handleAddChildWithoutBed = () => {
-    if (canAddMoreChildrenWithoutBed()) {
+    if (canAddMorePerson()) {
       setChildrenWithoutBed(childrenWithoutBed + 1);
     }
   };
@@ -342,7 +337,7 @@ export default function RoomSelect({ hotel, selections, onSelectionsChange, onCo
   const totalGuests = adults + childrenWithBed + childrenWithoutBed + adultsWithExtraBed;
 
   return (
-    <div className="space-y-3 mt-7">
+    <div className="space-y-8">
       {/* Header with Back Button */}
       <div className="flex items-center justify-between">
         {/* <button
@@ -353,7 +348,7 @@ export default function RoomSelect({ hotel, selections, onSelectionsChange, onCo
           <span>Back to Meals</span>
         </button> */}
         <div className="text-center">
-          {/* <h3 className="text-3xl font-bold text-gray-700">Select Your Room</h3> */}
+          {/* <h3 className="text-3xl font-bold text-gray-900">Select Your Room</h3> */}
           {isConfirmed && (
             <div className="flex items-center justify-center mt-2 space-x-2">
               <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium flex items-center">
@@ -368,7 +363,7 @@ export default function RoomSelect({ hotel, selections, onSelectionsChange, onCo
 
       {/* Room Selection */}
       <div>
-        {/* <h3 className="text-2xl font-bold text-gray-700 mb-10">Select Room</h3> */}
+        <h3 className="text-2xl font-bold text-gray-900 mb-10">Available Room Types</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {filteredRooms.map((room: Room) => (
             <div
@@ -411,7 +406,7 @@ export default function RoomSelect({ hotel, selections, onSelectionsChange, onCo
                   <h4 className="font-bold text-lg text-gray-900">{room.type}</h4>
                   <div className="flex items-center text-sm text-gray-600">
                     <Users className="h-4 w-4 mr-1" />
-                    Max: {room.maxAdults + room.maxChildren} persons
+                    Max: {room.maxAdults + room.maxChildren} persons/room
                   </div>
                 </div>
                 
@@ -473,6 +468,7 @@ export default function RoomSelect({ hotel, selections, onSelectionsChange, onCo
               <h3 className="text-2xl font-bold text-gray-900">Configure Your Stay</h3>
               <p className="text-gray-600">
                 Capacity: {currentTotal}/{maxTotal} persons ({remainingCapacity} remaining)
+                {roomCount > 1 && ` • ${roomCount} rooms × ${selectedRoom.maxAdults + selectedRoom.maxChildren} persons each`}
               </p>
             </div>
           </div>
@@ -508,7 +504,7 @@ export default function RoomSelect({ hotel, selections, onSelectionsChange, onCo
                       <span className="w-8 text-center font-bold text-lg text-gray-900 bg-gray-50 py-1 rounded-md">{adults}</span>
                       <button
                         onClick={handleAddAdult}
-                        disabled={!canAddMoreAdults()}
+                        disabled={!canAddMorePerson()}
                         className="w-10 h-10 rounded-full border-2 border-blue-200 bg-blue-50 flex items-center justify-center hover:bg-blue-100 text-blue-600 font-bold transition-colors duration-200 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-blue-50"
                       >
                         +
@@ -535,7 +531,7 @@ export default function RoomSelect({ hotel, selections, onSelectionsChange, onCo
                       <span className="w-8 text-center font-bold text-lg text-gray-900 bg-gray-50 py-1 rounded-md">{adultsWithExtraBed}</span>
                       <button
                         onClick={handleAddAdultWithExtraBed}
-                        disabled={!canAddMoreAdultsWithExtraBed()}
+                        disabled={!canAddMorePerson()}
                         className="w-10 h-10 rounded-full border-2 border-orange-200 bg-orange-50 flex items-center justify-center hover:bg-orange-100 text-orange-600 font-bold transition-colors duration-200 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-orange-50"
                       >
                         +
@@ -562,7 +558,7 @@ export default function RoomSelect({ hotel, selections, onSelectionsChange, onCo
                       <span className="w-8 text-center font-bold text-lg text-gray-900 bg-gray-50 py-1 rounded-md">{childrenWithBed}</span>
                       <button
                         onClick={handleAddChildWithBed}
-                        disabled={!canAddMoreChildrenWithBed()}
+                        disabled={!canAddMorePerson()}
                         className="w-10 h-10 rounded-full border-2 border-green-200 bg-green-50 flex items-center justify-center hover:bg-green-100 text-green-600 font-bold transition-colors duration-200 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-green-50"
                       >
                         +
@@ -589,7 +585,7 @@ export default function RoomSelect({ hotel, selections, onSelectionsChange, onCo
                       <span className="w-8 text-center font-bold text-lg text-gray-900 bg-gray-50 py-1 rounded-md">{childrenWithoutBed}</span>
                       <button
                         onClick={handleAddChildWithoutBed}
-                        disabled={!canAddMoreChildrenWithoutBed()}
+                        disabled={!canAddMorePerson()}
                         className="w-10 h-10 rounded-full border-2 border-purple-200 bg-purple-50 flex items-center justify-center hover:bg-purple-100 text-purple-600 font-bold transition-colors duration-200 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-purple-50"
                       >
                         +

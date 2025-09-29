@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { QuotationData, Hotel, DaySelection, Transport, Activity } from "@/types/type";
 import { useQuotation } from "@/context/QuotationContext";
 import DayAccordion from "./PackageSelection/DayAccordion";
-import AddActivityModal from "./PackageSelection/AddActivityModal";
+import AddActivityAccordion from "./PackageSelection/AddActivityModal";
 
 interface PackageSelectionStepProps {
   data: QuotationData;
@@ -25,7 +25,7 @@ export default function PackageSelectionStep({
   const [isHotelLoading, setIsHotelLoading] = useState(true);
   const [isTransportLoading, setIsTransportLoading] = useState(true);
   const [isActivitiesLoading, setIsActivitiesLoading] = useState(true);
-  const [showAddActivityModal, setShowAddActivityModal] = useState(false);
+  const [showAddActivity, setShowAddActivity] = useState(false);
 
   const { 
     startDate, 
@@ -34,7 +34,8 @@ export default function PackageSelectionStep({
     show, 
     daySelections, 
     setDaySelections,
-    areAllDaysCompleted
+    areAllDaysCompleted,
+    setTotalPackagePrice
   } = useQuotation();
 
   // Initialize day selections when dates change
@@ -186,6 +187,10 @@ export default function PackageSelectionStep({
   }));
 
   const totalPrice = calculateTotalPrice();
+   // Update total package price in context whenever it changes
+  useEffect(() => {
+    setTotalPackagePrice(totalPrice);
+  }, [totalPrice, setTotalPackagePrice]);
 
   return (
     <div className="space-y-8 px-6 min-h-screen bg-gray-50">
@@ -209,6 +214,25 @@ export default function PackageSelectionStep({
           />
         ))}
       </section>
+
+      {/* Add Activity Accordion */}
+      {areAllDaysCompleted() && !showAddActivity && (
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <button
+            onClick={() => setShowAddActivity(true)}
+            className="w-full py-4 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all duration-300 font-medium flex items-center justify-center space-x-2"
+          >
+            <span>+ Add Custom Activity</span>
+          </button>
+        </div>
+      )}
+
+      {showAddActivity && (
+        <AddActivityAccordion
+          activities={activities}
+          onClose={() => setShowAddActivity(false)}
+        />
+      )}
 
       {/* Global Summary Section */}
       <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
@@ -246,53 +270,29 @@ export default function PackageSelectionStep({
           })}
         </div>
 
-        {/* Add Activity Button - Only show when all sections are completed */}
-        {areAllDaysCompleted() && (
-          <div className="flex justify-between items-center pt-4 border-t border-gray-200">
-            <button
-              onClick={() => setShowAddActivityModal(true)}
-              className="px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-300 font-medium flex items-center space-x-2"
-            >
-              <span>+ Add Custom Activity</span>
-            </button>
-            
-            <div className="flex items-center space-x-4">
-              <div className="text-right">
-                <div className="text-lg font-semibold text-gray-900">Final Total: ₹{totalPrice}</div>
-                <div className="text-sm text-gray-500">{daySelectionsArray.length} days • All sections completed</div>
-              </div>
-              <button
-                onClick={handleContinue}
-                className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
-              >
-                Continue →
-              </button>
-            </div>
-          </div>
-        )}
-
-        {!areAllDaysCompleted() && (
-          <div className="flex justify-between items-center pt-4 border-t border-gray-200">
-            <div className="text-sm text-gray-500">
-              Complete all sections to continue
+        {/* Continue Button */}
+        <div className="flex justify-between items-center pt-4 border-t border-gray-200">
+          <button
+            onClick={prevStep}
+            className="px-6 py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition font-medium"
+          >
+            ← Back
+          </button>
+          
+          <div className="flex items-center space-x-4">
+            <div className="text-right">
+              <div className="text-lg font-semibold text-gray-900">Final Total: ₹{totalPrice}</div>
+              <div className="text-sm text-gray-500">{daySelectionsArray.length} days • All sections completed</div>
             </div>
             <button
-              onClick={prevStep}
-              className="px-6 py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition font-medium"
+              onClick={handleContinue}
+              className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
             >
-              ← Back
+              Continue →
             </button>
           </div>
-        )}
+        </div>
       </div>
-
-      {/* Add Activity Modal */}
-      {showAddActivityModal && (
-        <AddActivityModal
-          onClose={() => setShowAddActivityModal(false)}
-          activities={activities}
-        />
-      )}
     </div>
   );
 }

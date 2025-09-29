@@ -60,6 +60,9 @@ interface QuotationContextType {
   setShow: (show: boolean) => void;
   openDestination: (destination: Destination) => void;
   closeDestination: () => void;
+  totalPackagePrice: number;
+  setTotalPackagePrice: (price: number) => void;
+
 
   // Room related
   professionalRooms: Room[];
@@ -127,7 +130,7 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
   // Destination states
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
   const [show, setShow] = useState(true);
-
+   const [totalPackagePrice, setTotalPackagePrice] = useState<number>(0);
   // Room states
   const [professionalRooms, setProfessionalRooms] = useState<Room[]>([
     {
@@ -347,6 +350,9 @@ const setDaySelectionState = (date: string, updates: Partial<{
         openDestination,
         closeDestination,
 
+
+           totalPackagePrice,
+    setTotalPackagePrice,
         // Rooms
         professionalRooms,
         setProfessionalRooms,

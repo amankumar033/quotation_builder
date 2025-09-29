@@ -1,7 +1,7 @@
 import { useState } from "react";
 import TransportCard from "./TransportCard";
 import { DaySelection, Transport } from "@/types/type";
-import { ChevronDown, ChevronUp, Users } from "lucide-react";
+import { ChevronDown, ChevronUp, Users, CheckCircle } from "lucide-react";
 import { useQuotation } from "@/context/QuotationContext";
 
 interface TransportSectionProps {
@@ -130,26 +130,46 @@ export default function TransportSection({
   const dayNumber = Object.keys(useQuotation().daySelections).indexOf(date) + 1;
 
   return (
-    <div className="border rounded-xl border-gray-200 overflow-hidden">
+    <div className="border border-gray-200 rounded-xl overflow-hidden">
       {/* Accordion Header */}
       <div
-        className="px-6 py-5 cursor-pointer text-gray-700 bg-gray-50"
+        className={`px-6 py-4 cursor-pointer flex items-center justify-between transition-colors ${
+          isSectionActive ? 'bg-gray-50' : 'hover:bg-gray-50'
+        }`}
         onClick={toggleSection}
       >
-        <div className="flex items-center justify-between">
-          <div className="flex gap-3">
-            <img src="/suv1.png" alt="" className="h-8 w-5"/>
-            <h4 className="text-lg font-semibold text-gray-600">
-               Transport
-            </h4>
-            {daySelection.transports && (
-  <div className="text-right">
-    <div className="text-sm font-semibold text-green-600">₹{daySelection.transports.price}</div>
-    <div className="text-xs text-gray-500">Transport</div>
-  </div>
-)}
+        <div className="flex items-center space-x-3">
+          <div className={`p-2 rounded-lg ${theme.text} bg-opacity-10`}>
+            <img src="/suv1.png" alt="" className="h-5 w-5"/>
           </div>
-          {isSectionActive ? <ChevronUp className="text-gray-500"/> : <ChevronDown className="text-gray-500"/>}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">Transport</h3>
+            {daySelection.transports && (
+              <p className="text-sm text-gray-600 mt-1">
+                {daySelection.transports.name}
+              </p>
+            )}
+          </div>
+        </div>
+        
+        <div className="flex items-center space-x-3">
+          {/* Price Summary */}
+          {daySelection.transports && (
+            <div className="text-right">
+              <div className="text-sm font-semibold text-green-600">₹{daySelection.transports.price}</div>
+              <div className="text-xs text-gray-500">Transport</div>
+            </div>
+          )}
+          
+          {daySelection.transports && (
+             <div className="flex items-center space-x-3">
+            <span className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 flex items-center">
+               <CheckCircle className="h-4 w-4 mr-1" />
+              Selected
+            </span>
+            </div>
+          )}
+          {isSectionActive ? <ChevronUp className="h-5 w-5 text-gray-500" /> : <ChevronDown className="h-5 w-5 text-gray-500" />}
         </div>
       </div>
 
@@ -228,8 +248,6 @@ export default function TransportSection({
                   </p>
                 </div>
               </div>
-              
-
               <button
                 onClick={handleChangeTransport}
                 className="px-4 py-2 text-sm font-medium rounded-lg text-red-600 border border-red-300 hover:bg-red-50"

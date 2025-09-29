@@ -31,7 +31,7 @@ export default function HotelCard({
     onSelect(hotel.id);
   };
 
-  const handleViewDetails = (e: React.MouseEvent) => {
+  const handleCardClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     callbacki(hotel);
     onViewDetails(hotel);
@@ -46,11 +46,9 @@ export default function HotelCard({
             ? `border-${theme.text.split("-")[1]}-500 shadow-md scale-105`
             : "border-gray-200 hover:border-blue-300"
         }`}
+      onClick={handleCardClick}
     >
-      <div
-        className="h-48 overflow-hidden"
-        onClick={handleViewDetails}
-      >
+      <div className="h-48 overflow-hidden">
         <img
           src={hotel.photos[0] || ""}
           alt={hotel.name}
@@ -87,24 +85,16 @@ export default function HotelCard({
           ))}
         </div>
 
-        <div className="flex gap-2">
-          <button
-            onClick={handleViewDetails}
-            className="flex-1 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium"
-          >
-            View Details
-          </button>
-          <button
-            onClick={handleSelect}
-            className={`flex-1 py-2 rounded-lg transition ${
-              isSelected
-                ? `bg-blue-800 text-white`
-                : "bg-blue-500 text-white hover:bg-blue-600"
-            }`}
-          >
-            {isSelected ? "✓ Selected" : "Select"}
-          </button>
-        </div>
+        <button
+          onClick={handleSelect}
+          className={`w-full py-3 rounded-lg transition font-medium ${
+            isSelected
+              ? `bg-blue-800 text-white`
+              : "bg-blue-500 text-white hover:bg-blue-600"
+          }`}
+        >
+          {isSelected ? "✓ Selected" : "Select Hotel"}
+        </button>
       </div>
     </div>
   );

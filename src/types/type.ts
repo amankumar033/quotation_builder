@@ -5,6 +5,7 @@ export interface QuotationData {
     day: number;
     selections: RoomSelection[];
     meals?: Meal[];
+ 
   };
 }
 

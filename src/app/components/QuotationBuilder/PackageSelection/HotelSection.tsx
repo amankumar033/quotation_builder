@@ -146,7 +146,7 @@ export default function HotelSection({
 
   const totalHotelPrice = calculateHotelPrice() + calculateMealPrice();
 
-  // FIXED: Handle hotel selection - start the flow instead of directly selecting
+  // Handle hotel selection - start the flow instead of directly selecting
   const handleHotelSelect = (hotelId: string) => {
     const hotel = hotels.find(h => h.id === hotelId);
     if (hotel) {
@@ -277,7 +277,7 @@ export default function HotelSection({
             <Building className={`h-5 w-5 ${theme.text}`} />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-600">Hotel & Meals</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Hotel & Meals</h3>
             {daySelection.hotel && (
               <p className="text-sm text-gray-600 mt-1">
                 {daySelection.hotel.name} • {daySelection.hotel.city}
@@ -285,20 +285,21 @@ export default function HotelSection({
             )}
           </div>
         </div>
+        
         <div className="flex items-center space-x-3">
-      
+        
           
-          {/* Price Summary */}
+          {/* Price Summary - Center Aligned */}
           {daySelection.hotel && (
-            <div className="text-right">
+            <div className="text-center">
               <div className="text-sm font-semibold text-green-600">₹{totalHotelPrice}</div>
               <div className="text-xs text-gray-500">Hotel & Meals</div>
             </div>
           )}
           
           {daySelection.hotel && (
-            <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 flex items-center">
-              <CheckCircle className="h-3 w-3 mr-1" />
+            <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 flex items-center">
+              <CheckCircle className="h-4 w-4 mr-1" />
               Selected
             </span>
           )}
@@ -307,10 +308,11 @@ export default function HotelSection({
       </div>
 
       {isSectionActive && (
+        
         <div className="px-6 py-4 border-t border-gray-200 animate-in fade-in duration-300">
-              {/* Compact Breadcrumb - Only show when not browsing */}
+            {/* Compact Breadcrumb - Only show when not browsing */}
           {(dayState.roomSelectionState !== 'browsing') && (
-            <div className="flex items-center space-x-1 rounded-lg p-1 mb-3 ">
+            <div className="flex items-center space-x-1 rounded-lg p-1 mb-5">
               {breadcrumbSteps.map((step, index) => {
                 const StepIcon = step.icon;
                 const isCompleted = index < currentStepIndex;
@@ -399,18 +401,18 @@ export default function HotelSection({
           {/* Selecting Meals */}
           {dayState.roomSelectionState === 'selecting-meals' && dayState.selectedHotelTemp && (
             <div className="space-y-6">
-              <div className="flex items-center space-x-4 mb-6">
-                {/* <button
+              {/* <div className="flex items-center space-x-4 mb-6">
+                <button
                   onClick={handleBackToHotels}
                   className="p-2 hover:bg-gray-100 rounded-lg transition"
                 >
                   <ArrowLeft className="h-5 w-5 text-gray-600" />
-                </button> */}
-                {/* <div>
+                </button>
+                <div>
                   <h4 className="text-lg font-medium text-gray-900">Select Meals</h4>
                   <p className="text-sm text-gray-600">for {dayState.selectedHotelTemp.name}</p>
-                </div> */}
-              </div>
+                </div>
+              </div> */}
 
               <MealSelection
                 hotel={dayState.selectedHotelTemp}

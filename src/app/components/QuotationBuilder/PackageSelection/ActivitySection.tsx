@@ -67,23 +67,31 @@ export default function ActivitiesSection({
             )}
           </div>
         </div>
-        {hasSelectedActivities && (
-  <div className="text-right">
-    <div className="text-sm font-semibold text-green-600">
-      ₹{daySelection.activities?.reduce((sum, activity) => sum + activity.price, 0) || 0}
+      
+        <div className="flex space-x-3 items-center">
+  {hasSelectedActivities && (
+    <div className="flex items-center space-x-2">
+      {/* Price */}
+      <div className="text-sm font-semibold text-green-600">
+        ₹{daySelection.activities?.reduce((sum, activity) => sum + activity.price, 0) || 0}
+      </div>
+
+      {/* Selected badge */}
+      <span className="px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800 flex items-center">
+        <CheckCircle className="h-4 w-4 mr-1" />
+        Selected
+      </span>
     </div>
-    <div className="text-xs text-gray-500">Activities</div>
-  </div>
-)}
-        <div className="flex items-center space-x-3">
-          {hasSelectedActivities && (
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800 flex items-center">
-              <CheckCircle className="h-4 w-4 mr-1" />
-              Selected
-            </span>
-          )}
-          {isSectionActive ? <ChevronUp className="h-5 w-5 text-gray-500" /> : <ChevronDown className="h-5 w-5 text-gray-500" />}
-        </div>
+  )}
+
+  {/* Chevron toggle */}
+  {isSectionActive ? (
+    <ChevronUp className="h-5 w-5 text-gray-500" />
+  ) : (
+    <ChevronDown className="h-5 w-5 text-gray-500" />
+  )}
+</div>
+
        
 
 

@@ -111,9 +111,9 @@ export default function DayAccordion({
                   ₹{totalDayPrice}
                 </div>
                 <div className={`text-xs ${isActive ? 'text-white text-opacity-80' : 'text-gray-500'}`}>
-                  {isHotelConfirmed && `H:₹${calculateHotelPrice()}`}
-                  {isTransportConfirmed && ` T:₹${calculateTransportPrice()}`}
-                  {isActivitiesConfirmed && ` A:₹${calculateActivitiesPrice()}`}
+                  {isHotelConfirmed && `H : ₹${calculateHotelPrice()}, `}
+                  {isTransportConfirmed && ` T : ₹${calculateTransportPrice()}, `}
+                  {isActivitiesConfirmed && ` A : ₹${calculateActivitiesPrice()}`}
                 </div>
               </div>
             )}
