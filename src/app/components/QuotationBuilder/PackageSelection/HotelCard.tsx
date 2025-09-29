@@ -2,10 +2,11 @@
 "use client"
 import { Hotel } from "@/types/type";
 import { useQuotation } from "@/context/QuotationContext";
+
 interface HotelCardProps {
   hotel: Hotel;
   isSelected: boolean;
-  onSelect: (hotelId: number) => void;
+  onSelect: (hotelId: string) => void;
   onViewDetails: (hotel: Hotel) => void;
   theme: { text: string };
 }
@@ -18,11 +19,23 @@ export default function HotelCard({
   theme,
 }: HotelCardProps) {
   const { setHotelInfo } = useQuotation();
+
   function callbacki(hotel: Hotel) {
-    
-  setHotelInfo([hotel]);
-  console.log("callback", hotel);
-}
+    setHotelInfo([hotel]);
+    console.log("callback", hotel);
+  }
+
+  const handleSelect = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    callbacki(hotel);
+    onSelect(hotel.id);
+  };
+
+  const handleViewDetails = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    callbacki(hotel);
+    onViewDetails(hotel);
+  };
 
   return (
     <div
@@ -36,7 +49,7 @@ export default function HotelCard({
     >
       <div
         className="h-48 overflow-hidden"
-        onClick={() => onViewDetails(hotel)}
+        onClick={handleViewDetails}
       >
         <img
           src={hotel.photos[0] || ""}
@@ -75,22 +88,21 @@ export default function HotelCard({
         </div>
 
         <div className="flex gap-2">
-       
-           
-
           <button
-            onClick={() => {
-              callbacki(hotel);
-              onViewDetails(hotel);
-            }}
+            onClick={handleViewDetails}
+            className="flex-1 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium"
+          >
+            View Details
+          </button>
+          <button
+            onClick={handleSelect}
             className={`flex-1 py-2 rounded-lg transition ${
               isSelected
                 ? `bg-blue-800 text-white`
                 : "bg-blue-500 text-white hover:bg-blue-600"
             }`}
           >
-            {isSelected ? "✓ Selected" : "Select Hotel"}
-        
+            {isSelected ? "✓ Selected" : "Select"}
           </button>
         </div>
       </div>

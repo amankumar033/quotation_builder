@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useContext, useState, ReactNode } from "react";
-import { Meal } from "@/types/type"; // Import the Meal type from your types file
+import { Meal, Hotel, Transport, Activity, DaySelection, RoomSelection } from "@/types/type";
 
 // Destination type
 interface Destination {
@@ -23,19 +23,6 @@ interface Room {
   description: string;
   photos: string[];
 }
-
-// Remove the local Meal interface and use the imported one
-// interface Meal {
-//   id: number;
-//   name: string;
-//   description: string;
-//   price: number;
-//   category: "veg" | "non-veg";
-//   type: "breakfast" | "lunch" | "dinner";
-//   image: string;
-//   quantity: number;
-//   hotelId: string;
-// }
 
 // Travelers type
 interface Travelers {
@@ -61,6 +48,9 @@ interface HotelInfo {
     hotelId: string;
   }[];
 }
+
+// RoomSelectionState type
+type RoomSelectionState = 'browsing' | 'selecting-meals' | 'selecting-rooms' | 'confirmed';
 
 interface QuotationContextType {
   // Destination related
@@ -107,6 +97,28 @@ interface QuotationContextType {
   setAdults: (count: number) => void;
   setChildren: (count: number) => void;
   setInfants: (count: number) => void;
+
+  // Day Selections
+  daySelections: Record<string, DaySelection>;
+  setDaySelections: (selections: Record<string, DaySelection>) => void;
+  updateDaySelection: (date: string, updates: Partial<DaySelection>) => void;
+  getDaySelectionsArray: () => Array<{date: string; data: DaySelection}>;
+  areAllDaysCompleted: () => boolean;
+
+  // Per-day selection states
+  daySelectionStates: Record<string, {
+    roomSelectionState: RoomSelectionState;
+    selectedHotelTemp: Hotel | null;
+    mealSelections: Meal[];
+    roomSelections: RoomSelection[];
+  }>;
+  setDaySelectionState: (date: string, state: Partial<{
+    roomSelectionState: RoomSelectionState;
+    selectedHotelTemp: Hotel | null;
+    mealSelections: Meal[];
+    roomSelections: RoomSelection[];
+  }>) => void;
+  resetDaySelectionState: (date: string) => void;
 }
 
 const QuotationContext = createContext<QuotationContextType | undefined>(undefined);
@@ -173,6 +185,57 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
   // Meal selection state
   const [selectedMeals, setSelectedMeals] = useState<Meal[]>([]);
 
+  // Day Selections state
+  const [daySelections, setDaySelections] = useState<Record<string, DaySelection>>({});
+
+  // Per-day selection states
+  const [daySelectionStates, setDaySelectionStates] = useState<Record<string, {
+    roomSelectionState: RoomSelectionState;
+    selectedHotelTemp: Hotel | null;
+    mealSelections: Meal[];
+    roomSelections: RoomSelection[];
+  }>>({});
+
+  // Day selection state management
+// In QuotationContext.tsx, replace the setDaySelectionState function with this:
+
+// Day selection state management
+const setDaySelectionState = (date: string, updates: Partial<{
+  roomSelectionState: RoomSelectionState;
+  selectedHotelTemp: Hotel | null;
+  mealSelections: Meal[];
+  roomSelections: RoomSelection[];
+}>) => {
+  setDaySelectionStates(prev => {
+    // Get current state for this date or create default state
+    const currentState = prev[date] || {
+      roomSelectionState: 'browsing',
+      selectedHotelTemp: null,
+      mealSelections: [],
+      roomSelections: []
+    };
+    
+    return {
+      ...prev,
+      [date]: {
+        ...currentState,
+        ...updates
+      }
+    };
+  });
+};
+ const resetDaySelectionState = (date: string) => {
+  setDaySelectionStates(prev => ({
+    ...prev,
+    [date]: {
+      roomSelectionState: 'browsing',
+      selectedHotelTemp: null,
+      mealSelections: [],
+      roomSelections: []
+    }
+  }));
+};
+
   // Meal management functions
   const updateMealQuantity = (mealId: number, quantity: number, mealData?: Meal) => {
     setSelectedMeals(prevMeals => {
@@ -203,6 +266,34 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
 
   const clearMeals = () => {
     setSelectedMeals([]);
+  };
+
+  // Day selection management
+  const updateDaySelection = (date: string, updates: Partial<DaySelection>) => {
+    setDaySelections(prev => ({
+      ...prev,
+      [date]: {
+        ...prev[date],
+        ...updates,
+        // Auto-calculate completion status
+        isCompleted: !!(updates.hotel || prev[date]?.hotel) && 
+                     !!(updates.transports || prev[date]?.transports) && 
+                     !!((updates.activities && updates.activities.length > 0) || 
+                        (prev[date]?.activities && prev[date].activities.length > 0))
+      }
+    }));
+  };
+
+  const getDaySelectionsArray = () => {
+    return Object.entries(daySelections).map(([date, data]) => ({
+      date,
+      data
+    }));
+  };
+
+  const areAllDaysCompleted = () => {
+    const days = Object.values(daySelections);
+    return days.length > 0 && days.every(day => day.isCompleted);
   };
 
   // Client information
@@ -292,6 +383,18 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
         setAdults,
         setChildren,
         setInfants,
+
+        // Day Selections
+        daySelections,
+        setDaySelections,
+        updateDaySelection,
+        getDaySelectionsArray,
+        areAllDaysCompleted,
+
+        // Per-day selection states
+        daySelectionStates,
+        setDaySelectionState,
+        resetDaySelectionState,
       }}
     >
       {children}

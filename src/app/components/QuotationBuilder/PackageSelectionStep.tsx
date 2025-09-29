@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { QuotationData, Hotel, DaySelection, RoomSelection, Meal, Transport, Activity } from "@/types/type";
+import { QuotationData, Hotel, DaySelection, Transport, Activity } from "@/types/type";
 import { useQuotation } from "@/context/QuotationContext";
 import DayAccordion from "./PackageSelection/DayAccordion";
+import AddActivityModal from "./PackageSelection/AddActivityModal";
 
 interface PackageSelectionStepProps {
   data: QuotationData;
@@ -11,8 +12,6 @@ interface PackageSelectionStepProps {
   nextStep: () => void;
   prevStep: () => void;
 }
-
-type RoomSelectionState = 'browsing' | 'selecting-meals' | 'selecting-rooms' | 'confirmed';
 
 export default function PackageSelectionStep({
   data,
@@ -26,37 +25,45 @@ export default function PackageSelectionStep({
   const [isHotelLoading, setIsHotelLoading] = useState(true);
   const [isTransportLoading, setIsTransportLoading] = useState(true);
   const [isActivitiesLoading, setIsActivitiesLoading] = useState(true);
+  const [showAddActivityModal, setShowAddActivityModal] = useState(false);
 
-  const { startDate, endDate, setShow, show } = useQuotation();
+  const { 
+    startDate, 
+    endDate, 
+    setShow, 
+    show, 
+    daySelections, 
+    setDaySelections,
+    areAllDaysCompleted
+  } = useQuotation();
 
-  const numberOfDays = startDate && endDate
-    ? Math.max(1, Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24)) + 1)
-    : 1;
-
-  const [daySelections, setDaySelections] = useState<DaySelection[]>([]);
-
+  // Initialize day selections when dates change
   useEffect(() => {
     if (startDate && endDate) {
-      const days = Math.max(1, Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24)) + 1);
-      const selections: DaySelection[] = Array.from({ length: days }, (_, i) => ({
-        day: i + 1,
-        selectedHotel: null,
-        selectedMeals: [],
-        selectedRoomSelections: [],
-        selectedActivities: [],
-        selectedTransport: null,
-        selectedVehicleType: null
-      }));
-      setDaySelections(selections);
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const days = Math.max(1, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
+      
+      const newDaySelections: Record<string, DaySelection> = {};
+      
+      for (let i = 0; i < days; i++) {
+        const currentDate = new Date(start);
+        currentDate.setDate(start.getDate() + i);
+        const dateString = currentDate.toISOString().split('T')[0];
+        
+        newDaySelections[dateString] = {
+          date: dateString,
+          hotel: null,
+          meals: [],
+          transports: null,
+          activities: [],
+          isCompleted: false
+        };
+      }
+      
+      setDaySelections(newDaySelections);
     }
-  }, [startDate, endDate]);
-
-  // Temporary selection states
-  const [currentDayForSelection, setCurrentDayForSelection] = useState<number>(1);
-  const [selectedHotelTemp, setSelectedHotelTemp] = useState<Hotel | null>(null);
-  const [mealSelections, setMealSelections] = useState<Meal[]>([]);
-  const [roomSelections, setRoomSelections] = useState<RoomSelection[]>([]);
-  const [roomSelectionState, setRoomSelectionState] = useState<RoomSelectionState>('browsing');
+  }, [startDate, endDate, setDaySelections]);
 
   useEffect(() => {
     fetchInitialData();
@@ -116,214 +123,176 @@ export default function PackageSelectionStep({
     }
   };
 
-  const updateDaySelection = (dayNumber: number, updates: Partial<DaySelection>) => {
-    setDaySelections(prev => prev.map(day =>
-      day.day === dayNumber ? { ...day, ...updates } : day
-    ));
-  };
-
-  // Hotel selection flow
-  const handleViewHotelMeals = (hotel: Hotel, dayNumber: number) => {
-    setSelectedHotelTemp(hotel);
-    setCurrentDayForSelection(dayNumber);
-
-    const defaultMeals: Meal[] = hotelMeals.map(meal => ({ ...meal, quantity: 0 }));
-    setMealSelections(defaultMeals);
-    setRoomSelectionState('selecting-meals');
-  };
-
-  const handleBackToHotels = () => {
-    setSelectedHotelTemp(null);
-    setMealSelections([]);
-    setRoomSelections([]);
-    setRoomSelectionState('browsing');
-  };
-
-const handleProceedToRooms = () => {
-  setRoomSelectionState('selecting-rooms');
-  setRoomSelections([{
-    roomId: 1,
-    roomCount: 1,
-    dayNumber: currentDayForSelection,
-    adults: 2,
-    childrenWithBed: 0,
-    childrenWithoutBed: 0,
-    adultsWithExtraBed: 0,
-    totalPrice: 3000,
-    isConfirmed: false, // Add this - set to false initially
-    confirmedAt: "" // Add this - empty string initially
-  }]);
-};
-
-  const handleConfirmRoomSelection = () => {
-    if (!selectedHotelTemp) return;
-
-    updateDaySelection(currentDayForSelection, {
-      selectedHotel: selectedHotelTemp,
-      selectedMeals: mealSelections.filter(m => m.quantity > 0),
-       roomSelections: roomSelections
+  // Calculate total package price
+  const calculateTotalPrice = () => {
+    let total = 0;
+    Object.values(daySelections).forEach(day => {
+      // Hotel price
+      if (day.hotel && day.roomSelections && day.roomSelections.length > 0) {
+        const roomPrice = day.roomSelections[0].totalPrice || 0;
+        const mealPrice = day.meals ? day.meals.reduce((sum, meal) => sum + (meal.price * meal.quantity), 0) : 0;
+        total += roomPrice + mealPrice;
+      }
+      
+      // Transport price
+      if (day.transports) {
+        total += day.transports.price || 0;
+      }
+      
+      // Activities price
+      if (day.activities) {
+        total += day.activities.reduce((sum, activity) => sum + activity.price, 0);
+      }
     });
-
-    setSelectedHotelTemp(null);
-    setMealSelections([]);
-    setRoomSelections([]);
-    setRoomSelectionState('confirmed');
+    return total;
   };
 
-  const handleEditRoomSelection = (day: number) => {
-    const dayData = daySelections.find(d => d.day === day);
-    if (!dayData) return;
-
-    setSelectedHotelTemp(dayData.selectedHotel);
-    setMealSelections(dayData.selectedMeals);
-   setRoomSelections(dayData.roomSelections || []);
-
-    setCurrentDayForSelection(day);
-    setRoomSelectionState('selecting-rooms');
+  // Get ALL hotels without filtering - make days independent
+  const getAvailableHotels = (currentDate: string) => {
+    return hotels;
   };
 
- const hotelMeals: Meal[] = [
-  {
-    id: 1,
-    hotelId: "HTL1",
-    name: "Continental Breakfast",
-    type: "breakfast",
-    category: "veg",
-    price: 450,
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSIjnT16b72GWq4B8WZ2lhTxQLbT8ki6pdnQ&s",
-    quantity: 0,
-  },
-  {
-    id: 2,
-    hotelId: "HTL2",
-    name: "Indian Breakfast",
-    type: "breakfast",
-    category: "veg",
-    price: 500,
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm4nTDOsrHZwI3FAcGwx0ZAz8zb8MuHSs42Q&s",
-    quantity: 0,
-  },
-  {
-    id: 3,
-    hotelId: "HTL1",
-    name: "Buffet Lunch",
-    type: "lunch",
-    category: "veg",
-    price: 900,
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvyg6rtmkTDFrWLcHwjNOA02U15bKJ71IhRA&s",
-    quantity: 0,
-  },
-  {
-    id: 4,
-    hotelId: "HTL3",
-    name: "Vegetarian Thali",
-    type: "lunch",
-    category: "veg",
-    price: 700,
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-odM1YeL8AjwW3U3U82eWTk9ghO01egs6VA&s",
-    quantity: 0,
-  },
-  {
-    id: 5,
-    hotelId: "HTL2",
-    name: "Non-Veg Dinner",
-    type: "dinner",
-    category: "non-veg",
-    price: 1200,
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLvTQ0SeNN6VlqI7mcwPUpXXGEZKOTN_nB8A&s",
-    quantity: 0,
-  },
-  {
-    id: 6,
-    hotelId: "HTL3",
-    name: "South Indian Breakfast",
-    type: "breakfast",
-    category: "veg",
-    price: 550,
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH2M9v8uTuQRfbhdp8jU33_J_zAlQDBCsStg&s",
-    quantity: 0,
-  },
-  {
-    id: 7,
-    hotelId: "HTL1",
-    name: "Chinese Dinner",
-    type: "dinner",
-    category: "veg",
-    price: 1000,
-    image:
-      "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400&h=250&fit=crop",
-    quantity: 0,
-  },
-
-];
-
-
-  const getDayTheme = (day: number) => {
+  const getDayTheme = (index: number) => {
     const themes = [
       { bg: 'from-blue-400 to-blue-500', text: 'text-blue-600', border: 'border-blue-200' },
       { bg: 'from-green-400 to-green-500', text: 'text-green-600', border: 'border-green-200' },
       { bg: 'from-purple-400 to-purple-500', text: 'text-purple-600', border: 'border-purple-200' },
       { bg: 'from-orange-400 to-orange-500', text: 'text-orange-600', border: 'border-orange-200' },
     ];
-    return themes[(day - 1) % themes.length];
+    return themes[index % themes.length];
   };
+
+  const handleContinue = () => {
+    if (!areAllDaysCompleted()) return;
+
+    const daySelectionsArray = Object.entries(daySelections);
+    daySelectionsArray.forEach(([date, data]) => {
+      const formattedDate = new Date(date).toLocaleDateString('en-GB').replace(/\//g, '-');
+      console.log(`Day ${formattedDate} →`, {
+        hotel: data.hotel,
+        meals: data.meals,
+        transport: data.transports,
+        activities: data.activities
+      });
+    });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    nextStep();
+  };
+
+  const daySelectionsArray = Object.entries(daySelections).map(([date, data], index) => ({
+    date,
+    data: { ...data, day: index + 1 }
+  }));
+
+  const totalPrice = calculateTotalPrice();
 
   return (
     <div className="space-y-8 px-6 min-h-screen bg-gray-50">
       <section className="space-y-6">
-        {daySelections.map(daySelection => (
+        {daySelectionsArray.map(({ date, data }, index) => (
           <DayAccordion
-            key={daySelection.day}
-            daySelection={daySelection}
-            updateDaySelection={updateDaySelection}
-            hotels={hotels}
+            key={date}
+            date={date}
+            daySelection={data}
+            dayNumber={index + 1}
+            hotels={getAvailableHotels(date)}
             transportations={transportations}
             activities={activities}
             isHotelLoading={isHotelLoading}
             isTransportLoading={isTransportLoading}
             isActivitiesLoading={isActivitiesLoading}
-            roomSelectionState={roomSelectionState}
-            setRoomSelectionState={setRoomSelectionState}
-            theme={getDayTheme(daySelection.day)}
+            theme={getDayTheme(index)}
             show={show}
             setShow={setShow}
             updateData={updateData}
-            selectedHotelForRooms={selectedHotelTemp}
-            currentDayForRooms={currentDayForSelection}
-            mealSelections={mealSelections}
-            roomSelections={roomSelections}
-            onViewHotelMeals={handleViewHotelMeals}
-            onBackToHotels={handleBackToHotels}
-            onProceedToRooms={handleProceedToRooms}
-            onBackToMeals={() => setRoomSelectionState('selecting-meals')}
-            onConfirmRoomSelection={handleConfirmRoomSelection}
-            onEditRoomSelection={handleEditRoomSelection} // takes day as argument
-            onMealsChange={setMealSelections}
-            onRoomSelectionsChange={setRoomSelections}
           />
         ))}
       </section>
 
-      <div className="flex justify-between pt-6 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-        <button
-          onClick={prevStep}
-          className="px-6 py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition font-medium"
-        >
-          ← Back
-        </button>
-        <button
-          onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); nextStep(); }}
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
-        >
-          Continue →
-        </button>
+      {/* Global Summary Section */}
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-bold text-gray-900">Package Summary</h3>
+          <div className="text-right">
+            <div className="text-2xl font-bold text-green-600">₹{totalPrice}</div>
+            <div className="text-sm text-gray-500">Total Package Price</div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          {daySelectionsArray.map(({ date, data }, index) => {
+            const dayPrice = 
+              (data.hotel && data.roomSelections?.[0]?.totalPrice || 0) +
+              (data.meals?.reduce((sum, meal) => sum + (meal.price * meal.quantity), 0) || 0) +
+              (data.transports?.price || 0) +
+              (data.activities?.reduce((sum, activity) => sum + activity.price, 0) || 0);
+
+            return (
+              <div key={date} className="bg-gray-50 rounded-lg p-4">
+                <div className="flex justify-between items-start mb-2">
+                  <span className="font-semibold text-gray-900">Day {index + 1}</span>
+                  <span className="text-green-600 font-bold">₹{dayPrice}</span>
+                </div>
+                <div className="text-xs text-gray-600 space-y-1">
+                  {data.hotel && <div>🏨 {data.hotel.name}</div>}
+                  {data.transports && <div>🚗 {data.transports.name}</div>}
+                  {data.activities && data.activities.length > 0 && (
+                    <div>🎯 {data.activities.length} activities</div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Add Activity Button - Only show when all sections are completed */}
+        {areAllDaysCompleted() && (
+          <div className="flex justify-between items-center pt-4 border-t border-gray-200">
+            <button
+              onClick={() => setShowAddActivityModal(true)}
+              className="px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-300 font-medium flex items-center space-x-2"
+            >
+              <span>+ Add Custom Activity</span>
+            </button>
+            
+            <div className="flex items-center space-x-4">
+              <div className="text-right">
+                <div className="text-lg font-semibold text-gray-900">Final Total: ₹{totalPrice}</div>
+                <div className="text-sm text-gray-500">{daySelectionsArray.length} days • All sections completed</div>
+              </div>
+              <button
+                onClick={handleContinue}
+                className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
+              >
+                Continue →
+              </button>
+            </div>
+          </div>
+        )}
+
+        {!areAllDaysCompleted() && (
+          <div className="flex justify-between items-center pt-4 border-t border-gray-200">
+            <div className="text-sm text-gray-500">
+              Complete all sections to continue
+            </div>
+            <button
+              onClick={prevStep}
+              className="px-6 py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition font-medium"
+            >
+              ← Back
+            </button>
+          </div>
+        )}
       </div>
+
+      {/* Add Activity Modal */}
+      {showAddActivityModal && (
+        <AddActivityModal
+          onClose={() => setShowAddActivityModal(false)}
+          activities={activities}
+        />
+      )}
     </div>
   );
 }

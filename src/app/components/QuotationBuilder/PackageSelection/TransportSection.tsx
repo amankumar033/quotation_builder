@@ -2,10 +2,12 @@ import { useState } from "react";
 import TransportCard from "./TransportCard";
 import { DaySelection, Transport } from "@/types/type";
 import { ChevronDown, ChevronUp, Users } from "lucide-react";
+import { useQuotation } from "@/context/QuotationContext";
 
 interface TransportSectionProps {
+  date: string;
   daySelection: DaySelection;
-  updateDaySelection: (dayNumber: number, updates: Partial<DaySelection>) => void;
+  updateDaySelection: (date: string, updates: Partial<DaySelection>) => void;
   transportations: Transport[];
   theme: any;
   isSectionActive: boolean;
@@ -71,6 +73,7 @@ const vehicleCategories: Record<string, { label: string; img: string; descriptio
 };
 
 export default function TransportSection({
+  date,
   daySelection,
   updateDaySelection,
   transportations,
@@ -78,6 +81,7 @@ export default function TransportSection({
   isSectionActive,
   toggleSection
 }: TransportSectionProps) {
+  const { updateDaySelection: contextUpdateDaySelection } = useQuotation();
   const [selectedType, setSelectedType] = useState<string | null>(null);
 
   const handleTypeSelect = (type: string) => {
@@ -85,38 +89,73 @@ export default function TransportSection({
   };
 
   const handleVehicleSelect = (vehicleId: number) => {
-    updateDaySelection(daySelection.day, {
-      selectedTransport: vehicleId,
-      selectedVehicleType: selectedType
+    const selectedTransport = sampleTransports.find(t => t.id === vehicleId);
+    
+    if (selectedTransport) {
+      // Convert to Transport type for context
+      const transport: Transport = {
+        id: selectedTransport.id,
+        name: selectedTransport.name,
+        type: selectedTransport.type,
+        capacity: selectedTransport.capacity,
+        price: parseInt(selectedTransport.price.replace('₹', '').replace(',', '')),
+        features: selectedTransport.features,
+        image: selectedTransport.image,
+        passengers: selectedTransport.capacity,
+        perDay: parseInt(selectedTransport.price.replace('₹', '').replace(',', '')),
+        perKm: 0,
+        photos: selectedTransport.image || '',
+        maxCapacity: selectedTransport.capacity,
+        vehicleType: selectedTransport.type
+      };
+
+      contextUpdateDaySelection(date, {
+        transports: transport,
+        isCompleted: !!daySelection.hotel && !!(daySelection.activities && daySelection.activities.length > 0)
+      });
+    }
+  };
+
+  const handleChangeTransport = () => {
+    contextUpdateDaySelection(date, {
+      transports: null,
+      isCompleted: false
     });
   };
 
-  // Use sampleTransports instead of the transportations prop if you want to use your sample data
-  const availableTransports = sampleTransports; // or use transportations if you want to use the prop
+  // Use sampleTransports instead of the transportations prop
+  const availableTransports = sampleTransports;
+
+  // Get day number from date
+  const dayNumber = Object.keys(useQuotation().daySelections).indexOf(date) + 1;
 
   return (
-    <div className="border rounded-xl border-gray-300 overflow-hidden">
+    <div className="border rounded-xl border-gray-200 overflow-hidden">
       {/* Accordion Header */}
       <div
-        className="px-6 py-4 cursor-pointer text-gray-700  bg-gray-50"
+        className="px-6 py-5 cursor-pointer text-gray-700 bg-gray-50"
         onClick={toggleSection}
       >
-        
         <div className="flex items-center justify-between">
           <div className="flex gap-3">
-        <img src="/suv1.png" alt="" className="h-8 w-5"/>
-       
-          <h4 className="text-lg font-semibold text-gray-500">
-            Select Transport for Day {daySelection.day}
-          </h4>
-           </div>
+            <img src="/suv1.png" alt="" className="h-8 w-5"/>
+            <h4 className="text-lg font-semibold text-gray-600">
+               Transport
+            </h4>
+            {daySelection.transports && (
+  <div className="text-right">
+    <div className="text-sm font-semibold text-green-600">₹{daySelection.transports.price}</div>
+    <div className="text-xs text-gray-500">Transport</div>
+  </div>
+)}
+          </div>
           {isSectionActive ? <ChevronUp className="text-gray-500"/> : <ChevronDown className="text-gray-500"/>}
         </div>
       </div>
 
       {isSectionActive && (
         <div className="p-6">
-          {!daySelection.selectedTransport ? (
+          {!daySelection.transports ? (
             <>
               {/* Category cards */}
               {!selectedType ? (
@@ -148,19 +187,19 @@ export default function TransportSection({
                   <h5 className="text-lg font-bold mb-4">
                     Choose your {vehicleCategories[selectedType].label}
                   </h5>
-          <div className="flex flex-wrap gap-4 justify-start">
-  {availableTransports
-    .filter((t) => t.type.toLowerCase() === selectedType.toLowerCase())
-    .map((transport) => (
-      <TransportCard
-        key={transport.id}
-        transport={transport}
-        isSelected={daySelection.selectedTransport === transport.id}
-        onSelect={handleVehicleSelect}
-        theme={theme}
-      />
-    ))}
-</div>
+                  <div className="flex flex-wrap gap-4 justify-start">
+                    {availableTransports
+                      .filter((t) => t.type.toLowerCase() === selectedType.toLowerCase())
+                      .map((transport) => (
+                        <TransportCard
+                          key={transport.id}
+                          transport={transport}
+                          isSelected={daySelection.transports?.id === transport.id}
+                          onSelect={handleVehicleSelect}
+                          theme={theme}
+                        />
+                      ))}
+                  </div>
                   <button
                     onClick={() => setSelectedType(null)}
                     className="mt-6 text-sm text-gray-500 hover:underline"
@@ -175,36 +214,24 @@ export default function TransportSection({
             <div className="bg-white border border-gray-300 rounded-xl px-6 py-3 shadow-md flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <img
-                  src={
-                    availableTransports.find((t) => t.id === daySelection.selectedTransport)
-                      ?.image || "/placeholder.png"
-                  }
+                  src={daySelection.transports.image || "/placeholder.png"}
                   alt="Selected Vehicle"
                   className="w-20 h-16 object-cover border-gray-200 rounded-lg border"
                 />
                 <div>
                   <h5 className="text-lg font-semibold text-gray-800">Selected Vehicle</h5>
                   <p className="text-gray-600">
-                    {
-                      availableTransports.find((t) => t.id === daySelection.selectedTransport)
-                        ?.name
-                    }
+                    {daySelection.transports.name}
                   </p>
                   <p className="text-sm text-green-600 font-medium">
-                    {
-                      availableTransports.find((t) => t.id === daySelection.selectedTransport)
-                        ?.price
-                    }
+                    ₹{daySelection.transports.price}
                   </p>
                 </div>
               </div>
+              
+
               <button
-                onClick={() =>
-                  updateDaySelection(daySelection.day, {
-                    selectedTransport: null,
-                    selectedVehicleType: null,
-                  })
-                }
+                onClick={handleChangeTransport}
                 className="px-4 py-2 text-sm font-medium rounded-lg text-red-600 border border-red-300 hover:bg-red-50"
               >
                 Change

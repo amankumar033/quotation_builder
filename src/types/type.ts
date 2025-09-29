@@ -17,8 +17,8 @@ export interface Hotel {
   photos: string[];
   inclusions: string[];
   isHotelConfirmed: boolean;
-  cancellation:string;
-  agencyId:string;
+  cancellation: string;
+  agencyId: string;
   
   roomTypes: {
     id: string;
@@ -26,7 +26,6 @@ export interface Hotel {
     price: string;
     hotelId: string;
   }[];
-
 }
 
 export interface Room {
@@ -63,7 +62,7 @@ export interface Meal {
   name: string;
   category: string;
   image: string;
-  hotelId:string;
+  hotelId: string;
 }
 
 export interface Activity {
@@ -79,23 +78,26 @@ export interface Activity {
 }
 
 export interface DaySelection {
-  day: number;
-  selectedHotel: Hotel | null;  // <-- full hotel object
-  selectedMeals: Meal[];
-  selectedActivities: string[];
-  selectedTransport: Transport | null;
-  selectedVehicleType: string | null;
+  date: string;
+  hotel?: Hotel | null;
+  meals?: Meal[];
+  transports?: Transport | null;
+  activities?: Activity[];
+  isCompleted: boolean;
+  selectedHotel?: Hotel | null;
+  selectedMeals?: Meal[];
+  selectedTransport?: Transport | null;
+  selectedActivities?: Activity[];
+  selectedVehicleType?: string | null;
   roomSelections?: RoomSelection[];
-  isHotelConfirmed?: boolean;
 }
 
-// In your @/types/type file
 export interface RoomSelection {
   roomId: number;
   roomCount: number;
   dayNumber: number;
   adults: number;
-  adultsWithExtraBed: number; // Make sure this property exists
+  adultsWithExtraBed: number;
   childrenWithBed: number;
   childrenWithoutBed: number;
   totalPrice: number;

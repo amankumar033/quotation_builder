@@ -3,381 +3,356 @@ import HotelCard from "../PackageSelection/HotelCard";
 import MealSelection from "../PackageSelection/MealSelection";
 import RoomSelect from "../PackageSelection/RoomSelection";
 import HotelSummary from "../PackageSelection/HotelSummary";
-import { Building, ChevronUp, ChevronDown, ArrowLeft, Star, Utensils, Bed, CheckCircle, IndianRupee } from "lucide-react";
+import { Building, ChevronUp, ChevronDown, ArrowLeft, CheckCircle, Home, Utensils, Bed, Check, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { useQuotation } from "@/context/QuotationContext";
 
 interface HotelSectionProps {
+  date: string;
   daySelection: DaySelection;
-  updateDaySelection: (dayNumber: number, updates: Partial<DaySelection>) => void;
+  updateDaySelection: (date: string, updates: Partial<DaySelection>) => void;
   hotels: Hotel[];
   isHotelLoading: boolean;
-  roomSelectionState: string;
-  setRoomSelectionState: (state: any) => void;
   theme: any;
-  show: boolean;
-  setShow: (show: boolean) => void;
-  updateData: (data: any) => void;
   isSectionActive: boolean;
   toggleSection: () => void;
-  selectedHotelForRooms: Hotel | null;
-  currentDayForRooms: number;
-  mealSelections: Meal[];
-  roomSelections: RoomSelection[];
-  onViewHotelMeals: (hotel: Hotel, dayNumber: number) => void;
-  onBackToHotels: () => void;
-  onProceedToRooms: () => void;
-  onBackToMeals: () => void;
-  onConfirmRoomSelection: () => void;
-  onEditRoomSelection: () => void;
-  onMealsChange: (meals: Meal[]) => void;
-  onRoomSelectionsChange: (selections: RoomSelection[]) => void;
   isHotelConfirmed: boolean;
 }
 
+// Hotel meals data
 const hotelMeals: Meal[] = [
-  // Your meal data here
+  {
+    id: 1,
+    hotelId: "HTL1",
+    name: "Continental Breakfast",
+    type: "breakfast",
+    category: "veg",
+    price: 450,
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSIjnT16b72GWq4B8WZ2lhTxQLbT8ki6pdnQ&s",
+    quantity: 0,
+  },
+  {
+    id: 2,
+    hotelId: "HTL2",
+    name: "Indian Breakfast",
+    type: "breakfast",
+    category: "veg",
+    price: 500,
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm4nTDOsrHZwI3FAcGwx0ZAz8zb8MuHSs42Q&s",
+    quantity: 0,
+  },
+  {
+    id: 3,
+    hotelId: "HTL1",
+    name: "Buffet Lunch",
+    type: "lunch",
+    category: "veg",
+    price: 900,
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvyg6rtmkTDFrWLcHwjNOA02U15bKJ71IhRA&s",
+    quantity: 0,
+  },
+  {
+    id: 4,
+    hotelId: "HTL3",
+    name: "Vegetarian Thali",
+    type: "lunch",
+    category: "veg",
+    price: 700,
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-odM1YeL8AjwW3U3U82eWTk9ghO01egs6VA&s",
+    quantity: 0,
+  },
+  {
+    id: 5,
+    hotelId: "HTL2",
+    name: "Non-Veg Dinner",
+    type: "dinner",
+    category: "non-veg",
+    price: 1200,
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLvTQ0SeNN6VlqI7mcwPUpXXGEZKOTN_nB8A&s",
+    quantity: 0,
+  },
+  {
+    id: 6,
+    hotelId: "HTL3",
+    name: "South Indian Breakfast",
+    type: "breakfast",
+    category: "veg",
+    price: 550,
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH2M9v8uTuQRfbhdp8jU33_J_zAlQDBCsStg&s",
+    quantity: 0,
+  },
+  {
+    id: 7,
+    hotelId: "HTL1",
+    name: "Chinese Dinner",
+    type: "dinner",
+    category: "veg",
+    price: 1000,
+    image: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400&h=250&fit=crop",
+    quantity: 0,
+  },
 ];
-
-// Room types with prices (should match your RoomSelect component)
-const roomTypes = [
-  { id: 1, type: "Deluxe Room", price: 3000 },
-  { id: 2, type: "Super Deluxe Room", price: 4500 },
-  { id: 3, type: "Suite Room", price: 6500 }
-];
-
-// Format price with Indian Rupee symbol - MOVED TO TOP LEVEL
-const formatPrice = (price: number) => {
-  return new Intl.NumberFormat('en-IN').format(price);
-};
 
 export default function HotelSection({
+  date,
   daySelection,
   updateDaySelection,
   hotels,
   isHotelLoading,
-  roomSelectionState,
-  setRoomSelectionState,
   theme,
-  show,
-  setShow,
-  updateData,
   isSectionActive,
   toggleSection,
-  selectedHotelForRooms,
-  currentDayForRooms,
-  mealSelections,
-  roomSelections,
-  onViewHotelMeals,
-  onBackToHotels,
-  onProceedToRooms,
-  onBackToMeals,
-  onConfirmRoomSelection,
-  onEditRoomSelection,
-  onMealsChange,
-  isHotelConfirmed,
-  onRoomSelectionsChange
+  isHotelConfirmed
 }: HotelSectionProps) {
-  const [hotelSearch, setHotelSearch] = useState("");
-  const [starFilter, setStarFilter] = useState<number | null>(null);
-  const isCurrentDayDetails = currentDayForRooms === daySelection.day && roomSelectionState !== 'browsing';
+  const { 
+    updateDaySelection: contextUpdateDaySelection, 
+    daySelections, 
+    clearMeals,
+    daySelectionStates,
+    setDaySelectionState,
+    resetDaySelectionState
+  } = useQuotation();
+  
+  const [localHotelSearch, setLocalHotelSearch] = useState("");
+  const [localStarFilter, setLocalStarFilter] = useState<number | null>(null);
 
+  // Get per-day state for this specific date
+  const dayState = daySelectionStates[date] || {
+    roomSelectionState: 'browsing',
+    selectedHotelTemp: null,
+    mealSelections: [],
+    roomSelections: []
+  };
+
+  // Filter hotels for this section - ALL hotels available
   const filteredHotels = hotels.filter(
     (hotel) =>
-      hotel.name.toLowerCase().includes(hotelSearch.toLowerCase()) &&
-      (starFilter ? hotel.starCategory === starFilter : true)
+      hotel.name.toLowerCase().includes(localHotelSearch.toLowerCase()) &&
+      (localStarFilter ? hotel.starCategory === localStarFilter : true)
   );
 
-  const selectHotelForDay = (hotel: Hotel | null) => {
-  updateDaySelection(daySelection.day, { selectedHotel: hotel });
-};
-
-  // Get selected room type with price
-  const getSelectedRoomType = () => {
-    if (!roomSelections || roomSelections.length === 0) return null;
-    const roomSelection = roomSelections[0];
+  // Calculate prices for summary
+  const calculateHotelPrice = () => {
+    if (!daySelection.hotel || !daySelection.roomSelections || daySelection.roomSelections.length === 0) return 0;
     
-    const roomType = roomTypes.find(room => room.id === roomSelection.roomId);
-    if (!roomType) return null;
-    
-    return {
-      type: roomType.type,
-      price: roomType.price,
-      roomCount: roomSelection.roomCount,
-      totalPrice: roomSelection.totalPrice
-    };
+    const roomSelection = daySelection.roomSelections[0];
+    return roomSelection.totalPrice || 0;
   };
 
-  // Get selected meals summary with prices
-  const getSelectedMealsSummary = () => {
-    if (!mealSelections || mealSelections.length === 0) return null;
-    
-    const selectedMeals = mealSelections.filter(meal => meal.quantity > 0);
-    if (selectedMeals.length === 0) return null;
-    
-    return selectedMeals.map(meal => `${meal.type} (₹${formatPrice(meal.price)})`).join(', ');
+  const calculateMealPrice = () => {
+    if (!daySelection.meals) return 0;
+    return daySelection.meals.reduce((total, meal) => total + (meal.price * meal.quantity), 0);
   };
 
-  // Calculate total meal price
-  const getTotalMealPrice = () => {
-    if (!mealSelections || mealSelections.length === 0) return 0;
-    return mealSelections.reduce((total, meal) => total + (meal.price * meal.quantity), 0);
-  };
+  const totalHotelPrice = calculateHotelPrice() + calculateMealPrice();
 
-  // Handle breadcrumb click
-  const handleBreadcrumbClick = (stepId: string) => {
-    switch (stepId) {
-      case 'hotel':
-        onBackToHotels();
-        break;
-      case 'meals':
-        if (roomSelectionState === 'selecting-rooms' || roomSelectionState === 'confirmed') {
-          onBackToMeals();
-        }
-        break;
-      case 'rooms':
-        if (roomSelectionState === 'confirmed') {
-          onEditRoomSelection();
-        }
-        break;
-      default:
-        break;
+  // FIXED: Handle hotel selection - start the flow instead of directly selecting
+  const handleHotelSelect = (hotelId: string) => {
+    const hotel = hotels.find(h => h.id === hotelId);
+    if (hotel) {
+      handleViewDetails(hotel);
     }
   };
 
-  // Get current step status for breadcrumb
-  const getBreadcrumbSteps = () => {
-    const steps = [
-      { 
-        id: 'hotel', 
-        label: 'Select Hotel', 
-        icon: Building, 
-        active: roomSelectionState === 'browsing',
-        completed: roomSelectionState !== 'browsing',
-        clickable: roomSelectionState !== 'browsing'
-      },
-      { 
-        id: 'meals', 
-        label: 'Select Meals', 
-        icon: Utensils, 
-        active: roomSelectionState === 'selecting-meals',
-        completed: roomSelectionState === 'selecting-rooms' || roomSelectionState === 'confirmed',
-        price: getTotalMealPrice()||'',
-        clickable: roomSelectionState === 'selecting-rooms' || roomSelectionState === 'confirmed'
-      },
-      { 
-        id: 'rooms', 
-        label: 'Select Rooms', 
-        icon: Bed, 
-        active: roomSelectionState === 'selecting-rooms',
-        completed: roomSelectionState === 'confirmed',
-        clickable: roomSelectionState === 'confirmed'
-      },
-      { 
-        id: 'confirmed', 
-        label: 'Confirmed', 
-        icon: CheckCircle, 
-        active: roomSelectionState === 'confirmed',
-        completed: false,
-        clickable: false
-      }
-    ];
-
-    return steps;
+  const handleViewDetails = (hotel: Hotel) => {
+    // Clear previous meal selections when starting new hotel selection
+    clearMeals();
+    // Filter meals for this specific hotel
+    const hotelSpecificMeals = hotelMeals
+      .filter(meal => meal.hotelId === hotel.id)
+      .map(meal => ({ ...meal, quantity: 0 }));
+    
+    setDaySelectionState(date, {
+      selectedHotelTemp: hotel,
+      roomSelectionState: 'selecting-meals',
+      mealSelections: hotelSpecificMeals
+    });
   };
 
-  const breadcrumbSteps = getBreadcrumbSteps();
-  const selectedRoom = getSelectedRoomType();
-  const selectedMealsSummary = getSelectedMealsSummary();
+  const handleMealsChange = (meals: Meal[]) => {
+    setDaySelectionState(date, { mealSelections: meals });
+  };
+
+  const handleRoomSelectionsChange = (selections: RoomSelection[]) => {
+    setDaySelectionState(date, { roomSelections: selections });
+  };
+
+  const handleConfirmSelection = () => {
+    if (dayState.selectedHotelTemp) {
+      contextUpdateDaySelection(date, {
+        hotel: dayState.selectedHotelTemp,
+        meals: dayState.mealSelections.filter(m => m.quantity > 0),
+        roomSelections: dayState.roomSelections,
+        isCompleted: true
+      });
+    }
+    setDaySelectionState(date, { roomSelectionState: 'confirmed' });
+  };
+
+  const handleEditSelection = () => {
+    setDaySelectionState(date, { roomSelectionState: 'selecting-rooms' });
+  };
+
+  // Navigation handlers for this specific day
+  const handleBackToHotels = () => {
+    resetDaySelectionState(date);
+  };
+
+  const handleProceedToRooms = () => {
+    setDaySelectionState(date, { 
+      roomSelectionState: 'selecting-rooms',
+      roomSelections: [{
+        roomId: 1,
+        roomCount: 1,
+        dayNumber: Object.keys(daySelections).indexOf(date) + 1,
+        adults: 2,
+        childrenWithBed: 0,
+        childrenWithoutBed: 0,
+        adultsWithExtraBed: 0,
+        totalPrice: 3000,
+        isConfirmed: false,
+        confirmedAt: ""
+      }]
+    });
+  };
+
+  const handleBackToMeals = () => {
+    setDaySelectionState(date, { roomSelectionState: 'selecting-meals' });
+  };
+
+  // Compact Breadcrumb steps
+  const breadcrumbSteps = [
+    { 
+      id: 'hotels', 
+      label: 'Hotel', 
+      icon: Home, 
+      active: dayState.roomSelectionState === 'browsing',
+      onClick: () => handleBackToHotels()
+    },
+    { 
+      id: 'meals', 
+      label: 'Meals', 
+      icon: Utensils, 
+      active: dayState.roomSelectionState === 'selecting-meals',
+      onClick: () => setDaySelectionState(date, { roomSelectionState: 'selecting-meals' })
+    },
+    { 
+      id: 'rooms', 
+      label: 'Rooms', 
+      icon: Bed, 
+      active: dayState.roomSelectionState === 'selecting-rooms',
+      onClick: () => setDaySelectionState(date, { roomSelectionState: 'selecting-rooms' })
+    },
+    { 
+      id: 'confirmed', 
+      label: 'Done', 
+      icon: Check, 
+      active: dayState.roomSelectionState === 'confirmed',
+      onClick: () => {} // No action for confirmed state
+    },
+  ];
+
+  const getCurrentStepIndex = () => {
+    switch (dayState.roomSelectionState) {
+      case 'browsing': return 0;
+      case 'selecting-meals': return 1;
+      case 'selecting-rooms': return 2;
+      case 'confirmed': return 3;
+      default: return 0;
+    }
+  };
+
+  const currentStepIndex = getCurrentStepIndex();
 
   return (
-    <div className="border rounded-xl border-gray-200 overflow-hidden">
-      <div 
-        className={`px-6 py-4 cursor-pointer text-gray-500 bg-gray-50`}
+    <div className="border border-gray-200 rounded-xl overflow-hidden">
+      <div
+        className={`px-6 py-4 cursor-pointer flex items-center justify-between transition-colors ${
+          isSectionActive ? 'bg-gray-50' : 'hover:bg-gray-50'
+        }`}
         onClick={toggleSection}
       >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <img src="/hotels.png" alt="" className="w-5 h-5 mr-2" />
-            <h4 className="text-lg font-semibold">Select Hotel for Day {daySelection.day}</h4>
+        <div className="flex items-center space-x-3">
+          <div className={`p-2 rounded-lg ${theme.text} bg-opacity-10`}>
+            <Building className={`h-5 w-5 ${theme.text}`} />
           </div>
-          <div className="flex items-center space-x-2">
-            {daySelection.selectedHotel && (
-              <span className={`px-2 py-1 rounded-full text-sm ${
-                isSectionActive ? 'bg-white text-gray-800' : 'bg-green-100 text-green-800'
-              }`}>
-                Selected
-              </span>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-600">Hotel & Meals</h3>
+            {daySelection.hotel && (
+              <p className="text-sm text-gray-600 mt-1">
+                {daySelection.hotel.name} • {daySelection.hotel.city}
+              </p>
             )}
-            {isSectionActive ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
           </div>
+        </div>
+        <div className="flex items-center space-x-3">
+      
+          
+          {/* Price Summary */}
+          {daySelection.hotel && (
+            <div className="text-right">
+              <div className="text-sm font-semibold text-green-600">₹{totalHotelPrice}</div>
+              <div className="text-xs text-gray-500">Hotel & Meals</div>
+            </div>
+          )}
+          
+          {daySelection.hotel && (
+            <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 flex items-center">
+              <CheckCircle className="h-3 w-3 mr-1" />
+              Selected
+            </span>
+          )}
+          {isSectionActive ? <ChevronUp className="h-5 w-5 text-gray-500" /> : <ChevronDown className="h-5 w-5 text-gray-500" />}
         </div>
       </div>
 
       {isSectionActive && (
-        <div className="p-6">
-          {isCurrentDayDetails && selectedHotelForRooms ? (
-            <div className="rounded-xl border-2 border-gray-100">
-              {/* Header Section */}
-              <div className="flex items-center justify-between px-6 py-4 cursor-pointer border-b border-gray-200" onClick={() => setShow(!show)}>
-                <div className="flex items-center space-x-3">
-                  <div className="h-12 w-12 rounded-lg bg-gradient-to-tr from-blue-500 to-blue-600 flex items-center justify-center">
-                    <img src="/hotel.png" alt="Hotel" className="h-6 w-6 filter brightness-0 invert" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-700">{selectedHotelForRooms.name}</h2>
-                    <p className="text-gray-600 flex items-center">
-                      <span>{selectedHotelForRooms.city}</span>
-                      <span className="mx-2">•</span>
-                      <span className="flex items-center">
-                        {selectedHotelForRooms.starCategory} <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 ml-1" />
-                      </span>
-                      
-                      {/* Selection info next to star rating - KEPT AS REQUESTED */}
-                      {(selectedRoom || selectedMealsSummary) && (
-                        <>
-                          <span className="mx-2">•</span>
-                          <span className="flex items-center space-x-2 text-sm">
-                            {selectedRoom && (
-                              <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full flex items-center">
-                                <Bed className="h-3 w-3 mr-1" />
-                                {selectedRoom.type} - ₹{formatPrice(selectedRoom.price)}
-                                {selectedRoom.roomCount > 1 && (
-                                  <span className="ml-1 bg-blue-200 px-1 rounded text-xs">
-                                    ×{selectedRoom.roomCount}
-                                  </span>
-                                )}
-                              </span>
-                            )}
-                            {selectedMealsSummary && (
-                              <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full flex items-center">
-                                <Utensils className="h-3 w-3 mr-1" />
-                                {selectedMealsSummary}
-                              </span>
-                            )}
-                          </span>
-                        </>
-                      )}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4">
-                  {/* Total price display when room is selected - KEPT AS REQUESTED */}
-                  {/* {selectedRoom && (
-                    <div className="flex items-center space-x-2 bg-gradient-to-r from-blue-50 to-green-50 px-3 py-2 rounded-lg border border-blue-200">
-                      <IndianRupee className="h-4 w-4 text-green-600" />
-                      <span className="font-bold text-green-700">
-                        ₹{formatPrice(selectedRoom.totalPrice)}/night
-                      </span>
-                    </div>
-                  )} */}
-                  
+        <div className="px-6 py-4 border-t border-gray-200 animate-in fade-in duration-300">
+              {/* Compact Breadcrumb - Only show when not browsing */}
+          {(dayState.roomSelectionState !== 'browsing') && (
+            <div className="flex items-center space-x-1 rounded-lg p-1 mb-3 ">
+              {breadcrumbSteps.map((step, index) => {
+                const StepIcon = step.icon;
+                const isCompleted = index < currentStepIndex;
+                const isCurrent = index === currentStepIndex;
+                const isClickable = index <= currentStepIndex && step.onClick;
                 
-                  {show ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-                </div>
-              </div>
-
-              {/* Breadcrumb Navigation */}
-              <div className="px-6 py-3 bg-gray-50 border-b border-gray-200">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    {breadcrumbSteps.map((step, index) => {
-                      const StepIcon = step.icon;
-                      const isLastStep = index === breadcrumbSteps.length - 1;
-                      
-                      return (
-                        <div key={step.id} className="flex items-center">
-                          <button
-                            onClick={() => step.clickable && handleBreadcrumbClick(step.id)}
-                            disabled={!step.clickable}
-                            className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all ${
-                              step.active 
-                                ? 'bg-blue-100 text-blue-700 border border-blue-200' 
-                                : step.completed
-                                  ? 'bg-green-100 text-green-700 border border-green-200 hover:bg-green-200'
-                                  : 'bg-gray-100 text-gray-500 border border-gray-200'
-                            } ${
-                              step.clickable ? 'cursor-pointer hover:shadow-md' : 'cursor-default'
-                            }`}
-                          >
-                            <StepIcon className="h-4 w-4" />
-                            <span className="font-medium text-sm">{step.label}</span>
-                            {typeof step.price === 'number' && step.price > 0 && (
-                              <span className="bg-white px-2 py-1 rounded text-xs font-bold ml-2">
-                                ₹{formatPrice(step.price)}
-                              </span>
-                            )}
-                          </button>
-                          {!isLastStep && (
-                            <div className="mx-2 text-gray-400">
-                              <ChevronRight className="h-4 w-4" />
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
+                return (
+                  <div key={step.id} className="flex items-center">
+                    <button
+                      onClick={isClickable ? step.onClick : undefined}
+                      disabled={!isClickable}
+                      className={`flex items-center space-x-1 px-2 py-1 rounded-md transition-all text-xs ${
+                        isCurrent 
+                          ? 'bg-blue-600 text-white shadow-sm' 
+                          : isCompleted
+                          ? 'bg-green-100 text-green-700 border border-green-200 hover:bg-green-200 cursor-pointer'
+                          : 'bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed'
+                      } ${isClickable ? 'hover:shadow-sm' : ''}`}
+                    >
+                      <StepIcon className="h-3 w-3" />
+                      <span className="font-medium">{step.label}</span>
+                    </button>
+                    {index < breadcrumbSteps.length - 1 && (
+                      <div className={`mx-1 ${isCompleted ? 'text-green-500' : 'text-gray-300'}`}>
+                        <ChevronRight className="h-3 w-3" />
+                      </div>
+                    )}
                   </div>
-                  
-                  {/* Current step status moved to right side */}
-                  <div className="flex items-center space-x-2 text-gray-600">
-                    <span className="text-sm font-medium">Current:</span>
-                    {breadcrumbSteps.find(step => step.active) && (() => {
-                      const activeStep = breadcrumbSteps.find(step => step.active);
-                      const ActiveIcon = activeStep?.icon || Building;
-                      return (
-                        <div className="flex items-center space-x-1 bg-white px-3 py-1 rounded-full border border-gray-300">
-                          <ActiveIcon className="h-3 w-3" />
-                          <span className="text-sm font-medium">{activeStep?.label}</span>
-                        </div>
-                      );
-                    })()}
-                  </div>
-                </div>
-              </div>
-              
-              {show && (
-                <div className="p-6">
-                  {roomSelectionState === 'selecting-meals' && (
-                    <MealSelection
-                      hotel={selectedHotelForRooms}
-                      meals={mealSelections}
-                      onMealsChange={onMealsChange}
-                      onProceed={onProceedToRooms}
-                      theme={theme}
-                    />
-                  )}
-
-                  {roomSelectionState === 'selecting-rooms' && (
-                    <RoomSelect
-                      hotel={selectedHotelForRooms}
-                      selections={roomSelections}
-                      onSelectionsChange={onRoomSelectionsChange}
-                      onConfirm={onConfirmRoomSelection}
-                      onBack={onBackToMeals}
-                      theme={theme}
-                      currentDay={daySelection.day} 
-                    />
-                  )}
-
-                  {roomSelectionState === 'confirmed' && (
-                    <HotelSummary
-                      hotel={selectedHotelForRooms}
-                      selections={roomSelections}
-                      meals={mealSelections.filter(meal => meal.quantity > 0)}
-                      onEdit={onEditRoomSelection}
-                      theme={theme}
-                    />
-                  )}
-                </div>
-              )}
+                );
+              })}
             </div>
-          ) : (
-            <div>
+          )}
+          {/* Browsing Hotels - Show for all days independently */}
+          {dayState.roomSelectionState === 'browsing' && (
+            <div className="space-y-6">
+              {/* Search and Filter */}
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
                 <input
                   type="text"
                   placeholder="Search hotels by name..."
-                  value={hotelSearch}
-                  onChange={(e) => setHotelSearch(e.target.value)}
+                  value={localHotelSearch}
+                  onChange={(e) => setLocalHotelSearch(e.target.value)}
                   className="w-full md:w-1/2 border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                 />
                 <div className="flex items-center gap-2">
@@ -385,9 +360,9 @@ export default function HotelSection({
                   {[3, 4, 5].map((star) => (
                     <button
                       key={star}
-                      onClick={() => setStarFilter(starFilter === star ? null : star)}
+                      onClick={() => setLocalStarFilter(localStarFilter === star ? null : star)}
                       className={`px-3 py-1 rounded-md border transition-all text-sm ${
-                        starFilter === star
+                        localStarFilter === star
                           ? "bg-blue-600 text-white border-blue-600"
                           : "bg-white text-gray-700 border-gray-200 hover:bg-blue-50"
                       }`}
@@ -397,48 +372,96 @@ export default function HotelSection({
                   ))}
                 </div>
               </div>
-
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {isHotelLoading
-                  ? Array.from({ length: 3 }).map((_, idx) => (
-                      <div key={idx} className="flex flex-col border rounded-xl border-gray-100 overflow-hidden animate-pulse">
-                        <div className="h-48 bg-gray-200 w-full" />
-                        <div className="p-4 space-y-2">
-                          <div className="h-5 bg-gray-300 rounded w-3/4" />
-                          <div className="h-4 bg-gray-300 rounded w-1/2" />
-                          <div className="h-6 bg-gray-300 rounded w-full mt-3" />
-                        </div>
-                      </div>
-                    ))
-                  : filteredHotels.map((hotel) => (
-                     <HotelCard
-  key={hotel.id}
-  hotel={hotel}
-  isSelected={daySelection.selectedHotel?.id === hotel.id}
-  onSelect={() => selectHotelForDay(hotel)}
-  onViewDetails={() => onViewHotelMeals(hotel, daySelection.day)}
-  theme={theme}
-/>
-
-                    ))}
-              </div>
+              
+              {isHotelLoading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="animate-pulse bg-gray-200 h-64 rounded-xl"></div>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredHotels.map((hotel) => (
+                    <HotelCard
+                      key={hotel.id}
+                      hotel={hotel}
+                      isSelected={daySelection.hotel?.id === hotel.id}
+                      onSelect={handleHotelSelect}
+                      onViewDetails={() => handleViewDetails(hotel)}
+                      theme={theme}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
+          )}
+
+          {/* Selecting Meals */}
+          {dayState.roomSelectionState === 'selecting-meals' && dayState.selectedHotelTemp && (
+            <div className="space-y-6">
+              <div className="flex items-center space-x-4 mb-6">
+                {/* <button
+                  onClick={handleBackToHotels}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition"
+                >
+                  <ArrowLeft className="h-5 w-5 text-gray-600" />
+                </button> */}
+                {/* <div>
+                  <h4 className="text-lg font-medium text-gray-900">Select Meals</h4>
+                  <p className="text-sm text-gray-600">for {dayState.selectedHotelTemp.name}</p>
+                </div> */}
+              </div>
+
+              <MealSelection
+                hotel={dayState.selectedHotelTemp}
+                meals={dayState.mealSelections}
+                onMealsChange={handleMealsChange}
+                onProceed={handleProceedToRooms}
+                theme={theme}
+              />
+            </div>
+          )}
+
+          {/* Selecting Rooms */}
+          {dayState.roomSelectionState === 'selecting-rooms' && dayState.selectedHotelTemp && (
+            <div className="space-y-6">
+              {/* <div className="flex items-center space-x-4 mb-6">
+                <button
+                  onClick={handleBackToMeals}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition"
+                >
+                  <ArrowLeft className="h-5 w-5 text-gray-600" />
+                </button>
+                <div>
+                  <h4 className="text-lg font-medium text-gray-900">Select Rooms</h4>
+                  <p className="text-sm text-gray-600">for {dayState.selectedHotelTemp.name}</p>
+                </div>
+              </div> */}
+
+              <RoomSelect
+                hotel={dayState.selectedHotelTemp}
+                selections={dayState.roomSelections}
+                onSelectionsChange={handleRoomSelectionsChange}
+                onConfirm={handleConfirmSelection}
+                onBack={handleBackToMeals}
+                theme={theme}
+                currentDay={Object.keys(daySelections).indexOf(date) + 1}
+              />
+            </div>
+          )}
+
+          {/* Confirmed - Show Summary */}
+          {dayState.roomSelectionState === 'confirmed' && daySelection.hotel && (
+            <HotelSummary
+              hotel={daySelection.hotel}
+              selections={daySelection.roomSelections || []}
+              meals={daySelection.meals || []}
+              onEdit={handleEditSelection}
+              theme={theme}
+            />
           )}
         </div>
       )}
     </div>
   );
 }
-
-// ChevronRight icon component
-const ChevronRight = ({ className }: { className?: string }) => (
-  <svg 
-    className={className} 
-    fill="none" 
-    stroke="currentColor" 
-    viewBox="0 0 24 24" 
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-  </svg>
-);

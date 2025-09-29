@@ -1,21 +1,36 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { QuotationData, Hotel, DaySelection, RoomSelection, Meal } from "@/types/type";
-import { ChevronDown, ChevronUp, X, ArrowLeft, Check, Edit, Users, Crown, Bed, Star, Receipt, MapPin, Building, Calendar, CalendarDays, Utensils } from "lucide-react";
+import { Hotel, RoomSelection as RoomSelectionType } from "@/types/type";
+import { ArrowLeft, Check, Users, Bed } from "lucide-react";
 import { useQuotation } from "@/context/QuotationContext";
 
 interface RoomSelectionProps {
   hotel: Hotel;
-  selections: RoomSelection[];
-  onSelectionsChange: (selections: RoomSelection[]) => void;
+  selections: RoomSelectionType[];
+  onSelectionsChange: (selections: RoomSelectionType[]) => void;
   onConfirm: () => void;
   onBack: () => void;
   theme: { bg: string; text: string; border: string };
-  currentDay: number; // Add current day prop
+  currentDay: number;
 }
 
-const professionalRooms = [
+// Define Room interface
+interface Room {
+  id: number;
+  hotelId: string;
+  type: string;
+  price: number;
+  maxAdults: number;
+  maxChildren: number;
+  bedType: string;
+  amenities: string[];
+  description: string;
+  photos: string[];
+}
+
+// Define professionalRooms array with proper typing
+const professionalRooms: Room[] = [
   {
     id: 1,
     hotelId: "HTL1",
@@ -209,24 +224,93 @@ export default function RoomSelect({ hotel, selections, onSelectionsChange, onCo
   const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
 
   const { hotelInfo } = useQuotation();
-// Maybe pick the first one
-const selectedHotel = hotelInfo[0]; 
+  const selectedHotel = hotelInfo[0] || hotel;
 
-const filteredRooms = professionalRooms.filter(
-  room => room.hotelId === selectedHotel?.id
-);
+  const filteredRooms = professionalRooms.filter(
+    (room: Room) => room.hotelId === selectedHotel?.id
+  );
 
-  
   // Set default selected room to first available room
   useEffect(() => {
-    if (filteredRooms.length > 0 && !filteredRooms.find(room => room.id === selectedRoomType)) {
+    if (filteredRooms.length > 0 && !filteredRooms.find((room: Room) => room.id === selectedRoomType)) {
       setSelectedRoomType(filteredRooms[0].id);
     }
   }, [filteredRooms, selectedRoomType]);
 
-  const selectedRoom = filteredRooms.find(room => room.id === selectedRoomType);
+  const selectedRoom = filteredRooms.find((room: Room) => room.id === selectedRoomType);
 
-  const calculateTotalPrice = () => {
+  // Calculate capacity limits
+  const calculateCapacityLimits = () => {
+    if (!selectedRoom) return { maxTotal: 0, currentTotal: 0 };
+    
+    const maxTotal = selectedRoom.maxAdults + selectedRoom.maxChildren;
+    const currentTotal = adults + childrenWithBed + childrenWithoutBed + adultsWithExtraBed;
+    
+    return { maxTotal, currentTotal };
+  };
+
+  const { maxTotal, currentTotal } = calculateCapacityLimits();
+  const remainingCapacity = maxTotal - currentTotal;
+
+  // Enhanced validation functions with proper capacity checking
+  const canAddMoreAdults = (): boolean => {
+    return remainingCapacity > 0;
+  };
+
+  const canAddMoreChildrenWithBed = (): boolean => {
+    return remainingCapacity > 0;
+  };
+
+  const canAddMoreChildrenWithoutBed = (): boolean => {
+    return remainingCapacity > 0;
+  };
+
+  const canAddMoreAdultsWithExtraBed = (): boolean => {
+    return remainingCapacity > 0;
+  };
+
+  // Update handlers to respect capacity limits
+  const handleAddAdult = () => {
+    if (canAddMoreAdults()) {
+      setAdults(adults + 1);
+    }
+  };
+
+  const handleRemoveAdult = () => {
+    setAdults(Math.max(1, adults - 1));
+  };
+
+  const handleAddAdultWithExtraBed = () => {
+    if (canAddMoreAdultsWithExtraBed()) {
+      setAdultsWithExtraBed(adultsWithExtraBed + 1);
+    }
+  };
+
+  const handleRemoveAdultWithExtraBed = () => {
+    setAdultsWithExtraBed(Math.max(0, adultsWithExtraBed - 1));
+  };
+
+  const handleAddChildWithBed = () => {
+    if (canAddMoreChildrenWithBed()) {
+      setChildrenWithBed(childrenWithBed + 1);
+    }
+  };
+
+  const handleRemoveChildWithBed = () => {
+    setChildrenWithBed(Math.max(0, childrenWithBed - 1));
+  };
+
+  const handleAddChildWithoutBed = () => {
+    if (canAddMoreChildrenWithoutBed()) {
+      setChildrenWithoutBed(childrenWithoutBed + 1);
+    }
+  };
+
+  const handleRemoveChildWithoutBed = () => {
+    setChildrenWithoutBed(Math.max(0, childrenWithoutBed - 1));
+  };
+
+  const calculateTotalPrice = (): number => {
     if (!selectedRoom) return 0;
     return (selectedRoom.price * roomCount) + (childrenWithBed * 500) + (adultsWithExtraBed * 800);
   };
@@ -234,13 +318,13 @@ const filteredRooms = professionalRooms.filter(
   const handleConfirmSelection = () => {
     if (!selectedRoom) return;
     
-    const newSelection: RoomSelection = {
+    const newSelection: RoomSelectionType = {
       roomId: selectedRoomType,
       roomCount,
       adults,
       childrenWithBed,
       childrenWithoutBed,
-      adultsWithExtraBed,
+      adultsWithExtraBed: adultsWithExtraBed,
       totalPrice: calculateTotalPrice(),
       isConfirmed: true,
       confirmedAt: new Date().toISOString(),
@@ -250,30 +334,26 @@ const filteredRooms = professionalRooms.filter(
     onSelectionsChange([newSelection]);
     setIsConfirmed(true);
     
-    // Call onConfirm after a brief delay to ensure state updates
     setTimeout(() => {
       onConfirm();
     }, 100);
   };
 
   const totalGuests = adults + childrenWithBed + childrenWithoutBed + adultsWithExtraBed;
-  const canAddMoreAdults = adults < (selectedRoom?.maxAdults || 0);
-  const canAddMoreChildren = (childrenWithBed + childrenWithoutBed) < (selectedRoom?.maxChildren || 0);
-  const canAddMoreAdultsWithExtraBed = adultsWithExtraBed < (selectedRoom?.maxAdults || 0);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-3 mt-7">
       {/* Header with Back Button */}
       <div className="flex items-center justify-between">
-        <button
+        {/* <button
           onClick={onBack}
           className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 transition-colors"
         >
           <ArrowLeft className="h-5 w-5" />
           <span>Back to Meals</span>
-        </button>
+        </button> */}
         <div className="text-center">
-          <h3 className="text-3xl font-bold text-gray-900">Select Your Room</h3>
+          {/* <h3 className="text-3xl font-bold text-gray-700">Select Your Room</h3> */}
           {isConfirmed && (
             <div className="flex items-center justify-center mt-2 space-x-2">
               <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium flex items-center">
@@ -283,14 +363,14 @@ const filteredRooms = professionalRooms.filter(
             </div>
           )}
         </div>
-        <div></div> {/* Spacer for alignment */}
+        <div></div>
       </div>
 
-      {/* Rest of your component remains the same */}
+      {/* Room Selection */}
       <div>
-        <h3 className="text-2xl font-bold text-gray-900 mb-6">Available Room Types</h3>
+        {/* <h3 className="text-2xl font-bold text-gray-700 mb-10">Select Room</h3> */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {filteredRooms.map(room => (
+          {filteredRooms.map((room: Room) => (
             <div
               key={room.id}
               className={`border-2 rounded-xl cursor-pointer transition-all duration-300 ${
@@ -298,7 +378,15 @@ const filteredRooms = professionalRooms.filter(
                   ? 'border-blue-500 shadow-xl scale-105 ring-2 ring-blue-100'
                   : 'border-gray-200 hover:border-gray-300 hover:shadow-lg'
               }`}
-              onClick={() => setSelectedRoomType(room.id)}
+              onClick={() => {
+                setSelectedRoomType(room.id);
+                // Reset counts when changing room type
+                setAdults(2);
+                setChildrenWithBed(0);
+                setChildrenWithoutBed(0);
+                setAdultsWithExtraBed(0);
+                setRoomCount(1);
+              }}
             >
               <div className="relative">
                 <img
@@ -323,14 +411,14 @@ const filteredRooms = professionalRooms.filter(
                   <h4 className="font-bold text-lg text-gray-900">{room.type}</h4>
                   <div className="flex items-center text-sm text-gray-600">
                     <Users className="h-4 w-4 mr-1" />
-                    {room.maxAdults + room.maxChildren} max
+                    Max: {room.maxAdults + room.maxChildren} persons
                   </div>
                 </div>
                 
                 <p className="text-gray-600 text-sm mb-4">{room.description}</p>
                 
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {room.amenities.slice(0, 3).map((amenity, idx) => (
+                  {room.amenities.slice(0, 3).map((amenity: string, idx: number) => (
                     <span key={idx} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full font-medium">
                       {amenity}
                     </span>
@@ -346,7 +434,7 @@ const filteredRooms = professionalRooms.filter(
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        setRoomCount(Math.max(0, roomCount - (selectedRoomType === room.id ? 1 : 0)));
+                        setRoomCount(Math.max(1, roomCount - (selectedRoomType === room.id ? 1 : 0)));
                       }}
                       className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 text-gray-600"
                     >
@@ -383,7 +471,9 @@ const filteredRooms = professionalRooms.filter(
             </div>
             <div>
               <h3 className="text-2xl font-bold text-gray-900">Configure Your Stay</h3>
-              <p className="text-gray-600">Customize your booking details</p>
+              <p className="text-gray-600">
+                Capacity: {currentTotal}/{maxTotal} persons ({remainingCapacity} remaining)
+              </p>
             </div>
           </div>
 
@@ -410,15 +500,15 @@ const filteredRooms = professionalRooms.filter(
                     </div>
                     <div className="flex items-center space-x-3">
                       <button
-                        onClick={() => setAdults(Math.max(1, adults - 1))}
+                        onClick={handleRemoveAdult}
                         className="w-10 h-10 rounded-full border-2 border-blue-200 bg-blue-50 flex items-center justify-center hover:bg-blue-100 text-blue-600 font-bold transition-colors duration-200 shadow-sm"
                       >
                         -
                       </button>
                       <span className="w-8 text-center font-bold text-lg text-gray-900 bg-gray-50 py-1 rounded-md">{adults}</span>
                       <button
-                        onClick={() => setAdults(Math.min(selectedRoom.maxAdults, adults + 1))}
-                        disabled={!canAddMoreAdults}
+                        onClick={handleAddAdult}
+                        disabled={!canAddMoreAdults()}
                         className="w-10 h-10 rounded-full border-2 border-blue-200 bg-blue-50 flex items-center justify-center hover:bg-blue-100 text-blue-600 font-bold transition-colors duration-200 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-blue-50"
                       >
                         +
@@ -437,15 +527,15 @@ const filteredRooms = professionalRooms.filter(
                     </div>
                     <div className="flex items-center space-x-3">
                       <button
-                        onClick={() => setAdultsWithExtraBed(Math.max(0, adultsWithExtraBed - 1))}
+                        onClick={handleRemoveAdultWithExtraBed}
                         className="w-10 h-10 rounded-full border-2 border-orange-200 bg-orange-50 flex items-center justify-center hover:bg-orange-100 text-orange-600 font-bold transition-colors duration-200 shadow-sm"
                       >
                         -
                       </button>
                       <span className="w-8 text-center font-bold text-lg text-gray-900 bg-gray-50 py-1 rounded-md">{adultsWithExtraBed}</span>
                       <button
-                        onClick={() => setAdultsWithExtraBed(Math.min(selectedRoom.maxAdults, adultsWithExtraBed + 1))}
-                        disabled={!canAddMoreAdultsWithExtraBed}
+                        onClick={handleAddAdultWithExtraBed}
+                        disabled={!canAddMoreAdultsWithExtraBed()}
                         className="w-10 h-10 rounded-full border-2 border-orange-200 bg-orange-50 flex items-center justify-center hover:bg-orange-100 text-orange-600 font-bold transition-colors duration-200 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-orange-50"
                       >
                         +
@@ -464,15 +554,15 @@ const filteredRooms = professionalRooms.filter(
                     </div>
                     <div className="flex items-center space-x-3">
                       <button
-                        onClick={() => setChildrenWithBed(Math.max(0, childrenWithBed - 1))}
+                        onClick={handleRemoveChildWithBed}
                         className="w-10 h-10 rounded-full border-2 border-green-200 bg-green-50 flex items-center justify-center hover:bg-green-100 text-green-600 font-bold transition-colors duration-200 shadow-sm"
                       >
                         -
                       </button>
                       <span className="w-8 text-center font-bold text-lg text-gray-900 bg-gray-50 py-1 rounded-md">{childrenWithBed}</span>
                       <button
-                        onClick={() => setChildrenWithBed(Math.min(selectedRoom.maxChildren - childrenWithoutBed, childrenWithBed + 1))}
-                        disabled={!canAddMoreChildren}
+                        onClick={handleAddChildWithBed}
+                        disabled={!canAddMoreChildrenWithBed()}
                         className="w-10 h-10 rounded-full border-2 border-green-200 bg-green-50 flex items-center justify-center hover:bg-green-100 text-green-600 font-bold transition-colors duration-200 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-green-50"
                       >
                         +
@@ -491,15 +581,15 @@ const filteredRooms = professionalRooms.filter(
                     </div>
                     <div className="flex items-center space-x-3">
                       <button
-                        onClick={() => setChildrenWithoutBed(Math.max(0, childrenWithoutBed - 1))}
+                        onClick={handleRemoveChildWithoutBed}
                         className="w-10 h-10 rounded-full border-2 border-purple-200 bg-purple-50 flex items-center justify-center hover:bg-purple-100 text-purple-600 font-bold transition-colors duration-200 shadow-sm"
                       >
                         -
                       </button>
                       <span className="w-8 text-center font-bold text-lg text-gray-900 bg-gray-50 py-1 rounded-md">{childrenWithoutBed}</span>
                       <button
-                        onClick={() => setChildrenWithoutBed(Math.min(selectedRoom.maxChildren - childrenWithBed, childrenWithoutBed + 1))}
-                        disabled={!canAddMoreChildren}
+                        onClick={handleAddChildWithoutBed}
+                        disabled={!canAddMoreChildrenWithoutBed()}
                         className="w-10 h-10 rounded-full border-2 border-purple-200 bg-purple-50 flex items-center justify-center hover:bg-purple-100 text-purple-600 font-bold transition-colors duration-200 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-purple-50"
                       >
                         +
@@ -549,10 +639,16 @@ const filteredRooms = professionalRooms.filter(
 
                 <button
                   onClick={handleConfirmSelection}
-                  className="w-full py-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 font-bold text-lg flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl hover:scale-[1.02] transform"
+                  disabled={currentTotal > maxTotal}
+                  className="w-full py-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 font-bold text-lg flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl hover:scale-[1.02] transform disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Check className="h-5 w-5" />
-                  <span>{isConfirmed ? 'Confirmed!' : 'Confirm Room Selection'}</span>
+                  <span>
+                    {currentTotal > maxTotal 
+                      ? `Exceeds capacity (${currentTotal}/${maxTotal})` 
+                      : isConfirmed ? 'Confirmed!' : 'Confirm Room Selection'
+                    }
+                  </span>
                 </button>
               </div>
             </div>
