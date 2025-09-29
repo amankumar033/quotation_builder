@@ -40,7 +40,7 @@ export default function ActivityCard({ activity, isSelected, onSelect, theme }: 
           className={`w-full py-2 rounded-lg font-medium transition-colors ${
             isSelected
               ? 'bg-purple-600 text-white hover:bg-purple-700'
-              : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+              : 'bg-purple-400 text-white hover:bg-gray-200'
           }`}
         >
           {isSelected ? 'Selected' : 'Select Activity'}
