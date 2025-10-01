@@ -1,45 +1,37 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { QuotationData, Hotel, DaySelection, RoomSelection, Meal } from "@/types/type";
-import { ChevronDown, ChevronUp, X, ArrowLeft, Check, Edit, Users, Crown, Bed, Star, Receipt, MapPin, Building, Calendar, CalendarDays, Utensils, Search, Filter } from "lucide-react";
+import { Hotel, Meal } from "@/types/type";
+import { ArrowLeft, Check, Utensils, Search, Filter, X } from "lucide-react";
 import { useQuotation } from "@/context/QuotationContext";
 
-interface PackageSelectionStepProps {
-  data: QuotationData;
-  updateData: (data: Partial<QuotationData>) => void;
-  nextStep: () => void;
-  prevStep: () => void;
-}
-
-type RoomSelectionState = 'browsing' | 'selecting-meals' | 'selecting-rooms' | 'confirmed';
-
-// Professional Meal Selection Component
 interface ProfessionalMealSelectionProps {
   hotel: Hotel;
   meals: Meal[];
   onMealsChange: (meals: Meal[]) => void;
   onProceed: () => void;
+  onBack: () => void;
   theme: { bg: string; text: string; border: string };
 }
 
-export default function MealSelection({ hotel, meals, onMealsChange, onProceed, theme }: ProfessionalMealSelectionProps) {
-  const { hotelInfo, selectedMeals, updateMealQuantity } = useQuotation();
+export default function MealSelection({ hotel, meals, onMealsChange, onProceed, onBack, theme }: ProfessionalMealSelectionProps) {
+  const { 
+    currentEditingDay,
+    currentDayMeals,
+    setCurrentDayMeals,
+    updateCurrentDayMealQuantity
+  } = useQuotation();
   
-  // Since hotelInfo is an array, get the first hotel (or use the prop hotel if array is empty)
-  const currentHotel = hotelInfo && hotelInfo.length > 0 ? hotelInfo[0] : hotel;
-  
-  // State for filters and search
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [categoryFilter, setCategoryFilter] = useState<"all" | "veg" | "non-veg">("all");
   const [mealTypeFilter, setMealTypeFilter] = useState<"all" | "breakfast" | "lunch" | "dinner">("all");
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState<boolean>(false);
 
   // Filter meals based on hotel ID
-  const filteredMeals = meals.filter(meal => meal.hotelId === currentHotel?.id);
+  const filteredMeals = meals.filter((meal: Meal) => meal.hotelId === hotel?.id);
 
   // Apply search and filters
-  const filteredAndSearchedMeals = filteredMeals.filter(meal => {
+  const filteredAndSearchedMeals = filteredMeals.filter((meal: Meal) => {
     const matchesSearch = meal.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = categoryFilter === "all" || meal.category === categoryFilter;
     const matchesMealType = mealTypeFilter === "all" || meal.type === mealTypeFilter;
@@ -47,47 +39,64 @@ export default function MealSelection({ hotel, meals, onMealsChange, onProceed, 
     return matchesSearch && matchesCategory && matchesMealType;
   });
 
-  // Get quantity from context instead of local state
-  const getMealQuantity = (mealId: number) => {
-    const selectedMeal = selectedMeals.find(meal => meal.id === mealId);
+  // Get quantity from current day meals
+  const getMealQuantity = (mealId: number): number => {
+    const selectedMeal = currentDayMeals.find((meal: Meal) => meal.id === mealId);
     return selectedMeal ? selectedMeal.quantity : 0;
   };
 
-  const handleUpdateMealQuantity = (mealId: number, newQuantity: number) => {
-    // Find the complete meal data from the filtered meals
-    const mealData = filteredMeals.find(meal => meal.id === mealId);
+  const handleUpdateMealQuantity = (mealId: number, newQuantity: number): void => {
+    const mealData = filteredMeals.find((meal: Meal) => meal.id === mealId);
     
     if (mealData) {
-      // Update in context with the full meal data
-      updateMealQuantity(mealId, newQuantity, mealData);
-    }
-    
-    // Also call the original callback if needed (for backward compatibility)
-    if (onMealsChange) {
-      const updatedMeals = meals.map(meal => 
-        meal.id === mealId ? { ...meal, quantity: Math.max(0, newQuantity) } : meal
-      );
-      onMealsChange(updatedMeals);
+      // Update the meal quantity directly in the context
+      updateCurrentDayMealQuantity(mealId, newQuantity, mealData);
     }
   };
 
-  // Calculate total price from context meals
-  const totalMealPrice = selectedMeals.reduce((total, meal) => total + (meal.price * meal.quantity), 0);
-  const hasSelectedMeals = selectedMeals.some(meal => meal.quantity > 0);
+  // Calculate total price from current day meals
+  const totalMealPrice = currentDayMeals.reduce((total: number, meal: Meal) => total + (meal.price * meal.quantity), 0);
+  const hasSelectedMeals = currentDayMeals.some((meal: Meal) => meal.quantity > 0);
 
   // Reset filters when hotel changes
   useEffect(() => {
     setSearchTerm("");
     setCategoryFilter("all");
     setMealTypeFilter("all");
-  }, [currentHotel?.id]);
+  }, [hotel?.id]);
+
+  // Initialize current day meals when component mounts
+  useEffect(() => {
+    if (currentEditingDay && filteredMeals.length > 0) {
+      // Check if we need to initialize any meals
+      const mealsWithQuantity = filteredMeals.map((meal: Meal) => {
+        const existingMeal = currentDayMeals.find((m: Meal) => m.id === meal.id);
+        return existingMeal || { ...meal, quantity: 0 };
+      });
+      
+      // Only update if there are changes
+      if (mealsWithQuantity.length !== currentDayMeals.length) {
+        setCurrentDayMeals(mealsWithQuantity);
+      }
+    }
+  }, [currentEditingDay, filteredMeals]);
+
+  const handleProceed = (): void => {
+    // Pass the current day meals to parent
+    onMealsChange(currentDayMeals.filter((meal: Meal) => meal.quantity > 0));
+    onProceed();
+  };
+
+  const handleBack = (): void => {
+    onBack();
+  };
 
   // Show loading or empty state if no hotel found
-  if (!currentHotel) {
+  if (!hotel) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="text-center">
-          <Building className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <Utensils className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-500">Loading hotel information...</p>
         </div>
       </div>
@@ -100,7 +109,7 @@ export default function MealSelection({ hotel, meals, onMealsChange, onProceed, 
         <div className="text-center">
           <Utensils className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">No Meals Available</h3>
-          <p className="text-gray-500">No meal options found for {currentHotel.name}.</p>
+          <p className="text-gray-500">No meal options found for {hotel.name}.</p>
         </div>
       </div>
     );
@@ -108,6 +117,21 @@ export default function MealSelection({ hotel, meals, onMealsChange, onProceed, 
 
   return (
     <div className="space-y-6">
+      {/* Header with Back Button */}
+      <div className="flex items-center justify-between">
+        <button
+          onClick={handleBack}
+          className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 transition-colors"
+        >
+          <ArrowLeft className="h-5 w-5" />
+          <span>Back to Hotel Selection</span>
+        </button>
+        <div className="text-right">
+          <div className="text-2xl font-bold text-green-600">₹{totalMealPrice}</div>
+          <div className="text-sm text-gray-500">Total Meal Cost</div>
+        </div>
+      </div>
+
       {/* Search and Filter Bar */}
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100 shadow-lg p-5">
         <div className="flex flex-col md:flex-row gap-4">
@@ -140,7 +164,6 @@ export default function MealSelection({ hotel, meals, onMealsChange, onProceed, 
           >
             <Filter className="h-5 w-5" />
             Filters
-            <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${showFilters ? 'rotate-180' : ''}`} />
           </button>
         </div>
 
@@ -150,15 +173,15 @@ export default function MealSelection({ hotel, meals, onMealsChange, onProceed, 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Category Filter */}
               <div>
-                <label className=" text-sm font-bold text-blue-800 mb-3 flex items-center gap-2">
+                <label className="text-sm font-bold text-blue-800 mb-3 flex items-center gap-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   Food Category
                 </label>
                 <div className="flex gap-3">
                   {[
-                    { value: "all", label: "All", bg: "from-gray-400 to-gray-600", hover: "from-gray-500 to-gray-700" },
-                    { value: "veg", label: "Vegetarian", bg: "from-green-400 to-green-600", hover: "from-green-500 to-green-700" },
-                    { value: "non-veg", label: "Non-Veg", bg: "from-red-400 to-red-600", hover: "from-red-500 to-red-700" }
+                    { value: "all", label: "All", bg: "from-gray-400 to-gray-600" },
+                    { value: "veg", label: "Vegetarian", bg: "from-green-400 to-green-600" },
+                    { value: "non-veg", label: "Non-Veg", bg: "from-red-400 to-red-600" }
                   ].map((option) => (
                     <button
                       key={option.value}
@@ -166,7 +189,7 @@ export default function MealSelection({ hotel, meals, onMealsChange, onProceed, 
                       className={`px-4 py-2 rounded-lg text-white font-semibold text-sm transition-all duration-300 transform hover:scale-105 shadow-lg ${
                         categoryFilter === option.value
                           ? `bg-gradient-to-r ${option.bg} shadow-md scale-105`
-                          : `bg-gradient-to-r ${option.bg} opacity-80 hover:opacity-100 hover:bg-gradient-to-r ${option.hover}`
+                          : `bg-gradient-to-r ${option.bg} opacity-80 hover:opacity-100`
                       }`}
                     >
                       {option.label}
@@ -177,7 +200,7 @@ export default function MealSelection({ hotel, meals, onMealsChange, onProceed, 
 
               {/* Meal Type Filter */}
               <div>
-                <label className=" text-sm font-bold text-blue-800 mb-3 flex items-center gap-2">
+                <label className="text-sm font-bold text-blue-800 mb-3 flex items-center gap-2">
                   <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                   Meal Type
                 </label>
@@ -203,25 +226,6 @@ export default function MealSelection({ hotel, meals, onMealsChange, onProceed, 
                 </div>
               </div>
             </div>
-
-            {/* Active Filters Badges */}
-            {(categoryFilter !== "all" || mealTypeFilter !== "all") && (
-              <div className="mt-4 flex items-center gap-2">
-                <span className="text-sm font-medium text-blue-700">Active filters:</span>
-                <div className="flex gap-2">
-                  {categoryFilter !== "all" && (
-                    <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-bold capitalize">
-                      {categoryFilter}
-                    </span>
-                  )}
-                  {mealTypeFilter !== "all" && (
-                    <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-bold capitalize">
-                      {mealTypeFilter}
-                    </span>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
         )}
       </div>
@@ -247,10 +251,10 @@ export default function MealSelection({ hotel, meals, onMealsChange, onProceed, 
         )}
       </div>
 
-      {/* Meals Grid - 4 columns */}
+      {/* Meals Grid */}
       {filteredAndSearchedMeals.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filteredAndSearchedMeals.map(meal => (
+          {filteredAndSearchedMeals.map((meal: Meal) => (
             <div key={meal.id} className="bg-white rounded-2xl border-2 border-blue-50 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden group">
               {/* Meal Image */}
               <div className="relative overflow-hidden">
@@ -259,7 +263,6 @@ export default function MealSelection({ hotel, meals, onMealsChange, onProceed, 
                   alt={meal.name}
                   className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="absolute top-3 right-3">
                   <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-lg ${
                     meal.category === 'veg' 
@@ -292,7 +295,7 @@ export default function MealSelection({ hotel, meals, onMealsChange, onProceed, 
                   <span className="text-sm font-semibold text-gray-700 mr-2">Quantity:</span>
                   <div className="flex items-center space-x-1">
                     <button
-                      onClick={() => handleUpdateMealQuantity(meal.id, getMealQuantity(meal.id) - 1)}
+                      onClick={() => handleUpdateMealQuantity(meal.id, Math.max(0, getMealQuantity(meal.id) - 1))}
                       className="w-9 h-9 rounded-full bg-gradient-to-r from-red-400 to-red-500 text-white flex items-center justify-center hover:from-red-500 hover:to-red-600 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                       disabled={getMealQuantity(meal.id) === 0}
                     >
@@ -307,6 +310,18 @@ export default function MealSelection({ hotel, meals, onMealsChange, onProceed, 
                     </button>
                   </div>
                 </div>
+
+                {/* Current Selection Info */}
+                {getMealQuantity(meal.id) > 0 && (
+                  <div className="mt-3 p-2 bg-green-50 rounded-lg border border-green-200">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-green-700 font-medium">Selected:</span>
+                      <span className="text-green-800 font-bold">
+                        {getMealQuantity(meal.id)} × ₹{meal.price} = ₹{getMealQuantity(meal.id) * meal.price}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -331,12 +346,15 @@ export default function MealSelection({ hotel, meals, onMealsChange, onProceed, 
         </div>
       )}
 
-      {/* Compact Professional Summary */}
+      {/* Action Buttons */}
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border-2 border-blue-100 shadow-xl sticky bottom-4 backdrop-blur-sm bg-white/80">
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
             <div>
               <h4 className="text-xl font-bold text-gray-900 mb-1">Meal Selection Summary</h4>
+              <p className="text-sm text-blue-600">
+                {currentDayMeals.filter((meal: Meal) => meal.quantity > 0).length} meals selected for this day
+              </p>
             </div>
             <div className="text-right">
               <div className="text-3xl font-bold bg-gradient-to-r from-green-500 to-green-600 bg-clip-text text-transparent">₹{totalMealPrice}</div>
@@ -345,40 +363,60 @@ export default function MealSelection({ hotel, meals, onMealsChange, onProceed, 
           </div>
 
           {/* Selected Meals Preview */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            {['breakfast', 'lunch', 'dinner'].map(type => {
-              const typeMeals = selectedMeals.filter(meal => meal.quantity > 0 && meal.type === type);
-              return typeMeals.length > 0 ? (
-                <div key={type} className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-blue-100 shadow-lg">
-                  <div className="font-bold text-blue-800 capitalize mb-3 text-sm flex items-center gap-2">
-                    <div className={`w-2 h-2 rounded-full ${
-                      type === 'breakfast' ? 'bg-orange-500' : 
-                      type === 'lunch' ? 'bg-blue-500' : 'bg-indigo-500'
-                    }`}></div>
-                    {type} ({typeMeals.length})
-                  </div>
-                  {typeMeals.map(meal => (
-                    <div key={meal.id} className="flex justify-between text-xs text-gray-700 mb-2 font-medium">
-                      <span className="truncate">{meal.name}</span>
-                      <span className="text-blue-600 font-bold">{meal.quantity} × ₹{meal.price}</span>
+          {currentDayMeals.filter((meal: Meal) => meal.quantity > 0).length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              {['breakfast', 'lunch', 'dinner'].map((type: string) => {
+                const typeMeals = currentDayMeals.filter((meal: Meal) => meal.quantity > 0 && meal.type === type);
+                if (typeMeals.length === 0) return null;
+                
+                return (
+                  <div key={type} className="bg-white rounded-xl p-4 border-2 border-green-100 shadow-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <h5 className="font-bold text-gray-900 capitalize">{type}</h5>
+                      <span className="text-sm font-semibold text-green-600">
+                        ₹{typeMeals.reduce((sum: number, meal: Meal) => sum + (meal.price * meal.quantity), 0)}
+                      </span>
                     </div>
-                  ))}
-                </div>
-              ) : null;
-            })}
-          </div>
+                    <div className="space-y-1">
+                      {typeMeals.map((meal: Meal) => (
+                        <div key={meal.id} className="flex justify-between text-sm">
+                          <span className="text-gray-600">{meal.name}</span>
+                          <span className="font-medium text-gray-900">
+                            {meal.quantity} × ₹{meal.price}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="text-center py-4 mb-6 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl border-2 border-yellow-200">
+              <p className="text-yellow-700 font-medium">No meals selected yet. Choose your meals to continue.</p>
+            </div>
+          )}
 
-          <button
-            onClick={onProceed}
-            disabled={!hasSelectedMeals}
-            className="w-full py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none"
-          >
-            {hasSelectedMeals ? (
-              <>Proceed to Room Selection <span className="ml-2">→</span></>
-            ) : (
-              "Select at least one meal to continue"
-            )}
-          </button>
+          <div className="flex justify-between items-center">
+            <button
+              onClick={handleBack}
+              className="px-8 py-3 border-2 border-blue-500 text-blue-600 rounded-xl hover:bg-blue-50 transition-all duration-300 font-semibold"
+            >
+              Back to Hotels
+            </button>
+            <button
+              onClick={handleProceed}
+              disabled={!hasSelectedMeals}
+              className={`px-8 py-3 rounded-xl text-white font-semibold transition-all duration-300 flex items-center space-x-2 ${
+                hasSelectedMeals
+                  ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
+                  : 'bg-gray-400 cursor-not-allowed'
+              }`}
+            >
+              <span>Proceed to Room Selection</span>
+              <Check className="h-5 w-5" />
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -5,29 +5,10 @@ export interface QuotationData {
     day: number;
     selections: RoomSelection[];
     meals?: Meal[];
- 
   };
 }
 
-export interface Hotel {
-  id: string;
-  name: string;
-  city: string;
-  starCategory: number;
-  price: number;
-  photos: string[];
-  inclusions: string[];
-  isHotelConfirmed: boolean;
-  cancellation: string;
-  agencyId: string;
-  
-  roomTypes: {
-    id: string;
-    type: string;
-    price: string;
-    hotelId: string;
-  }[];
-}
+
 
 export interface Room {
   id: number;
@@ -66,17 +47,7 @@ export interface Meal {
   hotelId: string;
 }
 
-export interface Activity {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  duration: string;
-  category?: string;
-  image: string;
-  photos?: string[];
-  agencyId?: string;
-}
+
 
 export interface DaySelection {
   date: string;
@@ -104,4 +75,38 @@ export interface RoomSelection {
   totalPrice: number;
   isConfirmed: boolean;
   confirmedAt: string;
+}
+// Add amenities to Hotel interface
+// Add amenities to Hotel interface
+export interface Hotel {
+  id: string;
+  name: string;
+  city: string;
+  starCategory: number;
+  price: number;
+  photos: string[];
+  inclusions: string[];
+  isHotelConfirmed: boolean;
+  cancellation: string;
+  agencyId: string;
+  roomTypes: {
+    id: string;
+    type: string;
+    price: string;
+    hotelId: string;
+  }[];
+  amenities?: string[]; // Add this line
+}
+
+// Make category required in Activity
+export interface Activity {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  duration: string;
+  category: string; // Changed from optional to required
+  image: string;
+  photos?: string[];
+  agencyId?: string;
 }

@@ -49,9 +49,6 @@ interface HotelInfo {
   }[];
 }
 
-// RoomSelectionState type
-type RoomSelectionState = 'browsing' | 'selecting-meals' | 'selecting-rooms' | 'confirmed';
-
 interface QuotationContextType {
   // Destination related
   selectedDestination: Destination | null;
@@ -62,7 +59,12 @@ interface QuotationContextType {
   closeDestination: () => void;
   totalPackagePrice: number;
   setTotalPackagePrice: (price: number) => void;
-
+  
+  // Package Selection Flow
+  packageSelectionStep: 'location' | 'selection';
+  setPackageSelectionStep: (step: 'location' | 'selection') => void;
+  selectedLocation: string;
+  setSelectedLocation: (location: string) => void;
 
   // Room related
   professionalRooms: Room[];
@@ -72,11 +74,11 @@ interface QuotationContextType {
   hotelInfo: HotelInfo[];
   setHotelInfo: (info: HotelInfo[]) => void;
 
-  // Meal selection state
-  selectedMeals: Meal[];
-  setSelectedMeals: (meals: Meal[]) => void;
-  updateMealQuantity: (mealId: number, quantity: number, mealData?: Meal) => void;
-  clearMeals: () => void;
+  // Meal selection state - PER DAY
+  dayMeals: Record<string, Meal[]>; // date -> meals
+  setDayMeals: (meals: Record<string, Meal[]>) => void;
+  updateDayMealQuantity: (date: string, mealId: number, quantity: number, mealData?: Meal) => void;
+  clearDayMeals: (date: string) => void;
 
   // Client information
   clientName: string;
@@ -108,20 +110,17 @@ interface QuotationContextType {
   getDaySelectionsArray: () => Array<{date: string; data: DaySelection}>;
   areAllDaysCompleted: () => boolean;
 
-  // Per-day selection states
-  daySelectionStates: Record<string, {
-    roomSelectionState: RoomSelectionState;
-    selectedHotelTemp: Hotel | null;
-    mealSelections: Meal[];
-    roomSelections: RoomSelection[];
-  }>;
-  setDaySelectionState: (date: string, state: Partial<{
-    roomSelectionState: RoomSelectionState;
-    selectedHotelTemp: Hotel | null;
-    mealSelections: Meal[];
-    roomSelections: RoomSelection[];
-  }>) => void;
-  resetDaySelectionState: (date: string) => void;
+  // Current editing day
+  currentEditingDay: string | null;
+  setCurrentEditingDay: (date: string | null) => void;
+
+  // Current day meals (for meal selection component)
+  currentDayMeals: Meal[];
+  setCurrentDayMeals: (meals: Meal[]) => void;
+  updateCurrentDayMealQuantity: (mealId: number, quantity: number, mealData?: Meal) => void;
+
+  // Price calculation
+  calculateDayPrice: (date: string) => { mealPrice: number; roomPrice: number; total: number };
 }
 
 const QuotationContext = createContext<QuotationContextType | undefined>(undefined);
@@ -130,7 +129,12 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
   // Destination states
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
   const [show, setShow] = useState(true);
-   const [totalPackagePrice, setTotalPackagePrice] = useState<number>(0);
+  const [totalPackagePrice, setTotalPackagePrice] = useState<number>(0);
+  
+  // Package Selection Flow
+  const [packageSelectionStep, setPackageSelectionStep] = useState<'location' | 'selection'>('location');
+  const [selectedLocation, setSelectedLocation] = useState<string>('');
+
   // Room states
   const [professionalRooms, setProfessionalRooms] = useState<Room[]>([
     {
@@ -185,116 +189,118 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
   // Hotel Info state
   const [hotelInfo, setHotelInfo] = useState<HotelInfo[]>([]);
 
-  // Meal selection state
-  const [selectedMeals, setSelectedMeals] = useState<Meal[]>([]);
+  // Meal selection state - PER DAY
+  const [dayMeals, setDayMeals] = useState<Record<string, Meal[]>>({});
+  
+  // Current day meals for meal selection component
+  const [currentDayMeals, setCurrentDayMeals] = useState<Meal[]>([]);
 
   // Day Selections state
   const [daySelections, setDaySelections] = useState<Record<string, DaySelection>>({});
+  
+  // Current editing day
+  const [currentEditingDay, setCurrentEditingDay] = useState<string | null>(null);
 
-  // Per-day selection states
-  const [daySelectionStates, setDaySelectionStates] = useState<Record<string, {
-    roomSelectionState: RoomSelectionState;
-    selectedHotelTemp: Hotel | null;
-    mealSelections: Meal[];
-    roomSelections: RoomSelection[];
-  }>>({});
-
-  // Day selection state management
-// In QuotationContext.tsx, replace the setDaySelectionState function with this:
-
-// Day selection state management
-const setDaySelectionState = (date: string, updates: Partial<{
-  roomSelectionState: RoomSelectionState;
-  selectedHotelTemp: Hotel | null;
-  mealSelections: Meal[];
-  roomSelections: RoomSelection[];
-}>) => {
-  setDaySelectionStates(prev => {
-    // Get current state for this date or create default state
-    const currentState = prev[date] || {
-      roomSelectionState: 'browsing',
-      selectedHotelTemp: null,
-      mealSelections: [],
-      roomSelections: []
-    };
-    
-    return {
-      ...prev,
-      [date]: {
-        ...currentState,
-        ...updates
-      }
-    };
-  });
-};
- const resetDaySelectionState = (date: string) => {
-  setDaySelectionStates(prev => ({
-    ...prev,
-    [date]: {
-      roomSelectionState: 'browsing',
-      selectedHotelTemp: null,
-      mealSelections: [],
-      roomSelections: []
-    }
-  }));
-};
-
-  // Meal management functions
-  const updateMealQuantity = (mealId: number, quantity: number, mealData?: Meal) => {
-    setSelectedMeals(prevMeals => {
-      const existingMealIndex = prevMeals.findIndex(meal => meal.id === mealId);
+  // Meal management functions - PER DAY
+  const updateDayMealQuantity = (date: string, mealId: number, quantity: number, mealData?: Meal): void => {
+    setDayMeals(prev => {
+      const currentMeals = prev[date] || [];
+      const existingMealIndex = currentMeals.findIndex((meal: Meal) => meal.id === mealId);
       
+      let newMeals: Meal[];
       if (existingMealIndex >= 0) {
-        // Update existing meal quantity
         if (quantity === 0) {
-          // Remove meal if quantity is 0
-          return prevMeals.filter(meal => meal.id !== mealId);
+          newMeals = currentMeals.filter((meal: Meal) => meal.id !== mealId);
         } else {
-          const updatedMeals = [...prevMeals];
-          updatedMeals[existingMealIndex] = {
-            ...updatedMeals[existingMealIndex],
+          newMeals = [...currentMeals];
+          newMeals[existingMealIndex] = {
+            ...newMeals[existingMealIndex],
             quantity: Math.max(0, quantity)
           };
-          return updatedMeals;
         }
       } else if (mealData && quantity > 0) {
-        // Add new meal with the provided data
-        return [...prevMeals, { ...mealData, quantity: Math.max(0, quantity) }];
+        newMeals = [...currentMeals, { ...mealData, quantity: Math.max(0, quantity) }];
+      } else {
+        newMeals = currentMeals;
       }
       
-      // If no meal data provided and meal doesn't exist, return unchanged
-      return prevMeals;
+      return {
+        ...prev,
+        [date]: newMeals
+      };
     });
   };
 
-  const clearMeals = () => {
-    setSelectedMeals([]);
+  const clearDayMeals = (date: string): void => {
+    setDayMeals(prev => ({
+      ...prev,
+      [date]: []
+    }));
+  };
+
+  // Current day meal management (for meal selection component)
+  const updateCurrentDayMealQuantity = (mealId: number, quantity: number, mealData?: Meal): void => {
+    if (!currentEditingDay) return;
+    
+    setCurrentDayMeals((prev: Meal[]) => {
+      const existingIndex = prev.findIndex((meal: Meal) => meal.id === mealId);
+      
+      if (existingIndex >= 0) {
+        if (quantity === 0) {
+          // Remove meal if quantity is 0
+          return prev.filter((meal: Meal) => meal.id !== mealId);
+        } else {
+          // Update quantity
+          const updated = [...prev];
+          updated[existingIndex] = { ...updated[existingIndex], quantity };
+          return updated;
+        }
+      } else if (mealData && quantity > 0) {
+        // Add new meal
+        return [...prev, { ...mealData, quantity }];
+      }
+      
+      return prev;
+    });
+  };
+
+  // Calculate total price for day
+  const calculateDayPrice = (date: string): { mealPrice: number; roomPrice: number; total: number } => {
+    const day = daySelections[date];
+    const meals = dayMeals[date] || [];
+    
+    const mealPrice = meals.reduce((total: number, meal: Meal) => total + (meal.price * meal.quantity), 0);
+    const roomPrice = day?.roomSelections?.reduce((total: number, selection: RoomSelection) => total + selection.totalPrice, 0) || 0;
+    
+    return {
+      mealPrice,
+      roomPrice,
+      total: mealPrice + roomPrice
+    };
   };
 
   // Day selection management
-  const updateDaySelection = (date: string, updates: Partial<DaySelection>) => {
+  const updateDaySelection = (date: string, updates: Partial<DaySelection>): void => {
     setDaySelections(prev => ({
       ...prev,
       [date]: {
         ...prev[date],
         ...updates,
-        // Auto-calculate completion status
-        isCompleted: !!(updates.hotel || prev[date]?.hotel) && 
-                     !!(updates.transports || prev[date]?.transports) && 
-                     !!((updates.activities && updates.activities.length > 0) || 
-                        (prev[date]?.activities && prev[date].activities.length > 0))
+        isCompleted: !!(updates.hotel !== undefined ? updates.hotel : prev[date]?.hotel) && 
+                     !!(updates.transports !== undefined ? updates.transports : prev[date]?.transports) && 
+                     !!((updates.activities !== undefined ? updates.activities : prev[date]?.activities)?.length > 0)
       }
     }));
   };
 
-  const getDaySelectionsArray = () => {
+  const getDaySelectionsArray = (): Array<{date: string; data: DaySelection}> => {
     return Object.entries(daySelections).map(([date, data]) => ({
       date,
       data
     }));
   };
 
-  const areAllDaysCompleted = () => {
+  const areAllDaysCompleted = (): boolean => {
     const days = Object.values(daySelections);
     return days.length > 0 && days.every(day => day.isCompleted);
   };
@@ -317,24 +323,24 @@ const setDaySelectionState = (date: string, updates: Partial<{
   });
 
   // Helpers
-  const setAdults = (count: number) => {
+  const setAdults = (count: number): void => {
     setTravelers((prev) => ({ ...prev, adults: count }));
   };
 
-  const setChildren = (count: number) => {
+  const setChildren = (count: number): void => {
     setTravelers((prev) => ({ ...prev, children: count }));
   };
 
-  const setInfants = (count: number) => {
+  const setInfants = (count: number): void => {
     setTravelers((prev) => ({ ...prev, infants: count }));
   };
 
-  const openDestination = (destination: Destination) => {
+  const openDestination = (destination: Destination): void => {
     setSelectedDestination(destination);
     setShow(true);
   };
 
-  const closeDestination = () => {
+  const closeDestination = (): void => {
     setShow(false);
     setSelectedDestination(null);
   };
@@ -349,10 +355,15 @@ const setDaySelectionState = (date: string, updates: Partial<{
         setShow,
         openDestination,
         closeDestination,
+        totalPackagePrice,
+        setTotalPackagePrice,
+        
+        // Package Selection Flow
+        packageSelectionStep,
+        setPackageSelectionStep,
+        selectedLocation,
+        setSelectedLocation,
 
-
-           totalPackagePrice,
-    setTotalPackagePrice,
         // Rooms
         professionalRooms,
         setProfessionalRooms,
@@ -361,11 +372,11 @@ const setDaySelectionState = (date: string, updates: Partial<{
         hotelInfo,
         setHotelInfo,
 
-        // Meals
-        selectedMeals,
-        setSelectedMeals,
-        updateMealQuantity,
-        clearMeals,
+        // Meals - PER DAY
+        dayMeals,
+        setDayMeals,
+        updateDayMealQuantity,
+        clearDayMeals,
 
         // Client
         clientName,
@@ -397,10 +408,17 @@ const setDaySelectionState = (date: string, updates: Partial<{
         getDaySelectionsArray,
         areAllDaysCompleted,
 
-        // Per-day selection states
-        daySelectionStates,
-        setDaySelectionState,
-        resetDaySelectionState,
+        // Current editing day
+        currentEditingDay,
+        setCurrentEditingDay,
+
+        // Current day meals
+        currentDayMeals,
+        setCurrentDayMeals,
+        updateCurrentDayMealQuantity,
+
+        // Price calculation
+        calculateDayPrice,
       }}
     >
       {children}
