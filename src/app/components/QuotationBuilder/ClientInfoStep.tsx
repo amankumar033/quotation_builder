@@ -4,7 +4,8 @@ import { MapPinned, Users, ArrowLeft } from 'lucide-react';
 import { Calendar } from 'lucide-react';
 import CustomDatePicker from '../ui/CustomDatePicker';
 import { useQuotation } from "@/context/QuotationContext";
-
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css"; // default styles
 interface ClientInfoStepProps {
   data: QuotationData;
   updateData: (data: Partial<QuotationData>) => void;
@@ -23,6 +24,8 @@ export default function ClientInfoStep({ data, updateData, nextStep, prevStep }:
     travelers, setAdults, setChildren, setInfants
   } = useQuotation();        
 
+
+
   function print() {
   console.log("Hello World",clientName,phoneNumber,emailAddress,startDate,endDate,travelers,);
 }
@@ -33,9 +36,11 @@ export default function ClientInfoStep({ data, updateData, nextStep, prevStep }:
     return name.length >= 2 && /^[a-zA-Z\s]+$/.test(name);
   };
 
-  const validatePhone = (phone: string): boolean => {
-    return /^\d{10}$/.test(phone.replace(/\s/g, ''));
-  };
+const validatePhone = (phone: string): boolean => {
+  const digits = phone.replace(/\D/g, '');
+  return digits.length > 0 && digits.length <= 15; // allow 1–15
+};
+
 
   const validateEmail = (email: string): boolean => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -54,8 +59,8 @@ export default function ClientInfoStep({ data, updateData, nextStep, prevStep }:
   };
 
   const handlePhoneChange = (value: string) => {
-    // Only allow numbers and limit to 10 digits
-    const numericValue = value.replace(/\D/g, '').slice(0, 10);
+    // Only allow numbers and limit to 15 digits
+    const numericValue = value.replace(/\D/g, '').slice(0, 15);
     setPhoneNumber(numericValue);
     updateData({
       client: {
@@ -138,7 +143,7 @@ const handleEndDateChange = (date: Date | null) => {
   // Get validation states
   const isNameValid = validateName(clientName);
   const isPhoneValid = validatePhone(phoneNumber);
-  const isEmailValid = validateEmail(emailAddress);
+  const isEmailValid = !emailAddress || validateEmail(emailAddress);
   const areDatesValid = startDate && endDate;
 
   const isFormValid = isNameValid && isPhoneValid && isEmailValid && areDatesValid;
@@ -175,22 +180,36 @@ const handleEndDateChange = (date: Date | null) => {
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
-              <input
-                type="tel"
-                value={phoneNumber}
-                onChange={(e) => handlePhoneChange(e.target.value)}
-                placeholder="9876543210"
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition ${
-                  phoneNumber && !isPhoneValid ? 'border-red-500' : 'border-gray-300'
-                }`}
-              />
-              {phoneNumber && !isPhoneValid && (
-                <p className="text-red-500 text-xs mt-1">Phone must be exactly 10 digits</p>
-              )}
+               <div className="w-full">
+      <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+
+      <PhoneInput
+        country={"in"} // default India
+        value={phoneNumber}
+        onChange={handlePhoneChange}
+        
+        placeholder="+91 9876543210"
+        inputStyle={{
+          width: "100%",
+          height: "48px",
+          borderRadius: "0.5rem",
+          border: isPhoneValid || !phoneNumber ? "1px solid #d1d5db" : "1px solid #ef4444", // red if invalid
+          paddingLeft: "48px", // space for flag
+        }}
+        dropdownStyle={{
+          maxHeight: "250px",
+        }}
+         enableLongNumbers={true} // ✅ allows longer than default
+      />
+
+      {/* Error message */}
+      {/* {phoneNumber && !isPhoneValid && (
+        <p className="text-red-500 text-xs mt-1">Phone must be exactly 10 digits</p>
+      )} */}
+    </div>
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email Address (optional)</label>
               <input
                 type="email"
                 value={emailAddress}
