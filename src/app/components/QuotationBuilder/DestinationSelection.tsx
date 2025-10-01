@@ -9,51 +9,37 @@ interface Destination {
   image: string;
   description: string;
   category: string;
-  
+  region: "Domestic" | "International"; // ✅ new field
 }
 
-interface Destinationprops{
-    nextStep: () => void;
+interface Destinationprops {
+  nextStep: () => void;
 }
 
-
-export default function DestinationSelectionStep({ nextStep}:Destinationprops){
+export default function DestinationSelectionStep({ nextStep }: Destinationprops) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedRegion, setSelectedRegion] = useState("All"); // ✅ new state
   const { setSelectedDestination } = useQuotation(); // ✅ new
 
-
-  // ✅ Define destinations inside component
+  // ✅ Define destinations inside component with Domestic/International
   const destinations: Destination[] = [
-    { id: "1", name: "Maldives", image: "https://t3.ftcdn.net/jpg/03/34/77/78/360_F_334777839_Y7Y5P8FFY5WFo7sTwjeT0vxDbTGxhIo5.jpg", description: "Beautiful beaches and luxury resorts", category: "Beach" },
-    { id: "2", name: "Sikkim", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgOtHARwlYuSjVLSjlXqVK-2OV7dt3m8eiiA&s", description: "The city of lights and romance", category: "City" },
-    { id: "3", name: "Himalayas", image: "https://cdn.britannica.com/74/114874-050-6E04C88C/North-Face-Mount-Everest-Tibet-Autonomous-Region.jpg", description: "Adventure and trekking paradise", category: "Mountain" },
-    { id: "4", name: "Goa", image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800&auto=format&fit=crop&q=60", description: "Pristine beaches and vibrant nightlife", category: "Beach" },
-    { id: "5", name: "Andaman Islands", image: "https://images.unsplash.com/photo-1586016413664-864c0dd76f53?w=800&auto=format&fit=crop&q=60", description: "Crystal clear waters and exotic marine life", category: "Beach" },
-    { id: "6", name: "Kovalam", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR67QxVFUxVoz13Tv9tRvyNiZ8TtqRFMK-skg&s", description: "Serene beaches in Kerala with lighthouse views", category: "Beach" },
-    { id: "7", name: "Jaipur", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8RIf0-JMU4AxY9dUZgXtaW2CdqoY8fKpkkVW9HQ_6Lc0pL5AB-vgd61k5j4bfHjfnDDc&usqp=CAU", description: "The Pink City with palaces and forts", category: "City" },
-    { id: "8", name: "Varanasi", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsdX-6qgNUM-4az7w_AT5DeVsnpRaSjHDvHg&s", description: "Spiritual capital on the River Ganges", category: "City" },
-    { id: "9", name: "Mumbai", image: "https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?w=800&auto=format&fit=crop&q=60", description: "Financial capital with Bollywood glamour", category: "City" },
-    { id: "10", name: "Leh-Ladakh", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROONRpGbD3Z5mgrEB-ya8Hnqplq74sp2vpyw&s", description: "High-altitude desert with breathtaking landscapes", category: "Mountain" },
-    { id: "11", name: "Shimla", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVVlpbdpqtQZNBSl390eOEbFcXOCSLsBjKog&s", description: "Queen of Hills with colonial architecture", category: "Mountain" },
-    { id: "12", name: "Darjeeling", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoT5np4_N69FhwNbKYDDuhMkJRa8jqhZio5Q&s", description: "Tea gardens and Himalayan railway", category: "Mountain" },
-    { id: "13", name: "Udaipur", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTCrR4Aw4kZZKkB3EPgsQYrKkUk_lb-gCgzQ&s", description: "City of Lakes with luxurious palaces", category: "Luxury" },
-    { id: "14", name: "Rishikesh", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBqCquWtuD_xjw7XOf3Xm3YViu7SAq7IZyEQ&s", description: "Yoga retreats and spiritual wellness", category: "Luxury" },
-    { id: "15", name: "Kerala Backwaters", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0Z1vIVF8Zms5pJuazOs2Lg3-6COPzNR8UNQ&s", description: "Luxury houseboat experience", category: "Luxury" },
-    { id: "16", name: "Tungnath", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCn4meRZWstKztgjSAtnv2c7Hyxd0P1a5Zqg&s", description: "Rafting and bungee jumping", category: "Adventure" },
-    { id: "17", name: "Manali", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXa3-E-740lQHe5j4oLjggcJqyJ7zQjoV6Aw&s", description: "Trekking, skiing, paragliding", category: "Adventure" },
-    { id: "18", name: "Spiti Valley", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQfqdDtajYOYLzCO0pgG_wvKAxr_Th1gRCJg&s", description: "Motorcycle expeditions and camping", category: "Adventure" },
-    { id: "19", name: "Puri", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkl7dz5Pt1LSMOXk3-ODWtP1gW9GP6zHXymw&s", description: "Jagannath Temple and golden beaches", category: "Beach" },
-    { id: "20", name: "Lakshadweep", image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop&q=60", description: "Coral islands with turquoise lagoons", category: "Beach" },
-    { id: "21", name: "Delhi", image: "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=800&auto=format&fit=crop&q=60", description: "Historical monuments and modern vibe", category: "City" },
-    { id: "22", name: "Kolkata", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVhbgZmVVyDgPqOPxdAZo4730fX03sR00MoQ&s", description: "Cultural capital with colonial heritage", category: "City" },
-    { id: "23", name: "Mussoorie", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCQ09uHKUL1jzlgx71YQkD90y4uOaaf4Cctg&s", description: "Hill station with Himalayan views", category: "Mountain" },
-    { id: "24", name: "Nainital", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXPmJX8FdMBywK0sF95Y0GDi6lrgTcbkxPXQ&s", description: "Lake district of India", category: "Mountain" },
+    { id: "1", name: "Maldives", image: "https://t3.ftcdn.net/jpg/03/34/77/78/360_F_334777839_Y7Y5P8FFY5WFo7sTwjeT0vxDbTGxhIo5.jpg", description: "Beautiful beaches and luxury resorts", category: "Beach", region: "International" },
+    { id: "2", name: "Sikkim", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgOtHARwlYuSjVLSjlXqVK-2OV7dt3m8eiiA&s", description: "The city of lights and romance", category: "City", region: "Domestic" },
+    { id: "3", name: "Himalayas", image: "https://cdn.britannica.com/74/114874-050-6E04C88C/North-Face-Mount-Everest-Tibet-Autonomous-Region.jpg", description: "Adventure and trekking paradise", category: "Mountain", region: "Domestic" },
+    { id: "4", name: "Goa", image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800&auto=format&fit=crop&q=60", description: "Pristine beaches and vibrant nightlife", category: "Beach", region: "Domestic" },
+    { id: "5", name: "Andaman Islands", image: "https://images.unsplash.com/photo-1586016413664-864c0dd76f53?w=800&auto=format&fit=crop&q=60", description: "Crystal clear waters and exotic marine life", category: "Beach", region: "Domestic" },
+    { id: "6", name: "Paris", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&auto=format&fit=crop&q=60", description: "The city of lights and romance", category: "City", region: "International" },
+    { id: "7", name: "Dubai", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRV5mfsFZOSmU3JXQ5Cos76Z_HZjdn5sHEOVw&s", description: "Luxury shopping, ultramodern architecture", category: "Luxury", region: "International" },
+    { id: "8", name: "Jaipur", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8RIf0-JMU4AxY9dUZgXtaW2CdqoY8fKpkkVW9HQ_6Lc0pL5AB-vgd61k5j4bfHjfnDDc&usqp=CAU", description: "The Pink City with palaces and forts", category: "City", region: "Domestic" },
+    { id: "9", name: "Tokyo", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdEnx5QhhDvzDr_6tmMSpTycABM4i-qsrHcA&s", description: "A perfect blend of tradition and technology", category: "City", region: "International" },
+    { id: "10", name: "Kerala Backwaters", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0Z1vIVF8Zms5pJuazOs2Lg3-6COPzNR8UNQ&s", description: "Luxury houseboat experience", category: "Luxury", region: "Domestic" },
   ];
 
   const clearFilters = () => {
     setSearchTerm("");
     setSelectedCategory("All");
+    setSelectedRegion("All"); // ✅ reset region
   };
 
   // Categories
@@ -62,15 +48,19 @@ export default function DestinationSelectionStep({ nextStep}:Destinationprops){
     [destinations]
   );
 
+  // Regions
+  const regions = ["All", "Domestic", "International"];
+
   // Filtered
   const filteredDestinations = useMemo(
     () =>
       destinations.filter((d) => {
         const matchesSearch = d.name.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesCategory = selectedCategory === "All" || d.category === selectedCategory;
-        return matchesSearch && matchesCategory;
+        const matchesRegion = selectedRegion === "All" || d.region === selectedRegion;
+        return matchesSearch && matchesCategory && matchesRegion;
       }),
-    [destinations, searchTerm, selectedCategory]
+    [destinations, searchTerm, selectedCategory, selectedRegion]
   );
 
   const getCategoryIcon = (category: string) => {
@@ -84,11 +74,11 @@ export default function DestinationSelectionStep({ nextStep}:Destinationprops){
     }
   };
 
-// ✅ new handler
-const handleSelect = (destination: Destination) => {
-  setSelectedDestination(destination); // save full object in context
-  nextStep(); // move to next step
-};
+  // ✅ new handler
+  const handleSelect = (destination: Destination) => {
+    setSelectedDestination(destination); // save full object in context
+    nextStep(); // move to next step
+  };
 
   const getCategoryColor = (category: string) => {
     switch (category.toLowerCase()) {
@@ -100,8 +90,6 @@ const handleSelect = (destination: Destination) => {
       default: return "from-gray-400 to-gray-600";
     }
   };
-
-  
 
   return (
     <div className="p-6">
@@ -124,6 +112,7 @@ const handleSelect = (destination: Destination) => {
               />
             </div>
 
+            {/* Category Filter */}
             <select
               className="border rounded-lg px-3 border-gray-300 py-[11px] shadow-sm bg-white text-gray-600 cursor-pointer"
               value={selectedCategory}
@@ -132,6 +121,19 @@ const handleSelect = (destination: Destination) => {
               {categories.map((category) => (
                 <option key={category} value={category}>
                   {category === "All" ? "All Categories" : `${getCategoryIcon(category)} ${category}`}
+                </option>
+              ))}
+            </select>
+
+            {/* Region Filter ✅ */}
+            <select
+              className="border rounded-lg px-3 border-gray-300 py-[11px] shadow-sm bg-white text-gray-600 cursor-pointer"
+              value={selectedRegion}
+              onChange={(e) => setSelectedRegion(e.target.value)}
+            >
+              {regions.map((region) => (
+                <option key={region} value={region}>
+                  {region === "All" ? "All Regions" : region}
                 </option>
               ))}
             </select>
@@ -164,10 +166,13 @@ const handleSelect = (destination: Destination) => {
                   alt={destination.name}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute top-3 right-3">
+                <div className="absolute top-3 right-3 flex flex-col gap-1">
                   <span className="px-3 py-1 bg-white bg-opacity-90 rounded-full text-sm font-medium text-gray-700 flex items-center gap-1 shadow-sm">
                     <span>{getCategoryIcon(destination.category)}</span>
                     {destination.category}
+                  </span>
+                  <span className="px-3 py-1 bg-white text-gray-600 rounded-full text-center text-xs font-medium shadow-sm">
+                    {destination.region}
                   </span>
                 </div>
               </div>
