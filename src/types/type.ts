@@ -8,7 +8,6 @@ export interface Destination {
 }
 
 export interface QuotationData {
-  
   roomSelections?: {
     hotel: Hotel | null;
     day: number;
@@ -50,6 +49,7 @@ export interface QuotationData {
   selectedVehicle?: string | null;
   selectedMealIds?: string[];
   selectedActivityIds?: string[];
+  itinerary?: DayItinerary[];
 }
 
 export interface Room {
@@ -149,6 +149,8 @@ export interface Activity {
   image: string;
   photos?: string[];
   agencyId?: string;
+  isCustom?: boolean;
+  selectedDays?: string[];
 }
 
 export interface TransportRoute {
@@ -193,4 +195,18 @@ export interface TripInfo {
   infants: number;
   duration?: number;
   quoteNumber?: string;
+}
+
+export interface DayItinerary {
+  id: string;
+  dayNumber: number;
+  date: string;
+  title: string;
+  description: string;
+  activities: string[];
+  meals: string[];
+  accommodation: string;
+  transport: string;
+  approximateDistance?: string;
+  approximateTime?: string;
 }

@@ -8,6 +8,8 @@ import TransportSection from "./PackageSelection/TransportSection";
 import ActivitiesSection from "./PackageSelection/ActivitySection";
 import AddActivityAccordion from "./PackageSelection/AddActivityModal";
 import { ChevronLeft, Calendar, MapPin, Building, Car, Map, CheckCircle } from "lucide-react";
+import DayItinerarySection from "./PackageSelection/DayItinerarySection";
+
 
 interface PackageSelectionStepProps {
   data: QuotationData;
@@ -304,6 +306,7 @@ export default function PackageSelectionStep({
             toggleSection={() => toggleSection('activities')}
             allDays={daySelectionsArray}
           />
+          <DayItinerarySection />
         </div>
 
         {/* Add Activity Accordion */}

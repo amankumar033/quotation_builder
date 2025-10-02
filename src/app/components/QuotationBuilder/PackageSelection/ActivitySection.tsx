@@ -1,9 +1,10 @@
 "use client";
 
 import { Activity, DaySelection } from "@/types/type";
-import { ChevronDown, ChevronUp, MapPin, CheckCircle, Search, Clock } from "lucide-react";
+import { ChevronDown, ChevronUp, MapPin, CheckCircle, Search, Clock, Plus } from "lucide-react";
 import { useState } from "react";
 import { useQuotation } from "@/context/QuotationContext";
+import CustomActivityModal from "./CustomActivityModal";
 
 interface ActivitiesSectionProps {
   activities: Activity[];
@@ -24,12 +25,17 @@ export default function ActivitiesSection({
 }: ActivitiesSectionProps) {
   const { 
     daySelections,
-    updateDaySelection
+    updateDaySelection,
+    customActivities
   } = useQuotation();
 
   const [selectedDays, setSelectedDays] = useState<string[]>(allDays.map(day => day.date));
   const [selectedActivities, setSelectedActivities] = useState<Activity[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showCustomActivityModal, setShowCustomActivityModal] = useState(false);
+
+  // Combine regular activities with custom activities
+  const allActivities = [...activities, ...customActivities];
 
   const handleDayToggle = (dayDate: string) => {
     setSelectedDays(prev => 
@@ -69,7 +75,7 @@ export default function ActivitiesSection({
   );
 
   // Filter activities based on search
-  const filteredActivities = activities.filter(activity =>
+  const filteredActivities = allActivities.filter(activity =>
     activity.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     activity.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -138,9 +144,9 @@ export default function ActivitiesSection({
             </div>
           </div>
 
-          {/* Search Bar */}
-          <div className="mb-6">
-            <div className="relative">
+          {/* Search and Add Activity Bar */}
+          <div className="flex gap-4 mb-6">
+            <div className="flex-1 relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-gray-400" />
               </div>
@@ -152,6 +158,13 @@ export default function ActivitiesSection({
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               />
             </div>
+            <button
+              onClick={() => setShowCustomActivityModal(true)}
+              className="flex items-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+            >
+              <Plus className="h-5 w-5" />
+              <span>Custom Activity</span>
+            </button>
           </div>
 
           {/* Activities Selection */}
@@ -169,7 +182,7 @@ export default function ActivitiesSection({
                     isActivitySelected(activity.id)
                       ? 'border-purple-500 bg-purple-50 ring-2 ring-purple-100'
                       : 'border-gray-200 hover:border-purple-300 hover:shadow-md'
-                  }`}
+                  } ${activity.isCustom ? 'border-green-300 bg-green-50' : ''}`}
                   onClick={() => handleActivityToggle(activity)}
                 >
                   <div className="h-32 bg-gray-200 relative">
@@ -183,6 +196,11 @@ export default function ActivitiesSection({
                     {isActivitySelected(activity.id) && (
                       <div className="absolute top-2 right-2 bg-purple-500 text-white p-1 rounded-full">
                         <CheckCircle className="h-4 w-4" />
+                      </div>
+                    )}
+                    {activity.isCustom && (
+                      <div className="absolute top-2 left-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs">
+                        Custom
                       </div>
                     )}
                   </div>
@@ -220,6 +238,14 @@ export default function ActivitiesSection({
             </div>
           )}
         </div>
+      )}
+
+      {/* Custom Activity Modal */}
+      {showCustomActivityModal && (
+        <CustomActivityModal
+          onClose={() => setShowCustomActivityModal(false)}
+          allDays={allDays}
+        />
       )}
     </div>
   );

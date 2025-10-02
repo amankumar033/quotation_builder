@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useContext, useState, ReactNode } from "react";
-import { Meal, Hotel, Transport, Activity, DaySelection, RoomSelection, TransportRoute, Destination } from "@/types/type";
+import { Meal, Hotel, Transport, Activity, DaySelection, RoomSelection, TransportRoute, Destination, DayItinerary } from "@/types/type";
 
 interface Room {
   id: number;
@@ -111,6 +111,24 @@ interface QuotationContextType {
 
   pickupLocation: string;
   setPickupLocation: (location: string) => void;
+
+  // New: Custom Activities
+  customActivities: Activity[];
+  setCustomActivities: (activities: Activity[]) => void;
+  addCustomActivity: (activity: Omit<Activity, 'id'>) => void;
+  updateCustomActivity: (id: string, updates: Partial<Activity>) => void;
+  deleteCustomActivity: (id: string) => void;
+
+  // New: Day Itinerary
+  dayItineraries: DayItinerary[];
+  setDayItineraries: (itineraries: DayItinerary[]) => void;
+  addDayItinerary: (itinerary: Omit<DayItinerary, 'id'>) => void;
+  updateDayItinerary: (id: string, updates: Partial<DayItinerary>) => void;
+  deleteDayItinerary: (id: string) => void;
+  getItineraryForDay: (dayNumber: number) => DayItinerary | undefined;
+
+  // Helper for all days
+  allDays: Array<{date: string; data: DaySelection}>;
 }
 
 const QuotationContext = createContext<QuotationContextType | undefined>(undefined);
@@ -182,6 +200,12 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
   const [transportRoutes, setTransportRoutes] = useState<TransportRoute[]>([]);
   const [pickupLocation, setPickupLocation] = useState<string>("");
 
+  // New state for custom activities
+  const [customActivities, setCustomActivities] = useState<Activity[]>([]);
+  
+  // New state for day itineraries
+  const [dayItineraries, setDayItineraries] = useState<DayItinerary[]>([]);
+
   const [clientName, setClientName] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [emailAddress, setEmailAddress] = useState<string>("");
@@ -193,6 +217,49 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     children: 0,
     infants: 0,
   });
+
+  // Custom Activities Functions
+  const addCustomActivity = (activity: Omit<Activity, 'id'>) => {
+    const newActivity: Activity = {
+      ...activity,
+      id: `custom_${Date.now()}`,
+      isCustom: true
+    };
+    setCustomActivities(prev => [...prev, newActivity]);
+  };
+
+  const updateCustomActivity = (id: string, updates: Partial<Activity>) => {
+    setCustomActivities(prev => 
+      prev.map(activity => activity.id === id ? { ...activity, ...updates } : activity)
+    );
+  };
+
+  const deleteCustomActivity = (id: string) => {
+    setCustomActivities(prev => prev.filter(activity => activity.id !== id));
+  };
+
+  // Day Itinerary Functions
+  const addDayItinerary = (itinerary: Omit<DayItinerary, 'id'>) => {
+    const newItinerary: DayItinerary = {
+      ...itinerary,
+      id: `itinerary_${Date.now()}`
+    };
+    setDayItineraries(prev => [...prev, newItinerary]);
+  };
+
+  const updateDayItinerary = (id: string, updates: Partial<DayItinerary>) => {
+    setDayItineraries(prev => 
+      prev.map(itinerary => itinerary.id === id ? { ...itinerary, ...updates } : itinerary)
+    );
+  };
+
+  const deleteDayItinerary = (id: string) => {
+    setDayItineraries(prev => prev.filter(itinerary => itinerary.id !== id));
+  };
+
+  const getItineraryForDay = (dayNumber: number): DayItinerary | undefined => {
+    return dayItineraries.find(itinerary => itinerary.dayNumber === dayNumber);
+  };
 
   // Transport Route Functions
   const addTransportRoute = (route: Omit<TransportRoute, 'id'>) => {
@@ -372,6 +439,9 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     setSelectedDestination(null);
   };
 
+  // Helper for all days
+  const allDays = getDaySelectionsArray();
+
   const value: QuotationContextType = {
     selectedDestination,
     setSelectedDestination,
@@ -446,6 +516,24 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
 
     pickupLocation,
     setPickupLocation,
+
+    // New: Custom Activities
+    customActivities,
+    setCustomActivities,
+    addCustomActivity,
+    updateCustomActivity,
+    deleteCustomActivity,
+
+    // New: Day Itinerary
+    dayItineraries,
+    setDayItineraries,
+    addDayItinerary,
+    updateDayItinerary,
+    deleteDayItinerary,
+    getItineraryForDay,
+
+    // Helper for all days
+    allDays,
   };
 
   return (
