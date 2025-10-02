@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { QuotationData, Hotel, DaySelection, Transport, Activity } from "@/types/type";
 import { useQuotation } from "@/context/QuotationContext";
-import LocationSelectionPage from "./PackageSelection/LocationSelectionPage";
 import HotelSection from "./PackageSelection/HotelSection";
 import TransportSection from "./PackageSelection/TransportSection";
 import ActivitiesSection from "./PackageSelection/ActivitySection";
@@ -37,8 +36,6 @@ export default function PackageSelectionStep({
   });
 
   const { 
-    packageSelectionStep,
-    setPackageSelectionStep,
     selectedLocation,
     startDate, 
     endDate, 
@@ -50,7 +47,7 @@ export default function PackageSelectionStep({
 
   // Initialize day selections when dates change
   useEffect(() => {
-    if (startDate && endDate && packageSelectionStep === 'selection') {
+    if (startDate && endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
       const days = Math.max(1, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
@@ -74,13 +71,11 @@ export default function PackageSelectionStep({
       
       setDaySelections(newDaySelections);
     }
-  }, [startDate, endDate, setDaySelections, packageSelectionStep]);
+  }, [startDate, endDate, setDaySelections]);
 
   useEffect(() => {
-    if (packageSelectionStep === 'selection') {
-      fetchInitialData();
-    }
-  }, [packageSelectionStep]);
+    fetchInitialData();
+  }, []);
 
   const fetchInitialData = async () => {
     try {
@@ -164,10 +159,6 @@ export default function PackageSelectionStep({
     }));
   };
 
-  const handleBackToLocation = () => {
-    setPackageSelectionStep('location');
-  };
-
   const handleContinue = () => {
     if (!areAllDaysCompleted()) {
       alert('Please complete all day selections before continuing.');
@@ -202,24 +193,16 @@ export default function PackageSelectionStep({
     setTotalPackagePrice(totalPrice);
   }, [totalPrice, setTotalPackagePrice]);
 
-  // Show location selection page
-  if (packageSelectionStep === 'location') {
-    return <LocationSelectionPage />;
-  }
-
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 mb-6">
           <div className="flex items-center justify-between mb-4">
-            <button
-              onClick={handleBackToLocation}
-              className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 transition-colors"
-            >
-              <ChevronLeft className="h-5 w-5" />
-              <span>Change Location</span>
-            </button>
+            <div className="text-left">
+              <h1 className="text-2xl font-bold text-gray-900">Package Selection</h1>
+              <p className="text-gray-600">Configure hotels, transport, and activities for your trip</p>
+            </div>
             
             <div className="text-right">
               <div className="text-2xl font-bold text-green-600">₹{totalPrice}</div>
