@@ -1,254 +1,303 @@
 "use client";
 
-import { useState } from "react";
-import { Search, MapPin, ChevronRight, Building, Mountain, Sun } from "lucide-react";
+import { useState, useMemo } from "react";
 import { useQuotation } from "@/context/QuotationContext";
 
-// Static destinations data
-const destinations = [
-  {
-    id: "sikkim",
-    name: "Sikkim",
-    type: "Hill Station",
-    description: "Beautiful Himalayan destination with stunning landscapes",
-    image: "https://images.unsplash.com/photo-1580130530873-ec15236313a3?w=400&h=300&fit=crop",
-    locations: ["Gangtok", "Pelling", "Lachung", "Lachen", "Ravangla", "Namchi", "Yuksom"]
-  },
-  {
-    id: "rajasthan",
-    name: "Rajasthan",
-    type: "Cultural",
-    description: "Land of kings with rich heritage and palaces",
-    image: "https://images.unsplash.com/photo-1534570122623-99e8378a9aa7?w=400&h=300&fit=crop",
-    locations: ["Jaipur", "Udaipur", "Jodhpur", "Jaisalmer", "Pushkar", "Mount Abu", "Bikaner"]
-  },
-  {
-    id: "kerala",
-    name: "Kerala",
-    type: "Backwaters",
-    description: "God's own country with serene backwaters",
-    image: "https://images.unsplash.com/photo-1580619305218-8423a7ef79b4?w=400&h=300&fit=crop",
-    locations: ["Kochi", "Munnar", "Alleppey", "Thekkady", "Kovalam", "Wayanad", "Kumarakom"]
-  },
-  {
-    id: "himachal",
-    name: "Himachal Pradesh",
-    type: "Adventure",
-    description: "Perfect destination for adventure and nature lovers",
-    image: "https://images.unsplash.com/photo-1574362849222-d9c5ac1f3c94?w=400&h=300&fit=crop",
-    locations: ["Shimla", "Manali", "Dharamshala", "Dalhousie", "Kasauli", "Spiti Valley"]
-  },
-  {
-    id: "goa",
-    name: "Goa",
-    type: "Beach",
-    description: "Sun, sand, and sea - perfect beach destination",
-    image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=400&h=300&fit=crop",
-    locations: ["North Goa", "South Goa", "Panaji", "Calangute", "Anjuna", "Vagator"]
-  }
-];
+interface Location {
+  id: string;
+  name: string;
+  image: string;
+  description: string;
+  type: string;
+  locations: string[];
+}
 
-const getIconByType = (type: string) => {
-  switch (type) {
-    case "Hill Station":
-      return <Mountain className="h-6 w-6" />;
-    case "Cultural":
-      return <Building className="h-6 w-6" />;
-    case "Beach":
-      return <Sun className="h-6 w-6" />;
-    default:
-      return <MapPin className="h-6 w-6" />;
-  }
+interface LocationSelectionPageProps {
+  nextStep: () => void;
+  prevStep: () => void;
+}
+
+// Dummy location images
+const locationImages: { [key: string]: string } = {
+  "Gangtok": "https://images.unsplash.com/photo-1580130530873-ec15236313a3?w=400&h=300&fit=crop",
+  "Pelling": "https://images.unsplash.com/photo-1548013147-b861efabdef9?w=400&h=300&fit=crop",
+  "Lachung": "https://images.unsplash.com/photo-1574362849222-d9c5ac1f3c94?w=400&h=300&fit=crop",
+  "Lachen": "https://images.unsplash.com/photo-1597733336794-12d05021d510?w=400&h=300&fit=crop",
+  "Ravangla": "https://images.unsplash.com/photo-1574362849222-d9c5ac1f3c94?w=400&h=300&fit=crop",
+  "Namchi": "https://images.unsplash.com/photo-1548013147-b861efabdef9?w=400&h=300&fit=crop",
+  "Yuksom": "https://images.unsplash.com/photo-1580130530873-ec15236313a3?w=400&h=300&fit=crop",
+  
+  "Jaipur": "https://images.unsplash.com/photo-1534570122623-99e8378a9aa7?w=400&h=300&fit=crop",
+  "Udaipur": "https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=400&h=300&fit=crop",
+  "Jodhpur": "https://images.unsplash.com/photo-1534577403868-27b9b01f330b?w=400&h=300&fit=crop",
+  "Jaisalmer": "https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=400&h=300&fit=crop",
+  "Pushkar": "https://images.unsplash.com/photo-1534570122623-99e8378a9aa7?w=400&h=300&fit=crop",
+  "Mount Abu": "https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=400&h=300&fit=crop",
+  "Bikaner": "https://images.unsplash.com/photo-1534577403868-27b9b01f330b?w=400&h=300&fit=crop",
+  
+  "Kochi": "https://images.unsplash.com/photo-1580619305218-8423a7ef79b4?w=400&h=300&fit=crop",
+  "Munnar": "https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=400&h=300&fit=crop",
+  "Alleppey": "https://images.unsplash.com/photo-1580619305218-8423a7ef79b4?w=400&h=300&fit=crop",
+  "Thekkady": "https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=400&h=300&fit=crop",
+  "Kovalam": "https://images.unsplash.com/photo-1580619305218-8423a7ef79b4?w=400&h=300&fit=crop",
+  "Wayanad": "https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=400&h=300&fit=crop",
+  "Kumarakom": "https://images.unsplash.com/photo-1580619305218-8423a7ef79b4?w=400&h=300&fit=crop",
+  
+  "Shimla": "https://images.unsplash.com/photo-1574362849222-d9c5ac1f3c94?w=400&h=300&fit=crop",
+  "Manali": "https://images.unsplash.com/photo-1597733336794-12d05021d510?w=400&h=300&fit=crop",
+  "Dharamshala": "https://images.unsplash.com/photo-1574362849222-d9c5ac1f3c94?w=400&h=300&fit=crop",
+  "Dalhousie": "https://images.unsplash.com/photo-1597733336794-12d05021d510?w=400&h=300&fit=crop",
+  "Kasauli": "https://images.unsplash.com/photo-1574362849222-d9c5ac1f3c94?w=400&h=300&fit=crop",
+  "Spiti Valley": "https://images.unsplash.com/photo-1597733336794-12d05021d510?w=400&h=300&fit=crop",
+  
+  "North Goa": "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=400&h=300&fit=crop",
+  "South Goa": "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=400&h=300&fit=crop",
+  "Panaji": "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=400&h=300&fit=crop",
+  "Calangute": "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=400&h=300&fit=crop",
+  "Anjuna": "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=400&h=300&fit=crop",
+  "Vagator": "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=400&h=300&fit=crop",
 };
 
-export default function LocationSelectionPage() {
+export default function LocationSelectionPage({ nextStep, prevStep }: LocationSelectionPageProps) {
   const { 
-    packageSelectionStep, 
-    setPackageSelectionStep, 
-    selectedLocation, 
-    setSelectedLocation,
+    selectedDestination, 
+    setSelectedLocation, 
     setTripDestination
   } = useQuotation();
   
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedDestination, setSelectedDestination] = useState<any>(null);
 
-  const filteredDestinations = destinations.filter(dest =>
-    dest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    dest.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    dest.locations.some(loc => loc.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  // Static destinations data
+  const destinations: Location[] = [
+    {
+      id: "sikkim",
+      name: "Sikkim",
+      type: "Hill Station",
+      description: "Beautiful Himalayan destination with stunning landscapes",
+      image: "https://images.unsplash.com/photo-1580130530873-ec15236313a3?w=400&h=300&fit=crop",
+      locations: ["Gangtok", "Pelling", "Lachung", "Lachen", "Ravangla", "Namchi", "Yuksom"]
+    },
+    {
+      id: "rajasthan",
+      name: "Rajasthan",
+      type: "Cultural",
+      description: "Land of kings with rich heritage and palaces",
+      image: "https://images.unsplash.com/photo-1534570122623-99e8378a9aa7?w=400&h=300&fit=crop",
+      locations: ["Jaipur", "Udaipur", "Jodhpur", "Jaisalmer", "Pushkar", "Mount Abu", "Bikaner"]
+    },
+    {
+      id: "kerala",
+      name: "Kerala",
+      type: "Backwaters",
+      description: "God's own country with serene backwaters",
+      image: "https://images.unsplash.com/photo-1580619305218-8423a7ef79b4?w=400&h=300&fit=crop",
+      locations: ["Kochi", "Munnar", "Alleppey", "Thekkady", "Kovalam", "Wayanad", "Kumarakom"]
+    },
+    {
+      id: "himachal",
+      name: "Himachal Pradesh",
+      type: "Adventure",
+      description: "Perfect destination for adventure and nature lovers",
+      image: "https://images.unsplash.com/photo-1574362849222-d9c5ac1f3c94?w=400&h=300&fit=crop",
+      locations: ["Shimla", "Manali", "Dharamshala", "Dalhousie", "Kasauli", "Spiti Valley"]
+    },
+    {
+      id: "goa",
+      name: "Goa",
+      type: "Beach",
+      description: "Sun, sand, and sea - perfect beach destination",
+      image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=400&h=300&fit=crop",
+      locations: ["North Goa", "South Goa", "Panaji", "Calangute", "Anjuna", "Vagator"]
+    }
+  ];
 
-  const handleDestinationSelect = (destination: any) => {
-    setSelectedDestination(destination);
+  const getIconByType = (type: string) => {
+    switch (type.toLowerCase()) {
+      case "hill station": return "🏔️";
+      case "cultural": return "🏛️";
+      case "beach": return "🏖️";
+      case "backwaters": return "🚤";
+      case "adventure": return "🧗";
+      case "city": return "🏙️";
+      case "luxury": return "⭐";
+      default: return "📍";
+    }
   };
+
+  const getTypeColor = (type: string) => {
+    switch (type.toLowerCase()) {
+      case "hill station": return "from-green-400 to-green-600";
+      case "cultural": return "from-yellow-400 to-yellow-600";
+      case "beach": return "from-blue-400 to-blue-600";
+      case "backwaters": return "from-cyan-400 to-cyan-600";
+      case "adventure": return "from-red-400 to-red-600";
+      default: return "from-gray-400 to-gray-600";
+    }
+  };
+
+  // Get current destination from context or find by name
+  const currentDestination = useMemo(() => {
+    if (selectedDestination) {
+      // Find the destination in our static data that matches the selected destination
+      const foundDest = destinations.find(dest => 
+        dest.name.toLowerCase() === selectedDestination.name.toLowerCase()
+      );
+      return foundDest || {
+        id: selectedDestination.id,
+        name: selectedDestination.name,
+        type: selectedDestination.category,
+        description: selectedDestination.description,
+        image: selectedDestination.image,
+        locations: selectedDestination.locations || ["Default Location"]
+      };
+    }
+    return null;
+  }, [selectedDestination]);
+
+  const filteredLocations = useMemo(() => {
+    if (!currentDestination) return [];
+    return currentDestination.locations.filter(location =>
+      location.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [currentDestination, searchTerm]);
 
   const handleLocationSelect = (location: string) => {
     setSelectedLocation(location);
-    setTripDestination(selectedDestination.name);
-    setPackageSelectionStep('selection');
+    if (currentDestination) {
+      setTripDestination(currentDestination.name);
+    }
+    nextStep();
   };
 
   const handleBackToDestinations = () => {
-    setSelectedDestination(null);
-    setSearchTerm("");
+    prevStep();
   };
 
-  if (packageSelectionStep !== 'location') return null;
+  // If no destination is selected, show destination selection
+  if (!currentDestination) {
+    return (
+      <div className="p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-white rounded-xl mb-8 shadow-md p-6">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
+              Location Selection
+            </h1>
+            <p className="text-gray-600 mt-2">Please select a destination first.</p>
+            <button
+              onClick={handleBackToDestinations}
+              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              Back to Destinations
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
+  // Location Selection View
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="p-6">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">
-            Where do you want to go?
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Select your dream destination and start planning your perfect trip
-          </p>
+        <div className="bg-white rounded-xl mb-8 shadow-md p-6">
+          <div className="flex items-center gap-4">
+            <div className={`h-16 w-16 rounded-xl flex items-center justify-center text-2xl bg-gradient-to-r ${getTypeColor(currentDestination.type)} text-white`}>
+              {getIconByType(currentDestination.type)}
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800">{currentDestination.name}</h1>
+              <p className="text-gray-600">{currentDestination.description}</p>
+            </div>
+          </div>
         </div>
 
         {/* Search Bar */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-400" />
-            </div>
+        <div className="bg-white rounded-xl mb-6 shadow-md p-6">
+          <div className="flex items-center border rounded-lg px-3 py-2 border-gray-300 shadow-sm bg-white">
             <input
               type="text"
-              placeholder="Search destinations, locations, or types..."
+              placeholder={`Search locations in ${currentDestination.name}...`}
+              className="outline-none w-full"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
             />
           </div>
         </div>
 
-        {!selectedDestination ? (
-          // Destination Selection
-          <div className="space-y-6">
-            <h2 className="text-2xl font-semibold text-gray-900">Popular Destinations</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {filteredDestinations.map((destination) => (
-                <div
-                  key={destination.id}
-                  onClick={() => handleDestinationSelect(destination)}
-                  className="bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer transform hover:scale-105 transition-all duration-300 hover:shadow-xl"
-                >
-                  <div className="h-48 overflow-hidden">
-                    <img
-                      src={destination.image}
-                      alt={destination.name}
-                      className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                    />
-                  </div>
-                  
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-3">
-                        <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
-                          {getIconByType(destination.type)}
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-semibold text-gray-900">
-                            {destination.name}
-                          </h3>
-                          <p className="text-sm text-blue-600 font-medium">
-                            {destination.type}
-                          </p>
-                        </div>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-gray-400" />
-                    </div>
-                    
-                    <p className="text-gray-600 mb-4">
-                      {destination.description}
-                    </p>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="text-sm text-gray-500">
-                        {destination.locations.length} locations
-                      </div>
-                      <button className="text-blue-600 hover:text-blue-800 font-medium">
-                        Select Destination
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          // Location Selection within Destination
-          <div className="space-y-6">
-            {/* Back Button */}
-            <button
-              onClick={handleBackToDestinations}
-              className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 transition-colors mb-4"
+        {/* Results Count */}
+        <p className="text-gray-600 mb-6">
+          Showing {filteredLocations.length} of {currentDestination.locations.length} locations in {currentDestination.name}
+        </p>
+
+        {/* Locations Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+          {filteredLocations.map((location: string, index: number) => (
+            <div
+              key={location}
+              onClick={() => handleLocationSelect(location)}
+              className="group relative bg-white rounded-2xl overflow-hidden cursor-pointer transform transition-all duration-500 hover:scale-105 hover:shadow-2xl shadow-lg border border-gray-200"
             >
-              <ChevronRight className="h-4 w-4 rotate-180" />
-              <span className="font-medium">Back to destinations</span>
-            </button>
-
-            {/* Destination Header */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <div className="flex items-center space-x-4">
-                <div className="h-16 w-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
-                  {getIconByType(selectedDestination.type)}
+              <div className="relative h-48 overflow-hidden">
+                <img
+                  src={locationImages[location] || currentDestination.image}
+                  alt={location}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute top-3 right-3 flex flex-col gap-1">
+                  <span className="px-3 py-1 bg-white bg-opacity-90 rounded-full text-sm font-medium text-gray-700 flex items-center gap-1 shadow-sm">
+                    <span>{getIconByType(currentDestination.type)}</span>
+                    {currentDestination.type}
+                  </span>
                 </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">
-                    {selectedDestination.name}
-                  </h2>
-                  <p className="text-gray-600">{selectedDestination.description}</p>
+                <div className="absolute bottom-3 left-3">
+                  <span className="px-3 py-1 bg-black bg-opacity-60 text-white rounded-full text-xs font-medium">
+                    #{index + 1}
+                  </span>
                 </div>
               </div>
-            </div>
 
-            {/* Locations Grid */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-6">
-                Select your base location in {selectedDestination.name}
-              </h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {selectedDestination.locations.map((location: string) => (
-                  <button
-                    key={location}
-                    onClick={() => handleLocationSelect(location)}
-                    className={`p-4 border rounded-xl transition-all duration-200 text-left group ${
-                      selectedLocation === location
-                        ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-100'
-                        : 'border-gray-200 hover:border-blue-300 hover:shadow-md'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className={`h-10 w-10 rounded-full flex items-center justify-center ${
-                        selectedLocation === location
-                          ? 'bg-blue-500'
-                          : 'bg-gray-100 group-hover:bg-blue-100'
-                      }`}>
-                        <MapPin className={`h-5 w-5 ${
-                          selectedLocation === location ? 'text-white' : 'text-gray-400 group-hover:text-blue-500'
-                        }`} />
-                      </div>
-                      <div>
-                        <div className={`font-semibold ${
-                          selectedLocation === location ? 'text-blue-700' : 'text-gray-900'
-                        }`}>
-                          {location}
-                        </div>
-                        <div className="text-sm text-gray-500">{selectedDestination.name}</div>
-                      </div>
+              <div className="p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div>
+                      <h3 className="font-bold text-lg text-gray-800">{location}</h3>
+                      <p className="text-sm text-gray-600">{currentDestination.name}</p>
                     </div>
-                  </button>
-                ))}
+                  </div>
+                </div>
+                
+                <button
+                  className={`w-full py-2 rounded-xl font-semibold text-white transition-all duration-300 bg-gradient-to-r ${getTypeColor(currentDestination.type)} hover:shadow-lg`}
+                >
+                  Select Location
+                </button>
               </div>
             </div>
+          ))}
+        </div>
+
+        {filteredLocations.length === 0 && (
+          <div className="text-center py-12">
+            <div className="text-6xl mb-4">📍</div>
+            <h3 className="text-xl font-bold text-gray-700 mb-2">No locations found</h3>
+            <p className="text-gray-600">
+              Try adjusting your search criteria for {currentDestination.name}.
+            </p>
           </div>
         )}
+
+        {/* Back Button at Bottom */}
+        <div className="bg-white rounded-xl shadow-md p-6 mt-8">
+          <div className="flex justify-center">
+            <button
+              onClick={handleBackToDestinations}
+              className="px-6 py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition font-medium flex items-center space-x-2"
+            >
+              <span>← Back to Destinations</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
