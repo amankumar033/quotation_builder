@@ -1,14 +1,6 @@
 "use client";
 import { createContext, useContext, useState, ReactNode } from "react";
-import { Meal, Hotel, Transport, Activity, DaySelection, RoomSelection, TransportRoute } from "@/types/type";
-
-interface Destination {
-  id: string;
-  name: string;
-  image: string;
-  description: string;
-  category: string;
-}
+import { Meal, Hotel, Transport, Activity, DaySelection, RoomSelection, TransportRoute, Destination } from "@/types/type";
 
 interface Room {
   id: number;
@@ -59,6 +51,8 @@ interface QuotationContextType {
   setPackageSelectionStep: (step: 'location' | 'selection') => void;
   selectedLocation: string;
   setSelectedLocation: (location: string) => void;
+  isLocationSelected: boolean;
+  setIsLocationSelected: (selected: boolean) => void;
 
   professionalRooms: Room[];
   setProfessionalRooms: (rooms: Room[]) => void;
@@ -128,6 +122,7 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
   
   const [packageSelectionStep, setPackageSelectionStep] = useState<'location' | 'selection'>('location');
   const [selectedLocation, setSelectedLocation] = useState<string>('');
+  const [isLocationSelected, setIsLocationSelected] = useState<boolean>(false);
 
   const [professionalRooms, setProfessionalRooms] = useState<Room[]>([
     {
@@ -391,6 +386,8 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     setPackageSelectionStep,
     selectedLocation,
     setSelectedLocation,
+    isLocationSelected,
+    setIsLocationSelected,
 
     professionalRooms,
     setProfessionalRooms,

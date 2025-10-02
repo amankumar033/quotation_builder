@@ -1,12 +1,13 @@
-// components/QuotationBuilder/QuotationBuilder.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
 import DestinationSelectionStep from '../components/QuotationBuilder/DestinationSelection';
+import LocationSelectionPage from '../components/QuotationBuilder/PackageSelection/LocationSelectionPage';
 import ClientInfoStep from '../components/QuotationBuilder/ClientInfoStep';
 import PackageSelectionStep from '../components/QuotationBuilder/PackageSelectionStep';
 import CustomizationStep from '../components/QuotationBuilder/CustomizationStep';
 import PreviewExportStep from '../components/QuotationBuilder/PreviewExportStep';
+import { useQuotation } from '@/context/QuotationContext';
 
 export interface ClientInfo {
   name: string;
@@ -68,10 +69,9 @@ const STORAGE_KEYS = {
 };
 
 export default function QuotationBuilder() {
-  // Initialize state with values from localStorage or defaults
   const [activeStep, setActiveStep] = useState(0);
   const [completedStep, setCompletedStep] = useState(0);
-  const [destinationSelected, setDestinationSelected] = useState(false);
+  const { selectedDestination, selectedLocation } = useQuotation();
 
   const [quotationData, setQuotationData] = useState<QuotationData>({
     client: {
@@ -114,7 +114,6 @@ export default function QuotationBuilder() {
         setQuotationData(parsedData);
       } catch (error) {
         console.error('Error parsing saved quotation data:', error);
-        // Clear invalid data
         localStorage.removeItem(STORAGE_KEYS.QUOTATION_DATA);
       }
     }
@@ -140,45 +139,57 @@ export default function QuotationBuilder() {
 
   const prevStep = () => {
     setActiveStep(prev => prev - 1);
-    // Don't decrease completedStep when going back
   };
 
   const updateQuotationData = (newData: Partial<QuotationData>) => {
     setQuotationData(prev => ({ ...prev, ...newData }));
   };
 
-  // Optional: Add a function to clear storage when quotation is completed/exported
   const clearStorage = () => {
     localStorage.removeItem(STORAGE_KEYS.ACTIVE_STEP);
     localStorage.removeItem(STORAGE_KEYS.COMPLETED_STEP);
     localStorage.removeItem(STORAGE_KEYS.QUOTATION_DATA);
   };
 
-  return (
-    <div>
-       {activeStep === 0 ? (
-  <DestinationSelectionStep
-   nextStep={nextStep}
-   
-  />
-):
-    <div className="rounded-xl shadow-lg border border-gray-100 pb-6">
+  // Update trip destination when we have both destination and location
+  useEffect(() => {
+    if (selectedDestination && selectedLocation && activeStep >= 2) {
+      updateQuotationData({
+        trip: {
+          ...quotationData.trip,
+          destination: `${selectedLocation}, ${selectedDestination.name}`
+        }
+      });
+    }
+  }, [selectedDestination, selectedLocation, activeStep]);
 
+  // Step 0: Destination Selection (full page)
+  if (activeStep === 0) {
+    return <DestinationSelectionStep nextStep={nextStep} />;
+  }
+
+  // Step 1: Location Selection (full page)
+  if (activeStep === 1) {
+    return <LocationSelectionPage nextStep={nextStep} prevStep={prevStep} />;
+  }
+
+  return (
+    <div className="rounded-xl shadow-lg border border-gray-100 pb-6">
       <div className='p-6 mt-1'>
         <div className="mb-3">
           <h2
             className={`text-4xl font-bold ${
-              activeStep === 1 ? 'text-green-600' :
-              activeStep === 2 ? 'text-blue-600' :
-              activeStep === 3 ? 'text-yellow-600' :
-              activeStep === 4 ? 'text-red-600' :
+              activeStep === 2 ? 'text-green-600' :
+              activeStep === 3 ? 'text-blue-600' :
+              activeStep === 4 ? 'text-yellow-600' :
+              activeStep === 5 ? 'text-red-600' :
               'text-gray-700'
             }`}
           >
-            {activeStep === 1 ? '1. Basic Information' :
-             activeStep === 2 ? '2. Package Selection' :
-             activeStep === 3 ? '3. Customization' :
-             activeStep === 4 ? '4. Preview & Export' :
+            {activeStep === 2 ? '1. Client Information' :
+             activeStep === 3 ? '2. Package Selection' :
+             activeStep === 4 ? '3. Customization' :
+             activeStep === 5 ? '4. Preview & Export' :
              ''}
           </h2>
         </div>
@@ -186,27 +197,27 @@ export default function QuotationBuilder() {
 
       {/* Step Indicator */}
       <div className="mt-1 px-15 flex gap-7 shadow-md mb-7 items-center pb-6">
-        {/* Step 1 */}
+        {/* Step 1 - Client Info */}
         <div className="flex items-center gap-3 font-medium text-gray-600">
           <div className="h-10 w-10 bg-green-500 rounded-lg flex items-center justify-center">
             <span className="text-white text-xl font-bold">
-              {completedStep >= 1 ? '✓' : '1'}
+              {completedStep >= 2 ? '✓' : '1'}
             </span>
           </div>
           <div className="flex flex-col">
             <span className="font-bold">Step 1</span>
-            <span className="text-sm">Basic Information</span>
+            <span className="text-sm">Client Information</span>
           </div>
         </div>
 
         {/* Line */}
-        <div className={`flex-1 h-[2px] w-5 ${completedStep >= 1 ? 'bg-green-500' : 'bg-gray-200'}`} />
+        <div className={`flex-1 h-[2px] w-5 ${completedStep >= 2 ? 'bg-green-500' : 'bg-gray-200'}`} />
 
-        {/* Step 2 */}
+        {/* Step 2 - Package Selection */}
         <div className="flex items-center gap-3 font-medium text-gray-600">
           <div className="h-10 w-10 bg-blue-500 rounded-lg flex items-center justify-center">
             <span className="text-white text-xl font-bold">
-              {completedStep >= 2 ? '✓' : '2'}
+              {completedStep >= 3 ? '✓' : '2'}
             </span>
           </div>
           <div className="flex flex-col">
@@ -216,13 +227,13 @@ export default function QuotationBuilder() {
         </div>
         
         {/* Line */}
-        <div className={`flex-1 h-[2px] mx-2 ${completedStep >= 2 ? 'bg-blue-500' : 'bg-gray-200'}`} />
+        <div className={`flex-1 h-[2px] mx-2 ${completedStep >= 3 ? 'bg-blue-500' : 'bg-gray-200'}`} />
 
-        {/* Step 3 */}
+        {/* Step 3 - Customization */}
         <div className="flex items-center gap-3 font-medium text-gray-600">
           <div className="h-10 w-10 bg-yellow-500 rounded-lg flex items-center justify-center">
             <span className="text-white text-xl font-bold">
-              {completedStep >= 3 ? '✓' : '3'}
+              {completedStep >= 4 ? '✓' : '3'}
             </span>
           </div>
           <div className="flex flex-col">
@@ -232,13 +243,13 @@ export default function QuotationBuilder() {
         </div>
 
         {/* Line */}
-        <div className={`flex-1 h-[2px] mx-2 ${completedStep >= 3 ? 'bg-yellow-500' : 'bg-gray-200'}`} />
+        <div className={`flex-1 h-[2px] mx-2 ${completedStep >= 4 ? 'bg-yellow-500' : 'bg-gray-200'}`} />
 
-        {/* Step 4 */}
+        {/* Step 4 - Preview & Export */}
         <div className="flex items-center gap-3 font-medium text-gray-600">
           <div className="h-10 w-10 bg-red-500 rounded-lg flex items-center justify-center">
             <span className="text-white text-xl font-bold">
-              {completedStep >= 4 ? '✓' : '4'}
+              {completedStep >= 5 ? '✓' : '4'}
             </span>
           </div>
           <div className="flex flex-col">
@@ -248,21 +259,9 @@ export default function QuotationBuilder() {
         </div>
       </div>
 
-       
-
       {/* Render current step */}
-
-      {activeStep === 1 && (
-        <ClientInfoStep 
-          data={quotationData}
-          updateData={updateQuotationData}
-          nextStep={nextStep}
-           prevStep={prevStep}
-        />
-      )}
-      
       {activeStep === 2 && (
-        <PackageSelectionStep 
+        <ClientInfoStep 
           data={quotationData}
           updateData={updateQuotationData}
           nextStep={nextStep}
@@ -271,7 +270,7 @@ export default function QuotationBuilder() {
       )}
       
       {activeStep === 3 && (
-        <CustomizationStep 
+        <PackageSelectionStep 
           data={quotationData}
           updateData={updateQuotationData}
           nextStep={nextStep}
@@ -280,14 +279,22 @@ export default function QuotationBuilder() {
       )}
       
       {activeStep === 4 && (
+        <CustomizationStep 
+          data={quotationData}
+          updateData={updateQuotationData}
+          nextStep={nextStep}
+          prevStep={prevStep}
+        />
+      )}
+      
+      {activeStep === 5 && (
         <PreviewExportStep 
           data={quotationData}
           updateData={updateQuotationData}
           prevStep={prevStep}
-         // Clear storage when done
+          clearStorage={clearStorage}
         />
       )}
-    </div>}
     </div>
   );
 }

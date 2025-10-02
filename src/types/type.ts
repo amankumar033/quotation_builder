@@ -1,11 +1,55 @@
+export interface Destination {
+  id: string;
+  name: string;
+  image: string;
+  description: string;
+  category: string;
+  locations?: string[];
+}
+
 export interface QuotationData {
-  selectedVehicle: string | null;
+  
   roomSelections?: {
     hotel: Hotel | null;
     day: number;
     selections: RoomSelection[];
     meals?: Meal[];
   };
+  client: {
+    name: string;
+    phone: string;
+    email: string;
+    destination?: string;
+    startDate?: string;
+    endDate?: string;
+    adults?: number;
+    children?: number;
+    infants?: number;
+  };
+  trip: {
+    destination: string;
+    startDate: string;
+    endDate: string;
+    adults: number;
+    children: number;
+    infants: number;
+    duration?: number;
+    quoteNumber?: string;
+  };
+  services: ServiceItem[];
+  markupPercentage: number;
+  termsConditions: string;
+  specialNotes: string;
+  agencyLogo: string | null;
+  discountAmount?: number;
+  paymentTerms?: string;
+  contactInfo?: string;
+  agencyName?: string;
+  quoteNumber?: string;
+  selectedHotel?: string | null;
+  selectedVehicle?: string | null;
+  selectedMealIds?: string[];
+  selectedActivityIds?: string[];
 }
 
 export interface Room {
@@ -16,6 +60,8 @@ export interface Room {
   maxChildren: number;
   amenities: string[];
   photos: string[];
+  bedType?: string;
+  description?: string;
 }
 
 export interface Transport {
@@ -114,4 +160,37 @@ export interface TransportRoute {
   vehicle: Transport;
   price: number;
   isComplimentary?: boolean;
+}
+
+export interface ServiceItem {
+  id: string;
+  name: string;
+  type: 'hotel' | 'car' | 'meal' | 'activity';
+  price: number;
+  quantity: number;
+  details: Record<string, any>;
+  unit?: string;
+}
+
+export interface ClientInfo {
+  name: string;
+  phone: string;
+  email: string;
+  destination?: string;
+  startDate?: string;
+  endDate?: string;
+  adults?: number;
+  children?: number;
+  infants?: number;
+}
+
+export interface TripInfo {
+  destination: string;
+  startDate: string;
+  endDate: string;
+  adults: number;
+  children: number;
+  infants: number;
+  duration?: number;
+  quoteNumber?: string;
 }
