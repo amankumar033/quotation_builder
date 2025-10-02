@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useQuotation } from "@/context/QuotationContext"; // ✅ new
+import { useQuotation } from "@/context/QuotationContext";
 
 interface Destination {
   id: string;
@@ -9,37 +9,97 @@ interface Destination {
   image: string;
   description: string;
   category: string;
-  region: "Domestic" | "International"; // ✅ new field
+  region: "Domestic" | "International";
+  locations?: string[];
 }
 
-interface Destinationprops {
+interface DestinationProps {
   nextStep: () => void;
 }
 
-export default function DestinationSelectionStep({ nextStep }: Destinationprops) {
+export default function DestinationSelectionStep({ nextStep }: DestinationProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedRegion, setSelectedRegion] = useState("All"); // ✅ new state
-  const { setSelectedDestination } = useQuotation(); // ✅ new
+  const [selectedRegion, setSelectedRegion] = useState("All");
+  const { setSelectedDestination } = useQuotation();
 
-  // ✅ Define destinations inside component with Domestic/International
+  // Destinations with locations
   const destinations: Destination[] = [
-    { id: "1", name: "Maldives", image: "https://t3.ftcdn.net/jpg/03/34/77/78/360_F_334777839_Y7Y5P8FFY5WFo7sTwjeT0vxDbTGxhIo5.jpg", description: "Beautiful beaches and luxury resorts", category: "Beach", region: "International" },
-    { id: "2", name: "Sikkim", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgOtHARwlYuSjVLSjlXqVK-2OV7dt3m8eiiA&s", description: "The city of lights and romance", category: "City", region: "Domestic" },
-    { id: "3", name: "Himalayas", image: "https://cdn.britannica.com/74/114874-050-6E04C88C/North-Face-Mount-Everest-Tibet-Autonomous-Region.jpg", description: "Adventure and trekking paradise", category: "Mountain", region: "Domestic" },
-    { id: "4", name: "Goa", image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800&auto=format&fit=crop&q=60", description: "Pristine beaches and vibrant nightlife", category: "Beach", region: "Domestic" },
-    { id: "5", name: "Andaman Islands", image: "https://images.unsplash.com/photo-1586016413664-864c0dd76f53?w=800&auto=format&fit=crop&q=60", description: "Crystal clear waters and exotic marine life", category: "Beach", region: "Domestic" },
-    { id: "6", name: "Paris", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&auto=format&fit=crop&q=60", description: "The city of lights and romance", category: "City", region: "International" },
-    { id: "7", name: "Dubai", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRV5mfsFZOSmU3JXQ5Cos76Z_HZjdn5sHEOVw&s", description: "Luxury shopping, ultramodern architecture", category: "Luxury", region: "International" },
-    { id: "8", name: "Jaipur", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8RIf0-JMU4AxY9dUZgXtaW2CdqoY8fKpkkVW9HQ_6Lc0pL5AB-vgd61k5j4bfHjfnDDc&usqp=CAU", description: "The Pink City with palaces and forts", category: "City", region: "Domestic" },
-    { id: "9", name: "Tokyo", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdEnx5QhhDvzDr_6tmMSpTycABM4i-qsrHcA&s", description: "A perfect blend of tradition and technology", category: "City", region: "International" },
-    { id: "10", name: "Kerala Backwaters", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0Z1vIVF8Zms5pJuazOs2Lg3-6COPzNR8UNQ&s", description: "Luxury houseboat experience", category: "Luxury", region: "Domestic" },
+    { 
+      id: "1", 
+      name: "Sikkim", 
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgOtHARwlYuSjVLSjlXqVK-2OV7dt3m8eiiA&s", 
+      description: "Beautiful Himalayan destination with stunning landscapes", 
+      category: "Hill Station", 
+      region: "Domestic",
+      locations: ["Gangtok", "Pelling", "Lachung", "Lachen", "Ravangla", "Namchi", "Yuksom"]
+    },
+    { 
+      id: "2", 
+      name: "Goa", 
+      image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800&auto=format&fit=crop&q=60", 
+      description: "Sun, sand, and sea paradise", 
+      category: "Beach", 
+      region: "Domestic",
+      locations: ["North Goa", "South Goa", "Panjim", "Calangute", "Anjuna"]
+    },
+    { 
+      id: "3", 
+      name: "Kerala", 
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0Z1vIVF8Zms5pJuazOs2Lg3-6COPzNR8UNQ&s", 
+      description: "God's own country with backwaters and lush greenery", 
+      category: "Backwaters", 
+      region: "Domestic",
+      locations: ["Munnar", "Alleppey", "Kochi", "Thekkady", "Kovalam"]
+    },
+    { 
+      id: "4", 
+      name: "Rajasthan", 
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8RIf0-JMU4AxY9dUZgXtaW2CdqoY8fKpkkVW9HQ_6Lc0pL5AB-vgd61k5j4bfHjfnDDc&usqp=CAU", 
+      description: "Land of kings and majestic forts", 
+      category: "Heritage", 
+      region: "Domestic",
+      locations: ["Jaipur", "Udaipur", "Jodhpur", "Jaisalmer", "Pushkar"]
+    },
+    { 
+      id: "5", 
+      name: "Himachal Pradesh", 
+      image: "https://images.unsplash.com/photo-1597733336794-12d05021d510?w=500&h=300&fit=crop", 
+      description: "Snow-capped mountains and adventure sports", 
+      category: "Hill Station", 
+      region: "Domestic",
+      locations: ["Manali", "Shimla", "Dharamshala", "Kasol", "Spiti Valley"]
+    },
+    { 
+      id: "6", 
+      name: "Maldives", 
+      image: "https://t3.ftcdn.net/jpg/03/34/77/78/360_F_334777839_Y7Y5P8FFY5WFo7sTwjeT0vxDbTGxhIo5.jpg", 
+      description: "Beautiful beaches and luxury resorts", 
+      category: "Beach", 
+      region: "International" 
+    },
+    { 
+      id: "7", 
+      name: "Dubai", 
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRV5mfsFZOSmU3JXQ5Cos76Z_HZjdn5sHEOVw&s", 
+      description: "Luxury shopping, ultramodern architecture", 
+      category: "Luxury", 
+      region: "International" 
+    },
+    { 
+      id: "8", 
+      name: "Paris", 
+      image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&auto=format&fit=crop&q=60", 
+      description: "The city of lights and romance", 
+      category: "City", 
+      region: "International" 
+    },
   ];
 
   const clearFilters = () => {
     setSearchTerm("");
     setSelectedCategory("All");
-    setSelectedRegion("All"); // ✅ reset region
+    setSelectedRegion("All");
   };
 
   // Categories
@@ -51,7 +111,7 @@ export default function DestinationSelectionStep({ nextStep }: Destinationprops)
   // Regions
   const regions = ["All", "Domestic", "International"];
 
-  // Filtered
+  // Filtered destinations
   const filteredDestinations = useMemo(
     () =>
       destinations.filter((d) => {
@@ -69,15 +129,18 @@ export default function DestinationSelectionStep({ nextStep }: Destinationprops)
       case "city": return "🏙️";
       case "luxury": return "⭐";
       case "mountain": return "⛰️";
+      case "hill station": return "🏔️";
+      case "heritage": return "🏛️";
+      case "backwaters": return "🚤";
       case "adventure": return "🧗";
       default: return "📍";
     }
   };
 
-  // ✅ new handler
   const handleSelect = (destination: Destination) => {
-    setSelectedDestination(destination); // save full object in context
-    nextStep(); // move to next step
+    setSelectedDestination(destination);
+    // Always go to location selection page when destination is selected
+    nextStep();
   };
 
   const getCategoryColor = (category: string) => {
@@ -85,7 +148,10 @@ export default function DestinationSelectionStep({ nextStep }: Destinationprops)
       case "beach": return "from-blue-400 to-blue-600";
       case "city": return "from-orange-400 to-orange-600";
       case "luxury": return "from-purple-400 to-purple-600";
-      case "mountain": return "from-green-400 to-green-600";
+      case "mountain": 
+      case "hill station": return "from-green-400 to-green-600";
+      case "heritage": return "from-yellow-400 to-yellow-600";
+      case "backwaters": return "from-cyan-400 to-cyan-600";
       case "adventure": return "from-red-400 to-red-600";
       default: return "from-gray-400 to-gray-600";
     }
@@ -125,7 +191,7 @@ export default function DestinationSelectionStep({ nextStep }: Destinationprops)
               ))}
             </select>
 
-            {/* Region Filter ✅ */}
+            {/* Region Filter */}
             <select
               className="border rounded-lg px-3 border-gray-300 py-[11px] shadow-sm bg-white text-gray-600 cursor-pointer"
               value={selectedRegion}
@@ -179,11 +245,16 @@ export default function DestinationSelectionStep({ nextStep }: Destinationprops)
 
               <div className="p-5">
                 <h3 className="font-bold text-lg text-gray-800 mb-2 truncate">{destination.name}</h3>
-                <p className="text-gray-600 text-sm line-clamp-2 min-h-[3rem]">
-                  {destination.description}
-                </p>
+                
+                {/* Show only number of locations, not tags */}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center text-gray-600 text-sm">
+                    <span className="mr-1">📍</span>
+                    <span>{destination.locations?.length || 0} locations</span>
+                  </div>
+                </div>
 
-                <div className="mt-4">
+                <div className="mt-2">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
