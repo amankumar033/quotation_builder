@@ -1,11 +1,11 @@
-// components/QuotationBuilder/ClientInfoStep.tsx
+"use client";
 import { QuotationData } from '../../quotation-builder/page';
-import { MapPinned, Users, ArrowLeft } from 'lucide-react';
-import { Calendar } from 'lucide-react';
+import { MapPinned, Users, ArrowLeft, Calendar } from 'lucide-react';
 import CustomDatePicker from '../ui/CustomDatePicker';
 import { useQuotation } from "@/context/QuotationContext";
 import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css"; // default styles
+import "react-phone-input-2/lib/style.css";
+
 interface ClientInfoStepProps {
   data: QuotationData;
   updateData: (data: Partial<QuotationData>) => void;
@@ -21,33 +21,24 @@ export default function ClientInfoStep({ data, updateData, nextStep, prevStep }:
     emailAddress, setEmailAddress,
     startDate, setStartDate,
     endDate, setEndDate,
-    travelers, setAdults, setChildren, setInfants
+    travelers, setAdults, setChildren, setInfants,
+    pickupLocation, setPickupLocation
   } = useQuotation();        
 
-
-
-  function print() {
-  console.log("Hello World",clientName,phoneNumber,emailAddress,startDate,endDate,travelers,);
-}
-
-  
-  // Validation functions
   const validateName = (name: string): boolean => {
     return name.length >= 2 && /^[a-zA-Z\s]+$/.test(name);
   };
 
-const validatePhone = (phone: string): boolean => {
-  const digits = phone.replace(/\D/g, '');
-  return digits.length > 0 && digits.length <= 15; // allow 1–15
-};
-
+  const validatePhone = (phone: string): boolean => {
+    const digits = phone.replace(/\D/g, '');
+    return digits.length > 0 && digits.length <= 15;
+  };
 
   const validateEmail = (email: string): boolean => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
   const handleNameChange = (value: string) => {
-    // Only allow letters and spaces
     const filteredValue = value.replace(/[^a-zA-Z\s]/g, '');
     setClientName(filteredValue);
     updateData({
@@ -59,7 +50,6 @@ const validatePhone = (phone: string): boolean => {
   };
 
   const handlePhoneChange = (value: string) => {
-    // Only allow numbers and limit to 15 digits
     const numericValue = value.replace(/\D/g, '').slice(0, 15);
     setPhoneNumber(numericValue);
     updateData({
@@ -80,35 +70,34 @@ const validatePhone = (phone: string): boolean => {
     });
   };
 
-const formatDate = (date: Date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // months are 0-indexed
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`; // "2025-09-27"
-};
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
-const handleStartDateChange = (date: Date | null) => {
-  const dateString = date ? formatDate(date) : "";
-  setStartDate(dateString);
-  updateData({
-    client: {
-      ...data.client,
-      startDate: dateString,
-    },
-  });
-};
+  const handleStartDateChange = (date: Date | null) => {
+    const dateString = date ? formatDate(date) : "";
+    setStartDate(dateString);
+    updateData({
+      client: {
+        ...data.client,
+        startDate: dateString,
+      },
+    });
+  };
 
-const handleEndDateChange = (date: Date | null) => {
-  const dateString = date ? formatDate(date) : "";
-  setEndDate(dateString);
-  updateData({
-    client: {
-      ...data.client,
-      endDate: dateString,
-    },
-  });
-};
-
+  const handleEndDateChange = (date: Date | null) => {
+    const dateString = date ? formatDate(date) : "";
+    setEndDate(dateString);
+    updateData({
+      client: {
+        ...data.client,
+        endDate: dateString,
+      },
+    });
+  };
 
   const handleAdultsChange = (count: number) => {
     setAdults(count);
@@ -140,7 +129,6 @@ const handleEndDateChange = (date: Date | null) => {
     });
   };
 
-  // Get validation states
   const isNameValid = validateName(clientName);
   const isPhoneValid = validatePhone(phoneNumber);
   const isEmailValid = !emailAddress || validateEmail(emailAddress);
@@ -180,33 +168,26 @@ const handleEndDateChange = (date: Date | null) => {
               )}
             </div>
             <div>
-               <div className="w-full">
-      <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
-
-      <PhoneInput
-        country={"in"} // default India
-        value={phoneNumber}
-        onChange={handlePhoneChange}
-        
-        placeholder="+91 9876543210"
-        inputStyle={{
-          width: "100%",
-          height: "48px",
-          borderRadius: "0.5rem",
-          border: isPhoneValid || !phoneNumber ? "1px solid #d1d5db" : "1px solid #ef4444", // red if invalid
-          paddingLeft: "48px", // space for flag
-        }}
-        dropdownStyle={{
-          maxHeight: "250px",
-        }}
-         enableLongNumbers={true} // ✅ allows longer than default
-      />
-
-      {/* Error message */}
-      {/* {phoneNumber && !isPhoneValid && (
-        <p className="text-red-500 text-xs mt-1">Phone must be exactly 10 digits</p>
-      )} */}
-    </div>
+              <div className="w-full">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+                <PhoneInput
+                  country={"in"}
+                  value={phoneNumber}
+                  onChange={handlePhoneChange}
+                  placeholder="+91 9876543210"
+                  inputStyle={{
+                    width: "100%",
+                    height: "48px",
+                    borderRadius: "0.5rem",
+                    border: isPhoneValid || !phoneNumber ? "1px solid #d1d5db" : "1px solid #ef4444",
+                    paddingLeft: "48px",
+                  }}
+                  dropdownStyle={{
+                    maxHeight: "250px",
+                  }}
+                  enableLongNumbers={true}
+                />
+              </div>
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Email Address (optional)</label>
@@ -226,42 +207,55 @@ const handleEndDateChange = (date: Date | null) => {
           </div>
         </section>
 
-        {/* Trip Details Section */}
-        <section className={`${cardClass} w-full md:w-1/2`}>
-          <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-            <span className="shadow-lg bg-green-400 text-white p-2 rounded-lg mr-3">
-              <MapPinned className="h-5 w-5" />
-            </span>
-            Trip Details
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div className='relative'>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Start Date *</label>
-              <CustomDatePicker
-                selectedDate={startDate ? new Date(startDate) : null}
-                onChange={handleStartDateChange}
-                placeholder="dd/MM/yyyy"
-              />
-            </div>
-            <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-1">End Date *</label>
-              <CustomDatePicker
-                selectedDate={endDate ? new Date(endDate) : null}
-                onChange={handleEndDateChange}
-                placeholder="dd/MM/yyyy"
-              />
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Trip Destination *</label>
-              <input
-                type="text"
-                value={selectedDestination?.name || "Maldives"}
-                disabled
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-700 cursor-not-allowed"
-              />
-            </div>
-          </div>
-        </section>
+       {/* Trip Details Section */}
+<section className={`${cardClass} w-full md:w-1/2`}>
+  <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+    <span className="shadow-lg bg-green-400 text-white p-2 rounded-lg mr-3">
+      <MapPinned className="h-5 w-5" />
+    </span>
+    Trip Details
+  </h3>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <div className="relative">
+      <label className="block text-sm font-medium text-gray-700 mb-1">Start Date *</label>
+      <CustomDatePicker
+        selectedDate={startDate ? new Date(startDate) : null}
+        onChange={handleStartDateChange}
+        placeholder="dd/MM/yyyy"
+      />
+    </div>
+    <div className="relative">
+      <label className="block text-sm font-medium text-gray-700 mb-1">End Date *</label>
+      <CustomDatePicker
+        selectedDate={endDate ? new Date(endDate) : null}
+        onChange={handleEndDateChange}
+        placeholder="dd/MM/yyyy"
+      />
+    </div>
+
+    {/* Destination & Pickup in one row */}
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-1">Trip Destination *</label>
+      <input
+        type="text"
+        value={selectedDestination?.name || "Maldives"}
+        disabled
+        className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-700 cursor-not-allowed"
+      />
+    </div>
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-1">Pickup Location</label>
+      <input
+        type="text"
+        value={pickupLocation}
+        onChange={(e) => setPickupLocation(e.target.value)}
+        placeholder="Airport, Railway Station, Hotel, etc."
+        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
+      />
+    </div>
+  </div>
+</section>
+
       </div>
 
       {/* Number of Travelers Section */}
@@ -325,7 +319,6 @@ const handleEndDateChange = (date: Date | null) => {
         <div className="flex justify-end mt-6">
           <button
             onClick={() => {
-              print();
               window.scrollTo({ top: 0, behavior: 'smooth' });
               nextStep();
             }}

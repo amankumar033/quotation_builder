@@ -8,8 +8,6 @@ export interface QuotationData {
   };
 }
 
-
-
 export interface Room {
   id: number;
   type: string;
@@ -47,8 +45,6 @@ export interface Meal {
   hotelId: string;
 }
 
-
-
 export interface DaySelection {
   date: string;
   hotel?: Hotel | null;
@@ -76,8 +72,7 @@ export interface RoomSelection {
   isConfirmed: boolean;
   confirmedAt: string;
 }
-// Add amenities to Hotel interface
-// Add amenities to Hotel interface
+
 export interface Hotel {
   id: string;
   name: string;
@@ -95,18 +90,28 @@ export interface Hotel {
     price: string;
     hotelId: string;
   }[];
-  amenities?: string[]; // Add this line
+  amenities?: string[];
 }
 
-// Make category required in Activity
 export interface Activity {
   id: string;
   name: string;
   description: string;
   price: number;
   duration: string;
-  category: string; // Changed from optional to required
+  category: string;
   image: string;
   photos?: string[];
   agencyId?: string;
+}
+
+export interface TransportRoute {
+  id: string;
+  from: string;
+  to: string;
+  type: 'pickup' | 'transfer' | 'sightseeing' | 'drop';
+  dayNumber: number;
+  vehicle: Transport;
+  price: number;
+  isComplimentary?: boolean;
 }

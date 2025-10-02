@@ -1,8 +1,7 @@
 "use client";
 import { createContext, useContext, useState, ReactNode } from "react";
-import { Meal, Hotel, Transport, Activity, DaySelection, RoomSelection } from "@/types/type";
+import { Meal, Hotel, Transport, Activity, DaySelection, RoomSelection, TransportRoute } from "@/types/type";
 
-// Destination type
 interface Destination {
   id: string;
   name: string;
@@ -11,7 +10,6 @@ interface Destination {
   category: string;
 }
 
-// Room type
 interface Room {
   id: number;
   type: string;
@@ -24,14 +22,12 @@ interface Room {
   photos: string[];
 }
 
-// Travelers type
 interface Travelers {
   adults: number;
   children: number;
   infants: number;
 }
 
-// HotelInfo type
 interface HotelInfo {
   id: string;
   name: string;
@@ -50,7 +46,6 @@ interface HotelInfo {
 }
 
 interface QuotationContextType {
-  // Destination related
   selectedDestination: Destination | null;
   setSelectedDestination: (destination: Destination | null) => void;
   show: boolean;
@@ -60,27 +55,22 @@ interface QuotationContextType {
   totalPackagePrice: number;
   setTotalPackagePrice: (price: number) => void;
   
-  // Package Selection Flow
   packageSelectionStep: 'location' | 'selection';
   setPackageSelectionStep: (step: 'location' | 'selection') => void;
   selectedLocation: string;
   setSelectedLocation: (location: string) => void;
 
-  // Room related
   professionalRooms: Room[];
   setProfessionalRooms: (rooms: Room[]) => void;
 
-  // Hotel Info state
   hotelInfo: HotelInfo[];
   setHotelInfo: (info: HotelInfo[]) => void;
 
-  // Meal selection state - PER DAY
-  dayMeals: Record<string, Meal[]>; // date -> meals
+  dayMeals: Record<string, Meal[]>;
   setDayMeals: (meals: Record<string, Meal[]>) => void;
   updateDayMealQuantity: (date: string, mealId: number, quantity: number, mealData?: Meal) => void;
   clearDayMeals: (date: string) => void;
 
-  // Client information
   clientName: string;
   setClientName: (name: string) => void;
   phoneNumber: string;
@@ -88,7 +78,6 @@ interface QuotationContextType {
   emailAddress: string;
   setEmailAddress: (email: string) => void;
 
-  // Trip details
   startDate: string;
   setStartDate: (date: string) => void;
   endDate: string;
@@ -96,46 +85,50 @@ interface QuotationContextType {
   tripDestination: string;
   setTripDestination: (destination: string) => void;
 
-  // Travelers
   travelers: Travelers;
   setTravelers: (travelers: Travelers) => void;
   setAdults: (count: number) => void;
   setChildren: (count: number) => void;
   setInfants: (count: number) => void;
 
-  // Day Selections
   daySelections: Record<string, DaySelection>;
   setDaySelections: (selections: Record<string, DaySelection>) => void;
   updateDaySelection: (date: string, updates: Partial<DaySelection>) => void;
   getDaySelectionsArray: () => Array<{date: string; data: DaySelection}>;
   areAllDaysCompleted: () => boolean;
 
-  // Current editing day
   currentEditingDay: string | null;
   setCurrentEditingDay: (date: string | null) => void;
 
-  // Current day meals (for meal selection component)
   currentDayMeals: Meal[];
   setCurrentDayMeals: (meals: Meal[]) => void;
   updateCurrentDayMealQuantity: (mealId: number, quantity: number, mealData?: Meal) => void;
 
-  // Price calculation
   calculateDayPrice: (date: string) => { mealPrice: number; roomPrice: number; total: number };
+
+  transportRoutes: TransportRoute[];
+  setTransportRoutes: (routes: TransportRoute[]) => void;
+  addTransportRoute: (route: Omit<TransportRoute, 'id'>) => void;
+  updateTransportRoute: (id: string, updates: Partial<TransportRoute>) => void;
+  deleteTransportRoute: (id: string) => void;
+  getRoutesForDay: (dayNumber: number) => TransportRoute[];
+  addPickupRoute: (pickupLocation: string, hotelName: string) => void;
+  removePickupRoute: () => void;
+
+  pickupLocation: string;
+  setPickupLocation: (location: string) => void;
 }
 
 const QuotationContext = createContext<QuotationContextType | undefined>(undefined);
 
 export function QuotationProvider({ children }: { children: ReactNode }) {
-  // Destination states
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
   const [show, setShow] = useState(true);
   const [totalPackagePrice, setTotalPackagePrice] = useState<number>(0);
   
-  // Package Selection Flow
   const [packageSelectionStep, setPackageSelectionStep] = useState<'location' | 'selection'>('location');
   const [selectedLocation, setSelectedLocation] = useState<string>('');
 
-  // Room states
   const [professionalRooms, setProfessionalRooms] = useState<Room[]>([
     {
       id: 1,
@@ -186,22 +179,82 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     },
   ]);
 
-  // Hotel Info state
   const [hotelInfo, setHotelInfo] = useState<HotelInfo[]>([]);
-
-  // Meal selection state - PER DAY
   const [dayMeals, setDayMeals] = useState<Record<string, Meal[]>>({});
-  
-  // Current day meals for meal selection component
   const [currentDayMeals, setCurrentDayMeals] = useState<Meal[]>([]);
-
-  // Day Selections state
   const [daySelections, setDaySelections] = useState<Record<string, DaySelection>>({});
-  
-  // Current editing day
   const [currentEditingDay, setCurrentEditingDay] = useState<string | null>(null);
+  const [transportRoutes, setTransportRoutes] = useState<TransportRoute[]>([]);
+  const [pickupLocation, setPickupLocation] = useState<string>("");
 
-  // Meal management functions - PER DAY
+  const [clientName, setClientName] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [emailAddress, setEmailAddress] = useState<string>("");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
+  const [tripDestination, setTripDestination] = useState<string>("");
+  const [travelers, setTravelers] = useState<Travelers>({
+    adults: 2,
+    children: 0,
+    infants: 0,
+  });
+
+  // Transport Route Functions
+  const addTransportRoute = (route: Omit<TransportRoute, 'id'>) => {
+    const newRoute: TransportRoute = {
+      ...route,
+      id: `route_${Date.now()}`
+    };
+    setTransportRoutes(prev => [...prev, newRoute]);
+  };
+
+  const updateTransportRoute = (id: string, updates: Partial<TransportRoute>) => {
+    setTransportRoutes(prev => 
+      prev.map(route => route.id === id ? { ...route, ...updates } : route)
+    );
+  };
+
+  const deleteTransportRoute = (id: string) => {
+    setTransportRoutes(prev => prev.filter(route => route.id !== id));
+  };
+
+  const getRoutesForDay = (dayNumber: number): TransportRoute[] => {
+    return transportRoutes.filter(route => route.dayNumber === dayNumber);
+  };
+
+  const addPickupRoute = (pickupLocation: string, hotelName: string) => {
+    const pickupRoute: TransportRoute = {
+      id: `pickup_${Date.now()}`,
+      from: pickupLocation,
+      to: hotelName,
+      type: 'pickup',
+      dayNumber: 1,
+      vehicle: {
+        id: 0,
+        name: "Complimentary Pickup",
+        type: "Pickup Service",
+        capacity: travelers.adults + travelers.children,
+        price: 0,
+        features: ["Complimentary", "Professional Driver"],
+        image: "",
+        passengers: travelers.adults + travelers.children,
+        perDay: 0,
+        perKm: 0,
+        photos: "",
+        maxCapacity: travelers.adults + travelers.children,
+        vehicleType: "Pickup"
+      },
+      price: 0,
+      isComplimentary: true
+    };
+    setTransportRoutes(prev => [pickupRoute, ...prev]);
+  };
+
+  const removePickupRoute = () => {
+    setTransportRoutes(prev => prev.filter(route => !route.isComplimentary));
+  };
+
+  // Meal Functions
   const updateDayMealQuantity = (date: string, mealId: number, quantity: number, mealData?: Meal): void => {
     setDayMeals(prev => {
       const currentMeals = prev[date] || [];
@@ -238,7 +291,6 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     }));
   };
 
-  // Current day meal management (for meal selection component)
   const updateCurrentDayMealQuantity = (mealId: number, quantity: number, mealData?: Meal): void => {
     if (!currentEditingDay) return;
     
@@ -247,16 +299,13 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
       
       if (existingIndex >= 0) {
         if (quantity === 0) {
-          // Remove meal if quantity is 0
           return prev.filter((meal: Meal) => meal.id !== mealId);
         } else {
-          // Update quantity
           const updated = [...prev];
           updated[existingIndex] = { ...updated[existingIndex], quantity };
           return updated;
         }
       } else if (mealData && quantity > 0) {
-        // Add new meal
         return [...prev, { ...mealData, quantity }];
       }
       
@@ -264,7 +313,7 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  // Calculate total price for day
+  // Day Selection Functions
   const calculateDayPrice = (date: string): { mealPrice: number; roomPrice: number; total: number } => {
     const day = daySelections[date];
     const meals = dayMeals[date] || [];
@@ -279,16 +328,15 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     };
   };
 
-  // Day selection management
   const updateDaySelection = (date: string, updates: Partial<DaySelection>): void => {
     setDaySelections(prev => ({
       ...prev,
       [date]: {
         ...prev[date],
         ...updates,
-        isCompleted: !!(updates.hotel !== undefined ? updates.hotel : prev[date]?.hotel) && 
-                     !!(updates.transports !== undefined ? updates.transports : prev[date]?.transports) && 
-                     !!((updates.activities !== undefined ? updates.activities : prev[date]?.activities)?.length > 0)
+        isCompleted: !!(updates.hotel ?? prev[date]?.hotel) && 
+                     !!(updates.transports ?? prev[date]?.transports) && 
+                     !!((updates.activities ?? prev[date]?.activities)?.length > 0)
       }
     }));
   };
@@ -305,24 +353,7 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     return days.length > 0 && days.every(day => day.isCompleted);
   };
 
-  // Client information
-  const [clientName, setClientName] = useState<string>("");
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
-  const [emailAddress, setEmailAddress] = useState<string>("");
-
-  // Trip details
-  const [startDate, setStartDate] = useState<string>("");
-  const [endDate, setEndDate] = useState<string>("");
-  const [tripDestination, setTripDestination] = useState<string>("");
-
-  // Travelers
-  const [travelers, setTravelers] = useState<Travelers>({
-    adults: 2,
-    children: 0,
-    infants: 0,
-  });
-
-  // Helpers
+  // Traveler Functions
   const setAdults = (count: number): void => {
     setTravelers((prev) => ({ ...prev, adults: count }));
   };
@@ -335,6 +366,7 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     setTravelers((prev) => ({ ...prev, infants: count }));
   };
 
+  // Destination Functions
   const openDestination = (destination: Destination): void => {
     setSelectedDestination(destination);
     setShow(true);
@@ -345,82 +377,82 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     setSelectedDestination(null);
   };
 
+  const value: QuotationContextType = {
+    selectedDestination,
+    setSelectedDestination,
+    show,
+    setShow,
+    openDestination,
+    closeDestination,
+    totalPackagePrice,
+    setTotalPackagePrice,
+    
+    packageSelectionStep,
+    setPackageSelectionStep,
+    selectedLocation,
+    setSelectedLocation,
+
+    professionalRooms,
+    setProfessionalRooms,
+
+    hotelInfo,
+    setHotelInfo,
+
+    dayMeals,
+    setDayMeals,
+    updateDayMealQuantity,
+    clearDayMeals,
+
+    clientName,
+    setClientName,
+    phoneNumber,
+    setPhoneNumber,
+    emailAddress,
+    setEmailAddress,
+
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    tripDestination,
+    setTripDestination,
+
+    travelers,
+    setTravelers,
+    setAdults,
+    setChildren,
+    setInfants,
+
+    daySelections,
+    setDaySelections,
+    updateDaySelection,
+    getDaySelectionsArray,
+    areAllDaysCompleted,
+
+    currentEditingDay,
+    setCurrentEditingDay,
+
+    currentDayMeals,
+    setCurrentDayMeals,
+    updateCurrentDayMealQuantity,
+
+    calculateDayPrice,
+
+    transportRoutes,
+    setTransportRoutes,
+    addTransportRoute,
+    updateTransportRoute,
+    deleteTransportRoute,
+    getRoutesForDay,
+    addPickupRoute,
+    removePickupRoute,
+
+    pickupLocation,
+    setPickupLocation,
+  };
+
   return (
-    <QuotationContext.Provider
-      value={{
-        // Destination
-        selectedDestination,
-        setSelectedDestination,
-        show,
-        setShow,
-        openDestination,
-        closeDestination,
-        totalPackagePrice,
-        setTotalPackagePrice,
-        
-        // Package Selection Flow
-        packageSelectionStep,
-        setPackageSelectionStep,
-        selectedLocation,
-        setSelectedLocation,
-
-        // Rooms
-        professionalRooms,
-        setProfessionalRooms,
-
-        // Hotels
-        hotelInfo,
-        setHotelInfo,
-
-        // Meals - PER DAY
-        dayMeals,
-        setDayMeals,
-        updateDayMealQuantity,
-        clearDayMeals,
-
-        // Client
-        clientName,
-        setClientName,
-        phoneNumber,
-        setPhoneNumber,
-        emailAddress,
-        setEmailAddress,
-
-        // Trip
-        startDate,
-        setStartDate,
-        endDate,
-        setEndDate,
-        tripDestination,
-        setTripDestination,
-
-        // Travelers
-        travelers,
-        setTravelers,
-        setAdults,
-        setChildren,
-        setInfants,
-
-        // Day Selections
-        daySelections,
-        setDaySelections,
-        updateDaySelection,
-        getDaySelectionsArray,
-        areAllDaysCompleted,
-
-        // Current editing day
-        currentEditingDay,
-        setCurrentEditingDay,
-
-        // Current day meals
-        currentDayMeals,
-        setCurrentDayMeals,
-        updateCurrentDayMealQuantity,
-
-        // Price calculation
-        calculateDayPrice,
-      }}
-    >
+    <QuotationContext.Provider value={value}>
       {children}
     </QuotationContext.Provider>
   );
