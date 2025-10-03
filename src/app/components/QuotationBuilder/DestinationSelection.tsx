@@ -237,9 +237,11 @@ export default function DestinationSelectionStep({ nextStep }: DestinationProps)
                     <span>{getCategoryIcon(destination.category)}</span>
                     {destination.category}
                   </span>
-                  <span className="px-3 py-1 bg-white text-gray-600 rounded-full text-center text-xs font-medium shadow-sm">
-                    {destination.region}
-                  </span>
+                <span className="px-3 py-1 bg-white text-gray-600 rounded-full text-center text-xs font-medium shadow-sm flex items-center gap-1">
+  {destination.region === "Domestic" ? "🏠" : "🌍"}
+  {destination.region}
+</span>
+
                 </div>
               </div>
 

@@ -1,8 +1,9 @@
 // components/QuotationBuilder/CustomizationStep.tsx
 import { QuotationData } from '../../quotation-builder/page';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAgencySettings } from '@/context/AgencySettingsContext';
 import { useQuotation } from '@/context/QuotationContext';
+
 interface CustomizationStepProps {
   data: QuotationData;
   updateData: (data: Partial<QuotationData>) => void;
@@ -14,7 +15,7 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
   const { agencySettings } = useAgencySettings();
   const [isEditingPricing, setIsEditingPricing] = useState(false);
   const [isEditingGrandTotal, setIsEditingGrandTotal] = useState(false);
-  const { totalPackagePrice } = useQuotation();
+  const { totalPackagePrice, exportQuotationData, quotationData, updateQuotationData } = useQuotation();
   const [tempPricing, setTempPricing] = useState({
     markupPercentage: 0,
     gstPercentage: 0,
@@ -36,8 +37,21 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
 • Late payments subject to 1.5% monthly interest`
   };
 
+  // Initialize with context data
+  useEffect(() => {
+    updateData({
+      ...quotationData,
+      markupPercentage: quotationData.markupPercentage || safeAgencySettings.pricing.markupPercentage,
+      discountAmount: quotationData.discountAmount || 0,
+      paymentTerms: quotationData.paymentTerms || safeAgencySettings.paymentTerms,
+      termsConditions: quotationData.termsConditions || safeAgencySettings.termsConditions
+    });
+  }, []);
+
   const handleInputChange = (field: string, value: any) => {
-    updateData({ [field]: value });
+    const updatedData = { [field]: value };
+    updateData(updatedData);
+    updateQuotationData(updatedData);
   };
 
   const startEditingPricing = () => {
@@ -50,10 +64,12 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
   };
 
   const savePricing = () => {
-    updateData({
+    const updates = {
       markupPercentage: tempPricing.markupPercentage,
       discountAmount: tempPricing.discountAmount
-    });
+    };
+    updateData(updates);
+    updateQuotationData(updates);
     setIsEditingPricing(false);
   };
 
@@ -74,15 +90,15 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
     const discountAmount = data.discountAmount || 0;
     
     // Calculate required markup to achieve the desired grand total
-    // Formula: grandTotal = (subtotal + markup) * (1 + gstPercentage/100) - discountAmount
-    // Rearranged: markup = ((grandTotal + discountAmount) / (1 + gstPercentage/100)) - subtotal
     const requiredTaxable = (tempGrandTotal + discountAmount) / (1 + gstPercentage / 100);
     const requiredMarkup = requiredTaxable - subtotal;
     const requiredMarkupPercentage = subtotal > 0 ? (requiredMarkup / subtotal) * 100 : 0;
 
-    updateData({
+    const updates = {
       markupPercentage: Math.max(0, requiredMarkupPercentage)
-    });
+    };
+    updateData(updates);
+    updateQuotationData(updates);
     setIsEditingGrandTotal(false);
   };
 
@@ -118,6 +134,15 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
   // Calculate the difference when editing grand total
   const grandTotalDifference = tempGrandTotal - grandTotal;
   const adjustedMarkupPercentage = subtotal > 0 ? ((tempGrandTotal + discountAmount) / (1 + gstPercentage / 100) - subtotal) / subtotal * 100 : 0;
+
+  const handleContinue = () => {
+    // Export and log all quotation data
+    exportQuotationData();
+    
+    // Scroll to top and proceed
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    nextStep();
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
@@ -205,31 +230,31 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
               {/* Subtotal */}
               <div className="flex justify-between items-center px-4 py-3 hover:bg-gray-50">
                 <span className="text-gray-700">Subtotal</span>
-                <span className="font-medium">₹{subtotal}</span>
+                <span className="font-medium">₹{subtotal.toLocaleString()}</span>
               </div>
 
               {/* Markup */}
               <div className="flex justify-between items-center px-4 py-3 bg-gray-50 hover:bg-gray-100">
                 <span className="text-gray-700">Markup</span>
-                <span className="font-medium text-blue-600">{markupPercentage.toFixed(1)}% (₹{markup.toFixed(2)})</span>
+                <span className="font-medium text-blue-600">{markupPercentage.toFixed(1)}% (₹{markup.toLocaleString()})</span>
               </div>
 
               {/* Taxable Amount */}
               <div className="flex justify-between items-center px-4 py-3 hover:bg-gray-50">
                 <span className="text-gray-700">Taxable Amount</span>
-                <span className="font-medium">₹{taxable.toFixed(2)}</span>
+                <span className="font-medium">₹{taxable.toLocaleString()}</span>
               </div>
 
               {/* GST */}
               <div className="flex justify-between items-center px-4 py-3 bg-gray-50 hover:bg-gray-100">
                 <span className="text-gray-700">GST</span>
-                <span className="font-medium">{gstPercentage}% (₹{gst.toFixed(2)})</span>
+                <span className="font-medium">{gstPercentage}% (₹{gst.toLocaleString()})</span>
               </div>
 
               {/* Discount */}
               <div className="flex justify-between items-center px-4 py-3 hover:bg-gray-50">
                 <span className="text-gray-700">Discount</span>
-                <span className="font-medium text-green-600">-₹{discountAmount.toFixed(2)}</span>
+                <span className="font-medium text-green-600">-₹{discountAmount.toLocaleString()}</span>
               </div>
 
               {/* Grand Total */}
@@ -248,7 +273,7 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
                     </button>
                   )}
                 </div>
-                <span className="text-xl font-bold text-blue-800">₹{grandTotal.toFixed(2)}</span>
+                <span className="text-xl font-bold text-blue-800">₹{grandTotal.toLocaleString()}</span>
               </div>
             </div>
           )}
@@ -357,12 +382,12 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
                 <div className="p-3 bg-white rounded border">
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-gray-600">Current Grand Total:</span>
-                    <span className="font-medium">₹{grandTotal.toFixed(2)}</span>
+                    <span className="font-medium">₹{grandTotal.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between items-center text-sm mt-1">
                     <span className="text-gray-600">Difference:</span>
                     <span className={`font-medium ${grandTotalDifference >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                      {grandTotalDifference >= 0 ? '+' : ''}₹{grandTotalDifference.toFixed(2)}
+                      {grandTotalDifference >= 0 ? '+' : ''}₹{grandTotalDifference.toLocaleString()}
                     </span>
                   </div>
                   <div className="flex justify-between items-center text-sm mt-1">
@@ -402,10 +427,7 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
           </button>
          
           <button
-            onClick={()=>{
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-              nextStep();
-            }}
+            onClick={handleContinue}
             className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium shadow-sm"
           >
             Continue to Review →
