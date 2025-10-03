@@ -1,6 +1,6 @@
 "use client";
-import { createContext, useContext, useState, ReactNode } from "react";
-import { Meal, Hotel, Transport, Activity, DaySelection, RoomSelection, TransportRoute, Destination, DayItinerary } from "@/types/type";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { Meal, Hotel, Transport, Activity, DaySelection, RoomSelection, TransportRoute, Destination, DayItinerary, QuotationData, ServiceItem } from "@/types/type";
 
 interface Room {
   id: number;
@@ -38,15 +38,15 @@ interface HotelInfo {
 }
 
 interface QuotationContextType {
+  // Destination & Location
   selectedDestination: Destination | null;
   setSelectedDestination: (destination: Destination | null) => void;
   show: boolean;
   setShow: (show: boolean) => void;
   openDestination: (destination: Destination) => void;
   closeDestination: () => void;
-  totalPackagePrice: number;
-  setTotalPackagePrice: (price: number) => void;
   
+  // Package Selection Steps
   packageSelectionStep: 'location' | 'selection';
   setPackageSelectionStep: (step: 'location' | 'selection') => void;
   selectedLocation: string;
@@ -54,17 +54,19 @@ interface QuotationContextType {
   isLocationSelected: boolean;
   setIsLocationSelected: (selected: boolean) => void;
 
+  // Rooms & Hotels
   professionalRooms: Room[];
   setProfessionalRooms: (rooms: Room[]) => void;
-
   hotelInfo: HotelInfo[];
   setHotelInfo: (info: HotelInfo[]) => void;
 
+  // Meals
   dayMeals: Record<string, Meal[]>;
   setDayMeals: (meals: Record<string, Meal[]>) => void;
   updateDayMealQuantity: (date: string, mealId: number, quantity: number, mealData?: Meal) => void;
   clearDayMeals: (date: string) => void;
 
+  // Client Information
   clientName: string;
   setClientName: (name: string) => void;
   phoneNumber: string;
@@ -72,6 +74,7 @@ interface QuotationContextType {
   emailAddress: string;
   setEmailAddress: (email: string) => void;
 
+  // Trip Details
   startDate: string;
   setStartDate: (date: string) => void;
   endDate: string;
@@ -79,27 +82,37 @@ interface QuotationContextType {
   tripDestination: string;
   setTripDestination: (destination: string) => void;
 
+  // Travelers
   travelers: Travelers;
   setTravelers: (travelers: Travelers) => void;
   setAdults: (count: number) => void;
   setChildren: (count: number) => void;
   setInfants: (count: number) => void;
 
+  // Day Selections
   daySelections: Record<string, DaySelection>;
   setDaySelections: (selections: Record<string, DaySelection>) => void;
   updateDaySelection: (date: string, updates: Partial<DaySelection>) => void;
   getDaySelectionsArray: () => Array<{date: string; data: DaySelection}>;
   areAllDaysCompleted: () => boolean;
+  getCompletionStatus: () => { isComplete: boolean; completedDays: number; totalDays: number; message: string };
+  debugDayCompletions: () => void;
 
+  // Current Editing Day
   currentEditingDay: string | null;
   setCurrentEditingDay: (date: string | null) => void;
 
+  // Current Day Meals
   currentDayMeals: Meal[];
   setCurrentDayMeals: (meals: Meal[]) => void;
   updateCurrentDayMealQuantity: (mealId: number, quantity: number, mealData?: Meal) => void;
 
+  // Pricing
+  totalPackagePrice: number;
+  setTotalPackagePrice: (price: number) => void;
   calculateDayPrice: (date: string) => { mealPrice: number; roomPrice: number; total: number };
 
+  // Transport
   transportRoutes: TransportRoute[];
   setTransportRoutes: (routes: TransportRoute[]) => void;
   addTransportRoute: (route: Omit<TransportRoute, 'id'>) => void;
@@ -108,24 +121,29 @@ interface QuotationContextType {
   getRoutesForDay: (dayNumber: number) => TransportRoute[];
   addPickupRoute: (pickupLocation: string, hotelName: string) => void;
   removePickupRoute: () => void;
-
   pickupLocation: string;
   setPickupLocation: (location: string) => void;
 
-  // New: Custom Activities
+  // Custom Activities
   customActivities: Activity[];
   setCustomActivities: (activities: Activity[]) => void;
   addCustomActivity: (activity: Omit<Activity, 'id'>) => void;
   updateCustomActivity: (id: string, updates: Partial<Activity>) => void;
   deleteCustomActivity: (id: string) => void;
 
-  // New: Day Itinerary
+  // Day Itinerary
   dayItineraries: DayItinerary[];
   setDayItineraries: (itineraries: DayItinerary[]) => void;
   addDayItinerary: (itinerary: Omit<DayItinerary, 'id'>) => void;
   updateDayItinerary: (id: string, updates: Partial<DayItinerary>) => void;
   deleteDayItinerary: (id: string) => void;
   getItineraryForDay: (dayNumber: number) => DayItinerary | undefined;
+
+  // Complete Quotation Data Management
+  quotationData: QuotationData;
+  setQuotationData: (data: QuotationData) => void;
+  updateQuotationData: (updates: Partial<QuotationData>) => void;
+  exportQuotationData: () => any;
 
   // Helper for all days
   allDays: Array<{date: string; data: DaySelection}>;
@@ -134,14 +152,17 @@ interface QuotationContextType {
 const QuotationContext = createContext<QuotationContextType | undefined>(undefined);
 
 export function QuotationProvider({ children }: { children: ReactNode }) {
+  // Destination & Location State
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
   const [show, setShow] = useState(true);
-  const [totalPackagePrice, setTotalPackagePrice] = useState<number>(0);
-  
   const [packageSelectionStep, setPackageSelectionStep] = useState<'location' | 'selection'>('location');
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [isLocationSelected, setIsLocationSelected] = useState<boolean>(false);
 
+  // Pricing State
+  const [totalPackagePrice, setTotalPackagePrice] = useState<number>(0);
+
+  // Rooms & Hotels State
   const [professionalRooms, setProfessionalRooms] = useState<Room[]>([
     {
       id: 1,
@@ -193,30 +214,259 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
   ]);
 
   const [hotelInfo, setHotelInfo] = useState<HotelInfo[]>([]);
+
+  // Meals State
   const [dayMeals, setDayMeals] = useState<Record<string, Meal[]>>({});
   const [currentDayMeals, setCurrentDayMeals] = useState<Meal[]>([]);
-  const [daySelections, setDaySelections] = useState<Record<string, DaySelection>>({});
-  const [currentEditingDay, setCurrentEditingDay] = useState<string | null>(null);
-  const [transportRoutes, setTransportRoutes] = useState<TransportRoute[]>([]);
-  const [pickupLocation, setPickupLocation] = useState<string>("");
 
-  // New state for custom activities
-  const [customActivities, setCustomActivities] = useState<Activity[]>([]);
-  
-  // New state for day itineraries
-  const [dayItineraries, setDayItineraries] = useState<DayItinerary[]>([]);
-
+  // Client Information State
   const [clientName, setClientName] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [emailAddress, setEmailAddress] = useState<string>("");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [tripDestination, setTripDestination] = useState<string>("");
+
+  // Travelers State
   const [travelers, setTravelers] = useState<Travelers>({
     adults: 2,
     children: 0,
     infants: 0,
   });
+
+  // Day Selections State
+  const [daySelections, setDaySelections] = useState<Record<string, DaySelection>>({});
+  const [currentEditingDay, setCurrentEditingDay] = useState<string | null>(null);
+
+  // Transport State
+  const [transportRoutes, setTransportRoutes] = useState<TransportRoute[]>([]);
+  const [pickupLocation, setPickupLocation] = useState<string>("");
+
+  // Custom Activities State
+  const [customActivities, setCustomActivities] = useState<Activity[]>([]);
+  
+  // Day Itineraries State
+  const [dayItineraries, setDayItineraries] = useState<DayItinerary[]>([]);
+
+  // Complete Quotation Data State
+  const [quotationData, setQuotationData] = useState<QuotationData>({
+    client: {
+      name: "",
+      phone: "",
+      email: "",
+      destination: "",
+      startDate: "",
+      endDate: "",
+      adults: 2,
+      children: 0,
+      infants: 0,
+    },
+    trip: {
+      destination: "",
+      startDate: "",
+      endDate: "",
+      adults: 2,
+      children: 0,
+      infants: 0,
+      duration: 0,
+      quoteNumber: `TQ-${new Date().getFullYear()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
+    },
+    services: [],
+    markupPercentage: 15,
+    termsConditions: "",
+    specialNotes: "",
+    agencyLogo: null,
+    discountAmount: 0,
+    paymentTerms: "Net 30",
+    contactInfo: "",
+    agencyName: "TravelPro Agency",
+    quoteNumber: `TQ-${new Date().getFullYear()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
+  });
+
+  // Update quotation data when context data changes
+  useEffect(() => {
+    updateQuotationData({
+      client: {
+        name: clientName,
+        phone: phoneNumber,
+        email: emailAddress,
+        destination: tripDestination,
+        startDate: startDate,
+        endDate: endDate,
+        adults: travelers.adults,
+        children: travelers.children,
+        infants: travelers.infants,
+      },
+      trip: {
+        destination: tripDestination,
+        startDate: startDate,
+        endDate: endDate,
+        adults: travelers.adults,
+        children: travelers.children,
+        infants: travelers.infants,
+        duration: calculateTripDuration(),
+        quoteNumber: quotationData.trip.quoteNumber
+      }
+    });
+  }, [clientName, phoneNumber, emailAddress, tripDestination, startDate, endDate, travelers]);
+
+  // Calculate trip duration
+  const calculateTripDuration = (): number => {
+    if (!startDate || !endDate) return 0;
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    return Math.max(1, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
+  };
+
+  // Update quotation data
+  const updateQuotationData = (updates: Partial<QuotationData>) => {
+    setQuotationData(prev => ({
+      ...prev,
+      ...updates,
+      client: { ...prev.client, ...(updates.client || {}) },
+      trip: { ...prev.trip, ...(updates.trip || {}) }
+    }));
+  };
+
+  // Export all quotation data for logging and use
+  const exportQuotationData = () => {
+    // Calculate services array from day selections
+    const services: ServiceItem[] = Object.entries(daySelections).flatMap(([date, dayData]) => {
+      const dayServices: ServiceItem[] = [];
+      
+      // Hotel service
+      if (dayData.hotel && dayData.roomSelections && dayData.roomSelections.length > 0) {
+        const roomSelection = dayData.roomSelections[0];
+        const room = professionalRooms.find(r => r.id === roomSelection.roomId);
+        dayServices.push({
+          id: `hotel-${date}`,
+          name: `${dayData.hotel.name} - ${room?.type || 'Room'}`,
+          type: 'hotel',
+          price: roomSelection.totalPrice,
+          quantity: 1,
+          details: {
+            hotel: dayData.hotel,
+            roomSelection,
+            date
+          }
+        });
+      }
+
+      // Transport service
+      if (dayData.transports) {
+        dayServices.push({
+          id: `transport-${date}`,
+          name: dayData.transports.name,
+          type: 'car',
+          price: dayData.transports.price || 0,
+          quantity: 1,
+          details: {
+            transport: dayData.transports,
+            date
+          }
+        });
+      }
+
+      // Meal services
+      const dayMealsForDate = dayMeals[date] || [];
+      dayMealsForDate.forEach(meal => {
+        if (meal.quantity > 0) {
+          dayServices.push({
+            id: `meal-${date}-${meal.id}`,
+            name: meal.name,
+            type: 'meal',
+            price: meal.price * meal.quantity,
+            quantity: meal.quantity,
+            details: {
+              meal,
+              date
+            }
+          });
+        }
+      });
+
+      // Activity services
+      if (dayData.activities) {
+        dayData.activities.forEach(activity => {
+          dayServices.push({
+            id: `activity-${date}-${activity.id}`,
+            name: activity.name,
+            type: 'activity',
+            price: activity.price,
+            quantity: 1,
+            details: {
+              activity,
+              date
+            }
+          });
+        });
+      }
+
+      return dayServices;
+    });
+
+    const allData = {
+      // Complete quotation data
+      quotationData: {
+        ...quotationData,
+        services,
+        totalPackagePrice,
+        selectedHotel: daySelections[Object.keys(daySelections)[0]]?.hotel?.name || null,
+        selectedVehicle: transportRoutes[0]?.vehicle?.name || null,
+        selectedMealIds: Object.values(dayMeals).flat().map(meal => meal.id.toString()),
+        selectedActivityIds: Object.values(daySelections).flatMap(day => day.activities?.map(act => act.id) || []),
+        itinerary: dayItineraries
+      },
+      
+      // Individual sections for detailed logging
+      clientInfo: {
+        name: clientName,
+        phone: phoneNumber,
+        email: emailAddress,
+        destination: tripDestination
+      },
+      
+      tripDetails: {
+        startDate,
+        endDate,
+        duration: calculateTripDuration(),
+        travelers
+      },
+      
+      destinationInfo: {
+        selectedDestination,
+        selectedLocation
+      },
+      
+      packageSelection: {
+        daySelections,
+        totalDays: Object.keys(daySelections).length,
+        completedDays: Object.values(daySelections).filter(day => !!day.hotel).length
+      },
+      
+      transport: {
+        routes: transportRoutes,
+        totalRoutes: transportRoutes.length,
+        totalCost: transportRoutes.reduce((sum, route) => sum + (route.price || 0), 0)
+      },
+      
+      activities: {
+        customActivities,
+        dayItineraries,
+        totalActivities: customActivities.length + dayItineraries.length
+      },
+      
+      pricing: {
+        totalPackagePrice,
+        markupPercentage: quotationData.markupPercentage,
+        discountAmount: quotationData.discountAmount,
+        calculatedTotal: totalPackagePrice
+      }
+    };
+    
+    console.log("=== COMPLETE QUOTATION DATA ===", allData);
+    return allData;
+  };
 
   // Custom Activities Functions
   const addCustomActivity = (activity: Omit<Activity, 'id'>) => {
@@ -396,9 +646,8 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
       [date]: {
         ...prev[date],
         ...updates,
-        isCompleted: !!(updates.hotel ?? prev[date]?.hotel) && 
-                     !!(updates.transports ?? prev[date]?.transports) && 
-                     !!((updates.activities ?? prev[date]?.activities)?.length > 0)
+        // Only require hotel for completion
+        isCompleted: !!(updates.hotel ?? prev[date]?.hotel)
       }
     }));
   };
@@ -410,9 +659,57 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     }));
   };
 
+  // FIXED: Only require hotels for completion
   const areAllDaysCompleted = (): boolean => {
     const days = Object.values(daySelections);
-    return days.length > 0 && days.every(day => day.isCompleted);
+    return days.length > 0 && days.every(day => !!day.hotel);
+  };
+
+  // New: Better completion status with detailed info
+  const getCompletionStatus = () => {
+    const days = Object.values(daySelections);
+    const totalDays = days.length;
+    
+    if (totalDays === 0) {
+      return {
+        isComplete: false,
+        completedDays: 0,
+        totalDays: 0,
+        message: "No days configured"
+      };
+    }
+
+    const completedDays = days.filter(day => !!day.hotel).length;
+    const isComplete = completedDays === totalDays;
+
+    return {
+      isComplete,
+      completedDays,
+      totalDays,
+      message: isComplete 
+        ? "All days have hotels configured" 
+        : `${completedDays}/${totalDays} days have hotels configured`
+    };
+  };
+
+  // Debug function to check what's missing
+  const debugDayCompletions = () => {
+    const days = getDaySelectionsArray();
+    console.log("=== DAY COMPLETION DEBUG ===");
+    days.forEach(({ date, data }, index) => {
+      console.log(`Day ${index + 1} (${date}):`, {
+        hasHotel: !!data.hotel,
+        hotelName: data.hotel?.name,
+        hasTransport: !!data.transports,
+        transportName: data.transports?.name,
+        hasActivities: !!(data.activities && data.activities.length > 0),
+        activitiesCount: data.activities?.length,
+        isCompleted: data.isCompleted
+      });
+    });
+    
+    const completionStatus = getCompletionStatus();
+    console.log("Overall Completion:", completionStatus);
   };
 
   // Traveler Functions
@@ -443,15 +740,15 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
   const allDays = getDaySelectionsArray();
 
   const value: QuotationContextType = {
+    // Destination & Location
     selectedDestination,
     setSelectedDestination,
     show,
     setShow,
     openDestination,
     closeDestination,
-    totalPackagePrice,
-    setTotalPackagePrice,
     
+    // Package Selection Steps
     packageSelectionStep,
     setPackageSelectionStep,
     selectedLocation,
@@ -459,17 +756,23 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     isLocationSelected,
     setIsLocationSelected,
 
+    // Pricing
+    totalPackagePrice,
+    setTotalPackagePrice,
+
+    // Rooms & Hotels
     professionalRooms,
     setProfessionalRooms,
-
     hotelInfo,
     setHotelInfo,
 
+    // Meals
     dayMeals,
     setDayMeals,
     updateDayMealQuantity,
     clearDayMeals,
 
+    // Client Information
     clientName,
     setClientName,
     phoneNumber,
@@ -477,6 +780,7 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     emailAddress,
     setEmailAddress,
 
+    // Trip Details
     startDate,
     setStartDate,
     endDate,
@@ -484,27 +788,35 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     tripDestination,
     setTripDestination,
 
+    // Travelers
     travelers,
     setTravelers,
     setAdults,
     setChildren,
     setInfants,
 
+    // Day Selections
     daySelections,
     setDaySelections,
     updateDaySelection,
     getDaySelectionsArray,
     areAllDaysCompleted,
+    getCompletionStatus,
+    debugDayCompletions,
 
+    // Current Editing Day
     currentEditingDay,
     setCurrentEditingDay,
 
+    // Current Day Meals
     currentDayMeals,
     setCurrentDayMeals,
     updateCurrentDayMealQuantity,
 
+    // Pricing Calculation
     calculateDayPrice,
 
+    // Transport
     transportRoutes,
     setTransportRoutes,
     addTransportRoute,
@@ -513,24 +825,29 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     getRoutesForDay,
     addPickupRoute,
     removePickupRoute,
-
     pickupLocation,
     setPickupLocation,
 
-    // New: Custom Activities
+    // Custom Activities
     customActivities,
     setCustomActivities,
     addCustomActivity,
     updateCustomActivity,
     deleteCustomActivity,
 
-    // New: Day Itinerary
+    // Day Itinerary
     dayItineraries,
     setDayItineraries,
     addDayItinerary,
     updateDayItinerary,
     deleteDayItinerary,
     getItineraryForDay,
+
+    // Complete Quotation Data Management
+    quotationData,
+    setQuotationData,
+    updateQuotationData,
+    exportQuotationData,
 
     // Helper for all days
     allDays,

@@ -1,3 +1,4 @@
+// types/type.ts
 export interface Destination {
   id: string;
   name: string;
@@ -209,4 +210,5 @@ export interface DayItinerary {
   transport: string;
   approximateDistance?: string;
   approximateTime?: string;
+  image?: string;
 }
