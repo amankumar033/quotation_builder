@@ -6,10 +6,8 @@ import { useQuotation } from "@/context/QuotationContext";
 import HotelSection from "./PackageSelection/HotelSection";
 import TransportSection from "./PackageSelection/TransportSection";
 import ActivitiesSection from "./PackageSelection/ActivitySection";
-import AddActivityAccordion from "./PackageSelection/AddActivityModal";
-import { ChevronLeft, Calendar, MapPin, Building, Car, Map, CheckCircle } from "lucide-react";
 import DayItinerarySection from "./PackageSelection/DayItinerarySection";
-
+import { ChevronLeft, Calendar, MapPin, Building, Car, Map, CheckCircle } from "lucide-react";
 
 interface PackageSelectionStepProps {
   data: QuotationData;
@@ -30,7 +28,6 @@ export default function PackageSelectionStep({
   const [isHotelLoading, setIsHotelLoading] = useState(true);
   const [isTransportLoading, setIsTransportLoading] = useState(true);
   const [isActivitiesLoading, setIsActivitiesLoading] = useState(true);
-  const [showAddActivity, setShowAddActivity] = useState(false);
   const [activeSections, setActiveSections] = useState({
     hotel: true,
     transport: false,
@@ -44,8 +41,13 @@ export default function PackageSelectionStep({
     daySelections, 
     setDaySelections,
     areAllDaysCompleted,
-    setTotalPackagePrice
+    getCompletionStatus,
+    debugDayCompletions,
+    setTotalPackagePrice,
+    exportQuotationData
   } = useQuotation();
+
+  const completionStatus = getCompletionStatus();
 
   // Initialize day selections when dates change
   useEffect(() => {
@@ -162,11 +164,17 @@ export default function PackageSelectionStep({
   };
 
   const handleContinue = () => {
-    if (!areAllDaysCompleted()) {
-      alert('Please complete all day selections before continuing.');
+    // Debug: Check what's missing
+    debugDayCompletions();
+    
+    if (!completionStatus.isComplete) {
+      alert(`Please configure hotels for all days. ${completionStatus.message}`);
       return;
     }
 
+    // Export and log all data
+    exportQuotationData();
+    
     const daySelectionsArray = Object.entries(daySelections);
     daySelectionsArray.forEach(([date, data]) => {
       const formattedDate = new Date(date).toLocaleDateString('en-GB').replace(/\//g, '-');
@@ -188,7 +196,6 @@ export default function PackageSelectionStep({
   }));
 
   const totalPrice = calculateTotalPrice();
-  const completedDays = Object.values(daySelections).filter(day => day.isCompleted).length;
   const totalDays = Object.keys(daySelections).length;
   
   useEffect(() => {
@@ -236,7 +243,7 @@ export default function PackageSelectionStep({
               <div>
                 <div className="text-sm text-gray-500">Hotels Configured</div>
                 <div className="font-semibold text-gray-900">
-                  {completedDays}/{totalDays} Days
+                  {completionStatus.completedDays}/{completionStatus.totalDays} Days
                 </div>
               </div>
             </div>
@@ -248,7 +255,7 @@ export default function PackageSelectionStep({
               <div>
                 <div className="text-sm text-gray-500">Status</div>
                 <div className="font-semibold text-gray-900">
-                  {areAllDaysCompleted() ? 'Ready to Continue' : 'In Progress'}
+                  {completionStatus.isComplete ? 'Ready to Continue' : 'In Progress'}
                 </div>
               </div>
             </div>
@@ -263,15 +270,18 @@ export default function PackageSelectionStep({
                 Package Completion
               </span>
               <span className="text-sm font-medium text-gray-700">
-                {completedDays}/{totalDays} days
+                {completionStatus.completedDays}/{completionStatus.totalDays} days
               </span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
                 className="bg-green-500 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${(completedDays / totalDays) * 100}%` }}
+                style={{ width: `${(completionStatus.completedDays / completionStatus.totalDays) * 100}%` }}
               ></div>
             </div>
+            <p className="text-xs text-gray-500 mt-2">
+              {completionStatus.message}
+            </p>
           </div>
         )}
 
@@ -306,27 +316,10 @@ export default function PackageSelectionStep({
             toggleSection={() => toggleSection('activities')}
             allDays={daySelectionsArray}
           />
+
+          {/* Day Itinerary Section */}
           <DayItinerarySection />
         </div>
-
-        {/* Add Activity Accordion */}
-        {areAllDaysCompleted() && !showAddActivity && (
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mt-6">
-            <button
-              onClick={() => setShowAddActivity(true)}
-              className="w-full py-4 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all duration-300 font-medium flex items-center justify-center space-x-2"
-            >
-              <span>+ Add Custom Activity</span>
-            </button>
-          </div>
-        )}
-
-        {showAddActivity && (
-          <AddActivityAccordion
-            activities={activities}
-            onClose={() => setShowAddActivity(false)}
-          />
-        )}
 
         {/* Continue Button */}
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mt-6">
@@ -342,21 +335,23 @@ export default function PackageSelectionStep({
               <div className="text-right">
                 <div className="text-lg font-semibold text-gray-900">Final Total: ₹{totalPrice}</div>
                 <div className="text-sm text-gray-500">
-                  {totalDays} days • {selectedLocation} • {completedDays}/{totalDays} configured
+                  {totalDays} days • {selectedLocation} • {completionStatus.completedDays}/{completionStatus.totalDays} configured
                 </div>
               </div>
               <button
                 onClick={handleContinue}
-                disabled={!areAllDaysCompleted()}
+                disabled={!completionStatus.isComplete}
                 className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
               >
-                {areAllDaysCompleted() ? (
+                {completionStatus.isComplete ? (
                   <>
                     <CheckCircle className="h-5 w-5" />
-                    <span>Continue to Summary</span>
+                    <span>Continue to Customization</span>
                   </>
                 ) : (
-                  <span>Complete All Days First</span>
+                  <span>
+                    Complete Hotel Selection First ({completionStatus.completedDays}/{completionStatus.totalDays})
+                  </span>
                 )}
               </button>
             </div>

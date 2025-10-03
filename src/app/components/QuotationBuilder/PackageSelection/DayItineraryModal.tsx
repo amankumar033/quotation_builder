@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { X, Plus, Trash2 } from "lucide-react";
 import { DaySelection } from "@/types/type";
+import "react-quill/dist/quill.snow.css";
 
 interface DayItineraryModalProps {
   itinerary?: any;
@@ -24,6 +25,7 @@ export default function DayItineraryModal({ itinerary, onSave, onClose, availabl
     approximateDistance: "",
     approximateTime: ""
   });
+  
 
   useEffect(() => {
     if (itinerary) {
