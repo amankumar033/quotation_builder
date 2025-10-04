@@ -21,7 +21,7 @@ export default function DestinationSelectionStep({ nextStep }: DestinationProps)
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedRegion, setSelectedRegion] = useState("All");
-  const { setSelectedDestination } = useQuotation();
+  const { setSelectedDestination, setTripDestination } = useQuotation();
 
   // Destinations with locations
   const destinations: Destination[] = [
@@ -139,7 +139,8 @@ export default function DestinationSelectionStep({ nextStep }: DestinationProps)
 
   const handleSelect = (destination: Destination) => {
     setSelectedDestination(destination);
-    // Always go to location selection page when destination is selected
+    setTripDestination(destination.name);
+    // Now go directly to client info (next step)
     nextStep();
   };
 
