@@ -398,8 +398,8 @@ export default function PreviewExportStep({ data, prevStep }: PreviewExportStepP
                       "Any kind of insurance, Air, Train or Bus fare from / to your originating city of stay, unless specified",
                       "Garden entrance fee and guide charges, wherever applicable.",
                       "Personal meals and personal expenses like entry tickets, telephone, laundry or anything which is not mentioned in the inclusions",
-                      "Item of personal nature- tips, laundry, room service, telephone, alcoholic or non alcoholic beverages",
-                      "Anything not in inclusions is excluded"
+                      "Item of personal nature- tips, laundry, room service, telephone, alcoholic or non alcoholic beverages"
+                      
                     ].map((item, index) => (
                       <div key={index} className="flex items-start p-3 border-b border-gray-200 last:border-b-0">
                         <span className="text-red-500 mr-3 mt-1 text-lg">✗</span>

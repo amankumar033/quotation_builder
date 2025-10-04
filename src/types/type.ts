@@ -162,6 +162,7 @@ export interface TransportRoute {
   dayNumber: number;
   vehicle: Transport;
   price: number;
+  distance: number;
   isComplimentary?: boolean;
 }
 

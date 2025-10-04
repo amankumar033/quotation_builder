@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Hotel, RoomSelection as RoomSelectionType } from "@/types/type";
-import { ArrowLeft, Check, Users, Bed } from "lucide-react";
+import { ArrowLeft, Check, Users, Bed, Plus, X, ChevronDown, ChevronUp, User, Minus } from "lucide-react";
 import { useQuotation } from "@/context/QuotationContext";
 
 interface RoomSelectionProps {
@@ -212,445 +212,723 @@ const professionalRooms: Room[] = [
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=250&fit=crop",
     ],
   },
+  // FIXED: Added more rooms to support future IDs
+  {
+    id: 10,
+    hotelId: "HTL1",
+    type: "Executive Suite",
+    price: 8000,
+    maxAdults: 3,
+    maxChildren: 2,
+    bedType: "King Size Bed",
+    amenities: ["Free WiFi", "AC", "TV", "Breakfast", "Executive Lounge"],
+    description: "Premium executive suite with lounge access",
+    photos: [
+      "https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=400&h=250&fit=crop",
+    ],
+  },
+  {
+    id: 11,
+    hotelId: "HTL2",
+    type: "Premium Room",
+    price: 6000,
+    maxAdults: 3,
+    maxChildren: 2,
+    bedType: "Queen Size Bed",
+    amenities: ["Free WiFi", "AC", "TV", "Breakfast", "Mini Bar", "City View"],
+    description: "Premium room with city view and enhanced amenities",
+    photos: [
+      "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=250&fit=crop",
+    ],
+  },
+  {
+    id: 12,
+    hotelId: "HTL3",
+    type: "Luxury Villa",
+    price: 15000,
+    maxAdults: 6,
+    maxChildren: 4,
+    bedType: "Multiple King Beds",
+    amenities: ["Free WiFi", "AC", "TV", "Breakfast", "Private Pool", "Garden"],
+    description: "Private luxury villa with exclusive amenities",
+    photos: [
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=250&fit=crop",
+    ],
+  },
 ];
 
-export default function RoomSelect({ hotel, selections, onSelectionsChange, onConfirm, onBack, theme, currentDay }: RoomSelectionProps) {
-  const [selectedRoomType, setSelectedRoomType] = useState<number>(1);
-  const [roomCount, setRoomCount] = useState<number>(1);
-  const [adults, setAdults] = useState<number>(2);
-  const [childrenWithBed, setChildrenWithBed] = useState<number>(0);
-  const [childrenWithoutBed, setChildrenWithoutBed] = useState<number>(0);
-  const [adultsWithExtraBed, setAdultsWithExtraBed] = useState<number>(0);
-  const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
+// Interface for individual room configuration
+interface RoomConfiguration {
+  roomId: number;
+  roomCount: number;
+  adults: number;
+  childrenWithBed: number;
+  childrenWithoutBed: number;
+  adultsWithExtraBed: number;
+  isExpanded?: boolean;
+}
 
-  const { hotelInfo } = useQuotation();
+// Scroll to top function
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+export default function RoomSelect({ 
+  hotel, 
+  selections, 
+  onSelectionsChange, 
+  onConfirm, 
+  onBack, 
+  theme, 
+  currentDay 
+}: RoomSelectionProps) {
+  const [selectedRoomType, setSelectedRoomType] = useState<number | null>(null);
+  const [roomConfigurations, setRoomConfigurations] = useState<RoomConfiguration[]>([]);
+  const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
+  const [expandedRoomIndex, setExpandedRoomIndex] = useState<number | null>(null);
+  const [isTravelerInfoCollapsed, setIsTravelerInfoCollapsed] = useState<boolean>(false);
+
+  const { hotelInfo, travelers } = useQuotation();
   const selectedHotel = hotelInfo[0] || hotel;
 
+  // Filter rooms to show only hotel-specific rooms
   const filteredRooms = professionalRooms.filter(
     (room: Room) => room.hotelId === selectedHotel?.id
   );
 
-  // Set default selected room to first available room
+  // Calculate total travelers from client info
+  const totalTravelers = travelers.adults + travelers.children + travelers.infants;
+
+  // Initialize room configurations from existing selections
   useEffect(() => {
-    if (filteredRooms.length > 0 && !filteredRooms.find((room: Room) => room.id === selectedRoomType)) {
-      setSelectedRoomType(filteredRooms[0].id);
-      // Reset counts when room changes
-      setAdults(2);
-      setChildrenWithBed(0);
-      setChildrenWithoutBed(0);
-      setAdultsWithExtraBed(0);
-      setRoomCount(1);
+    if (selections.length > 0) {
+      const configs = selections.map(selection => ({
+        roomId: selection.roomId,
+        roomCount: selection.roomCount,
+        adults: selection.adults,
+        childrenWithBed: selection.childrenWithBed,
+        childrenWithoutBed: selection.childrenWithoutBed,
+        adultsWithExtraBed: selection.adultsWithExtraBed || 0,
+        isExpanded: false
+      }));
+      setRoomConfigurations(configs);
+      setIsConfirmed(true);
     }
-  }, [filteredRooms, selectedRoomType]);
+  }, [selections]);
 
   const selectedRoom = filteredRooms.find((room: Room) => room.id === selectedRoomType);
 
-  // Calculate capacity limits based on room count - FIXED: Only check total quantity
-  const calculateCapacityLimits = () => {
-    if (!selectedRoom) return { maxTotal: 0, currentTotal: 0 };
+  // FIXED: Enhanced room card click handler - select/deselect on card click
+  const handleRoomCardClick = (roomId: number) => {
+    const existingConfigIndex = roomConfigurations.findIndex(config => config.roomId === roomId);
     
-    // Multiply max capacity by room count (maxAdults + maxChildren)
-    const maxTotal = (selectedRoom.maxAdults + selectedRoom.maxChildren) * roomCount;
-    const currentTotal = adults + childrenWithBed + childrenWithoutBed + adultsWithExtraBed;
+    if (existingConfigIndex >= 0) {
+      // Room is already selected - remove it (deselect)
+      const updatedConfigs = roomConfigurations.filter((_, i) => i !== existingConfigIndex);
+      setRoomConfigurations(updatedConfigs);
+      
+      // Clear selection if this was the selected room
+      if (selectedRoomType === roomId) {
+        setSelectedRoomType(null);
+      }
+      
+      // Adjust expanded index
+      if (expandedRoomIndex === existingConfigIndex) {
+        setExpandedRoomIndex(null);
+      } else if (expandedRoomIndex && expandedRoomIndex > existingConfigIndex) {
+        setExpandedRoomIndex(expandedRoomIndex - 1);
+      }
+    } else {
+      // Room is not selected - add it (select)
+      const room = filteredRooms.find(r => r.id === roomId);
+      if (room) {
+        const newConfig: RoomConfiguration = {
+          roomId: roomId,
+          roomCount: 1,
+          adults: Math.min(2, room.maxAdults),
+          childrenWithBed: 0,
+          childrenWithoutBed: 0,
+          adultsWithExtraBed: 0,
+          isExpanded: true
+        };
+        
+        setRoomConfigurations([...roomConfigurations, newConfig]);
+        setSelectedRoomType(roomId);
+        setExpandedRoomIndex(roomConfigurations.length);
+      }
+    }
+  };
+
+  // Update room configuration
+  const updateRoomConfiguration = (index: number, updates: Partial<RoomConfiguration>) => {
+    const updatedConfigs = [...roomConfigurations];
+    updatedConfigs[index] = { ...updatedConfigs[index], ...updates };
+    setRoomConfigurations(updatedConfigs);
+  };
+
+  // Remove room configuration
+  const removeRoomConfiguration = (index: number) => {
+    const updatedConfigs = roomConfigurations.filter((_, i) => i !== index);
+    setRoomConfigurations(updatedConfigs);
     
-    return { maxTotal, currentTotal };
-  };
-
-  const { maxTotal, currentTotal } = calculateCapacityLimits();
-  const remainingCapacity = maxTotal - currentTotal;
-
-  // FIXED: Simplified validation - only check total quantity
-  const canAddMorePerson = (): boolean => {
-    return remainingCapacity > 0;
-  };
-
-  // Update handlers with simplified validation
-  const handleAddAdult = () => {
-    if (canAddMorePerson()) {
-      setAdults(adults + 1);
+    // If we removed the selected room, clear selection
+    const removedRoomId = roomConfigurations[index].roomId;
+    if (selectedRoomType === removedRoomId) {
+      setSelectedRoomType(null);
+    }
+    
+    if (expandedRoomIndex === index) {
+      setExpandedRoomIndex(null);
+    } else if (expandedRoomIndex && expandedRoomIndex > index) {
+      setExpandedRoomIndex(expandedRoomIndex - 1);
     }
   };
 
-  const handleRemoveAdult = () => {
-    setAdults(Math.max(1, adults - 1));
+  // Toggle accordion
+  const toggleAccordion = (index: number) => {
+    setExpandedRoomIndex(expandedRoomIndex === index ? null : index);
   };
 
-  const handleAddAdultWithExtraBed = () => {
-    if (canAddMorePerson()) {
-      setAdultsWithExtraBed(adultsWithExtraBed + 1);
-    }
+  // Toggle traveler info
+  const toggleTravelerInfo = () => {
+    setIsTravelerInfoCollapsed(!isTravelerInfoCollapsed);
   };
 
-  const handleRemoveAdultWithExtraBed = () => {
-    setAdultsWithExtraBed(Math.max(0, adultsWithExtraBed - 1));
+  // Calculate capacity for a specific room configuration
+  const calculateRoomCapacity = (config: RoomConfiguration): { 
+    maxTotal: number; 
+    currentTotal: number; 
+    remaining: number;
+  } => {
+    const room = filteredRooms.find(r => r.id === config.roomId);
+    if (!room) return { maxTotal: 0, currentTotal: 0, remaining: 0 };
+    
+    const maxTotal = (room.maxAdults + room.maxChildren) * config.roomCount;
+    const currentTotal = config.adults + config.childrenWithBed + config.childrenWithoutBed + config.adultsWithExtraBed;
+    const remaining = maxTotal - currentTotal;
+    
+    return { maxTotal, currentTotal, remaining };
   };
 
-  const handleAddChildWithBed = () => {
-    if (canAddMorePerson()) {
-      setChildrenWithBed(childrenWithBed + 1);
-    }
-  };
-
-  const handleRemoveChildWithBed = () => {
-    setChildrenWithBed(Math.max(0, childrenWithBed - 1));
-  };
-
-  const handleAddChildWithoutBed = () => {
-    if (canAddMorePerson()) {
-      setChildrenWithoutBed(childrenWithoutBed + 1);
-    }
-  };
-
-  const handleRemoveChildWithoutBed = () => {
-    setChildrenWithoutBed(Math.max(0, childrenWithoutBed - 1));
-  };
-
+  // Calculate total price for all room configurations
   const calculateTotalPrice = (): number => {
-    if (!selectedRoom) return 0;
-    return (selectedRoom.price * roomCount) + (childrenWithBed * 500) + (adultsWithExtraBed * 800);
+    return roomConfigurations.reduce((total: number, config: RoomConfiguration) => {
+      const room = filteredRooms.find(r => r.id === config.roomId);
+      if (!room) return total;
+      
+      const roomPrice = room.price * config.roomCount;
+      const extraBedPrice = (config.childrenWithBed * 500) + (config.adultsWithExtraBed * 800);
+      
+      return total + roomPrice + extraBedPrice;
+    }, 0);
   };
+
+  // Calculate total guests across all room configurations
+  const calculateTotalGuests = (): number => {
+    return roomConfigurations.reduce((total: number, config: RoomConfiguration) => {
+      return total + config.adults + config.childrenWithBed + config.childrenWithoutBed + config.adultsWithExtraBed;
+    }, 0);
+  };
+
+  // Group room configurations by type for better display
+  const groupedRoomConfigurations = roomConfigurations.reduce((groups: Record<string, RoomConfiguration[]>, config: RoomConfiguration) => {
+    const room = filteredRooms.find(r => r.id === config.roomId);
+    const roomType = room?.type || 'Unknown';
+    if (!groups[roomType]) {
+      groups[roomType] = [];
+    }
+    groups[roomType].push(config);
+    return groups;
+  }, {});
 
   const handleConfirmSelection = () => {
-    if (!selectedRoom) return;
+    if (roomConfigurations.length === 0) return;
     
-    const newSelection: RoomSelectionType = {
-      roomId: selectedRoomType,
-      roomCount,
-      adults,
-      childrenWithBed,
-      childrenWithoutBed,
-      adultsWithExtraBed: adultsWithExtraBed,
-      totalPrice: calculateTotalPrice(),
-      isConfirmed: true,
-      confirmedAt: new Date().toISOString(),
-      dayNumber: currentDay
-    };
-     
-    onSelectionsChange([newSelection]);
+    const newSelections: RoomSelectionType[] = roomConfigurations.map(config => {
+      const room = filteredRooms.find(r => r.id === config.roomId);
+      const roomPrice = room?.price || 3000; // FIXED: Default price for any room
+      const totalPrice = (roomPrice * config.roomCount) + (config.childrenWithBed * 500) + (config.adultsWithExtraBed * 800);
+      
+      return {
+        roomId: config.roomId,
+        roomCount: config.roomCount,
+        adults: config.adults,
+        childrenWithBed: config.childrenWithBed,
+        childrenWithoutBed: config.childrenWithoutBed,
+        adultsWithExtraBed: config.adultsWithExtraBed,
+        totalPrice: totalPrice,
+        isConfirmed: true,
+        confirmedAt: new Date().toISOString(),
+        dayNumber: currentDay
+      };
+    });
+    
+    onSelectionsChange(newSelections);
     setIsConfirmed(true);
-    
-    setTimeout(() => {
-      onConfirm();
-    }, 100);
+    onConfirm();
+    scrollToTop();
   };
 
-  const totalGuests = adults + childrenWithBed + childrenWithoutBed + adultsWithExtraBed;
+  // Check if a room type is already selected in configurations
+  const isRoomSelected = (roomId: number): boolean => {
+    return roomConfigurations.some(config => config.roomId === roomId);
+  };
+
+  // Get button text and state based on selection status
+  const getButtonState = (roomId: number) => {
+    const isSelected = isRoomSelected(roomId);
+    
+    if (isSelected) {
+      return {
+        text: "Selected",
+        className: "bg-red-600 text-white hover:bg-red-700",
+        disabled: false
+      };
+    }
+    
+    return {
+      text: "Select",
+      className: "bg-gray-200 text-gray-500 cursor-not-allowed",
+      disabled: true
+    };
+  };
 
   return (
     <div className="space-y-8">
-      {/* Header with Back Button */}
+      {/* Header */}
       <div className="flex items-center justify-between">
-        {/* <button
-          onClick={onBack}
-          className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 transition-colors"
-        >
-          <ArrowLeft className="h-5 w-5" />
-          <span>Back to Meals</span>
-        </button> */}
-        <div className="text-center">
-          {/* <h3 className="text-3xl font-bold text-gray-900">Select Your Room</h3> */}
+        <div className="text-center flex-1">
+          <h3 className="text-3xl font-bold text-gray-900">Select Your Rooms</h3>
           {isConfirmed && (
             <div className="flex items-center justify-center mt-2 space-x-2">
               <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium flex items-center">
                 <Check className="h-4 w-4 mr-1" />
-                Room & Meals Confirmed for Day {currentDay}
+                Room Selection Confirmed for Day {currentDay}
               </div>
             </div>
           )}
         </div>
-        <div></div>
       </div>
 
-      {/* Room Selection */}
+      {/* Available Room Types */}
       <div>
-        <h3 className="text-2xl font-bold text-gray-900 mb-10">Available Room Types</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {filteredRooms.map((room: Room) => (
-            <div
-              key={room.id}
-              className={`border-2 rounded-xl cursor-pointer transition-all duration-300 ${
-                selectedRoomType === room.id
-                  ? 'border-blue-500 shadow-xl scale-105 ring-2 ring-blue-100'
-                  : 'border-gray-200 hover:border-gray-300 hover:shadow-lg'
-              }`}
-              onClick={() => {
-                setSelectedRoomType(room.id);
-                // Reset counts when changing room type
-                setAdults(2);
-                setChildrenWithBed(0);
-                setChildrenWithoutBed(0);
-                setAdultsWithExtraBed(0);
-                setRoomCount(1);
-              }}
-            >
-              <div className="relative">
-                <img
-                  src={room.photos[0]}
-                  alt={room.type}
-                  className="w-full h-40 object-cover rounded-t-xl"
-                />
-                <div className="absolute top-3 right-3">
-                  <span className="bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-sm font-medium">
-                    ₹{room.price}/night
-                  </span>
-                </div>
-                <div className="absolute bottom-3 left-3">
-                  <span className="bg-blue-600 text-white px-2 py-1 rounded text-xs font-medium">
-                    {room.bedType}
-                  </span>
-                </div>
-              </div>
-              
-              <div className="p-5">
-                <div className="flex justify-between items-start mb-3">
-                  <h4 className="font-bold text-lg text-gray-900">{room.type}</h4>
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Users className="h-4 w-4 mr-1" />
-                    Max: {room.maxAdults + room.maxChildren} persons/room
-                  </div>
-                </div>
-                
-                <p className="text-gray-600 text-sm mb-4">{room.description}</p>
-                
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {room.amenities.slice(0, 3).map((amenity: string, idx: number) => (
-                    <span key={idx} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full font-medium">
-                      {amenity}
+        <h3 className="text-2xl font-bold text-gray-900 mb-6">Available Room Types at {selectedHotel.name}</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredRooms.map((room: Room) => {
+            const buttonState = getButtonState(room.id);
+            const isSelected = isRoomSelected(room.id);
+            
+            return (
+              <div
+                key={room.id}
+                className={`border-2 rounded-xl cursor-pointer transition-all duration-200 ${
+                  isSelected
+                    ? 'border-red-500 shadow-xl scale-105 ring-2 ring-red-100 bg-red-50'
+                    : 'border-gray-200 hover:border-blue-300 hover:shadow-md bg-white'
+                }`}
+                onClick={() => handleRoomCardClick(room.id)}
+              >
+                <div className="relative">
+                  <img
+                    src={room.photos[0]}
+                    alt={room.type}
+                    className="w-full h-40 object-cover rounded-t-xl"
+                  />
+                  <div className="absolute top-3 right-3">
+                    <span className="bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-sm font-medium">
+                      ₹{room.price}/night
                     </span>
-                  ))}
-                  {room.amenities.length > 3 && (
-                    <span className="text-xs text-gray-500">+{room.amenities.length - 3} more</span>
+                  </div>
+                  <div className="absolute bottom-3 left-3">
+                    <span className="bg-blue-600 text-white px-2 py-1 rounded text-xs font-medium">
+                      {room.bedType}
+                    </span>
+                  </div>
+                  {isSelected && (
+                    <div className="absolute top-3 left-3">
+                      <span className="bg-red-500 text-white px-2 py-1 rounded text-xs font-medium">
+                        Selected
+                      </span>
+                    </div>
                   )}
                 </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Rooms selected:</span>
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setRoomCount(Math.max(1, roomCount - (selectedRoomType === room.id ? 1 : 0)));
-                      }}
-                      className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 text-gray-600"
-                    >
-                      -
-                    </button>
-                    <span className={`w-8 text-center font-semibold ${
-                      selectedRoomType === room.id && roomCount > 0 ? 'text-blue-600 text-lg' : 'text-gray-400'
-                    }`}>
-                      {selectedRoomType === room.id ? roomCount : 0}
-                    </span>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (selectedRoomType === room.id) setRoomCount(roomCount + 1);
-                      }}
-                      className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 text-gray-600"
-                    >
-                      +
-                    </button>
+                
+                <div className="p-5">
+                  <div className="flex justify-between items-start mb-3">
+                    <h4 className="font-bold text-lg text-gray-900">{room.type}</h4>
+                    <div className="flex items-center text-sm text-gray-600">
+                      <Users className="h-4 w-4 mr-1" />
+                      Max: {room.maxAdults + room.maxChildren}
+                    </div>
                   </div>
+                  
+                  <p className="text-gray-600 text-sm mb-4">{room.description}</p>
+                  
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {room.amenities.slice(0, 3).map((amenity: string, idx: number) => (
+                      <span key={idx} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full font-medium">
+                        {amenity}
+                      </span>
+                    ))}
+                    {room.amenities.length > 3 && (
+                      <span className="text-xs text-gray-500">+{room.amenities.length - 3} more</span>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRoomCardClick(room.id);
+                    }}
+                    className={`w-full py-2 rounded-lg font-medium transition-colors ${buttonState.className}`}
+                  >
+                    {isSelected ? (
+                      <>
+                        <X className="h-4 w-4 inline mr-1" />
+                         Remove
+                      </>
+                    ) : (
+                      "Select"
+                    )}
+                  </button>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
-      {/* Configuration Section */}
-      {selectedRoom && roomCount > 0 && (
-        <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl p-8 border border-gray-200">
-          <div className="flex items-center mb-6">
-            <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
-              <Users className="h-5 w-5 text-blue-600" />
+      {/* Traveler Information Card - Collapsible */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
+        <div 
+          className="flex items-center justify-between cursor-pointer"
+          onClick={toggleTravelerInfo}
+        >
+          <div className="flex items-center">
+            <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+              <User className="h-6 w-6 text-blue-600" />
             </div>
             <div>
-              <h3 className="text-2xl font-bold text-gray-900">Configure Your Stay</h3>
-              <p className="text-gray-600">
-                Capacity: {currentTotal}/{maxTotal} persons ({remainingCapacity} remaining)
-                {roomCount > 1 && ` • ${roomCount} rooms × ${selectedRoom.maxAdults + selectedRoom.maxChildren} persons each`}
-              </p>
+              <h3 className="text-lg font-bold text-gray-900">Traveler Information</h3>
+              <p className="text-gray-600">Based on your client details</p>
+            </div>
+          </div>
+          <div className="flex items-center space-x-4">
+            <div className="text-right">
+              <div className="text-2xl font-bold text-blue-600">{totalTravelers}</div>
+              <div className="text-sm text-gray-600">Total Travelers</div>
+            </div>
+            {isTravelerInfoCollapsed ? (
+              <ChevronDown className="h-5 w-5 text-gray-500" />
+            ) : (
+              <ChevronUp className="h-5 w-5 text-gray-500" />
+            )}
+          </div>
+        </div>
+        
+        {!isTravelerInfoCollapsed && (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+              <div className="bg-white rounded-lg p-3 text-center border border-blue-100">
+                <div className="text-lg font-bold text-gray-900">{travelers.adults}</div>
+                <div className="text-sm text-gray-600">Adults</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 text-center border border-blue-100">
+                <div className="text-lg font-bold text-gray-900">{travelers.children}</div>
+                <div className="text-sm text-gray-600">Children</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 text-center border border-blue-100">
+                <div className="text-lg font-bold text-gray-900">{travelers.infants}</div>
+                <div className="text-sm text-gray-600">Infants</div>
+              </div>
+            </div>
+            
+            <div className="mt-4 text-sm text-gray-600">
+              <span className="font-medium">Note:</span> Click on any room card to select or deselect it. You can add multiple room types.
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Configure Stay Section */}
+      {roomConfigurations.length > 0 && (
+        <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl p-8 border border-gray-200">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center">
+              <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                <Users className="h-5 w-5 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900">Configure Your Stay</h3>
+                <p className="text-gray-600">
+                  {roomConfigurations.length} room type(s) selected • {calculateTotalGuests()} guests allocated
+                </p>
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl font-bold text-green-600">₹{calculateTotalPrice()}</div>
+              <div className="text-sm text-gray-600">Total per night</div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Guest Configuration */}
-            <div className="space-y-6">
-              <div className="bg-gradient-to-br from-white to-blue-50 rounded-2xl p-6 border border-blue-100 shadow-sm hover:shadow-md transition-shadow duration-300">
-                <h4 className="font-bold text-gray-900 mb-6 flex items-center text-lg">
-                  <div className="bg-blue-100 p-2 rounded-lg mr-3">
-                    <Bed className="h-5 w-5 text-blue-600" />
-                  </div>
-                  Guest Configuration
-                </h4>
-      
-                <div className="space-y-6">
-                  {/* Adult with Bed */}
-                  <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                    <div className="flex-1">
-                      <div className="font-semibold text-gray-900 flex items-center">
-                        <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
-                        Total Adults
-                      </div>
-                      <div className="text-sm text-blue-600 font-medium mt-1"></div>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <button
-                        onClick={handleRemoveAdult}
-                        className="w-10 h-10 rounded-full border-2 border-blue-200 bg-blue-50 flex items-center justify-center hover:bg-blue-100 text-blue-600 font-bold transition-colors duration-200 shadow-sm"
-                      >
-                        -
-                      </button>
-                      <span className="w-8 text-center font-bold text-lg text-gray-900 bg-gray-50 py-1 rounded-md">{adults}</span>
-                      <button
-                        onClick={handleAddAdult}
-                        disabled={!canAddMorePerson()}
-                        className="w-10 h-10 rounded-full border-2 border-blue-200 bg-blue-50 flex items-center justify-center hover:bg-blue-100 text-blue-600 font-bold transition-colors duration-200 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-blue-50"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Adults with Extra Bed */}
-                  <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                    <div className="flex-1">
-                      <div className="font-semibold text-gray-900 flex items-center">
-                        <span className="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
-                        Adults with Extra Bed
-                      </div>
-                      <div className="text-sm text-orange-600 font-medium mt-1">₹800/adult</div>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <button
-                        onClick={handleRemoveAdultWithExtraBed}
-                        className="w-10 h-10 rounded-full border-2 border-orange-200 bg-orange-50 flex items-center justify-center hover:bg-orange-100 text-orange-600 font-bold transition-colors duration-200 shadow-sm"
-                      >
-                        -
-                      </button>
-                      <span className="w-8 text-center font-bold text-lg text-gray-900 bg-gray-50 py-1 rounded-md">{adultsWithExtraBed}</span>
-                      <button
-                        onClick={handleAddAdultWithExtraBed}
-                        disabled={!canAddMorePerson()}
-                        className="w-10 h-10 rounded-full border-2 border-orange-200 bg-orange-50 flex items-center justify-center hover:bg-orange-100 text-orange-600 font-bold transition-colors duration-200 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-orange-50"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Children with bed */}
-                  <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                    <div className="flex-1">
-                      <div className="font-semibold text-gray-900 flex items-center">
-                        <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                        Child with extra bed
-                      </div>
-                      <div className="text-sm text-green-600 font-medium mt-1">₹500/child</div>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <button
-                        onClick={handleRemoveChildWithBed}
-                        className="w-10 h-10 rounded-full border-2 border-green-200 bg-green-50 flex items-center justify-center hover:bg-green-100 text-green-600 font-bold transition-colors duration-200 shadow-sm"
-                      >
-                        -
-                      </button>
-                      <span className="w-8 text-center font-bold text-lg text-gray-900 bg-gray-50 py-1 rounded-md">{childrenWithBed}</span>
-                      <button
-                        onClick={handleAddChildWithBed}
-                        disabled={!canAddMorePerson()}
-                        className="w-10 h-10 rounded-full border-2 border-green-200 bg-green-50 flex items-center justify-center hover:bg-green-100 text-green-600 font-bold transition-colors duration-200 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-green-50"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Children without Bed */}
-                  <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                    <div className="flex-1">
-                      <div className="font-semibold text-gray-900 flex items-center">
-                        <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
-                        Child Without Bed
-                      </div>
-                      <div className="text-sm text-purple-600 font-medium mt-1">No charge</div>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <button
-                        onClick={handleRemoveChildWithoutBed}
-                        className="w-10 h-10 rounded-full border-2 border-purple-200 bg-purple-50 flex items-center justify-center hover:bg-purple-100 text-purple-600 font-bold transition-colors duration-200 shadow-sm"
-                      >
-                        -
-                      </button>
-                      <span className="w-8 text-center font-bold text-lg text-gray-900 bg-gray-50 py-1 rounded-md">{childrenWithoutBed}</span>
-                      <button
-                        onClick={handleAddChildWithoutBed}
-                        disabled={!canAddMorePerson()}
-                        className="w-10 h-10 rounded-full border-2 border-purple-200 bg-purple-50 flex items-center justify-center hover:bg-purple-100 text-purple-600 font-bold transition-colors duration-200 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-purple-50"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Summary Section */}
-            <div className="bg-gradient-to-br from-white to-green-50 rounded-2xl p-6 border border-green-100 shadow-sm hover:shadow-md transition-shadow duration-300">
-              <h4 className="font-bold text-gray-900 mb-6 text-lg">Booking Summary</h4>
-              
-              <div className="space-y-4">
-                <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-100">
-                  <span className="text-gray-600 font-medium">{roomCount} {roomCount === 1 ? 'room' : 'rooms'} × ₹{selectedRoom.price}</span>
-                  <span className="font-semibold text-blue-600">₹{selectedRoom.price * roomCount}</span>
-                </div>
-                
-                {adultsWithExtraBed > 0 && (
-                  <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-100">
-                    <span className="text-gray-600 font-medium">Extra beds (adults) × {adultsWithExtraBed}</span>
-                    <span className="font-semibold text-orange-600">₹{adultsWithExtraBed * 800}</span>
-                  </div>
-                )}
-                
-                {childrenWithBed > 0 && (
-                  <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-100">
-                    <span className="text-gray-600 font-medium">Extra beds (children) × {childrenWithBed}</span>
-                    <span className="font-semibold text-green-600">₹{childrenWithBed * 500}</span>
-                  </div>
-                )}
-
-                <div className="border-t border-green-200 pt-4 mt-2">
-                  <div className="flex justify-between items-center mb-3 bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-xl">
+          <div className="space-y-4">
+            {Object.entries(groupedRoomConfigurations).map(([roomType, configs]) => (
+              <div key={roomType} className="bg-white rounded-xl border-2 border-gray-300 overflow-hidden">
+                {/* Room Type Header */}
+                <div className="bg-gradient-to-r from-gray-50 to-blue-50 px-6 py-4 border-b border-gray-300">
+                  <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-lg font-bold text-gray-900 block">Total per night</span>
-                      <div className="text-sm text-gray-500 flex items-center mt-1">
-                        <Users className="h-4 w-4 mr-1" />
-                        {roomCount} {roomCount === 1 ? 'room' : 'rooms'} • {totalGuests} guests
-                      </div>
+                      <h4 className="font-bold text-lg text-gray-900">{roomType}</h4>
+                      <p className="text-gray-600 text-sm">
+                        {configs.length} configuration{configs.length > 1 ? 's' : ''} • {configs.reduce((sum: number, config: RoomConfiguration) => sum + config.roomCount, 0)} total rooms
+                      </p>
                     </div>
-                    <span className="text-2xl font-bold text-green-600 bg-white px-3 py-2 rounded-lg shadow-sm">₹{calculateTotalPrice()}</span>
+                    <div className="text-right">
+                      <div className="font-semibold text-blue-600">
+                        ₹{configs.reduce((sum: number, config: RoomConfiguration) => {
+                          const room = filteredRooms.find(r => r.id === config.roomId);
+                          const roomPrice = room?.price || 0;
+                          return sum + (roomPrice * config.roomCount) + (config.childrenWithBed * 500) + (config.adultsWithExtraBed * 800);
+                        }, 0)}
+                      </div>
+                      <div className="text-sm text-gray-600">Subtotal</div>
+                    </div>
                   </div>
                 </div>
 
-                <button
-                  onClick={handleConfirmSelection}
-                  disabled={currentTotal > maxTotal}
-                  className="w-full py-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 font-bold text-lg flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl hover:scale-[1.02] transform disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Check className="h-5 w-5" />
-                  <span>
-                    {currentTotal > maxTotal 
-                      ? `Exceeds capacity (${currentTotal}/${maxTotal})` 
-                      : isConfirmed ? 'Confirmed!' : 'Confirm Room Selection'
-                    }
-                  </span>
-                </button>
+                {/* Individual Room Configurations */}
+                <div className="divide-y divide-gray-200">
+                  {configs.map((config, index) => {
+                    const globalIndex = roomConfigurations.findIndex(c => c === config);
+                    const room = filteredRooms.find(r => r.id === config.roomId);
+                    const capacity = calculateRoomCapacity(config);
+                    
+                    if (!room) return null;
+
+                    return (
+                      <div key={globalIndex} className="bg-white">
+                        {/* Accordion Header */}
+                        <div 
+                          className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 transition-colors border-b border-gray-200"
+                          onClick={() => toggleAccordion(globalIndex)}
+                        >
+                          <div className="flex items-center space-x-4">
+                            <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                              <span className="text-blue-600 font-bold text-sm">{globalIndex + 1}</span>
+                            </div>
+                            <div>
+                              <h5 className="font-semibold text-gray-900">{room.type}</h5>
+                              <p className="text-sm text-gray-600">
+                                {config.roomCount} {config.roomCount === 1 ? 'room' : 'rooms'} • {config.adults + config.childrenWithBed + config.childrenWithoutBed + config.adultsWithExtraBed} guests
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-4">
+                            <div className="text-right">
+                              <div className="font-semibold text-green-600">
+                                ₹{(room.price * config.roomCount) + (config.childrenWithBed * 500) + (config.adultsWithExtraBed * 800)}
+                              </div>
+                              <div className="text-xs text-gray-500">Total</div>
+                            </div>
+                            {expandedRoomIndex === globalIndex ? (
+                              <ChevronUp className="h-5 w-5 text-gray-400" />
+                            ) : (
+                              <ChevronDown className="h-5 w-5 text-gray-400" />
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Accordion Content */}
+                        {expandedRoomIndex === globalIndex && (
+                          <div className="px-4 pb-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              {/* Room Configuration */}
+                              <div className="space-y-4">
+                                {/* Number of Rooms */}
+                                <div className="flex justify-between items-center p-3 mt-5 border border-gray-200 rounded-lg">
+                                  <span className="font-medium text-gray-700">Number of Rooms:</span>
+                                  <div className="flex items-center space-x-3">
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        updateRoomConfiguration(globalIndex, { 
+                                          roomCount: Math.max(1, config.roomCount - 1) 
+                                        });
+                                      }}
+                                      className="w-8 h-8 rounded border border-gray-300 flex items-center justify-center hover:bg-gray-50 text-gray-600"
+                                    >
+                                      <Minus className="h-4 w-4" />
+                                    </button>
+                                    <span className="w-8 text-center font-semibold text-lg text-blue-600">
+                                      {config.roomCount}
+                                    </span>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        updateRoomConfiguration(globalIndex, { 
+                                          roomCount: config.roomCount + 1 
+                                        });
+                                      }}
+                                      className="w-8 h-8 rounded border border-gray-300 flex items-center justify-center hover:bg-gray-50 text-gray-600"
+                                    >
+                                      <Plus className="h-4 w-4" />
+                                    </button>
+                                  </div>
+                                </div>
+
+                                {/* Guest Configuration - Table Style */}
+                                <div className="space-y-2 border border-gray-200 rounded-lg p-4">
+                                  <h6 className="font-semibold text-gray-900 mb-3">Guest Configuration</h6>
+                                  {[
+                                    { label: "Adults", value: config.adults, color: "blue", onIncrement: () => updateRoomConfiguration(globalIndex, { adults: config.adults + 1 }), onDecrement: () => updateRoomConfiguration(globalIndex, { adults: Math.max(1, config.adults - 1) }) },
+                                    { label: "Children with Bed (₹500)", value: config.childrenWithBed, color: "green", onIncrement: () => updateRoomConfiguration(globalIndex, { childrenWithBed: config.childrenWithBed + 1 }), onDecrement: () => updateRoomConfiguration(globalIndex, { childrenWithBed: Math.max(0, config.childrenWithBed - 1) }) },
+                                    { label: "Adults with Extra Bed (₹800)", value: config.adultsWithExtraBed, color: "orange", onIncrement: () => updateRoomConfiguration(globalIndex, { adultsWithExtraBed: config.adultsWithExtraBed + 1 }), onDecrement: () => updateRoomConfiguration(globalIndex, { adultsWithExtraBed: Math.max(0, config.adultsWithExtraBed - 1) }) },
+                                    { label: "Children without Bed", value: config.childrenWithoutBed, color: "purple", onIncrement: () => updateRoomConfiguration(globalIndex, { childrenWithoutBed: config.childrenWithoutBed + 1 }), onDecrement: () => updateRoomConfiguration(globalIndex, { childrenWithoutBed: Math.max(0, config.childrenWithoutBed - 1) }) }
+                                  ].map((item, idx) => (
+                                    <div key={idx} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
+                                      <span className="text-sm font-medium text-gray-700">{item.label}</span>
+                                      <div className="flex items-center space-x-2">
+                                        <button
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            item.onDecrement();
+                                          }}
+                                          className="w-6 h-6 rounded border border-gray-300 flex items-center justify-center hover:bg-gray-50 text-gray-600"
+                                        >
+                                          <Minus className="h-3 w-3" />
+                                        </button>
+                                        <span className="w-6 text-center font-medium text-gray-900">{item.value}</span>
+                                        <button
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            if (capacity.remaining > 0) {
+                                              item.onIncrement();
+                                            }
+                                          }}
+                                          disabled={capacity.remaining <= 0}
+                                          className="w-6 h-6 rounded border border-gray-300 flex items-center justify-center hover:bg-gray-50 text-gray-600 disabled:opacity-50"
+                                        >
+                                          <Plus className="h-3 w-3" />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+
+                              {/* Room Summary */}
+                              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 mt-5">
+                                <h5 className="font-semibold text-gray-900 mb-3">Room Summary</h5>
+                                <div className="space-y-2 text-sm">
+                                  <div className="flex justify-between">
+                                    <span>{config.roomCount} × {room.type}</span>
+                                    <span>₹{room.price * config.roomCount}</span>
+                                  </div>
+                                  {config.childrenWithBed > 0 && (
+                                    <div className="flex justify-between text-green-600">
+                                      <span>Children with bed × {config.childrenWithBed}</span>
+                                      <span>₹{config.childrenWithBed * 500}</span>
+                                    </div>
+                                  )}
+                                  {config.adultsWithExtraBed > 0 && (
+                                    <div className="flex justify-between text-orange-600">
+                                      <span>Adults with extra bed × {config.adultsWithExtraBed}</span>
+                                      <span>₹{config.adultsWithExtraBed * 800}</span>
+                                    </div>
+                                  )}
+                                  <div className="border-t border-gray-300 pt-2 mt-2 font-semibold">
+                                    <div className="flex justify-between">
+                                      <span>Subtotal:</span>
+                                      <span>₹{(room.price * config.roomCount) + (config.childrenWithBed * 500) + (config.adultsWithExtraBed * 800)}</span>
+                                    </div>
+                                  </div>
+                                  <div className="text-xs text-gray-500 mt-2">
+                                    Capacity: {capacity.currentTotal}/{capacity.maxTotal} persons
+                                    {capacity.remaining < 0 && (
+                                      <span className="text-red-600 font-medium ml-2">(Over capacity!)</span>
+                                    )}
+                                  </div>
+                                </div>
+                                
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    removeRoomConfiguration(globalIndex);
+                                  }}
+                                  className="w-full mt-4 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors flex items-center justify-center"
+                                >
+                                  <X className="h-4 w-4 mr-1" />
+                                  Remove Room
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Total Summary and Confirm Button */}
+          <div className="mt-6 bg-white rounded-xl p-6 border border-gray-200">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h4 className="font-bold text-lg text-gray-900">Total Booking Summary</h4>
+                <p className="text-gray-600">
+                  {Object.keys(groupedRoomConfigurations).length} room type(s) • {calculateTotalGuests()} guests • {roomConfigurations.reduce((sum: number, config: RoomConfiguration) => sum + config.roomCount, 0)} rooms
+                </p>
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-green-600">₹{calculateTotalPrice()}</div>
+                <div className="text-sm text-gray-600">Total per night</div>
               </div>
             </div>
+
+            <button
+              onClick={handleConfirmSelection}
+              className="w-full py-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 font-bold text-lg flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl"
+            >
+              <Check className="h-5 w-5" />
+              <span>
+                {isConfirmed ? 'Update Room Selection' : 'Confirm Room Selection'}
+              </span>
+            </button>
           </div>
         </div>
       )}
+
+      {/* Empty State */}
+      {roomConfigurations.length === 0 && (
+        <div className="text-center py-12 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300">
+          <Users className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-xl font-semibold text-gray-700 mb-2">No Rooms Selected</h3>
+          <p className="text-gray-500 mb-6">Click on any room card above to select it for your stay</p>
+        </div>
+      )}
+
+      {/* Action Buttons */}
+      <div className="flex justify-between items-center pt-6 border-t border-gray-200">
+        <button
+          onClick={onBack}
+          className="flex items-center space-x-2 px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          <span>Back to Meals</span>
+        </button>
+
+        {roomConfigurations.length > 0 && (
+          <button
+            onClick={handleConfirmSelection}
+            className="px-8 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
+          >
+            <Check className="h-4 w-4 inline mr-2" />
+            Confirm Room Selection
+          </button>
+        )}
+      </div>
     </div>
   );
 }

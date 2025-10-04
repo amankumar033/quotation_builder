@@ -15,7 +15,6 @@ export type Step = "destination" | "location" | "client-info" | "package-selecti
 
 const STEPS: Step[] = [
   "destination",
-  "location", 
   "client-info",
   "package-selection",
   "customization",
@@ -90,13 +89,7 @@ function QuotationBuilderContent() {
             prevStep={prevStep}
           />
         );
-      case "location":
-        return (
-          <LocationSelectionPage
-            nextStep={nextStep}
-            prevStep={prevStep}
-          />
-        );
+     
       case "client-info":
         return (
           <ClientInfoStep

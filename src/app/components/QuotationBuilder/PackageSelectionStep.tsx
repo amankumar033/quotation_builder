@@ -44,7 +44,9 @@ export default function PackageSelectionStep({
     getCompletionStatus,
     debugDayCompletions,
     setTotalPackagePrice,
-    exportQuotationData
+    exportQuotationData,
+    dayMeals,
+    transportRoutes
   } = useQuotation();
 
   const completionStatus = getCompletionStatus();
@@ -135,24 +137,46 @@ export default function PackageSelectionStep({
     }
   };
 
-  // Calculate total package price
-  const calculateTotalPrice = () => {
+  // FIXED: Calculate total package price (Hotel + Transport) - NOW INCLUDES MEALS
+  const calculateTotalPrice = (): number => {
     let total = 0;
+
+    // Calculate hotel costs (rooms + meals + activities) for ALL days
     Object.values(daySelections).forEach(day => {
-      if (day.hotel && day.roomSelections && day.roomSelections.length > 0) {
-        const roomPrice = day.roomSelections[0].totalPrice || 0;
-        const mealPrice = day.meals ? day.meals.reduce((sum, meal) => sum + (meal.price * meal.quantity), 0) : 0;
-        total += roomPrice + mealPrice;
+      // Room costs
+      if (day.roomSelections && day.roomSelections.length > 0) {
+        const roomPrice = day.roomSelections.reduce((sum: number, selection: any) => sum + selection.totalPrice, 0);
+        total += roomPrice;
       }
       
-      if (day.transports) {
-        total += day.transports.price || 0;
-      }
+      // FIXED: Meal costs - Include ALL meals from dayMeals
+      const dayMealsForDate = dayMeals[day.date] || [];
+      const mealPrice = dayMealsForDate.reduce((sum: number, meal: any) => sum + (meal.price * meal.quantity), 0);
+      total += mealPrice;
       
+      // Activity costs
       if (day.activities) {
-        total += day.activities.reduce((sum, activity) => sum + activity.price, 0);
+        const activityPrice = day.activities.reduce((sum: number, activity: any) => sum + activity.price, 0);
+        total += activityPrice;
       }
     });
+
+    // Calculate transport costs
+    const transportCost = transportRoutes.reduce((sum: number, route: any) => sum + (route.price || 0), 0);
+    total += transportCost;
+
+    console.log("TOTAL PACKAGE PRICE CALCULATION:", {
+      total,
+      daySelections: Object.keys(daySelections).length,
+      dayMeals: Object.keys(dayMeals).length,
+      transportRoutes: transportRoutes.length,
+      mealDetails: Object.entries(dayMeals).map(([date, meals]) => ({
+        date,
+        mealCount: meals.length,
+        mealTotal: meals.reduce((sum: number, meal: any) => sum + (meal.price * meal.quantity), 0)
+      }))
+    });
+
     return total;
   };
 

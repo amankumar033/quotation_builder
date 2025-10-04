@@ -12,7 +12,7 @@ interface CustomDatePickerProps {
 export default function CustomDatePicker({
   selectedDate,
   onChange,
-  placeholder = "dd/MM/yyyy",
+  placeholder = "dd/mm/yyyy",
   className = "",
 }: CustomDatePickerProps) {
   const [isOpen, setIsOpen] = useState(false);

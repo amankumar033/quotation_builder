@@ -139,7 +139,7 @@ export default function ClientInfoStep({ data, updateData, nextStep, prevStep }:
   const cardClass = "bg-white shadow-md rounded-xl p-6 mb-8 border border-gray-200";
 
   return (
-    <div className="space-y-6 bg-gray-50 px-15">
+    <div className="space-y-6 bg-gray-50 px-15 mt-10">
       <div className='flex gap-10 justify-between'>
         {/* Client Information Section */}
         <section className={`${cardClass} w-full md:w-1/2`}>
@@ -221,7 +221,7 @@ export default function ClientInfoStep({ data, updateData, nextStep, prevStep }:
       <CustomDatePicker
         selectedDate={startDate ? new Date(startDate) : null}
         onChange={handleStartDateChange}
-        placeholder="dd/MM/yyyy"
+        placeholder="dd/mm/yyyy"
       />
     </div>
     <div className="relative">
@@ -229,7 +229,7 @@ export default function ClientInfoStep({ data, updateData, nextStep, prevStep }:
       <CustomDatePicker
         selectedDate={endDate ? new Date(endDate) : null}
         onChange={handleEndDateChange}
-        placeholder="dd/MM/yyyy"
+        placeholder="dd/mm/yyyy"
       />
     </div>
 

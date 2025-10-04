@@ -38,7 +38,7 @@ interface HotelInfo {
 }
 
 interface QuotationContextType {
-  // Destination & Location
+  // Destination
   selectedDestination: Destination | null;
   setSelectedDestination: (destination: Destination | null) => void;
   show: boolean;
@@ -46,14 +46,6 @@ interface QuotationContextType {
   openDestination: (destination: Destination) => void;
   closeDestination: () => void;
   
-  // Package Selection Steps
-  packageSelectionStep: 'location' | 'selection';
-  setPackageSelectionStep: (step: 'location' | 'selection') => void;
-  selectedLocation: string;
-  setSelectedLocation: (location: string) => void;
-  isLocationSelected: boolean;
-  setIsLocationSelected: (selected: boolean) => void;
-
   // Rooms & Hotels
   professionalRooms: Room[];
   setProfessionalRooms: (rooms: Room[]) => void;
@@ -81,6 +73,7 @@ interface QuotationContextType {
   setEndDate: (date: string) => void;
   tripDestination: string;
   setTripDestination: (destination: string) => void;
+  selectedLocation: string;
 
   // Travelers
   travelers: Travelers;
@@ -111,6 +104,7 @@ interface QuotationContextType {
   totalPackagePrice: number;
   setTotalPackagePrice: (price: number) => void;
   calculateDayPrice: (date: string) => { mealPrice: number; roomPrice: number; total: number };
+  calculateTotalPackagePrice: () => number;
 
   // Transport
   transportRoutes: TransportRoute[];
@@ -152,12 +146,9 @@ interface QuotationContextType {
 const QuotationContext = createContext<QuotationContextType | undefined>(undefined);
 
 export function QuotationProvider({ children }: { children: ReactNode }) {
-  // Destination & Location State
+  // Destination State
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
   const [show, setShow] = useState(true);
-  const [packageSelectionStep, setPackageSelectionStep] = useState<'location' | 'selection'>('location');
-  const [selectedLocation, setSelectedLocation] = useState<string>('');
-  const [isLocationSelected, setIsLocationSelected] = useState<boolean>(false);
 
   // Pricing State
   const [totalPackagePrice, setTotalPackagePrice] = useState<number>(0);
@@ -283,6 +274,9 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     quoteNumber: `TQ-${new Date().getFullYear()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
   });
 
+  // Selected location (alias for tripDestination)
+  const selectedLocation = tripDestination;
+
   // Update quotation data when context data changes
   useEffect(() => {
     updateQuotationData({
@@ -317,6 +311,43 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     const end = new Date(endDate);
     return Math.max(1, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
   };
+
+  // NEW: Calculate total package price including all components
+  const calculateTotalPackagePrice = (): number => {
+    let total = 0;
+
+    // Calculate hotel costs (rooms + meals + activities)
+    Object.values(daySelections).forEach(day => {
+      // Room costs
+      if (day.roomSelections && day.roomSelections.length > 0) {
+        const roomPrice = day.roomSelections.reduce((sum: number, selection: RoomSelection) => sum + selection.totalPrice, 0);
+        total += roomPrice;
+      }
+      
+      // Meal costs - FIXED: Include meals from dayMeals
+      const dayMealsForDate = dayMeals[day.date] || [];
+      const mealPrice = dayMealsForDate.reduce((sum: number, meal: Meal) => sum + (meal.price * meal.quantity), 0);
+      total += mealPrice;
+      
+      // Activity costs
+      if (day.activities) {
+        const activityPrice = day.activities.reduce((sum: number, activity: Activity) => sum + activity.price, 0);
+        total += activityPrice;
+      }
+    });
+
+    // Calculate transport costs
+    const transportCost = transportRoutes.reduce((sum: number, route: TransportRoute) => sum + (route.price || 0), 0);
+    total += transportCost;
+
+    return total;
+  };
+
+  // Update total package price whenever relevant data changes
+  useEffect(() => {
+    const newTotal = calculateTotalPackagePrice();
+    setTotalPackagePrice(newTotal);
+  }, [daySelections, dayMeals, transportRoutes]);
 
   // Update quotation data
   const updateQuotationData = (updates: Partial<QuotationData>) => {
@@ -434,8 +465,7 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
       },
       
       destinationInfo: {
-        selectedDestination,
-        selectedLocation
+        selectedDestination
       },
       
       packageSelection: {
@@ -740,25 +770,18 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
   const allDays = getDaySelectionsArray();
 
   const value: QuotationContextType = {
-    // Destination & Location
+    // Destination
     selectedDestination,
     setSelectedDestination,
     show,
     setShow,
     openDestination,
     closeDestination,
-    
-    // Package Selection Steps
-    packageSelectionStep,
-    setPackageSelectionStep,
-    selectedLocation,
-    setSelectedLocation,
-    isLocationSelected,
-    setIsLocationSelected,
 
     // Pricing
     totalPackagePrice,
     setTotalPackagePrice,
+    calculateTotalPackagePrice,
 
     // Rooms & Hotels
     professionalRooms,
@@ -787,6 +810,7 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     setEndDate,
     tripDestination,
     setTripDestination,
+    selectedLocation,
 
     // Travelers
     travelers,
