@@ -81,11 +81,18 @@ export default function MealSelection({ hotel, meals, onMealsChange, onProceed, 
     }
   }, [currentEditingDay, filteredMeals]);
 
-  const handleProceed = (): void => {
-    // Pass the current day meals to parent
-    onMealsChange(currentDayMeals.filter((meal: Meal) => meal.quantity > 0));
-    onProceed();
-  };
+  // Add this function at the top of MealSelection component
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+// Update handleProceed to include scroll
+const handleProceed = (): void => {
+  // Pass the current day meals to parent
+  onMealsChange(currentDayMeals.filter((meal: Meal) => meal.quantity > 0));
+  onProceed();
+  scrollToTop(); // Add this line
+};
 
   const handleBack = (): void => {
     onBack();

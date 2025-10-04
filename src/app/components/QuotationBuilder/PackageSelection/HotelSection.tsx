@@ -243,6 +243,11 @@ interface BreadcrumbItem {
   icon: React.ComponentType<any>;
 }
 
+// Scroll to top function
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
 export default function HotelSection({
   hotels,
   isHotelLoading,
@@ -323,6 +328,7 @@ export default function HotelSection({
     });
     
     setSelectionMode('meals'); // FIXED: Set to 'meals' instead of 'selecting-meals'
+    scrollToTop();
   };
 
   const handleMealsConfirm = (meals: Meal[]): void => {
@@ -342,6 +348,7 @@ export default function HotelSection({
     });
     
     setSelectionMode('rooms'); // FIXED: Set to 'rooms' instead of 'selecting-rooms'
+    scrollToTop();
   };
 
   const handleRoomsConfirm = (roomSelections: RoomSelection[]): void => {
@@ -350,7 +357,7 @@ export default function HotelSection({
     const updatedProgress: DayHotelProgress = {
       ...dayProgress,
       roomSelections,
-      currentStep: 'activities'
+      currentStep: roomSelections.length > 0 ? 'activities' : 'rooms'
     };
     
     setDayProgress(updatedProgress);
@@ -363,7 +370,11 @@ export default function HotelSection({
       }))
     });
     
-    setSelectionMode('activities'); // FIXED: Set to 'activities' instead of 'selecting-activities'
+    // Only proceed to activities if rooms are selected
+    if (roomSelections.length > 0) {
+      setSelectionMode('activities');
+      scrollToTop();
+    }
   };
 
   const handleActivitiesConfirm = (activities: Activity[]): void => {
@@ -387,6 +398,7 @@ export default function HotelSection({
     setTimeout(() => {
       setSelectionMode('overview');
       setCurrentEditingDay(null);
+      scrollToTop();
     }, 500);
   };
 
@@ -430,11 +442,11 @@ export default function HotelSection({
     }
   };
 
-  // Calculate total hotel price for all days
-  const calculateTotalPrice = (): number => {
+  // Calculate total hotel price for all days (ONLY rooms + meals + activities)
+  const calculateHotelTotalPrice = (): number => {
     return allDays.reduce((total: number, { date }) => {
-      const dayPrice = calculateDayPrice(date);
-      return total + dayPrice.total;
+      const dayTotal = calculateDayTotalWithMeals(date);
+      return total + dayTotal.total;
     }, 0);
   };
 
@@ -478,7 +490,7 @@ export default function HotelSection({
     };
   };
 
-  const totalPrice = calculateTotalPrice();
+  const hotelTotalPrice = calculateHotelTotalPrice();
   const completedDays = allDays.filter(({ date }) => daySelections[date]?.hotel).length;
   const hasHotelSelected = completedDays > 0;
 
@@ -518,6 +530,48 @@ export default function HotelSection({
     return hotel.roomTypes?.[0]?.price ? parseInt(hotel.roomTypes[0].price) : 3000;
   };
 
+  // FIXED: Dynamic room type mapping function - works with any room ID
+  const getRoomTypeInfo = (roomId: number, roomSelections: RoomSelection[]) => {
+    // First try to find in professionalRooms
+    const professionalRoom = professionalRooms.find((r: Room) => r.id === roomId);
+    if (professionalRoom) {
+      return {
+        type: professionalRoom.type,
+        price: professionalRoom.price,
+        bedType: professionalRoom.bedType,
+        amenities: professionalRoom.amenities,
+        description: professionalRoom.description,
+        found: true
+      };
+    }
+    
+    // If not found in professionalRooms, create dynamic room info
+    // This ensures ANY room ID will work, even future ones
+    const roomSelection = roomSelections.find(rs => rs.roomId === roomId);
+    const basePrice = roomSelection?.totalPrice || 3000;
+    
+    // Create room types based on common patterns
+    const roomTypes = [
+      "Standard Room", "Deluxe Room", "Super Deluxe", "Executive Suite", 
+      "Family Room", "Premium Room", "Luxury Suite", "Business Room",
+      "Presidential Suite", "Garden View Room", "Poolside Room"
+    ];
+    
+    // Use roomId to deterministically select a room type (for consistency)
+    const roomTypeIndex = (roomId - 1) % roomTypes.length;
+    const bedTypes = ["King Bed", "Queen Bed", "Twin Beds", "Double Bed"];
+    const bedTypeIndex = (roomId - 1) % bedTypes.length;
+    
+    return {
+      type: roomTypes[roomTypeIndex],
+      price: basePrice,
+      bedType: bedTypes[bedTypeIndex],
+      amenities: ["Free WiFi", "Air Conditioning", "TV"],
+      description: "Comfortable accommodation with essential amenities",
+      found: false
+    };
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
       {/* Header */}
@@ -536,7 +590,7 @@ export default function HotelSection({
               <h3 className="text-lg font-semibold text-gray-900">Hotel & Accommodation</h3>
               <p className="text-sm text-gray-600">
                 {hasHotelSelected 
-                  ? `${completedDays}/${allDays.length} days configured • ₹${totalPrice}`
+                  ? `${completedDays}/${allDays.length} days configured • ₹${hotelTotalPrice}`
                   : `Configure hotels for ${allDays.length} days`
                 }
               </p>
@@ -563,68 +617,7 @@ export default function HotelSection({
       {isSectionActive && (
         <div className="p-6 border-t border-gray-200">
           {/* Breadcrumb Navigation - Only show when in selection flow */}
-          {selectionMode !== 'overview' && dayProgress && (
-            <div className="mb-6 bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg p-4 border border-gray-200">
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={handleBackToOverview}
-                  className="flex items-center space-x-1 text-blue-600 hover:text-blue-800 transition-colors"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                  <span className="text-sm font-medium">Back to Overview</span>
-                </button>
-                <span className="text-gray-400">/</span>
-                <div className="flex items-center space-x-1">
-                  {breadcrumbItems.map((item, index) => {
-                    const IconComponent = item.icon;
-                    const isActive = selectionMode === item.step;
-                    const isCompleted = breadcrumbItems.findIndex(b => b.step === dayProgress.currentStep) > breadcrumbItems.findIndex(b => b.step === item.step);
-                    const isClickable = isCompleted || isActive;
-                    
-                    return (
-                      <div key={item.step} className="flex items-center">
-                        {index > 0 && <span className="text-gray-400 mx-2">/</span>}
-                        <button
-                          onClick={() => isClickable && handleBreadcrumbClick(item.step)}
-                          disabled={!isClickable}
-                          className={`flex items-center space-x-1 text-sm transition-colors ${
-                            isActive 
-                              ? 'text-blue-600 font-semibold' 
-                              : isCompleted 
-                                ? 'text-green-600 hover:text-green-800 font-medium' 
-                                : 'text-gray-400 cursor-not-allowed'
-                          }`}
-                        >
-                          <IconComponent className="h-4 w-4" />
-                          <span>{item.label}</span>
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-              
-              {/* Current Day Info */}
-              <div className="mt-2 flex items-center space-x-4 text-sm text-gray-600">
-                <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
-                  Day {dayProgress.dayNumber}
-                </span>
-                <span>
-                  {new Date(dayProgress.date).toLocaleDateString('en-GB', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </span>
-                {dayProgress.selectedHotel && (
-                  <span className="text-green-600 font-medium">
-                    • {dayProgress.selectedHotel.name}
-                  </span>
-                )}
-              </div>
-            </div>
-          )}
+         
 
           {/* Overview Mode - Enhanced UI */}
           {selectionMode === 'overview' && (
@@ -654,14 +647,8 @@ export default function HotelSection({
                     return acc;
                   }, []);
 
-                  // Get room type name
-                  const roomSelection = data.roomSelections?.[0];
-                  const roomType = roomSelection ? 
-                    professionalRooms.find((room: Room) => room.id === roomSelection.roomId)?.type : 
-                    'Room';
-
-                  // Get hotel activities
-                  const hotelActivities = data.activities || [];
+                  // Get room selections for this day
+                  const roomSelections = data.roomSelections || [];
 
                   return (
                     <div
@@ -713,26 +700,60 @@ export default function HotelSection({
                               </div>
                             </div>
                           </div>
-                          
-                          {/* Room Information - Enhanced */}
-                          {roomSelection && (
+
+                          {/* Room Information - FIXED: Dynamic room display for ANY room ID */}
+                          {roomSelections.length > 0 && (
                             <div className="border border-gray-200 rounded-lg p-3 bg-white shadow-sm">
-                              <div className="text-sm font-semibold text-gray-800 mb-2 flex items-center">
+                              <div className="text-sm font-semibold text-gray-800 mb-3 flex items-center">
                                 <Bed className="h-4 w-4 mr-2 text-blue-600" />
                                 Room Details
                               </div>
-                              <div className="flex justify-between items-center">
-                                <div>
-                                  <div className="font-medium text-gray-900">
-                                    {roomSelection.roomCount} × {roomType}
-                                  </div>
-                                  <div className="text-xs text-gray-600 mt-1">
-                                    {roomSelection.adults} adults, {roomSelection.childrenWithBed + roomSelection.childrenWithoutBed} children
-                                  </div>
+                              
+                              <div className="space-y-3">
+                                {roomSelections.map((selection, index) => {
+                                  // FIXED: Use dynamic room info that works with ANY room ID
+                                  const roomInfo = getRoomTypeInfo(selection.roomId, roomSelections);
+                                  
+                                  return (
+                                    <div key={index} className="flex justify-between items-start pb-3 border-b border-gray-100 last:border-0 last:pb-0">
+                                      <div className="flex-1">
+                                        <div className="font-medium text-gray-900 text-sm">
+                                          {selection.roomCount} × {roomInfo.type}
+                                          {!roomInfo.found && (
+                                            <span className="ml-2 text-xs text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full">
+                                              Auto-assigned
+                                            </span>
+                                          )}
+                                        </div>
+                                        <div className="text-xs text-gray-600 mt-1">
+                                          {selection.adults} adults, {selection.childrenWithBed + selection.childrenWithoutBed} children
+                                          {selection.adultsWithExtraBed > 0 && `, ${selection.adultsWithExtraBed} extra beds`}
+                                        </div>
+                                        <div className="text-xs text-gray-500 mt-1">
+                                          Bed: {roomInfo.bedType}
+                                        </div>
+                                        <div className="text-xs text-green-600 font-semibold mt-1">
+                                          ₹{selection.totalPrice}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                                
+                                {/* Total Rooms Summary */}
+                                <div className="border-t border-gray-200 pt-2 mt-2 flex justify-between font-semibold text-sm">
+                                  <span className="text-gray-700">Total Rooms:</span>
+                                  <span className="text-blue-600">
+                                    {roomSelections.reduce((total: number, selection: RoomSelection) => total + selection.roomCount, 0)} rooms
+                                  </span>
                                 </div>
-                                <div className="text-right">
-                                  <div className="font-semibold text-gray-900">₹{roomSelection.totalPrice || dayTotal.roomPrice}</div>
-                                  <div className="text-xs text-gray-500">Room Cost</div>
+                                
+                                {/* Total Price Summary */}
+                                <div className="border-t border-gray-200 pt-2 mt-2 flex justify-between font-semibold text-sm">
+                                  <span className="text-gray-700">Total Room Cost:</span>
+                                  <span className="text-green-600">
+                                    ₹{roomSelections.reduce((total: number, selection: RoomSelection) => total + selection.totalPrice, 0)}
+                                  </span>
                                 </div>
                               </div>
                             </div>
@@ -772,7 +793,7 @@ export default function HotelSection({
                             </div>
                           )}
 
-                          {/* Activities Information - New Section */}
+                          {/* Activities Information */}
                           {dayTotal.hasActivities && (
                             <div className="border border-purple-200 rounded-lg p-3 bg-purple-50 shadow-sm">
                               <div className="text-sm font-semibold text-gray-800 mb-2 flex items-center">
@@ -780,7 +801,7 @@ export default function HotelSection({
                                 Hotel Activities
                               </div>
                               <div className="space-y-2">
-                                {hotelActivities.slice(0, 2).map((activity, activityIndex) => (
+                                {data.activities?.slice(0, 2).map((activity, activityIndex) => (
                                   <div key={activityIndex} className="flex justify-between items-center text-sm bg-white p-2 rounded">
                                     <div className="flex-1">
                                       <div className="font-medium text-gray-900 flex items-center">
@@ -794,9 +815,9 @@ export default function HotelSection({
                                     </div>
                                   </div>
                                 ))}
-                                {hotelActivities.length > 2 && (
+                                {data.activities && data.activities.length > 2 && (
                                   <div className="text-xs text-purple-600 text-center pt-1">
-                                    +{hotelActivities.length - 2} more activities
+                                    +{data.activities.length - 2} more activities
                                   </div>
                                 )}
                                 <div className="border-t border-purple-200 pt-2 mt-2 flex justify-between font-semibold text-sm">
@@ -859,16 +880,18 @@ export default function HotelSection({
                           </div>
                         </div>
                       ) : (
-                        /* Empty State - Enhanced */
-                        <div 
-                          className="text-center py-6 cursor-pointer hover:bg-blue-50 rounded-lg transition-colors"
-                          onClick={() => handleStartHotelSelection(date, dayNumber)}
-                        >
-                          <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <Home className="h-6 w-6 text-blue-600" />
+                        <div className="text-center py-6">
+                          <div className="text-gray-400 mb-3">
+                            <Building className="h-8 w-8 mx-auto mb-2" />
+                            <p className="text-sm">No hotel selected</p>
                           </div>
-                          <p className="text-gray-600 text-sm mb-3">No hotel selected for this day</p>
-                          <button className="text-blue-600 hover:text-blue-800 font-medium py-2 px-4 border-2 border-dashed border-blue-300 rounded-lg hover:bg-blue-50 transition-colors duration-200">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleStartHotelSelection(date, dayNumber);
+                            }}
+                            className="w-full py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 font-medium text-sm shadow-sm hover:shadow-md"
+                          >
                             Select Hotel
                           </button>
                         </div>
@@ -877,41 +900,10 @@ export default function HotelSection({
                   );
                 })}
               </div>
-
-              {/* Total Summary Card - Enhanced */}
-              {hasHotelSelected && (
-                <div className="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200 shadow-sm">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">Hotel Stay Summary</h3>
-                      <p className="text-sm text-gray-600">
-                        {completedDays} out of {allDays.length} days configured
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-green-600">₹{totalPrice}</div>
-                      <div className="text-sm text-gray-600">Total Accommodation Cost</div>
-                    </div>
-                  </div>
-                  
-                  {/* Progress bar */}
-                  <div className="mt-4">
-                    <div className="flex justify-between text-sm text-gray-600 mb-1">
-                      <span>Completion Progress</span>
-                      <span>{Math.round((completedDays / allDays.length) * 100)}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-green-500 h-2 rounded-full transition-all duration-300" 
-                        style={{ width: `${(completedDays / allDays.length) * 100}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           )}
 
+    
           {/* Hotel Selection Flow */}
           {selectionMode !== 'overview' && dayProgress && (
             <div className="space-y-6">
@@ -1016,9 +1008,7 @@ export default function HotelSection({
                           </div>
                           
                           <div className="space-y-2">
-                            <div className="text-sm text-gray-700">
-                              <span className="font-semibold">Starting from:</span> ₹{getHotelPrice(hotel)}
-                            </div>
+                            {/* Removed "Starting from" price */}
                             <div className="text-xs text-gray-500">
                               {getHotelAmenities(hotel).slice(0, 3).join(' • ')}
                             </div>
@@ -1071,135 +1061,153 @@ export default function HotelSection({
                 </div>
               )}
 
-              {/* Activities Selection - New Section */}
-              {selectionMode === 'activities' && dayProgress.selectedHotel && ( // FIXED: Changed from 'selecting-activities'
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {getHotelActivities(dayProgress.selectedHotel.id).map((activity) => {
-                      const isSelected = dayProgress.activitySelections.some(
-                        selected => selected.id === activity.id
-                      );
-                      
-                      return (
-                        <div
-                          key={activity.id}
-                          className={`border-2 rounded-xl overflow-hidden transition-all duration-200 cursor-pointer ${
-                            isSelected 
-                              ? 'border-purple-500 bg-purple-50 shadow-lg scale-[1.02]' 
-                              : 'border-gray-200 bg-white hover:border-purple-300 hover:shadow-md'
-                          }`}
-                          onClick={() => {
-                            let updatedActivities: Activity[];
-                            if (isSelected) {
-                              updatedActivities = dayProgress.activitySelections.filter(
-                                selected => selected.id !== activity.id
-                              );
-                            } else {
-                              updatedActivities = [...dayProgress.activitySelections, activity];
-                            }
-                            handleActivitiesConfirm(updatedActivities);
-                          }}
-                        >
-                          <div className="h-50  relative overflow-hidden">
-                        <img src={activity.image} alt="" className="object-cover w-full h-full" />
-                            <div className="absolute top-3 right-3">
-                              {getActivityIcon(activity.category)}
-                            </div>
-                            <div className="absolute bottom-3 left-3 text-white">
-                              <span className="text-xs bg-purple-700 px-2 py-1 rounded-full">
-                                {activity.category}
-                              </span>
-                            </div>
-                          </div>
-                          
-                          <div className="p-4">
-                            <div className="flex items-start justify-between mb-2">
-                              <h5 className="font-bold text-gray-900 text-sm flex-1">{activity.name}</h5>
-                              <div className={`h-5 w-5 rounded-full border-2 flex items-center justify-center ml-2 ${
-                                isSelected 
-                                  ? 'bg-purple-500 border-purple-500 text-white' 
-                                  : 'border-gray-300'
-                              }`}>
-                                {isSelected && '✓'}
-                              </div>
-                            </div>
-                            
-                            <p className="text-xs text-gray-600 mb-3 line-clamp-2">
-                              {activity.description}
-                            </p>
-                            
-                            <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
-                              <span className="flex items-center">
-                                <Sparkles className="h-3 w-3 mr-1" />
-                                {activity.duration}
-                              </span>
-                            </div>
-                            
-                            <div className="flex items-center justify-between">
-                              <span className="text-lg font-bold text-purple-600">
-                                ₹{activity.price}
-                              </span>
-                              <span className={`text-xs px-2 py-1 rounded-full ${
-                                isSelected 
-                                  ? 'bg-purple-100 text-purple-700' 
-                                  : 'bg-gray-100 text-gray-600'
-                              }`}>
-                                {isSelected ? 'Selected' : 'Add Activity'}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
 
-                  {/* Selected Activities Summary */}
-                  {dayProgress.activitySelections.length > 0 && (
-                    <div className="mt-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-200">
-                      <h5 className="font-semibold text-gray-900 mb-3 flex items-center">
-                        <Sparkles className="h-4 w-4 mr-2 text-purple-600" />
-                        Selected Activities ({dayProgress.activitySelections.length})
-                      </h5>
-                      <div className="space-y-2">
-                        {dayProgress.activitySelections.map((activity) => (
-                          <div key={activity.id} className="flex justify-between items-center bg-white p-3 rounded-lg">
-                            <div className="flex items-center">
-                              {getActivityIcon(activity.category)}
-                              <span className="ml-2 font-medium text-sm">{activity.name}</span>
-                            </div>
-                            <div className="text-right">
-                              <div className="font-semibold text-purple-600">₹{activity.price}</div>
-                              <div className="text-xs text-gray-500">{activity.duration}</div>
-                            </div>
-                          </div>
-                        ))}
-                        <div className="border-t border-purple-200 pt-2 mt-2 flex justify-between font-semibold">
-                          <span>Activities Total:</span>
-                          <span className="text-purple-600">
-                            ₹{dayProgress.activitySelections.reduce((sum, activity) => sum + activity.price, 0)}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Confirm Button */}
-                  <div className="flex justify-end space-x-3 pt-4">
-                    <button
-                      onClick={handleBackToRoomSelection}
-                      className="px-6 py-2.5 text-gray-700 hover:text-gray-900 font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      Back to Rooms
-                    </button>
-                    <button
-                      onClick={() => handleActivitiesConfirm(dayProgress.activitySelections)}
-                      className="px-8 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg"
-                    >
-                      Confirm Activities
-                    </button>
-                  </div>
+{/* Activities Selection - New Section */}
+{selectionMode === 'activities' && dayProgress && dayProgress.selectedHotel && (
+  <div className="space-y-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {getHotelActivities(dayProgress.selectedHotel.id).map((activity) => {
+        const isSelected = dayProgress.activitySelections.some(
+          selected => selected.id === activity.id
+        );
+        
+        return (
+          <div
+            key={activity.id}
+            className={`border-2 rounded-xl overflow-hidden transition-all duration-200 cursor-pointer ${
+              isSelected 
+                ? 'border-purple-500 bg-purple-50 shadow-lg' 
+                : 'border-gray-200 bg-white hover:border-purple-300 hover:shadow-md'
+            }`}
+            onClick={() => {
+              // Only toggle selection, don't auto-proceed
+              let updatedActivities: Activity[];
+              if (isSelected) {
+                updatedActivities = dayProgress.activitySelections.filter(
+                  selected => selected.id !== activity.id
+                );
+              } else {
+                updatedActivities = [...dayProgress.activitySelections, activity];
+              }
+              
+              // Update progress but don't proceed to next step
+              const updatedProgress: DayHotelProgress = {
+                ...dayProgress,
+                activitySelections: updatedActivities
+              };
+              
+              setDayProgress(updatedProgress);
+              
+              // Update global state but don't mark as completed
+              updateDaySelection(dayProgress.date, {
+                activities: updatedActivities
+              });
+            }}
+          >
+            <div className="h-40 relative overflow-hidden">
+              <img 
+                src={activity.image} 
+                alt={activity.name}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute top-3 right-3">
+                {getActivityIcon(activity.category)}
+              </div>
+              <div className="absolute bottom-3 left-3 text-white">
+                <span className="text-xs bg-purple-700 px-2 py-1 rounded-full">
+                  {activity.category}
+                </span>
+              </div>
+            </div>
+            
+            <div className="p-4">
+              <div className="flex items-start justify-between mb-2">
+                <h5 className="font-bold text-gray-900 text-sm flex-1">{activity.name}</h5>
+                <div className={`h-5 w-5 rounded-full border-2 flex items-center justify-center ml-2 ${
+                  isSelected 
+                    ? 'bg-purple-500 border-purple-500 text-white' 
+                    : 'border-gray-300'
+                }`}>
+                  {isSelected && '✓'}
                 </div>
-              )}
+              </div>
+              
+              <p className="text-xs text-gray-600 mb-3 line-clamp-2">
+                {activity.description}
+              </p>
+              
+              <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+                <span className="flex items-center">
+                  <Sparkles className="h-3 w-3 mr-1" />
+                  {activity.duration}
+                </span>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-lg font-bold text-purple-600">
+                  ₹{activity.price}
+                </span>
+                <span className={`text-xs px-2 py-1 rounded-full ${
+                  isSelected 
+                    ? 'bg-purple-100 text-purple-700' 
+                    : 'bg-gray-100 text-gray-600'
+                }`}>
+                  {isSelected ? 'Selected' : 'Add Activity'}
+                </span>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    {/* Selected Activities Summary */}
+    {dayProgress.activitySelections.length > 0 && (
+      <div className="mt-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-200">
+        <h5 className="font-semibold text-gray-900 mb-3 flex items-center">
+          <Sparkles className="h-4 w-4 mr-2 text-purple-600" />
+          Selected Activities ({dayProgress.activitySelections.length})
+        </h5>
+        <div className="space-y-2">
+          {dayProgress.activitySelections.map((activity) => (
+            <div key={activity.id} className="flex justify-between items-center bg-white p-3 rounded-lg">
+              <div className="flex items-center">
+                {getActivityIcon(activity.category)}
+                <span className="ml-2 font-medium text-sm">{activity.name}</span>
+              </div>
+              <div className="text-right">
+                <div className="font-semibold text-purple-600">₹{activity.price}</div>
+                <div className="text-xs text-gray-500">{activity.duration}</div>
+              </div>
+            </div>
+          ))}
+          <div className="border-t border-purple-200 pt-2 mt-2 flex justify-between font-semibold">
+            <span>Activities Total:</span>
+            <span className="text-purple-600">
+              ₹{dayProgress.activitySelections.reduce((sum: number, activity: Activity) => sum + activity.price, 0)}
+            </span>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Confirm Button */}
+    <div className="flex justify-end space-x-3 pt-4">
+      <button
+        onClick={handleBackToRoomSelection}
+        className="px-6 py-2.5 text-gray-700 hover:text-gray-900 font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+      >
+        Back to Rooms
+      </button>
+      <button
+        onClick={() => handleActivitiesConfirm(dayProgress.activitySelections)}
+        className="px-8 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg"
+      >
+        Confirm Activities
+      </button>
+    </div>
+  </div>
+)}
             </div>
           )}
         </div>

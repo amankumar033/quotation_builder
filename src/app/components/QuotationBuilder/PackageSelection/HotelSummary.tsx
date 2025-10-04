@@ -13,28 +13,62 @@ interface HotelSummaryProps {
   dayNumber: number;
 }
 
+interface RoomSelectionWithDetails extends RoomSelection {
+  roomDetails?: {
+    id: number;
+    type: string;
+    price: number;
+    maxAdults: number;
+    maxChildren: number;
+    bedType: string;
+    amenities: string[];
+    description: string;
+    photos: string[];
+  };
+}
+
 export default function HotelSummary({ hotel, selections, meals, onEdit, theme, date, dayNumber }: HotelSummaryProps) {
   const { professionalRooms, dayMeals } = useQuotation();
 
-  const selection = selections[0];
-  const room = professionalRooms.find((r) => r.id === selection?.roomId);
-
-  if (!room || !selection) return null;
+  // Get all room selections with their details - filter out invalid ones
+  const roomSelectionsWithDetails: RoomSelectionWithDetails[] = selections
+    .map(selection => {
+      const room = professionalRooms.find((r) => r.id === selection?.roomId);
+      if (!room) return null;
+      
+      return {
+        ...selection,
+        roomDetails: room
+      };
+    })
+    .filter((selection): selection is RoomSelectionWithDetails => selection !== null);
 
   // Get meals for this specific day
   const daySpecificMeals = dayMeals[date] || meals;
   
-  const roomPrice = room.price * selection.roomCount + selection.childrenWithBed * 500 + selection.adultsWithExtraBed * 800;
+  // Calculate prices for all rooms
+  const totalRoomPrice = roomSelectionsWithDetails.reduce((total: number, selection: RoomSelectionWithDetails) => {
+    return total + selection.totalPrice;
+  }, 0);
+
   const mealPrice = daySpecificMeals.reduce(
     (total: number, meal: Meal) => total + meal.price * meal.quantity,
     0
   );
-  const totalPrice = roomPrice + mealPrice;
-  const totalGuests =
-    selection.adults + selection.childrenWithBed + selection.childrenWithoutBed + selection.adultsWithExtraBed;
+  const totalPrice = totalRoomPrice + mealPrice;
+  
+  // Calculate total guests across all room selections
+  const totalGuests = roomSelectionsWithDetails.reduce((total: number, selection: RoomSelectionWithDetails) => 
+    total + selection.adults + selection.childrenWithBed + selection.childrenWithoutBed + selection.adultsWithExtraBed, 0
+  );
+
+  // Calculate total rooms
+  const totalRooms = roomSelectionsWithDetails.reduce((total: number, selection: RoomSelectionWithDetails) => 
+    total + selection.roomCount, 0
+  );
 
   // Group meals by type for better display
-  const mealsByType = daySpecificMeals.reduce((acc: any, meal: Meal) => {
+  const mealsByType = daySpecificMeals.reduce((acc: Record<string, Meal[]>, meal: Meal) => {
     if (meal.quantity > 0) {
       if (!acc[meal.type]) acc[meal.type] = [];
       acc[meal.type].push(meal);
@@ -132,14 +166,23 @@ export default function HotelSummary({ hotel, selections, meals, onEdit, theme, 
                   <Bed className="h-4 w-4 text-gray-600" />
                   <span className="text-sm font-medium text-gray-700">Rooms</span>
                 </div>
-                <div className="text-lg font-bold text-gray-900 mt-1">{selection.roomCount}</div>
+                <div className="text-lg font-bold text-gray-900 mt-1">{totalRooms}</div>
               </div>
             </div>
 
+            {/* Room Types Summary */}
             <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-3 border border-green-200">
               <div className="text-center">
-                <div className="font-semibold text-green-800 text-sm">{room.type}</div>
-                <div className="text-xs text-green-600 mt-1">{room.bedType}</div>
+                <div className="font-semibold text-green-800 text-sm mb-2">
+                  {roomSelectionsWithDetails.length} Room Type{roomSelectionsWithDetails.length > 1 ? 's' : ''}
+                </div>
+                <div className="text-xs text-green-600 space-y-1">
+                  {roomSelectionsWithDetails.map((selection, index) => (
+                    <div key={index}>
+                      {selection.roomCount} × {selection.roomDetails?.type}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -155,49 +198,61 @@ export default function HotelSummary({ hotel, selections, meals, onEdit, theme, 
           </h3>
 
           <div className="space-y-3">
-            <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg border border-blue-200">
-              <div className="flex items-center space-x-2">
-                <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
-                <span className="text-sm font-medium text-gray-700">Adults</span>
-              </div>
-              <span className="font-bold text-blue-700">{selection.adults}</span>
-            </div>
-            
-            {selection.adultsWithExtraBed > 0 && (
-              <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg border border-orange-200">
-                <div className="flex items-center space-x-2">
-                  <div className="h-2 w-2 bg-orange-500 rounded-full"></div>
-                  <span className="text-sm font-medium text-gray-700">Adults (Extra Bed)</span>
-                </div>
-                <span className="font-bold text-orange-700">{selection.adultsWithExtraBed}</span>
-              </div>
-            )}
-            
-            {selection.childrenWithBed > 0 && (
-              <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg border border-green-200">
-                <div className="flex items-center space-x-2">
-                  <div className="h-2 w-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm font-medium text-gray-700">Children (With Bed)</span>
-                </div>
-                <span className="font-bold text-green-700">{selection.childrenWithBed}</span>
-              </div>
-            )}
-            
-            {selection.childrenWithoutBed > 0 && (
-              <div className="flex justify-between items-center p-3 bg-indigo-50 rounded-lg border border-indigo-200">
-                <div className="flex items-center space-x-2">
-                  <div className="h-2 w-2 bg-indigo-500 rounded-full"></div>
-                  <span className="text-sm font-medium text-gray-700">Children (No Bed)</span>
-                </div>
-                <span className="font-bold text-indigo-700">{selection.childrenWithoutBed}</span>
-              </div>
-            )}
+            {/* Calculate totals across all room selections */}
+            {(() => {
+              const totalAdults = roomSelectionsWithDetails.reduce((sum: number, selection: RoomSelectionWithDetails) => sum + selection.adults, 0);
+              const totalAdultsWithExtraBed = roomSelectionsWithDetails.reduce((sum: number, selection: RoomSelectionWithDetails) => sum + selection.adultsWithExtraBed, 0);
+              const totalChildrenWithBed = roomSelectionsWithDetails.reduce((sum: number, selection: RoomSelectionWithDetails) => sum + selection.childrenWithBed, 0);
+              const totalChildrenWithoutBed = roomSelectionsWithDetails.reduce((sum: number, selection: RoomSelectionWithDetails) => sum + selection.childrenWithoutBed, 0);
+
+              return (
+                <>
+                  <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="flex items-center space-x-2">
+                      <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
+                      <span className="text-sm font-medium text-gray-700">Adults</span>
+                    </div>
+                    <span className="font-bold text-blue-700">{totalAdults}</span>
+                  </div>
+                  
+                  {totalAdultsWithExtraBed > 0 && (
+                    <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg border border-orange-200">
+                      <div className="flex items-center space-x-2">
+                        <div className="h-2 w-2 bg-orange-500 rounded-full"></div>
+                        <span className="text-sm font-medium text-gray-700">Adults (Extra Bed)</span>
+                      </div>
+                      <span className="font-bold text-orange-700">{totalAdultsWithExtraBed}</span>
+                    </div>
+                  )}
+                  
+                  {totalChildrenWithBed > 0 && (
+                    <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg border border-green-200">
+                      <div className="flex items-center space-x-2">
+                        <div className="h-2 w-2 bg-green-500 rounded-full"></div>
+                        <span className="text-sm font-medium text-gray-700">Children (With Bed)</span>
+                      </div>
+                      <span className="font-bold text-green-700">{totalChildrenWithBed}</span>
+                    </div>
+                  )}
+                  
+                  {totalChildrenWithoutBed > 0 && (
+                    <div className="flex justify-between items-center p-3 bg-indigo-50 rounded-lg border border-indigo-200">
+                      <div className="flex items-center space-x-2">
+                        <div className="h-2 w-2 bg-indigo-500 rounded-full"></div>
+                        <span className="text-sm font-medium text-gray-700">Children (No Bed)</span>
+                      </div>
+                      <span className="font-bold text-indigo-700">{totalChildrenWithoutBed}</span>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
 
             <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-3 rounded-lg border border-purple-200">
               <div className="text-center">
                 <div className="font-bold text-purple-700 text-lg">Total: {totalGuests} Guests</div>
                 <div className="text-xs text-purple-600 mt-1">
-                  Capacity: {room.maxAdults + room.maxChildren} per room
+                  Across {totalRooms} room{totalRooms > 1 ? 's' : ''}
                 </div>
               </div>
             </div>
@@ -214,34 +269,28 @@ export default function HotelSummary({ hotel, selections, meals, onEdit, theme, 
           </h3>
 
           <div className="space-y-4">
-            <div className="bg-white rounded-lg p-4 border border-green-200 shadow-sm">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium text-gray-700">Room Cost</span>
-                <span className="font-semibold text-blue-600">₹{room.price * selection.roomCount}</span>
-              </div>
-              <div className="text-xs text-gray-500">
-                {selection.roomCount} {selection.roomCount === 1 ? 'room' : 'rooms'} × ₹{room.price}
-              </div>
-            </div>
-
-            {(selection.childrenWithBed > 0 || selection.adultsWithExtraBed > 0) && (
-              <div className="bg-white rounded-lg p-4 border border-orange-200 shadow-sm">
+            {/* Room Costs - Show each room type */}
+            {roomSelectionsWithDetails.map((selection, index) => (
+              <div key={index} className="bg-white rounded-lg p-4 border border-blue-200 shadow-sm">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-gray-700">Extra Beds</span>
-                  <span className="font-semibold text-orange-600">
-                    ₹{selection.childrenWithBed * 500 + selection.adultsWithExtraBed * 800}
+                  <span className="text-sm font-medium text-gray-700">
+                    {selection.roomDetails?.type} × {selection.roomCount}
+                  </span>
+                  <span className="font-semibold text-blue-600">
+                    ₹{selection.totalPrice}
                   </span>
                 </div>
                 <div className="text-xs text-gray-500 space-y-1">
+                  <div>Base: {selection.roomCount} × ₹{selection.roomDetails?.price}</div>
                   {selection.childrenWithBed > 0 && (
-                    <div>Children: {selection.childrenWithBed} × ₹500</div>
+                    <div>Children with bed: {selection.childrenWithBed} × ₹500</div>
                   )}
                   {selection.adultsWithExtraBed > 0 && (
-                    <div>Adults: {selection.adultsWithExtraBed} × ₹800</div>
+                    <div>Adults with extra bed: {selection.adultsWithExtraBed} × ₹800</div>
                   )}
                 </div>
               </div>
-            )}
+            ))}
 
             {mealPrice > 0 && (
               <div className="bg-white rounded-lg p-4 border border-blue-200 shadow-sm">
@@ -267,6 +316,66 @@ export default function HotelSummary({ hotel, selections, meals, onEdit, theme, 
           </div>
         </div>
       </div>
+
+      {/* Detailed Room Breakdown */}
+      {roomSelectionsWithDetails.length > 0 && (
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 mb-6">
+          <h3 className="font-bold text-gray-900 mb-4 flex items-center text-lg">
+            <div className="h-8 w-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+              <Bed className="h-4 w-4 text-blue-600" />
+            </div>
+            All Room Selections
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {roomSelectionsWithDetails.map((selection, index) => (
+              <div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                <div className="flex justify-between items-start mb-3">
+                  <h4 className="font-semibold text-gray-900">{selection.roomDetails?.type}</h4>
+                  <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-medium">
+                    {selection.roomCount} room{selection.roomCount > 1 ? 's' : ''}
+                  </span>
+                </div>
+                
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Base Price:</span>
+                    <span className="font-medium">₹{selection.roomDetails?.price}/room</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Adults:</span>
+                    <span className="font-medium">{selection.adults}</span>
+                  </div>
+                  {selection.adultsWithExtraBed > 0 && (
+                    <div className="flex justify-between text-orange-600">
+                      <span>Adults (Extra Bed):</span>
+                      <span className="font-medium">{selection.adultsWithExtraBed}</span>
+                    </div>
+                  )}
+                  {selection.childrenWithBed > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Children (With Bed):</span>
+                      <span className="font-medium">{selection.childrenWithBed}</span>
+                    </div>
+                  )}
+                  {selection.childrenWithoutBed > 0 && (
+                    <div className="flex justify-between text-purple-600">
+                      <span>Children (No Bed):</span>
+                      <span className="font-medium">{selection.childrenWithoutBed}</span>
+                    </div>
+                  )}
+                  <div className="border-t border-gray-300 pt-2 mt-2">
+                    <div className="flex justify-between font-semibold">
+                      <span>Subtotal:</span>
+                      <span>₹{selection.totalPrice}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Meal Details Section - Only show if meals are selected */}
       {daySpecificMeals.length > 0 && daySpecificMeals.some(meal => meal.quantity > 0) && (
@@ -332,7 +441,7 @@ export default function HotelSummary({ hotel, selections, meals, onEdit, theme, 
                   <div className="flex justify-between items-center text-sm font-bold text-gray-900">
                     <span>Subtotal:</span>
                     <span>
-                      ₹{mealsByType[mealType].reduce((sum, meal) => sum + (meal.quantity * meal.price), 0)}
+                      ₹{mealsByType[mealType].reduce((sum: number, meal: Meal) => sum + (meal.quantity * meal.price), 0)}
                     </span>
                   </div>
                 </div>
