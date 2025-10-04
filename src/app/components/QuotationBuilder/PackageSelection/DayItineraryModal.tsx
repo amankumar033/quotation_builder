@@ -25,7 +25,6 @@ export default function DayItineraryModal({ itinerary, onSave, onClose, availabl
     approximateDistance: "",
     approximateTime: ""
   });
-  
 
   useEffect(() => {
     if (itinerary) {
@@ -110,9 +109,9 @@ export default function DayItineraryModal({ itinerary, onSave, onClose, availabl
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border-2 border-blue-200 shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
           <h2 className="text-xl font-semibold text-gray-900">
             {itinerary ? 'Edit Itinerary' : 'Create Day Itinerary'}
           </h2>
@@ -127,7 +126,7 @@ export default function DayItineraryModal({ itinerary, onSave, onClose, availabl
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Basic Information */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg bg-white">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Day Number *
@@ -175,7 +174,7 @@ export default function DayItineraryModal({ itinerary, onSave, onClose, availabl
           </div>
 
           {/* Description */}
-          <div>
+          <div className="p-4 border border-gray-200 rounded-lg bg-white">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Day Description *
             </label>
@@ -190,7 +189,7 @@ export default function DayItineraryModal({ itinerary, onSave, onClose, availabl
           </div>
 
           {/* Activities */}
-          <div>
+          <div className="p-4 border border-gray-200 rounded-lg bg-white">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Activities *
             </label>
@@ -227,7 +226,7 @@ export default function DayItineraryModal({ itinerary, onSave, onClose, availabl
           </div>
 
           {/* Meals */}
-          <div>
+          <div className="p-4 border border-gray-200 rounded-lg bg-white">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Meals Included
             </label>
@@ -264,57 +263,59 @@ export default function DayItineraryModal({ itinerary, onSave, onClose, availabl
           </div>
 
           {/* Additional Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Accommodation
-              </label>
-              <input
-                type="text"
-                value={formData.accommodation}
-                onChange={(e) => setFormData(prev => ({ ...prev, accommodation: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Hotel name or accommodation details"
-              />
-            </div>
+          <div className="p-4 border border-gray-200 rounded-lg bg-white">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Accommodation
+                </label>
+                <input
+                  type="text"
+                  value={formData.accommodation}
+                  onChange={(e) => setFormData(prev => ({ ...prev, accommodation: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Hotel name or accommodation details"
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Transport
-              </label>
-              <input
-                type="text"
-                value={formData.transport}
-                onChange={(e) => setFormData(prev => ({ ...prev, transport: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Transport details"
-              />
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Transport
+                </label>
+                <input
+                  type="text"
+                  value={formData.transport}
+                  onChange={(e) => setFormData(prev => ({ ...prev, transport: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Transport details"
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Approximate Distance
-              </label>
-              <input
-                type="text"
-                value={formData.approximateDistance}
-                onChange={(e) => setFormData(prev => ({ ...prev, approximateDistance: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="e.g., 250 km"
-              />
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Approximate Distance
+                </label>
+                <input
+                  type="text"
+                  value={formData.approximateDistance}
+                  onChange={(e) => setFormData(prev => ({ ...prev, approximateDistance: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="e.g., 250 km"
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Approximate Time
-              </label>
-              <input
-                type="text"
-                value={formData.approximateTime}
-                onChange={(e) => setFormData(prev => ({ ...prev, approximateTime: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="e.g., 5-6 hours"
-              />
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Approximate Time
+                </label>
+                <input
+                  type="text"
+                  value={formData.approximateTime}
+                  onChange={(e) => setFormData(prev => ({ ...prev, approximateTime: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="e.g., 5-6 hours"
+                />
+              </div>
             </div>
           </div>
 
