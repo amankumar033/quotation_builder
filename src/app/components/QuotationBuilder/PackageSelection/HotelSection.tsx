@@ -216,7 +216,7 @@ type HotelSelectionMode = 'overview' | SelectionStep;
 interface DayHotelProgress {
   date: string;
   dayNumber: number;
-  currentStep: SelectionStep; // FIXED: Using unified type
+  currentStep: SelectionStep;
   selectedHotel: Hotel | null;
   mealSelections: Meal[];
   roomSelections: RoomSelection[];
@@ -234,13 +234,6 @@ interface Room {
   amenities: string[];
   description: string;
   photos: string[];
-}
-
-// Breadcrumb item type - FIXED: Using unified SelectionStep type
-interface BreadcrumbItem {
-  label: string;
-  step: SelectionStep;
-  icon: React.ComponentType<any>;
 }
 
 // Scroll to top function
@@ -263,20 +256,72 @@ export default function HotelSection({
     setCurrentEditingDay,
     dayMeals,
     calculateDayPrice,
-    professionalRooms
+    professionalRooms,
+    // Use hotelTotalPrice from context - this should be the sum of ALL days
+    hotelTotalPrice
   } = useQuotation();
 
   const [selectionMode, setSelectionMode] = useState<HotelSelectionMode>('overview');
   const [dayProgress, setDayProgress] = useState<DayHotelProgress | null>(null);
-  const [showActivities, setShowActivities] = useState<boolean>(false);
 
-  // Breadcrumb items - FIXED: Using SelectionStep type
-  const breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Select Hotel', step: 'hotel', icon: Building },
-    { label: 'Choose Meals', step: 'meals', icon: Utensils },
-    { label: 'Room Selection', step: 'rooms', icon: Bed },
-    { label: 'Add Activities', step: 'activities', icon: Sparkles },
-  ];
+  // FIXED: Calculate individual day totals for display
+  const calculateDayTotalWithMeals = (date: string): { 
+    roomPrice: number; 
+    mealPrice: number;
+    activityPrice: number;
+    total: number;
+    hasMeals: boolean;
+    hasActivities: boolean;
+  } => {
+    const dayPrice = calculateDayPrice(date);
+    
+    return {
+      roomPrice: dayPrice.roomPrice,
+      mealPrice: dayPrice.mealPrice,
+      activityPrice: dayPrice.activityPrice,
+      total: dayPrice.total,
+      hasMeals: dayPrice.mealPrice > 0,
+      hasActivities: dayPrice.activityPrice > 0
+    };
+  };
+
+  // FIXED: Calculate breakdown for display - use the context's hotelTotalPrice
+  const calculateHotelSectionBreakdown = () => {
+    let totalRooms = 0;
+    let totalMeals = 0;
+    let totalActivities = 0;
+    
+    allDays.forEach(({ date }) => {
+      const dayTotal = calculateDayTotalWithMeals(date);
+      totalRooms += dayTotal.roomPrice;
+      totalMeals += dayTotal.mealPrice;
+      totalActivities += dayTotal.activityPrice;
+    });
+    
+    return {
+      totalRooms,
+      totalMeals,
+      totalActivities,
+      grandTotal: hotelTotalPrice // Use the context value directly
+    };
+  };
+
+  const breakdown = calculateHotelSectionBreakdown();
+
+  // FIXED: Debug logging to see what's happening
+  useEffect(() => {
+    console.log("HotelSection - Current State:", {
+      hotelTotalPrice,
+      breakdown,
+      allDaysCount: allDays.length,
+      daySelectionsCount: Object.keys(daySelections).length
+    });
+    
+    allDays.forEach(({ date }, index) => {
+      const dayTotal = calculateDayTotalWithMeals(date);
+      console.log(`Day ${index + 1} (${date}):`, dayTotal);
+    });
+  }, [hotelTotalPrice, daySelections, allDays]);
 
   // Initialize day progress from existing selections
   const initializeDayProgress = (date: string, dayNumber: number): void => {
@@ -308,7 +353,7 @@ export default function HotelSection({
   const handleStartHotelSelection = (date: string, dayNumber: number): void => {
     setCurrentEditingDay(date);
     initializeDayProgress(date, dayNumber);
-    setSelectionMode('hotel'); // FIXED: Set to 'hotel' instead of 'selecting-hotel'
+    setSelectionMode('hotel');
   };
 
   const handleHotelSelect = (hotel: Hotel): void => {
@@ -327,7 +372,7 @@ export default function HotelSection({
       hotel: hotel
     });
     
-    setSelectionMode('meals'); // FIXED: Set to 'meals' instead of 'selecting-meals'
+    setSelectionMode('meals');
     scrollToTop();
   };
 
@@ -347,7 +392,7 @@ export default function HotelSection({
       meals: meals
     });
     
-    setSelectionMode('rooms'); // FIXED: Set to 'rooms' instead of 'selecting-rooms'
+    setSelectionMode('rooms');
     scrollToTop();
   };
 
@@ -408,15 +453,15 @@ export default function HotelSection({
   };
 
   const handleBackToHotelSelection = (): void => {
-    setSelectionMode('hotel'); // FIXED: Set to 'hotel'
+    setSelectionMode('hotel');
   };
 
   const handleBackToMealSelection = (): void => {
-    setSelectionMode('meals'); // FIXED: Set to 'meals'
+    setSelectionMode('meals');
   };
 
   const handleBackToRoomSelection = (): void => {
-    setSelectionMode('rooms'); // FIXED: Set to 'rooms'
+    setSelectionMode('rooms');
   };
 
   const handleEditDay = (date: string, dayNumber: number): void => {
@@ -426,71 +471,9 @@ export default function HotelSection({
   const handleAddActivities = (date: string, dayNumber: number): void => {
     setCurrentEditingDay(date);
     initializeDayProgress(date, dayNumber);
-    setSelectionMode('activities'); // FIXED: Set to 'activities'
+    setSelectionMode('activities');
   };
 
-  // Breadcrumb navigation handler - FIXED: Using SelectionStep type
-  const handleBreadcrumbClick = (step: SelectionStep): void => {
-    if (!dayProgress) return;
-    
-    // Only allow navigation to completed or current steps
-    const currentStepIndex = breadcrumbItems.findIndex(item => item.step === dayProgress.currentStep);
-    const targetStepIndex = breadcrumbItems.findIndex(item => item.step === step);
-    
-    if (targetStepIndex <= currentStepIndex) {
-      setSelectionMode(step);
-    }
-  };
-
-  // Calculate total hotel price for all days (ONLY rooms + meals + activities)
-  const calculateHotelTotalPrice = (): number => {
-    return allDays.reduce((total: number, { date }) => {
-      const dayTotal = calculateDayTotalWithMeals(date);
-      return total + dayTotal.total;
-    }, 0);
-  };
-
-  // Enhanced price calculation that includes meals and activities
-  const calculateDayTotalWithMeals = (date: string): { 
-    roomPrice: number; 
-    mealPrice: number;
-    activityPrice: number;
-    total: number;
-    hasMeals: boolean;
-    hasActivities: boolean;
-  } => {
-    const dayPrice = calculateDayPrice(date);
-    const daySelection = daySelections[date];
-    
-    // Get meals for this day
-    const mealsFromContext = dayMeals[date] || [];
-    const mealsFromSelections = daySelection?.meals || [];
-    const allMeals = [...mealsFromContext, ...mealsFromSelections];
-    
-    // Calculate actual meal price
-    const actualMealPrice = allMeals.reduce((total: number, meal: Meal) => {
-      return total + (meal.price * (meal.quantity || 0));
-    }, 0);
-    
-    // Calculate activity price
-    const activityPrice = daySelection?.activities?.reduce((total: number, activity: Activity) => {
-      return total + activity.price;
-    }, 0) || 0;
-    
-    const hasMeals = actualMealPrice > 0;
-    const hasActivities = activityPrice > 0;
-    
-    return {
-      roomPrice: dayPrice.roomPrice,
-      mealPrice: actualMealPrice,
-      activityPrice: activityPrice,
-      total: dayPrice.roomPrice + actualMealPrice + activityPrice,
-      hasMeals: hasMeals,
-      hasActivities: hasActivities
-    };
-  };
-
-  const hotelTotalPrice = calculateHotelTotalPrice();
   const completedDays = allDays.filter(({ date }) => daySelections[date]?.hotel).length;
   const hasHotelSelected = completedDays > 0;
 
@@ -525,11 +508,6 @@ export default function HotelSection({
     return hotel.inclusions || ['Free WiFi', 'Air Conditioning', 'Room Service'];
   };
 
-  // Get room price from hotel data
-  const getHotelPrice = (hotel: Hotel): number => {
-    return hotel.roomTypes?.[0]?.price ? parseInt(hotel.roomTypes[0].price) : 3000;
-  };
-
   // FIXED: Dynamic room type mapping function - works with any room ID
   const getRoomTypeInfo = (roomId: number, roomSelections: RoomSelection[]) => {
     // First try to find in professionalRooms
@@ -546,7 +524,6 @@ export default function HotelSection({
     }
     
     // If not found in professionalRooms, create dynamic room info
-    // This ensures ANY room ID will work, even future ones
     const roomSelection = roomSelections.find(rs => rs.roomId === roomId);
     const basePrice = roomSelection?.totalPrice || 3000;
     
@@ -590,10 +567,22 @@ export default function HotelSection({
               <h3 className="text-lg font-semibold text-gray-900">Hotel & Accommodation</h3>
               <p className="text-sm text-gray-600">
                 {hasHotelSelected 
-                  ? `${completedDays}/${allDays.length} days configured • ₹${hotelTotalPrice}`
+                  ? `${completedDays}/${allDays.length} days configured • ₹${hotelTotalPrice.toLocaleString()}`
                   : `Configure hotels for ${allDays.length} days`
                 }
               </p>
+              {/* FIXED: Show detailed breakdown when hotels are selected */}
+              {hasHotelSelected && (
+                <div className="flex items-center space-x-4 mt-1 text-xs text-gray-500">
+                  <span>Rooms: ₹{breakdown.totalRooms.toLocaleString()}</span>
+                  {breakdown.totalMeals > 0 && (
+                    <span>Meals: ₹{breakdown.totalMeals.toLocaleString()}</span>
+                  )}
+                  {breakdown.totalActivities > 0 && (
+                    <span>Activities: ₹{breakdown.totalActivities.toLocaleString()}</span>
+                  )}
+                </div>
+              )}
             </div>
           </div>
           
@@ -616,8 +605,43 @@ export default function HotelSection({
       {/* Content */}
       {isSectionActive && (
         <div className="p-6 border-t border-gray-200">
-          {/* Breadcrumb Navigation - Only show when in selection flow */}
-         
+          {/* Total Hotel Package Summary - Show cumulative total for ALL days */}
+          {hasHotelSelected && (
+            <div className="bg-gradient-to-r from-green-50 to-emerald-100 rounded-xl p-4 border border-green-300 shadow-sm mb-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-bold text-gray-900 text-lg">Total Hotel Package (All {completedDays} Days)</h4>
+                  <p className="text-sm text-gray-600">
+                    Cumulative total including rooms, meals & activities across all days
+                  </p>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-green-600">
+                    ₹{hotelTotalPrice.toLocaleString()}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    Combined total
+                  </div>
+                </div>
+              </div>
+              
+              {/* Detailed Breakdown */}
+              <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-green-200">
+                <div className="text-center">
+                  <div className="text-lg font-semibold text-blue-600">₹{breakdown.totalRooms.toLocaleString()}</div>
+                  <div className="text-xs text-gray-600">Rooms</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-lg font-semibold text-orange-600">₹{breakdown.totalMeals.toLocaleString()}</div>
+                  <div className="text-xs text-gray-600">Meals</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-lg font-semibold text-purple-600">₹{breakdown.totalActivities.toLocaleString()}</div>
+                  <div className="text-xs text-gray-600">Activities</div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Overview Mode - Enhanced UI */}
           {selectionMode === 'overview' && (
@@ -903,7 +927,6 @@ export default function HotelSection({
             </div>
           )}
 
-    
           {/* Hotel Selection Flow */}
           {selectionMode !== 'overview' && dayProgress && (
             <div className="space-y-6">
@@ -947,8 +970,8 @@ export default function HotelSection({
                 })}
               </div>
 
-              {/* Hotel Selection - Using Dynamic Hotels from API */}
-              {selectionMode === 'hotel' && ( // FIXED: Changed from 'selecting-hotel'
+              {/* Hotel Selection */}
+              {selectionMode === 'hotel' && (
                 <div className="space-y-4">
                   {isHotelLoading ? (
                     <div className="text-center py-12">
@@ -1008,7 +1031,6 @@ export default function HotelSection({
                           </div>
                           
                           <div className="space-y-2">
-                            {/* Removed "Starting from" price */}
                             <div className="text-xs text-gray-500">
                               {getHotelAmenities(hotel).slice(0, 3).join(' • ')}
                             </div>
@@ -1030,7 +1052,7 @@ export default function HotelSection({
               )}
 
               {/* Meal Selection */}
-              {selectionMode === 'meals' && dayProgress.selectedHotel && ( // FIXED: Changed from 'selecting-meals'
+              {selectionMode === 'meals' && dayProgress.selectedHotel && (
                 <div className="space-y-6">
                   <MealSelection
                     hotel={dayProgress.selectedHotel}
@@ -1047,7 +1069,7 @@ export default function HotelSection({
               )}
 
               {/* Room Selection */}
-              {selectionMode === 'rooms' && dayProgress.selectedHotel && ( // FIXED: Changed from 'selecting-rooms'
+              {selectionMode === 'rooms' && dayProgress.selectedHotel && (
                 <div className="space-y-6">
                   <RoomSelect
                     hotel={dayProgress.selectedHotel}
@@ -1061,153 +1083,152 @@ export default function HotelSection({
                 </div>
               )}
 
+              {/* Activities Selection */}
+              {selectionMode === 'activities' && dayProgress && dayProgress.selectedHotel && (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {getHotelActivities(dayProgress.selectedHotel.id).map((activity) => {
+                      const isSelected = dayProgress.activitySelections.some(
+                        selected => selected.id === activity.id
+                      );
+                      
+                      return (
+                        <div
+                          key={activity.id}
+                          className={`border-2 rounded-xl overflow-hidden transition-all duration-200 cursor-pointer ${
+                            isSelected 
+                              ? 'border-purple-500 bg-purple-50 shadow-lg' 
+                              : 'border-gray-200 bg-white hover:border-purple-300 hover:shadow-md'
+                          }`}
+                          onClick={() => {
+                            // Only toggle selection, don't auto-proceed
+                            let updatedActivities: Activity[];
+                            if (isSelected) {
+                              updatedActivities = dayProgress.activitySelections.filter(
+                                selected => selected.id !== activity.id
+                              );
+                            } else {
+                              updatedActivities = [...dayProgress.activitySelections, activity];
+                            }
+                            
+                            // Update progress but don't proceed to next step
+                            const updatedProgress: DayHotelProgress = {
+                              ...dayProgress,
+                              activitySelections: updatedActivities
+                            };
+                            
+                            setDayProgress(updatedProgress);
+                            
+                            // Update global state but don't mark as completed
+                            updateDaySelection(dayProgress.date, {
+                              activities: updatedActivities
+                            });
+                          }}
+                        >
+                          <div className="h-40 relative overflow-hidden">
+                            <img 
+                              src={activity.image} 
+                              alt={activity.name}
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute top-3 right-3">
+                              {getActivityIcon(activity.category)}
+                            </div>
+                            <div className="absolute bottom-3 left-3 text-white">
+                              <span className="text-xs bg-purple-700 px-2 py-1 rounded-full">
+                                {activity.category}
+                              </span>
+                            </div>
+                          </div>
+                          
+                          <div className="p-4">
+                            <div className="flex items-start justify-between mb-2">
+                              <h5 className="font-bold text-gray-900 text-sm flex-1">{activity.name}</h5>
+                              <div className={`h-5 w-5 rounded-full border-2 flex items-center justify-center ml-2 ${
+                                isSelected 
+                                  ? 'bg-purple-500 border-purple-500 text-white' 
+                                  : 'border-gray-300'
+                              }`}>
+                                {isSelected && '✓'}
+                              </div>
+                            </div>
+                            
+                            <p className="text-xs text-gray-600 mb-3 line-clamp-2">
+                              {activity.description}
+                            </p>
+                            
+                            <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+                              <span className="flex items-center">
+                                <Sparkles className="h-3 w-3 mr-1" />
+                                {activity.duration}
+                              </span>
+                            </div>
+                            
+                            <div className="flex items-center justify-between">
+                              <span className="text-lg font-bold text-purple-600">
+                                ₹{activity.price}
+                              </span>
+                              <span className={`text-xs px-2 py-1 rounded-full ${
+                                isSelected 
+                                  ? 'bg-purple-100 text-purple-700' 
+                                  : 'bg-gray-100 text-gray-600'
+                              }`}>
+                                {isSelected ? 'Selected' : 'Add Activity'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
 
-{/* Activities Selection - New Section */}
-{selectionMode === 'activities' && dayProgress && dayProgress.selectedHotel && (
-  <div className="space-y-6">
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {getHotelActivities(dayProgress.selectedHotel.id).map((activity) => {
-        const isSelected = dayProgress.activitySelections.some(
-          selected => selected.id === activity.id
-        );
-        
-        return (
-          <div
-            key={activity.id}
-            className={`border-2 rounded-xl overflow-hidden transition-all duration-200 cursor-pointer ${
-              isSelected 
-                ? 'border-purple-500 bg-purple-50 shadow-lg' 
-                : 'border-gray-200 bg-white hover:border-purple-300 hover:shadow-md'
-            }`}
-            onClick={() => {
-              // Only toggle selection, don't auto-proceed
-              let updatedActivities: Activity[];
-              if (isSelected) {
-                updatedActivities = dayProgress.activitySelections.filter(
-                  selected => selected.id !== activity.id
-                );
-              } else {
-                updatedActivities = [...dayProgress.activitySelections, activity];
-              }
-              
-              // Update progress but don't proceed to next step
-              const updatedProgress: DayHotelProgress = {
-                ...dayProgress,
-                activitySelections: updatedActivities
-              };
-              
-              setDayProgress(updatedProgress);
-              
-              // Update global state but don't mark as completed
-              updateDaySelection(dayProgress.date, {
-                activities: updatedActivities
-              });
-            }}
-          >
-            <div className="h-40 relative overflow-hidden">
-              <img 
-                src={activity.image} 
-                alt={activity.name}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute top-3 right-3">
-                {getActivityIcon(activity.category)}
-              </div>
-              <div className="absolute bottom-3 left-3 text-white">
-                <span className="text-xs bg-purple-700 px-2 py-1 rounded-full">
-                  {activity.category}
-                </span>
-              </div>
-            </div>
-            
-            <div className="p-4">
-              <div className="flex items-start justify-between mb-2">
-                <h5 className="font-bold text-gray-900 text-sm flex-1">{activity.name}</h5>
-                <div className={`h-5 w-5 rounded-full border-2 flex items-center justify-center ml-2 ${
-                  isSelected 
-                    ? 'bg-purple-500 border-purple-500 text-white' 
-                    : 'border-gray-300'
-                }`}>
-                  {isSelected && '✓'}
+                  {/* Selected Activities Summary */}
+                  {dayProgress.activitySelections.length > 0 && (
+                    <div className="mt-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-200">
+                      <h5 className="font-semibold text-gray-900 mb-3 flex items-center">
+                        <Sparkles className="h-4 w-4 mr-2 text-purple-600" />
+                        Selected Activities ({dayProgress.activitySelections.length})
+                      </h5>
+                      <div className="space-y-2">
+                        {dayProgress.activitySelections.map((activity) => (
+                          <div key={activity.id} className="flex justify-between items-center bg-white p-3 rounded-lg">
+                            <div className="flex items-center">
+                              {getActivityIcon(activity.category)}
+                              <span className="ml-2 font-medium text-sm">{activity.name}</span>
+                            </div>
+                            <div className="text-right">
+                              <div className="font-semibold text-purple-600">₹{activity.price}</div>
+                              <div className="text-xs text-gray-500">{activity.duration}</div>
+                            </div>
+                          </div>
+                        ))}
+                        <div className="border-t border-purple-200 pt-2 mt-2 flex justify-between font-semibold">
+                          <span>Activities Total:</span>
+                          <span className="text-purple-600">
+                            ₹{dayProgress.activitySelections.reduce((sum: number, activity: Activity) => sum + activity.price, 0)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Confirm Button */}
+                  <div className="flex justify-end space-x-3 pt-4">
+                    <button
+                      onClick={handleBackToRoomSelection}
+                      className="px-6 py-2.5 text-gray-700 hover:text-gray-900 font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      Back to Rooms
+                    </button>
+                    <button
+                      onClick={() => handleActivitiesConfirm(dayProgress.activitySelections)}
+                      className="px-8 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg"
+                    >
+                      Confirm Activities
+                    </button>
+                  </div>
                 </div>
-              </div>
-              
-              <p className="text-xs text-gray-600 mb-3 line-clamp-2">
-                {activity.description}
-              </p>
-              
-              <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
-                <span className="flex items-center">
-                  <Sparkles className="h-3 w-3 mr-1" />
-                  {activity.duration}
-                </span>
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <span className="text-lg font-bold text-purple-600">
-                  ₹{activity.price}
-                </span>
-                <span className={`text-xs px-2 py-1 rounded-full ${
-                  isSelected 
-                    ? 'bg-purple-100 text-purple-700' 
-                    : 'bg-gray-100 text-gray-600'
-                }`}>
-                  {isSelected ? 'Selected' : 'Add Activity'}
-                </span>
-              </div>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-
-    {/* Selected Activities Summary */}
-    {dayProgress.activitySelections.length > 0 && (
-      <div className="mt-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-200">
-        <h5 className="font-semibold text-gray-900 mb-3 flex items-center">
-          <Sparkles className="h-4 w-4 mr-2 text-purple-600" />
-          Selected Activities ({dayProgress.activitySelections.length})
-        </h5>
-        <div className="space-y-2">
-          {dayProgress.activitySelections.map((activity) => (
-            <div key={activity.id} className="flex justify-between items-center bg-white p-3 rounded-lg">
-              <div className="flex items-center">
-                {getActivityIcon(activity.category)}
-                <span className="ml-2 font-medium text-sm">{activity.name}</span>
-              </div>
-              <div className="text-right">
-                <div className="font-semibold text-purple-600">₹{activity.price}</div>
-                <div className="text-xs text-gray-500">{activity.duration}</div>
-              </div>
-            </div>
-          ))}
-          <div className="border-t border-purple-200 pt-2 mt-2 flex justify-between font-semibold">
-            <span>Activities Total:</span>
-            <span className="text-purple-600">
-              ₹{dayProgress.activitySelections.reduce((sum: number, activity: Activity) => sum + activity.price, 0)}
-            </span>
-          </div>
-        </div>
-      </div>
-    )}
-
-    {/* Confirm Button */}
-    <div className="flex justify-end space-x-3 pt-4">
-      <button
-        onClick={handleBackToRoomSelection}
-        className="px-6 py-2.5 text-gray-700 hover:text-gray-900 font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-      >
-        Back to Rooms
-      </button>
-      <button
-        onClick={() => handleActivitiesConfirm(dayProgress.activitySelections)}
-        className="px-8 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg"
-      >
-        Confirm Activities
-      </button>
-    </div>
-  </div>
-)}
+              )}
             </div>
           )}
         </div>

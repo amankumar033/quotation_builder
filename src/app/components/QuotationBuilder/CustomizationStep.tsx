@@ -15,7 +15,7 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
   const { agencySettings } = useAgencySettings();
   const [isEditingPricing, setIsEditingPricing] = useState(false);
   const [isEditingGrandTotal, setIsEditingGrandTotal] = useState(false);
-  const { totalPackagePrice, exportQuotationData, quotationData, updateQuotationData } = useQuotation();
+  const { totalPackagePrice, exportQuotationData, quotationData, updateQuotationData, finalGrandTotal, setFinalGrandTotal } = useQuotation();
   const [tempPricing, setTempPricing] = useState({
     markupPercentage: 0,
     gstPercentage: 0,
@@ -65,8 +65,8 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
 
   const savePricing = () => {
     const updates = {
-      markupPercentage: tempPricing.markupPercentage,
-      discountAmount: tempPricing.discountAmount
+      markupPercentage: parseFloat(tempPricing.markupPercentage.toFixed(2)), // Limit to 2 decimal places
+      discountAmount: parseFloat(tempPricing.discountAmount.toFixed(2)) // Limit to 2 decimal places
     };
     updateData(updates);
     updateQuotationData(updates);
@@ -79,7 +79,7 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
 
   const startEditingGrandTotal = () => {
     const currentTotals = calculateTotals();
-    setTempGrandTotal(currentTotals.grandTotal);
+    setTempGrandTotal(Math.round(currentTotals.grandTotal)); // Round to whole number
     setIsEditingGrandTotal(true);
   };
 
@@ -95,10 +95,14 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
     const requiredMarkupPercentage = subtotal > 0 ? (requiredMarkup / subtotal) * 100 : 0;
 
     const updates = {
-      markupPercentage: Math.max(0, requiredMarkupPercentage)
+      markupPercentage: parseFloat(Math.max(0, requiredMarkupPercentage).toFixed(2)) // Limit to 2 decimal places
     };
     updateData(updates);
     updateQuotationData(updates);
+    
+    // Store the final grand total in context
+    setFinalGrandTotal(tempGrandTotal);
+    
     setIsEditingGrandTotal(false);
   };
 
@@ -122,10 +126,10 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
       markup, 
       taxable, 
       gst, 
-      grandTotal, 
-      markupPercentage, 
-      gstPercentage, 
-      discountAmount 
+      grandTotal: Math.round(grandTotal), // Round to whole number
+      markupPercentage: parseFloat(markupPercentage.toFixed(2)), // Limit to 2 decimal places
+      gstPercentage: parseFloat(gstPercentage.toFixed(2)), // Limit to 2 decimal places
+      discountAmount: parseFloat(discountAmount.toFixed(2)) // Limit to 2 decimal places
     };
   };
 
@@ -136,12 +140,26 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
   const adjustedMarkupPercentage = subtotal > 0 ? ((tempGrandTotal + discountAmount) / (1 + gstPercentage / 100) - subtotal) / subtotal * 100 : 0;
 
   const handleContinue = () => {
+    // Set the final grand total in context with the current calculated grand total
+    setFinalGrandTotal(grandTotal);
+    
     // Export and log all quotation data
     exportQuotationData();
     
     // Scroll to top and proceed
     window.scrollTo({ top: 0, behavior: 'smooth' });
     nextStep();
+  };
+
+  // Format number for display (remove decimals for whole numbers, limit to 2 for others)
+  const formatNumber = (num: number, isCurrency: boolean = false): string => {
+    if (isCurrency) {
+      // For currency values, round to whole number and format
+      return `₹${Math.round(num).toLocaleString()}`;
+    } else {
+      // For percentages and other numbers, limit to 2 decimal places
+      return num % 1 === 0 ? num.toString() : num.toFixed(2);
+    }
   };
 
   return (
@@ -230,31 +248,31 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
               {/* Subtotal */}
               <div className="flex justify-between items-center px-4 py-3 hover:bg-gray-50">
                 <span className="text-gray-700">Subtotal</span>
-                <span className="font-medium">₹{subtotal.toLocaleString()}</span>
+                <span className="font-medium">{formatNumber(subtotal, true)}</span>
               </div>
 
               {/* Markup */}
               <div className="flex justify-between items-center px-4 py-3 bg-gray-50 hover:bg-gray-100">
                 <span className="text-gray-700">Markup</span>
-                <span className="font-medium text-blue-600">{markupPercentage.toFixed(1)}% (₹{markup.toLocaleString()})</span>
+                <span className="font-medium text-blue-600">{formatNumber(markupPercentage)}% ({formatNumber(markup, true)})</span>
               </div>
 
               {/* Taxable Amount */}
               <div className="flex justify-between items-center px-4 py-3 hover:bg-gray-50">
                 <span className="text-gray-700">Taxable Amount</span>
-                <span className="font-medium">₹{taxable.toLocaleString()}</span>
+                <span className="font-medium">{formatNumber(taxable, true)}</span>
               </div>
 
               {/* GST */}
               <div className="flex justify-between items-center px-4 py-3 bg-gray-50 hover:bg-gray-100">
                 <span className="text-gray-700">GST</span>
-                <span className="font-medium">{gstPercentage}% (₹{gst.toLocaleString()})</span>
+                <span className="font-medium">{formatNumber(gstPercentage)}% ({formatNumber(gst, true)})</span>
               </div>
 
               {/* Discount */}
               <div className="flex justify-between items-center px-4 py-3 hover:bg-gray-50">
                 <span className="text-gray-700">Discount</span>
-                <span className="font-medium text-green-600">-₹{discountAmount.toLocaleString()}</span>
+                <span className="font-medium text-green-600">-{formatNumber(discountAmount, true)}</span>
               </div>
 
               {/* Grand Total */}
@@ -273,7 +291,7 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
                     </button>
                   )}
                 </div>
-                <span className="text-xl font-bold text-blue-800">₹{grandTotal.toLocaleString()}</span>
+                <span className="text-xl font-bold text-blue-800">{formatNumber(grandTotal, true)}</span>
               </div>
             </div>
           )}
@@ -299,8 +317,9 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     min="0"
                     max="100"
-                    step="0.1"
+                    step="0.01"
                   />
+                  <p className="text-xs text-gray-500 mt-1">Maximum 2 decimal places</p>
                 </div>
 
                 {/* GST Percentage */}
@@ -318,8 +337,9 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     min="0"
                     max="100"
-                    step="0.1"
+                    step="0.01"
                   />
+                  <p className="text-xs text-gray-500 mt-1">Maximum 2 decimal places</p>
                 </div>
 
                 {/* Discount Amount */}
@@ -338,6 +358,7 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
                     min="0"
                     step="0.01"
                   />
+                  <p className="text-xs text-gray-500 mt-1">Maximum 2 decimal places</p>
                 </div>
               </div>
 
@@ -371,29 +392,30 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
                   <input
                     type="number"
                     value={tempGrandTotal}
-                    onChange={(e) => setTempGrandTotal(parseFloat(e.target.value) || 0)}
+                    onChange={(e) => setTempGrandTotal(Math.round(parseFloat(e.target.value) || 0))} // Round to whole number
                     className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     min="0"
-                    step="0.01"
+                    step="1"
                   />
+                  <p className="text-xs text-blue-600 mt-1">Whole numbers only (no decimals)</p>
                 </div>
 
                 {/* Adjustment Preview */}
                 <div className="p-3 bg-white rounded border">
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-gray-600">Current Grand Total:</span>
-                    <span className="font-medium">₹{grandTotal.toLocaleString()}</span>
+                    <span className="font-medium">{formatNumber(grandTotal, true)}</span>
                   </div>
                   <div className="flex justify-between items-center text-sm mt-1">
                     <span className="text-gray-600">Difference:</span>
                     <span className={`font-medium ${grandTotalDifference >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                      {grandTotalDifference >= 0 ? '+' : ''}₹{grandTotalDifference.toLocaleString()}
+                      {grandTotalDifference >= 0 ? '+' : ''}{formatNumber(grandTotalDifference, true)}
                     </span>
                   </div>
                   <div className="flex justify-between items-center text-sm mt-1">
                     <span className="text-gray-600">Adjusted Markup:</span>
                     <span className={`font-medium ${adjustedMarkupPercentage >= markupPercentage ? 'text-green-600' : 'text-red-600'}`}>
-                      {adjustedMarkupPercentage.toFixed(1)}% {adjustedMarkupPercentage >= markupPercentage ? '(↑)' : '(↓)'}
+                      {formatNumber(adjustedMarkupPercentage)}% {adjustedMarkupPercentage >= markupPercentage ? '(↑)' : '(↓)'}
                     </span>
                   </div>
                 </div>
