@@ -103,8 +103,16 @@ interface QuotationContextType {
   // Pricing
   totalPackagePrice: number;
   setTotalPackagePrice: (price: number) => void;
-  calculateDayPrice: (date: string) => { mealPrice: number; roomPrice: number; total: number };
+  calculateDayPrice: (date: string) => { mealPrice: number; roomPrice: number; activityPrice: number; total: number };
   calculateTotalPackagePrice: () => number;
+
+  // Final pricing from customization step
+  finalGrandTotal: number;
+  setFinalGrandTotal: (total: number) => void;
+  markupPercentage: number;
+  setMarkupPercentage: (percentage: number) => void;
+  discountAmount: number;
+  setDiscountAmount: (amount: number) => void;
 
   // Transport
   transportRoutes: TransportRoute[];
@@ -141,6 +149,9 @@ interface QuotationContextType {
 
   // Helper for all days
   allDays: Array<{date: string; data: DaySelection}>;
+
+  // Hotel total price
+  hotelTotalPrice: number;
 }
 
 const QuotationContext = createContext<QuotationContextType | undefined>(undefined);
@@ -152,6 +163,14 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
 
   // Pricing State
   const [totalPackagePrice, setTotalPackagePrice] = useState<number>(0);
+  
+  // Final pricing state from customization
+  const [finalGrandTotal, setFinalGrandTotal] = useState<number>(0);
+  const [markupPercentage, setMarkupPercentage] = useState<number>(15);
+  const [discountAmount, setDiscountAmount] = useState<number>(0);
+
+  // Hotel total price state
+  const [hotelTotalPrice, setHotelTotalPrice] = useState<number>(0);
 
   // Rooms & Hotels State
   const [professionalRooms, setProfessionalRooms] = useState<Room[]>([
@@ -300,9 +319,21 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
         infants: travelers.infants,
         duration: calculateTripDuration(),
         quoteNumber: quotationData.trip.quoteNumber
-      }
+      },
+      markupPercentage: markupPercentage,
+      discountAmount: discountAmount
     });
-  }, [clientName, phoneNumber, emailAddress, tripDestination, startDate, endDate, travelers]);
+  }, [clientName, phoneNumber, emailAddress, tripDestination, startDate, endDate, travelers, markupPercentage, discountAmount]);
+
+  // NEW: Sync finalGrandTotal with quotationData
+  useEffect(() => {
+    if (finalGrandTotal > 0) {
+      updateQuotationData({
+        totalPackagePrice: finalGrandTotal,
+        finalGrandTotal: finalGrandTotal
+      });
+    }
+  }, [finalGrandTotal]);
 
   // Calculate trip duration
   const calculateTripDuration = (): number => {
@@ -312,29 +343,49 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     return Math.max(1, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
   };
 
-  // NEW: Calculate total package price including all components
-  const calculateTotalPackagePrice = (): number => {
+  // Calculate total hotel price for all days (rooms + meals + activities)
+  const calculateHotelTotalPrice = (): number => {
+    const allDays = getDaySelectionsArray();
     let total = 0;
-
-    // Calculate hotel costs (rooms + meals + activities)
-    Object.values(daySelections).forEach(day => {
-      // Room costs
-      if (day.roomSelections && day.roomSelections.length > 0) {
-        const roomPrice = day.roomSelections.reduce((sum: number, selection: RoomSelection) => sum + selection.totalPrice, 0);
-        total += roomPrice;
-      }
+    
+    allDays.forEach(({ date }) => {
+      const daySelection = daySelections[date];
       
-      // Meal costs - FIXED: Include meals from dayMeals
-      const dayMealsForDate = dayMeals[day.date] || [];
-      const mealPrice = dayMealsForDate.reduce((sum: number, meal: Meal) => sum + (meal.price * meal.quantity), 0);
-      total += mealPrice;
+      // Calculate room price for this day
+      const roomPrice = daySelection?.roomSelections?.reduce((sum: number, selection: RoomSelection) => {
+        return sum + (selection.totalPrice || 0);
+      }, 0) || 0;
       
-      // Activity costs
-      if (day.activities) {
-        const activityPrice = day.activities.reduce((sum: number, activity: Activity) => sum + activity.price, 0);
-        total += activityPrice;
-      }
+      // Calculate meal price for this day - include both dayMeals and daySelections.meals
+      const mealsFromContext = dayMeals[date] || [];
+      const mealsFromSelections = daySelection?.meals || [];
+      const allMeals = [...mealsFromContext, ...mealsFromSelections];
+      
+      const mealPrice = allMeals.reduce((sum: number, meal: Meal) => {
+        return sum + (meal.price * (meal.quantity || 0));
+      }, 0);
+      
+      // Calculate activity price for this day
+      const activityPrice = daySelection?.activities?.reduce((total: number, activity: Activity) => {
+        return total + (activity.price || 0);
+      }, 0) || 0;
+      
+      // Add to total
+      total += roomPrice + mealPrice + activityPrice;
     });
+    
+    return total;
+  };
+
+  // Update hotel total price whenever relevant data changes
+  useEffect(() => {
+    const newHotelTotal = calculateHotelTotalPrice();
+    setHotelTotalPrice(newHotelTotal);
+  }, [daySelections, dayMeals]);
+
+  // Calculate total package price including all components
+  const calculateTotalPackagePrice = (): number => {
+    let total = hotelTotalPrice;
 
     // Calculate transport costs
     const transportCost = transportRoutes.reduce((sum: number, route: TransportRoute) => sum + (route.price || 0), 0);
@@ -347,7 +398,12 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const newTotal = calculateTotalPackagePrice();
     setTotalPackagePrice(newTotal);
-  }, [daySelections, dayMeals, transportRoutes]);
+    
+    // Also update final grand total if it's not set yet
+    if (finalGrandTotal === 0) {
+      setFinalGrandTotal(newTotal);
+    }
+  }, [hotelTotalPrice, transportRoutes]);
 
   // Update quotation data
   const updateQuotationData = (updates: Partial<QuotationData>) => {
@@ -368,10 +424,9 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
       // Hotel service
       if (dayData.hotel && dayData.roomSelections && dayData.roomSelections.length > 0) {
         const roomSelection = dayData.roomSelections[0];
-        const room = professionalRooms.find(r => r.id === roomSelection.roomId);
         dayServices.push({
           id: `hotel-${date}`,
-          name: `${dayData.hotel.name} - ${room?.type || 'Room'}`,
+          name: `${dayData.hotel.name}`,
           type: 'hotel',
           price: roomSelection.totalPrice,
           quantity: 1,
@@ -441,12 +496,15 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
       quotationData: {
         ...quotationData,
         services,
-        totalPackagePrice,
+        totalPackagePrice: finalGrandTotal > 0 ? finalGrandTotal : totalPackagePrice,
         selectedHotel: daySelections[Object.keys(daySelections)[0]]?.hotel?.name || null,
         selectedVehicle: transportRoutes[0]?.vehicle?.name || null,
         selectedMealIds: Object.values(dayMeals).flat().map(meal => meal.id.toString()),
         selectedActivityIds: Object.values(daySelections).flatMap(day => day.activities?.map(act => act.id) || []),
-        itinerary: dayItineraries
+        itinerary: dayItineraries,
+        finalGrandTotal: finalGrandTotal > 0 ? finalGrandTotal : totalPackagePrice,
+        markupPercentage,
+        discountAmount
       },
       
       // Individual sections for detailed logging
@@ -487,10 +545,11 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
       },
       
       pricing: {
-        totalPackagePrice,
-        markupPercentage: quotationData.markupPercentage,
-        discountAmount: quotationData.discountAmount,
-        calculatedTotal: totalPackagePrice
+        totalPackagePrice: finalGrandTotal > 0 ? finalGrandTotal : totalPackagePrice,
+        markupPercentage,
+        discountAmount,
+        calculatedTotal: totalPackagePrice,
+        finalGrandTotal
       }
     };
     
@@ -655,18 +714,24 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  // Day Selection Functions
-  const calculateDayPrice = (date: string): { mealPrice: number; roomPrice: number; total: number } => {
+  // Day Selection Functions - includes activityPrice and combines meal sources
+  const calculateDayPrice = (date: string): { mealPrice: number; roomPrice: number; activityPrice: number; total: number } => {
     const day = daySelections[date];
-    const meals = dayMeals[date] || [];
     
-    const mealPrice = meals.reduce((total: number, meal: Meal) => total + (meal.price * meal.quantity), 0);
+    // Get meals from both dayMeals and daySelections
+    const mealsFromContext = dayMeals[date] || [];
+    const mealsFromSelections = day?.meals || [];
+    const allMeals = [...mealsFromContext, ...mealsFromSelections];
+    
+    const mealPrice = allMeals.reduce((total: number, meal: Meal) => total + (meal.price * meal.quantity), 0);
     const roomPrice = day?.roomSelections?.reduce((total: number, selection: RoomSelection) => total + selection.totalPrice, 0) || 0;
+    const activityPrice = day?.activities?.reduce((total: number, activity: Activity) => total + activity.price, 0) || 0;
     
     return {
       mealPrice,
       roomPrice,
-      total: mealPrice + roomPrice
+      activityPrice,
+      total: mealPrice + roomPrice + activityPrice
     };
   };
 
@@ -689,13 +754,13 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     }));
   };
 
-  // FIXED: Only require hotels for completion
+  // Only require hotels for completion
   const areAllDaysCompleted = (): boolean => {
     const days = Object.values(daySelections);
     return days.length > 0 && days.every(day => !!day.hotel);
   };
 
-  // New: Better completion status with detailed info
+  // Better completion status with detailed info
   const getCompletionStatus = () => {
     const days = Object.values(daySelections);
     const totalDays = days.length;
@@ -782,6 +847,12 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     totalPackagePrice,
     setTotalPackagePrice,
     calculateTotalPackagePrice,
+    finalGrandTotal,
+    setFinalGrandTotal,
+    markupPercentage,
+    setMarkupPercentage,
+    discountAmount,
+    setDiscountAmount,
 
     // Rooms & Hotels
     professionalRooms,
@@ -875,6 +946,9 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
 
     // Helper for all days
     allDays,
+
+    // Hotel total price
+    hotelTotalPrice,
   };
 
   return (

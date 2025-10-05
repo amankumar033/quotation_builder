@@ -46,7 +46,9 @@ export default function PackageSelectionStep({
     setTotalPackagePrice,
     exportQuotationData,
     dayMeals,
-    transportRoutes
+    transportRoutes,
+    // NEW: Use hotelTotalPrice from context
+    hotelTotalPrice
   } = useQuotation();
 
   const completionStatus = getCompletionStatus();
@@ -137,44 +139,19 @@ export default function PackageSelectionStep({
     }
   };
 
-  // FIXED: Calculate total package price (Hotel + Transport) - NOW INCLUDES MEALS
+  // UPDATED: Simplified total package price calculation using hotelTotalPrice from context
   const calculateTotalPrice = (): number => {
-    let total = 0;
-
-    // Calculate hotel costs (rooms + meals + activities) for ALL days
-    Object.values(daySelections).forEach(day => {
-      // Room costs
-      if (day.roomSelections && day.roomSelections.length > 0) {
-        const roomPrice = day.roomSelections.reduce((sum: number, selection: any) => sum + selection.totalPrice, 0);
-        total += roomPrice;
-      }
-      
-      // FIXED: Meal costs - Include ALL meals from dayMeals
-      const dayMealsForDate = dayMeals[day.date] || [];
-      const mealPrice = dayMealsForDate.reduce((sum: number, meal: any) => sum + (meal.price * meal.quantity), 0);
-      total += mealPrice;
-      
-      // Activity costs
-      if (day.activities) {
-        const activityPrice = day.activities.reduce((sum: number, activity: any) => sum + activity.price, 0);
-        total += activityPrice;
-      }
-    });
-
     // Calculate transport costs
     const transportCost = transportRoutes.reduce((sum: number, route: any) => sum + (route.price || 0), 0);
-    total += transportCost;
+    
+    // Total = Hotel (rooms + meals + activities) + Transport
+    const total = hotelTotalPrice + transportCost;
 
     console.log("TOTAL PACKAGE PRICE CALCULATION:", {
+      hotelTotalPrice,
+      transportCost,
       total,
-      daySelections: Object.keys(daySelections).length,
-      dayMeals: Object.keys(dayMeals).length,
-      transportRoutes: transportRoutes.length,
-      mealDetails: Object.entries(dayMeals).map(([date, meals]) => ({
-        date,
-        mealCount: meals.length,
-        mealTotal: meals.reduce((sum: number, meal: any) => sum + (meal.price * meal.quantity), 0)
-      }))
+      transportRoutes: transportRoutes.length
     });
 
     return total;
