@@ -118,6 +118,7 @@ export interface RoomSelection {
   totalPrice: number;
   isConfirmed: boolean;
   confirmedAt: string;
+  roomType: string;
 }
 
 export interface Hotel {

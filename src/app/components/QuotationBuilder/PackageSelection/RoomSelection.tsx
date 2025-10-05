@@ -270,7 +270,7 @@ interface RoomConfiguration {
 
 // Scroll to top function
 const scrollToTop = () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 700, behavior: 'smooth' });
 };
 
 export default function RoomSelect({ 
@@ -441,6 +441,12 @@ export default function RoomSelect({
     return groups;
   }, {});
 
+  // FIXED: Get room type name from professionalRooms
+  const getRoomTypeName = (roomId: number): string => {
+    const room = professionalRooms.find(r => r.id === roomId);
+    return room?.type || `Room Type ${roomId}`;
+  };
+
   const handleConfirmSelection = () => {
     if (roomConfigurations.length === 0) return;
     
@@ -449,6 +455,7 @@ export default function RoomSelect({
       const roomPrice = room?.price || 3000; // FIXED: Default price for any room
       const totalPrice = (roomPrice * config.roomCount) + (config.childrenWithBed * 500) + (config.adultsWithExtraBed * 800);
       
+      // FIXED: Store roomType in the selection
       return {
         roomId: config.roomId,
         roomCount: config.roomCount,
@@ -459,7 +466,8 @@ export default function RoomSelect({
         totalPrice: totalPrice,
         isConfirmed: true,
         confirmedAt: new Date().toISOString(),
-        dayNumber: currentDay
+        dayNumber: currentDay,
+        roomType: getRoomTypeName(config.roomId) // NEW: Store room type name
       };
     });
     

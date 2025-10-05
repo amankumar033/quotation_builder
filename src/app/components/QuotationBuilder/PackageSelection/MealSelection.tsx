@@ -83,7 +83,7 @@ export default function MealSelection({ hotel, meals, onMealsChange, onProceed, 
 
   // Add this function at the top of MealSelection component
 const scrollToTop = () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 800, behavior: 'smooth' });
 };
 
 // Update handleProceed to include scroll

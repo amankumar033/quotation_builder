@@ -238,7 +238,7 @@ interface Room {
 
 // Scroll to top function
 const scrollToTop = () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 800, behavior: 'smooth' });
 };
 
 export default function HotelSection({
