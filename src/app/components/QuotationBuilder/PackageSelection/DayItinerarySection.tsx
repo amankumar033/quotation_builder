@@ -134,7 +134,16 @@ export default function DayItinerarySection() {
     }));
   };
 
-  // Get day summary for the sidebar - ENHANCED with room selection, transport, and meals
+  // Format guest information for room display
+  const formatGuestInfo = (selection: any) => {
+    let guestInfo = `${selection.adults}A`;
+    if (selection.childrenWithBed > 0) guestInfo += ` + ${selection.childrenWithBed}C`;
+    if (selection.childrenWithoutBed > 0) guestInfo += ` + ${selection.childrenWithoutBed}C (no bed)`;
+    if (selection.adultsWithExtraBed > 0) guestInfo += ` + ${selection.adultsWithExtraBed}A (extra bed)`;
+    return guestInfo;
+  };
+
+  // Get day summary for the sidebar - ENHANCED with detailed room selection, transport, and meals
   const getDaySummary = (dayNumber: number) => {
     const day = allDays[dayNumber - 1];
     if (!day) return null;
@@ -142,7 +151,7 @@ export default function DayItinerarySection() {
     const daySelection = daySelections[day.date];
     const routes = transportRoutes.filter(route => route.dayNumber === dayNumber);
     
-    // Get room selections for this day
+    // Get detailed room selections for this day
     const roomSelections = daySelection?.roomSelections || [];
     const roomDetails = roomSelections.map(selection => {
       const room = professionalRooms.find(r => r.id === selection.roomId);
@@ -150,8 +159,12 @@ export default function DayItinerarySection() {
         type: room?.type || 'Room',
         count: selection.roomCount,
         adults: selection.adults,
-        children: selection.childrenWithBed + selection.childrenWithoutBed,
-        price: selection.totalPrice
+        childrenWithBed: selection.childrenWithBed,
+        childrenWithoutBed: selection.childrenWithoutBed,
+        adultsWithExtraBed: selection.adultsWithExtraBed,
+        guestInfo: formatGuestInfo(selection),
+        price: selection.totalPrice,
+        roomType: room?.type || 'Standard Room'
       };
     });
 
@@ -399,7 +412,7 @@ export default function DayItinerarySection() {
                         </div>
                       )}
 
-                      {/* Room Selection Summary */}
+                      {/* Enhanced Room Selection Summary */}
                       {currentDaySummary.roomSelections.length > 0 && (
                         <div className="border border-gray-200 rounded-lg p-4 bg-white">
                           <div className="flex items-center space-x-2 mb-3">
@@ -410,27 +423,74 @@ export default function DayItinerarySection() {
                             {currentDaySummary.roomSelections.map((room, index) => (
                               <div key={index} className="border border-gray-100 rounded p-3 bg-gray-50">
                                 <div className="flex justify-between items-start mb-2">
-                                  <span className="text-sm font-medium text-gray-900">
-                                    {room.type}
-                                  </span>
+                                  <div>
+                                    <span className="text-sm font-medium text-gray-900 block">
+                                      {room.roomType}
+                                    </span>
+                                    <span className="text-xs text-gray-600">
+                                      {room.count} room(s)
+                                    </span>
+                                  </div>
                                   <span className="text-sm font-semibold text-green-600">
                                     ₹{room.price}
                                   </span>
                                 </div>
-                                <div className="flex items-center space-x-2 text-xs text-gray-600">
-                                  <Users className="h-3 w-3" />
-                                  <span>{room.count} room(s)</span>
-                                  <span>•</span>
-                                  <span>{room.adults} adults</span>
-                                  {room.children > 0 && (
-                                    <>
-                                      <span>•</span>
-                                      <span>{room.children} children</span>
-                                    </>
-                                  )}
+                                
+                                {/* Detailed Guest Information */}
+                                <div className="bg-white rounded p-2 border border-gray-200">
+                                  <div className="text-xs font-medium text-gray-700 mb-1">
+                                    Guest Configuration:
+                                  </div>
+                                  <div className="text-xs text-gray-600 space-y-1">
+                                    <div className="flex justify-between">
+                                      <span>Adults:</span>
+                                      <span className="font-medium">{room.adults}A</span>
+                                    </div>
+                                    {room.childrenWithBed > 0 && (
+                                      <div className="flex justify-between">
+                                        <span>Children with bed:</span>
+                                        <span className="font-medium">{room.childrenWithBed}C</span>
+                                      </div>
+                                    )}
+                                    {room.childrenWithoutBed > 0 && (
+                                      <div className="flex justify-between">
+                                        <span>Children without bed:</span>
+                                        <span className="font-medium">{room.childrenWithoutBed}C</span>
+                                      </div>
+                                    )}
+                                    {room.adultsWithExtraBed > 0 && (
+                                      <div className="flex justify-between">
+                                        <span>Adults with extra bed:</span>
+                                        <span className="font-medium">{room.adultsWithExtraBed}A</span>
+                                      </div>
+                                    )}
+                                  </div>
+                                  
+                                  {/* Summary Line */}
+                                  <div className="mt-2 pt-2 border-t border-gray-100">
+                                    <div className="text-xs font-semibold text-gray-800 text-center">
+                                      {room.guestInfo}
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             ))}
+                            
+                            {/* Total Rooms Summary */}
+                            <div className="border-t border-gray-200 pt-3 mt-2">
+                              <div className="flex justify-between items-center text-sm font-semibold">
+                                <span className="text-gray-700">Total Rooms:</span>
+                                <span className="text-green-600">
+                                  {currentDaySummary.roomSelections.reduce((sum, room) => sum + room.count, 0)}
+                                </span>
+                              </div>
+                              <div className="flex justify-between items-center text-sm font-semibold mt-1">
+                                <span className="text-gray-700">Total Price:</span>
+                                <span className="text-green-600">
+                                  ₹{currentDaySummary.roomSelections.reduce((sum, room) => sum + room.price, 0)}
+                                </span>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       )}
@@ -480,7 +540,6 @@ export default function DayItinerarySection() {
                               <div key={index} className="border border-gray-100 rounded p-3 bg-gray-50">
                                 <div className="flex justify-between items-start mb-2">
                                   <span className="text-sm font-medium text-gray-900">
-                                    {/* FIXED: Render vehicle name instead of vehicle object */}
                                     {route.vehicle?.name || 'Transport'}
                                   </span>
                                   {route.price > 0 && (
