@@ -27,7 +27,7 @@ export default function DestinationSelectionStep({ nextStep }: DestinationProps)
   const destinations: Destination[] = [
     { 
       id: "1", 
-      name: "Sikkim", 
+      name: "Gangtok", 
       image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgOtHARwlYuSjVLSjlXqVK-2OV7dt3m8eiiA&s", 
       description: "Beautiful Himalayan destination with stunning landscapes", 
       category: "Hill Station", 
@@ -45,8 +45,8 @@ export default function DestinationSelectionStep({ nextStep }: DestinationProps)
     },
     { 
       id: "3", 
-      name: "Kerala", 
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0Z1vIVF8Zms5pJuazOs2Lg3-6COPzNR8UNQ&s", 
+      name: "Rameshwaram", 
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsS7eIwolTxWXutrpD0Tkodo7HQRQF7kElqQ&s", 
       description: "God's own country with backwaters and lush greenery", 
       category: "Backwaters", 
       region: "Domestic",
@@ -54,7 +54,7 @@ export default function DestinationSelectionStep({ nextStep }: DestinationProps)
     },
     { 
       id: "4", 
-      name: "Rajasthan", 
+      name: "Jaipur", 
       image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8RIf0-JMU4AxY9dUZgXtaW2CdqoY8fKpkkVW9HQ_6Lc0pL5AB-vgd61k5j4bfHjfnDDc&usqp=CAU", 
       description: "Land of kings and majestic forts", 
       category: "Heritage", 
@@ -63,8 +63,8 @@ export default function DestinationSelectionStep({ nextStep }: DestinationProps)
     },
     { 
       id: "5", 
-      name: "Himachal Pradesh", 
-      image: "https://images.unsplash.com/photo-1597733336794-12d05021d510?w=500&h=300&fit=crop", 
+      name: "Kasouli", 
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTY_4HEBTUa9KncZ-NdblzVjX4eV7YoVdZgsQ&s", 
       description: "Snow-capped mountains and adventure sports", 
       category: "Hill Station", 
       region: "Domestic",
@@ -250,12 +250,12 @@ export default function DestinationSelectionStep({ nextStep }: DestinationProps)
                 <h3 className="font-bold text-lg text-gray-800 mb-2 truncate">{destination.name}</h3>
                 
                 {/* Show only number of locations, not tags */}
-                <div className="flex items-center justify-between mb-3">
+                {/* <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center text-gray-600 text-sm">
                     <span className="mr-1">📍</span>
                     <span>{destination.locations?.length || 0} locations</span>
                   </div>
-                </div>
+                </div> */}
 
                 <div className="mt-2">
                   <button
