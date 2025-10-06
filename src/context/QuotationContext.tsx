@@ -37,6 +37,20 @@ interface HotelInfo {
   }[];
 }
 
+interface TermsConditions {
+  id: string;
+  title: string;
+  content: string;
+  category: 'general' | 'payment' | 'cancellation' | 'liability';
+}
+
+interface InclusionExclusion {
+  id: string;
+  text: string;
+  type: 'inclusion' | 'exclusion';
+  category: 'accommodation' | 'meals' | 'transport' | 'activities' | 'general';
+}
+
 interface QuotationContextType {
   // Destination
   selectedDestination: Destination | null;
@@ -141,6 +155,25 @@ interface QuotationContextType {
   deleteDayItinerary: (id: string) => void;
   getItineraryForDay: (dayNumber: number) => DayItinerary | undefined;
 
+  // Terms & Conditions
+  termsConditions: TermsConditions[];
+  setTermsConditions: (terms: TermsConditions[]) => void;
+  addTermsCondition: (term: Omit<TermsConditions, 'id'>) => void;
+  updateTermsCondition: (id: string, updates: Partial<TermsConditions>) => void;
+  deleteTermsCondition: (id: string) => void;
+  getTermsByCategory: (category: TermsConditions['category']) => TermsConditions[];
+
+  // Inclusions & Exclusions
+  inclusionsExclusions: InclusionExclusion[];
+  setInclusionsExclusions: (items: InclusionExclusion[]) => void;
+  addInclusionExclusion: (item: Omit<InclusionExclusion, 'id'>) => void;
+  updateInclusionExclusion: (id: string, updates: Partial<InclusionExclusion>) => void;
+  deleteInclusionExclusion: (id: string) => void;
+  getInclusions: () => InclusionExclusion[];
+  getExclusions: () => InclusionExclusion[];
+  getInclusionsByCategory: (category: InclusionExclusion['category']) => InclusionExclusion[];
+  getExclusionsByCategory: (category: InclusionExclusion['category']) => InclusionExclusion[];
+
   // Complete Quotation Data Management
   quotationData: QuotationData;
   setQuotationData: (data: QuotationData) => void;
@@ -171,6 +204,119 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
 
   // Hotel total price state
   const [hotelTotalPrice, setHotelTotalPrice] = useState<number>(0);
+
+  // Terms & Conditions State
+  const [termsConditions, setTermsConditions] = useState<TermsConditions[]>([
+    {
+      id: 'tc1',
+      title: 'Booking Confirmation',
+      content: 'A non-refundable deposit of 30% is required to confirm your booking. The balance must be paid 30 days prior to departure.',
+      category: 'payment'
+    },
+    {
+      id: 'tc2',
+      title: 'Cancellation Policy',
+      content: 'Cancellations made 30+ days before departure: 50% refund. Cancellations made 15-29 days before departure: 25% refund. Cancellations made within 14 days: no refund.',
+      category: 'cancellation'
+    },
+    {
+      id: 'tc3',
+      title: 'Liability',
+      content: 'The company acts as an agent for transport, accommodation, and other services and shall not be liable for any loss, damage, injury, or delay.',
+      category: 'liability'
+    },
+    {
+      id: 'tc4',
+      title: 'Travel Documents',
+      content: 'Clients are responsible for ensuring they have valid passports, visas, and other required travel documents.',
+      category: 'general'
+    },
+    {
+      id: 'tc5',
+      title: 'Insurance',
+      content: 'Travel insurance is highly recommended and should cover medical expenses, personal accident, trip cancellation, and loss of personal belongings.',
+      category: 'general'
+    }
+  ]);
+
+  // Inclusions & Exclusions State
+  const [inclusionsExclusions, setInclusionsExclusions] = useState<InclusionExclusion[]>([
+    // Inclusions
+    {
+      id: 'inc1',
+      text: 'Accommodation in selected hotels with daily breakfast',
+      type: 'inclusion',
+      category: 'accommodation'
+    },
+    {
+      id: 'inc2',
+      text: 'All transfers and transportation as per itinerary',
+      type: 'inclusion',
+      category: 'transport'
+    },
+    {
+      id: 'inc3',
+      text: 'Sightseeing tours and activities mentioned in the itinerary',
+      type: 'inclusion',
+      category: 'activities'
+    },
+    {
+      id: 'inc4',
+      text: 'Professional English-speaking guide services',
+      type: 'inclusion',
+      category: 'activities'
+    },
+    {
+      id: 'inc5',
+      text: 'All applicable taxes and service charges',
+      type: 'inclusion',
+      category: 'general'
+    },
+    {
+      id: 'inc6',
+      text: 'Welcome drink upon arrival at hotels',
+      type: 'inclusion',
+      category: 'general'
+    },
+    
+    // Exclusions
+    {
+      id: 'exc1',
+      text: 'International and domestic airfare',
+      type: 'exclusion',
+      category: 'transport'
+    },
+    {
+      id: 'exc2',
+      text: 'Travel insurance and visa fees',
+      type: 'exclusion',
+      category: 'general'
+    },
+    {
+      id: 'exc3',
+      text: 'Meals not specified in the itinerary',
+      type: 'exclusion',
+      category: 'meals'
+    },
+    {
+      id: 'exc4',
+      text: 'Personal expenses such as laundry, telephone calls, etc.',
+      type: 'exclusion',
+      category: 'general'
+    },
+    {
+      id: 'exc5',
+      text: 'Optional tours and activities not mentioned in the itinerary',
+      type: 'exclusion',
+      category: 'activities'
+    },
+    {
+      id: 'exc6',
+      text: 'Gratuities and tips to guides and drivers',
+      type: 'exclusion',
+      category: 'general'
+    }
+  ]);
 
   // Rooms & Hotels State
   const [professionalRooms, setProfessionalRooms] = useState<Room[]>([
@@ -405,6 +551,64 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     }
   }, [hotelTotalPrice, transportRoutes]);
 
+  // Terms & Conditions Functions
+  const addTermsCondition = (term: Omit<TermsConditions, 'id'>) => {
+    const newTerm: TermsConditions = {
+      ...term,
+      id: `term_${Date.now()}`
+    };
+    setTermsConditions(prev => [...prev, newTerm]);
+  };
+
+  const updateTermsCondition = (id: string, updates: Partial<TermsConditions>) => {
+    setTermsConditions(prev => 
+      prev.map(term => term.id === id ? { ...term, ...updates } : term)
+    );
+  };
+
+  const deleteTermsCondition = (id: string) => {
+    setTermsConditions(prev => prev.filter(term => term.id !== id));
+  };
+
+  const getTermsByCategory = (category: TermsConditions['category']): TermsConditions[] => {
+    return termsConditions.filter(term => term.category === category);
+  };
+
+  // Inclusions & Exclusions Functions
+  const addInclusionExclusion = (item: Omit<InclusionExclusion, 'id'>) => {
+    const newItem: InclusionExclusion = {
+      ...item,
+      id: `ie_${Date.now()}`
+    };
+    setInclusionsExclusions(prev => [...prev, newItem]);
+  };
+
+  const updateInclusionExclusion = (id: string, updates: Partial<InclusionExclusion>) => {
+    setInclusionsExclusions(prev => 
+      prev.map(item => item.id === id ? { ...item, ...updates } : item)
+    );
+  };
+
+  const deleteInclusionExclusion = (id: string) => {
+    setInclusionsExclusions(prev => prev.filter(item => item.id !== id));
+  };
+
+  const getInclusions = (): InclusionExclusion[] => {
+    return inclusionsExclusions.filter(item => item.type === 'inclusion');
+  };
+
+  const getExclusions = (): InclusionExclusion[] => {
+    return inclusionsExclusions.filter(item => item.type === 'exclusion');
+  };
+
+  const getInclusionsByCategory = (category: InclusionExclusion['category']): InclusionExclusion[] => {
+    return inclusionsExclusions.filter(item => item.type === 'inclusion' && item.category === category);
+  };
+
+  const getExclusionsByCategory = (category: InclusionExclusion['category']): InclusionExclusion[] => {
+    return inclusionsExclusions.filter(item => item.type === 'exclusion' && item.category === category);
+  };
+
   // Update quotation data
   const updateQuotationData = (updates: Partial<QuotationData>) => {
     setQuotationData(prev => ({
@@ -491,6 +695,15 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
       return dayServices;
     });
 
+    // Format terms and conditions for export
+    const formattedTerms = termsConditions.map(term => 
+      `${term.title}: ${term.content}`
+    ).join('\n\n');
+
+    // Format inclusions and exclusions for export
+    const inclusions = getInclusions().map(inc => `• ${inc.text}`).join('\n');
+    const exclusions = getExclusions().map(exc => `• ${exc.text}`).join('\n');
+
     const allData = {
       // Complete quotation data
       quotationData: {
@@ -504,7 +717,10 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
         itinerary: dayItineraries,
         finalGrandTotal: finalGrandTotal > 0 ? finalGrandTotal : totalPackagePrice,
         markupPercentage,
-        discountAmount
+        discountAmount,
+        termsConditions: formattedTerms,
+        inclusions: inclusions,
+        exclusions: exclusions
       },
       
       // Individual sections for detailed logging
@@ -542,6 +758,43 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
         customActivities,
         dayItineraries,
         totalActivities: customActivities.length + dayItineraries.length
+      },
+      
+      termsAndConditions: {
+        terms: termsConditions,
+        byCategory: {
+          general: getTermsByCategory('general'),
+          payment: getTermsByCategory('payment'),
+          cancellation: getTermsByCategory('cancellation'),
+          liability: getTermsByCategory('liability')
+        }
+      },
+      
+      inclusionsExclusions: {
+        inclusions: getInclusions(),
+        exclusions: getExclusions(),
+        byCategory: {
+          accommodation: {
+            inclusions: getInclusionsByCategory('accommodation'),
+            exclusions: getExclusionsByCategory('accommodation')
+          },
+          meals: {
+            inclusions: getInclusionsByCategory('meals'),
+            exclusions: getExclusionsByCategory('meals')
+          },
+          transport: {
+            inclusions: getInclusionsByCategory('transport'),
+            exclusions: getExclusionsByCategory('transport')
+          },
+          activities: {
+            inclusions: getInclusionsByCategory('activities'),
+            exclusions: getExclusionsByCategory('activities')
+          },
+          general: {
+            inclusions: getInclusionsByCategory('general'),
+            exclusions: getExclusionsByCategory('general')
+          }
+        }
       },
       
       pricing: {
@@ -937,6 +1190,25 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     updateDayItinerary,
     deleteDayItinerary,
     getItineraryForDay,
+
+    // Terms & Conditions
+    termsConditions,
+    setTermsConditions,
+    addTermsCondition,
+    updateTermsCondition,
+    deleteTermsCondition,
+    getTermsByCategory,
+
+    // Inclusions & Exclusions
+    inclusionsExclusions,
+    setInclusionsExclusions,
+    addInclusionExclusion,
+    updateInclusionExclusion,
+    deleteInclusionExclusion,
+    getInclusions,
+    getExclusions,
+    getInclusionsByCategory,
+    getExclusionsByCategory,
 
     // Complete Quotation Data Management
     quotationData,
