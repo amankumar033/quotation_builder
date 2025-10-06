@@ -9,22 +9,16 @@ export interface Destination {
 }
 
 export interface QuotationData {
-  roomSelections?: {
-    hotel: Hotel | null;
-    day: number;
-    selections: RoomSelection[];
-    meals?: Meal[];
-  };
   client: {
     name: string;
     phone: string;
     email: string;
-    destination?: string;
-    startDate?: string;
-    endDate?: string;
-    adults?: number;
-    children?: number;
-    infants?: number;
+    destination: string;
+    startDate: string;
+    endDate: string;
+    adults: number;
+    children: number;
+    infants: number;
   };
   trip: {
     destination: string;
@@ -33,24 +27,21 @@ export interface QuotationData {
     adults: number;
     children: number;
     infants: number;
-    duration?: number;
-    quoteNumber?: string;
+    duration: number;
+    quoteNumber: string;
   };
   services: ServiceItem[];
   markupPercentage: number;
   termsConditions: string;
   specialNotes: string;
   agencyLogo: string | null;
-  discountAmount?: number;
-  paymentTerms?: string;
-  contactInfo?: string;
-  agencyName?: string;
-  quoteNumber?: string;
-  selectedHotel?: string | null;
-  selectedVehicle?: string | null;
-  selectedMealIds?: string[];
-  selectedActivityIds?: string[];
-  itinerary?: DayItinerary[];
+  discountAmount: number;
+  paymentTerms: string;
+  contactInfo: string;
+  agencyName: string;
+  quoteNumber: string;
+  totalPackagePrice?: number;
+  finalGrandTotal?: number;
 }
 
 export interface Room {
