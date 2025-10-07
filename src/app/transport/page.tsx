@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { ArrowLeft, X, Truck, Image as ImageIcon, FileText } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation"; // for app router
+import { Suspense } from "react";
 import { useToast } from "../components/Toast";
 import axios from "axios";
 interface TransportData {
@@ -21,7 +22,7 @@ interface TransportPageProps {
   onSubmitSuccess?: () => void;
 }
 
-export default function TransportPage({  onCancel, onSubmitSuccess }: TransportPageProps) {
+function TransportPageInner({  onCancel, onSubmitSuccess }: TransportPageProps) {
   
    const { success, error, info, warning } = useToast();
 
@@ -324,5 +325,13 @@ export default function TransportPage({  onCancel, onSubmitSuccess }: TransportP
         </div>
       </div>
     </div>
+  );
+}
+
+export default function TransportPage(props: TransportPageProps) {
+  return (
+    <Suspense fallback={<div className="p-6">Loading...</div>}>
+      <TransportPageInner {...props} />
+    </Suspense>
   );
 }

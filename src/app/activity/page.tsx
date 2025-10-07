@@ -1,5 +1,6 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation"; // for app router
+import { Suspense } from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useToast } from "../components/Toast";
@@ -11,7 +12,7 @@ import {
   Image as ImageIcon,
   Tag,
 } from "lucide-react";
-export default function AddActivityPage() {
+function AddActivityInner() {
     const { success, error, info, warning } = useToast();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -288,5 +289,13 @@ const handleSubmit = async (e: React.FormEvent) => {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AddActivityPage() {
+  return (
+    <Suspense fallback={<div className="p-6">Loading...</div>}>
+      <AddActivityInner />
+    </Suspense>
   );
 }

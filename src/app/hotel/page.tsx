@@ -1,5 +1,6 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation"; // for app router
+import { Suspense } from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useToast } from "../components/Toast";
@@ -17,7 +18,7 @@ interface RoomType {
   price: number;
 }
 
-export default function AddHotelPage() {
+function AddHotelInner() {
   const { success, error, info, warning } = useToast();
   const [formData, setFormData] = useState({
     name: "",
@@ -445,5 +446,13 @@ export default function AddHotelPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AddHotelPage() {
+  return (
+    <Suspense fallback={<div className="p-6">Loading...</div>}>
+      <AddHotelInner />
+    </Suspense>
   );
 }

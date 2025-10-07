@@ -5,7 +5,9 @@ import { signIn } from "next-auth/react";
 import Googlelogin from "@/app/components/GoogleLoginButton";
 import { useSearchParams } from "next/navigation";
 import Spinner from "@/app/components/ui/RadialSpinner";
-const LoginPage = () => {
+import { Suspense } from "react";
+
+const LoginInner = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -106,6 +108,14 @@ setLoading(false);
         )}
       </div>
     </div>
+  );
+};
+
+const LoginPage = () => {
+  return (
+    <Suspense fallback={<div className="p-6">Loading...</div>}>
+      <LoginInner />
+    </Suspense>
   );
 };
 

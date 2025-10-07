@@ -40,10 +40,10 @@ export async function POST(req: NextRequest) {
 // PUT: Update meal - FIXED to use path parameter
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await req.json();
     const { type, vegOption, nonVegOption, price } = body;
 
@@ -73,10 +73,10 @@ export async function PUT(
 // GET: Get single meal by ID (path parameter) or all meals - FIXED
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     // If ID is provided in path, return single meal
     if (id) {
@@ -108,10 +108,10 @@ export async function GET(
 // DELETE: Delete meal by ID - ADD THIS
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     if (!id) {
       return NextResponse.json({ success: false, error: "Meal ID required" }, { status: 400 });

@@ -1,10 +1,11 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { ArrowLeft, X, FileText, Image as ImageIcon } from "lucide-react";
 import {useToast} from "../components/Toast"
-export default function AddMealPage() {
+function AddMealInner() {
   const { success, error, info, warning } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -189,5 +190,13 @@ export default function AddMealPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AddMealPage() {
+  return (
+    <Suspense fallback={<div className="p-6">Loading...</div>}>
+      <AddMealInner />
+    </Suspense>
   );
 }

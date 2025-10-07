@@ -74,9 +74,9 @@ const agencyId="cmfntj4f60000nq4wt321fgsa";
 
 
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await req.json();
     const { name, city, starCategory, cancellation, inclusions, photos, roomTypes } = body;
 
@@ -110,9 +110,9 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params; // params contains the hotel id
+    const { id } = await params; // params contains the hotel id
     if (!id) {
       return NextResponse.json({ success: false, error: "Hotel ID is required" }, { status: 400 });
     }

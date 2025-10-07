@@ -131,23 +131,20 @@ export default function DayAccordion({
       {isActive && (
         <div className="p-6 space-y-6 animate-in fade-in duration-300">
           <HotelSection
-            date={date}
-            daySelection={daySelection}
-            updateDaySelection={(updates) => {}}
             hotels={hotels}
             isHotelLoading={isHotelLoading}
             theme={theme}
             isSectionActive={isSectionActive('hotel')}
             toggleSection={() => toggleSection('hotel')}
-            isHotelConfirmed={isHotelConfirmed}
+            allDays={[{ date, data: daySelection }]}
           />
           <TransportSection
-            dayNumber={dayNumber}
-            daySelection={daySelection}
             transportations={transportations}
+            isTransportLoading={isTransportLoading}
             theme={theme}
             isSectionActive={isSectionActive('transport')}
             toggleSection={() => toggleSection('transport')}
+            allDays={[{ date, data: daySelection }]}
           />
           <ActivitiesSection
             allDays={[{date, data: daySelection}]}
