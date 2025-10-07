@@ -5,13 +5,13 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
 
 // Set the NEXTAUTH_URL if not already set in environment
-const NEXTAUTH_URL = process.env.NEXTAUTH_URL || (process.env.NODE_ENV === 'production' 
-  ? 'https://crm.narayanavacation.com' 
-  : 'http://localhost:3000');
+if (!process.env.NEXTAUTH_URL) {
+  process.env.NEXTAUTH_URL = process.env.NODE_ENV === 'production' 
+    ? 'https://crm.narayanavacation.com' 
+    : 'http://localhost:3000';
+}
 
 export const handler = NextAuth({
-  // Add base URL configuration
-  basePath: "/api/auth",
   secret: process.env.NEXTAUTH_SECRET || "your-secret-key-change-in-production",
   providers: [
     GoogleProvider({
@@ -61,8 +61,6 @@ export const handler = NextAuth({
       },
     },
   },
-  // Add trusted hosts configuration
-  trustHost: true,
   callbacks: {
     async signIn({ user, account, profile }) {
       // Allow credentials provider as-is (already validated)
