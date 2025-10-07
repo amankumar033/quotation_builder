@@ -1,6 +1,8 @@
 // components/QuotationBuilder/PreviewExportStep.tsx
 import { QuotationData } from '@/types/type';
 import { Download, Mail, Star, Users, Bed, Sparkles, Edit, Plus, Trash2, Check, X, Save, X as CloseIcon, Maximize2, Minimize2 } from 'lucide-react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import { useState, useEffect, useRef } from 'react';
 import { useQuotation } from '@/context/QuotationContext';
 import { useAgencySettings } from '@/context/AgencySettingsContext';
@@ -52,6 +54,7 @@ interface EditableTerm {
 export default function PreviewExportStep({ data, prevStep }: PreviewExportStepProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [isEditingMode, setIsEditingMode] = useState(false);
+  const [triggerPrint, setTriggerPrint] = useState(false);
   const [editableItinerary, setEditableItinerary] = useState<EditableTableData[]>([]);
   const [editableInclusionsExclusions, setEditableInclusionsExclusions] = useState<EditableInclusionExclusion[]>([]);
   const [editableTerms, setEditableTerms] = useState<EditableTerm[]>([]);
@@ -195,15 +198,9 @@ export default function PreviewExportStep({ data, prevStep }: PreviewExportStepP
 
   // Handle Print
   const handlePrint = () => {
-    // Open full screen preview and auto-print all pages (A4)
+    // Use full screen preview to render all pages and then trigger print
     setIsFullScreen(true);
-    setTimeout(() => {
-      window.print();
-      setTimeout(() => {
-        setIsFullScreen(false);
-        setPrintMode(false);
-      }, 800);
-    }, 300);
+    setTriggerPrint(true);
   };
 
   // Add keyboard shortcut for print (Ctrl+P)
@@ -774,6 +771,36 @@ export default function PreviewExportStep({ data, prevStep }: PreviewExportStepP
 
   const handleExport = async (format: 'email' | 'whatsapp') => {
     alert(`Exporting quotation as ${format.toUpperCase()}`);
+  };
+
+  // Client-side multi-page PDF capture for all visible A4 pages
+  const exportAsPdfClient = async () => {
+    try {
+      setIsFullScreen(true);
+      await new Promise(r => setTimeout(r, 400)); // ensure pages render
+      const pages = Array.from(document.querySelectorAll('[id^="page-"]')) as HTMLElement[];
+      if (pages.length === 0) {
+        alert('No pages to export');
+        return;
+      }
+      const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+      for (let i = 0; i < pages.length; i++) {
+        const el = pages[i];
+        el.classList.remove('hidden');
+        const canvas = await html2canvas(el, { useCORS: true, backgroundColor: '#ffffff' } as any);
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+        const pageWidth = 595.28; // A4 width pt
+        const pageHeight = 841.89; // A4 height pt
+        if (i > 0) doc.addPage('a4', 'portrait');
+        doc.addImage(imgData, 'JPEG', 0, 0, pageWidth, pageHeight);
+      }
+      doc.save('quotation.pdf');
+      setIsFullScreen(false);
+    } catch (e) {
+      console.error('PDF export failed', e);
+      setIsFullScreen(false);
+      alert('PDF export failed');
+    }
   };
 
   const nextPage = () => {
@@ -1519,7 +1546,7 @@ export default function PreviewExportStep({ data, prevStep }: PreviewExportStepP
   };
 
   // Full Screen Preview Component
-  const FullScreenPreview = () => {
+  const FullScreenPreview = ({ shouldPrint, onPrinted }: { shouldPrint: boolean; onPrinted: () => void }) => {
     const [isPrinting, setIsPrinting] = useState(false);
 
     const handlePrint = () => {
@@ -1535,7 +1562,7 @@ export default function PreviewExportStep({ data, prevStep }: PreviewExportStepP
       setIsPrinting(false);
     };
 
-    // Add keyboard shortcut for print (Ctrl+P)
+    // Auto-trigger print when requested and add keyboard shortcut for print (Ctrl+P)
     useEffect(() => {
       const handleKeyPress = (event: KeyboardEvent) => {
         if ((event.ctrlKey || event.metaKey) && event.key === 'p') {
@@ -1550,6 +1577,16 @@ export default function PreviewExportStep({ data, prevStep }: PreviewExportStepP
       document.addEventListener('keydown', handleKeyPress);
       return () => document.removeEventListener('keydown', handleKeyPress);
     }, []);
+
+    useEffect(() => {
+      if (shouldPrint) {
+        // wait a tick to ensure pages are laid out
+        setTimeout(() => {
+          handlePrint();
+          onPrinted();
+        }, 300);
+      }
+    }, [shouldPrint]);
 
     return (
       <div className={`fixed inset-0 bg-white z-50 overflow-y-auto ${isPrinting ? 'print-mode' : ''}`}>
@@ -1579,7 +1616,7 @@ export default function PreviewExportStep({ data, prevStep }: PreviewExportStepP
         )}
 
         {/* PDF-like Pages Container */}
-        <div className={`py-8 px-4 max-w-[210mm] mx-auto space-y-8 ${isPrinting ? 'py-0 space-y-0' : ''}`}>
+        <div className={`py-8 px-4 max-w-[210mm] mx-auto space-y-8 print-root ${isPrinting ? 'py-0 space-y-0' : ''}`}>
           {renderAllPagesForPrint()}
         </div>
       </div>
@@ -1588,15 +1625,15 @@ export default function PreviewExportStep({ data, prevStep }: PreviewExportStepP
 
   // If in full screen mode, show only the full screen preview
   if (isFullScreen) {
-    return <FullScreenPreview />;
+    return <FullScreenPreview shouldPrint={triggerPrint} onPrinted={() => setTriggerPrint(false)} />;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-slate-100 to-gray-200 py-6 px-4 sm:px-6 lg:px-8">
-      <div className="flex gap-10">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-slate-100 to-gray-200 py-4 sm:py-6 px-2 sm:px-4 lg:px-8">
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
         
         {/* Main Content - A4 Size Container */}
-        <div className="w-[210mm] bg-gray-50 shadow-2xl overflow-hidden mx-auto border border-gray-300">
+        <div className="w-full lg:w-[210mm] bg-gray-50 shadow-2xl overflow-x-auto lg:overflow-hidden mx-auto border border-gray-300">
           
           {/* Page 1 - Destination Cover Page */}
           <div 
@@ -2084,7 +2121,7 @@ export default function PreviewExportStep({ data, prevStep }: PreviewExportStepP
         </div>
 
         {/* Right Sidebar */}
-        <div className="w-80 flex flex-col gap-4">
+        <div className="w-full lg:w-80 flex flex-col gap-4">
           {/* Edit Mode Toggle */}
           <div className="bg-gradient-to-br from-white to-slate-50 p-6 shadow rounded-xl space-y-4 border border-slate-200">
             <h2 className="text-lg font-semibold text-slate-900">Edit Mode</h2>
@@ -2117,6 +2154,13 @@ export default function PreviewExportStep({ data, prevStep }: PreviewExportStepP
             >
               <Download className="inline-block mr-2 pb-1" size={22} />
               Print Quotation (Ctrl+P)
+            </button>
+            <button
+              onClick={exportAsPdfClient}
+              className="w-full px-4 py-3 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-lg hover:from-indigo-600 hover:to-indigo-700 transition"
+            >
+              <Download className="inline-block mr-2 pb-1" size={22} />
+              Export as PDF (Client)
             </button>
             
             <button
@@ -2257,6 +2301,8 @@ export default function PreviewExportStep({ data, prevStep }: PreviewExportStepP
             min-height: 297mm !important;
             width: 210mm !important;
           }
+          /* Prevent clipping during print */
+          .print-root { overflow: visible !important; height: auto !important; }
         }
       `}</style>
     </div>

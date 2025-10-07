@@ -41,10 +41,29 @@ export const handler = NextAuth({
   pages: { signIn: "/login" },
   session: { strategy: "jwt" },
   callbacks: {
+    async signIn({ user, account, profile }) {
+      // Allow credentials provider as-is (already validated)
+      if (account?.provider === 'credentials') return true;
+      if (account?.provider === 'google') {
+        const email = (user?.email || (profile as any)?.email || '').toLowerCase();
+        if (!email) return false;
+        const existing = await prisma.user.findUnique({ where: { email } });
+        return !!existing; // Only allow if email exists in DB
+      }
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
-        token.role = user.role; // optional: pass role into token
+        token.id = (user as any).id;
+        token.role = (user as any).role; // may be undefined for Google until enriched
+      }
+      // Enrich token for Google sessions where user fields are not set
+      if (!token.id && token.email) {
+        const existing = await prisma.user.findUnique({ where: { email: String(token.email).toLowerCase() } });
+        if (existing) {
+          token.id = existing.id;
+          (token as any).role = existing.role;
+        }
       }
       return token;
     },

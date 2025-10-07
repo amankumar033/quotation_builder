@@ -41,6 +41,23 @@ export default function AgencySettingsPage() {
     contactInfo: agencySettings?.contactInfo || ''
   };
 
+  // Generate a terms & conditions string that reflects selected payment terms
+  const generateTermsForPaymentTerms = (paymentTerm: string, baseTerms: string): string => {
+    const paymentLine = (() => {
+      const lower = paymentTerm.toLowerCase();
+      if (lower.includes('net 15')) return '• Payment due within 15 days of invoice date';
+      if (lower.includes('net 30')) return '• Payment due within 30 days of invoice date';
+      if (lower.includes('receipt')) return '• Payment due upon receipt of invoice';
+      if (lower.includes('50%')) return '• 50% advance before commencement and remaining 50% on completion';
+      return `• Payment terms: ${paymentTerm}`;
+    })();
+
+    // Ensure the payment line is present or updated at the top of the terms
+    const lines = baseTerms.split('\n').filter(Boolean);
+    const withoutExistingPayment = lines.filter(l => !l.toLowerCase().includes('payment due') && !l.toLowerCase().includes('advance') && !l.toLowerCase().includes('payment terms:'));
+    return [paymentLine, ...withoutExistingPayment].join('\n');
+  };
+
   useEffect(() => {
     // If agencySettings is empty, initialize with defaults
     if (!agencySettings || !agencySettings.pricing) {
@@ -284,7 +301,11 @@ export default function AgencySettingsPage() {
                     <div className="space-y-3">
                       <select
                         value={safeAgencySettings.paymentTerms}
-                        onChange={(e) => updateAgencySettings({ paymentTerms: e.target.value })}
+                        onChange={(e) => {
+                          const nextPayment = e.target.value;
+                          const updatedTerms = generateTermsForPaymentTerms(nextPayment, safeAgencySettings.termsConditions || '');
+                          updateAgencySettings({ paymentTerms: nextPayment, termsConditions: updatedTerms });
+                        }}
                         className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-white/50 text-sm"
                       >
                         {(agencySettings.paymentTermsOptions || []).map(pt => (
@@ -301,7 +322,8 @@ export default function AgencySettingsPage() {
                               const value = (e.target as HTMLInputElement).value.trim();
                               if (!value) return;
                               const next = Array.from(new Set([...(agencySettings.paymentTermsOptions || []), value]));
-                              updateAgencySettings({ paymentTermsOptions: next, paymentTerms: value });
+                              const updatedTerms = generateTermsForPaymentTerms(value, safeAgencySettings.termsConditions || '');
+                              updateAgencySettings({ paymentTermsOptions: next, paymentTerms: value, termsConditions: updatedTerms });
                               (e.target as HTMLInputElement).value = '';
                             }
                           }}

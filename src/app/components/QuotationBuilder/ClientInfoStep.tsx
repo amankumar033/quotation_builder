@@ -139,10 +139,10 @@ export default function ClientInfoStep({ data, updateData, nextStep, prevStep }:
   const cardClass = "bg-white shadow-md rounded-xl p-6 mb-8 border border-gray-200";
 
   return (
-    <div className="space-y-6 bg-gray-50 px-15 mt-10">
-      <div className='flex gap-10 justify-between'>
+    <div className="space-y-6 bg-gray-50 px-4 sm:px-6 lg:px-15 mt-10">
+      <div className='flex flex-col lg:flex-row gap-6 lg:gap-10 justify-between'>
         {/* Client Information Section */}
-        <section className={`${cardClass} w-full md:w-1/2`}>
+        <section className={`${cardClass} w-full lg:w-1/2`}>
           <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
             <span className="bg-blue-500 text-white p-2 rounded-lg mr-3">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -208,7 +208,7 @@ export default function ClientInfoStep({ data, updateData, nextStep, prevStep }:
         </section>
 
        {/* Trip Details Section */}
-<section className={`${cardClass} w-full md:w-1/2`}>
+      <section className={`${cardClass} w-full lg:w-1/2`}>
   <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
     <span className="shadow-lg bg-green-400 text-white p-2 rounded-lg mr-3">
       <MapPinned className="h-5 w-5" />
@@ -300,7 +300,7 @@ export default function ClientInfoStep({ data, updateData, nextStep, prevStep }:
         </div>
       </section>
 
-      <div className='flex justify-between'>
+      <div className='flex flex-col sm:flex-row justify-between gap-4'>
         {/* PREV Button */}
         <div className="flex justify-end mt-6">
           <button

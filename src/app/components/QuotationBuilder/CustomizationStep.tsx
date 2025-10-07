@@ -16,13 +16,18 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
   const { agencySettings, updatePricing, updateAgencySettings } = useAgencySettings();
   const [isEditingPricing, setIsEditingPricing] = useState(false);
   const [isEditingGrandTotal, setIsEditingGrandTotal] = useState(false);
-  const { totalPackagePrice, exportQuotationData, quotationData, updateQuotationData, finalGrandTotal, setFinalGrandTotal } = useQuotation();
+  const { totalPackagePrice, exportQuotationData, quotationData, updateQuotationData, finalGrandTotal, setFinalGrandTotal, termsConditions,
+    getInclusions, getExclusions, addInclusionExclusion, updateInclusionExclusion, deleteInclusionExclusion,
+    addTermsCondition, updateTermsCondition, deleteTermsCondition } = useQuotation();
   const [tempPricing, setTempPricing] = useState({
     markupPercentage: 0,
     gstPercentage: 0,
     discountAmount: 0
   });
   const [tempGrandTotal, setTempGrandTotal] = useState(0);
+  const [newTerm, setNewTerm] = useState({ title: '', content: '', category: 'general' as 'general' | 'payment' | 'cancellation' | 'liability' });
+  const [newInclusion, setNewInclusion] = useState({ text: '', category: 'general' as 'accommodation' | 'meals' | 'transport' | 'activities' | 'general' });
+  const [newExclusion, setNewExclusion] = useState({ text: '', category: 'general' as 'accommodation' | 'meals' | 'transport' | 'activities' | 'general' });
 
   // Safe access to agency settings with fallbacks
   const safeAgencySettings = {
@@ -38,15 +43,35 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
 • Late payments subject to 1.5% monthly interest`
   };
 
-  // Initialize with context data
+  // Initialize with context data and keep terms in sync with payment terms
   useEffect(() => {
-    updateData({
+    const selectedPayment = quotationData.paymentTerms || safeAgencySettings.paymentTerms;
+    const baseTerms = quotationData.termsConditions || safeAgencySettings.termsConditions;
+    const updatedTerms = (() => {
+      const lower = selectedPayment.toLowerCase();
+      const paymentLine = lower.includes('net 15')
+        ? '• Payment due within 15 days of invoice date'
+        : lower.includes('net 30')
+        ? '• Payment due within 30 days of invoice date'
+        : lower.includes('receipt')
+        ? '• Payment due upon receipt of invoice'
+        : lower.includes('50%')
+        ? '• 50% advance before commencement and remaining 50% on completion'
+        : `• Payment terms: ${selectedPayment}`;
+      const lines = baseTerms.split('\n').filter(Boolean);
+      const withoutExistingPayment = lines.filter(l => !l.toLowerCase().includes('payment due') && !l.toLowerCase().includes('advance') && !l.toLowerCase().includes('payment terms:'));
+      return [paymentLine, ...withoutExistingPayment].join('\n');
+    })();
+
+    const next = {
       ...quotationData,
       markupPercentage: quotationData.markupPercentage || safeAgencySettings.pricing.markupPercentage,
       discountAmount: quotationData.discountAmount || 0,
-      paymentTerms: quotationData.paymentTerms || safeAgencySettings.paymentTerms,
-      termsConditions: quotationData.termsConditions || safeAgencySettings.termsConditions
-    });
+      paymentTerms: selectedPayment,
+      termsConditions: updatedTerms
+    };
+    updateData(next);
+    updateQuotationData(next);
   }, []);
 
   const handleInputChange = (field: string, value: any) => {
@@ -170,50 +195,58 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
     }
   };
 
+  const handleAddTerm = () => {
+    if (newTerm.title.trim()) {
+      addTermsCondition({
+        title: newTerm.title.trim(),
+        content: newTerm.content.trim(),
+        category: newTerm.category
+      });
+      setNewTerm({ title: '', content: '', category: 'general' });
+    }
+  };
+
+  const handleAddInclusion = () => {
+    if (newInclusion.text.trim()) {
+      addInclusionExclusion({
+        text: newInclusion.text.trim(),
+        type: 'inclusion',
+        category: newInclusion.category
+      });
+      setNewInclusion({ text: '', category: 'general' });
+    }
+  };
+
+  const handleAddExclusion = () => {
+    if (newExclusion.text.trim()) {
+      addInclusionExclusion({
+        text: newExclusion.text.trim(),
+        type: 'exclusion',
+        category: newExclusion.category
+      });
+      setNewExclusion({ text: '', category: 'general' });
+    }
+  };
+
+  const categoryLabels = {
+    general: 'General',
+    payment: 'Payment',
+    cancellation: 'Cancellation',
+    liability: 'Liability'
+  };
+
+  const inclusionCategoryLabels = {
+    accommodation: 'Accommodation',
+    meals: 'Meals',
+    transport: 'Transport',
+    activities: 'Activities',
+    general: 'General'
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Terms & Conditions */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center">
-              <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center mr-3">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <h2 className="text-xl font-semibold text-gray-800">Terms & Conditions</h2>
-            </div>
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Payment Terms</label>
-            <select
-              value={data.paymentTerms || safeAgencySettings.paymentTerms}
-              onChange={(e) => handleInputChange('paymentTerms', e.target.value)}
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-            >
-              <option value="Net 15">Net 15</option>
-              <option value="Net 30">Net 30</option>
-              <option value="Due on receipt">Due on receipt</option>
-              <option value="50% advance, 50% on completion">50% advance, 50% on completion</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Terms & Conditions</label>
-            <textarea
-              value={data.termsConditions || safeAgencySettings.termsConditions}
-              onChange={(e) => handleInputChange('termsConditions', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-              rows={6}
-              placeholder="Enter your terms and conditions here..."
-            />
-            <p className="text-xs text-gray-500 mt-2">Include cancellation policies, liability clauses, and other important terms.</p>
-          </div>
-        </div>
-
-        {/* Payment Terms inline with T&C from Agency Settings */}
+      <div className="max-w-6xl mx-auto">
+        {/* Payment Terms & Terms & Conditions Section */}
         <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex items-center mb-6">
             <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center mr-3">
@@ -221,35 +254,287 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
-            <h2 className="text-xl font-semibold text-gray-800">Payment Terms & T&C</h2>
+            <h2 className="text-xl font-semibold text-gray-800">Payment Terms & Conditions</h2>
           </div>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Payment Terms</label>
-              <select
-                value={data.paymentTerms || safeAgencySettings.paymentTerms}
-                onChange={(e) => handleInputChange('paymentTerms', e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-              >
-                {(agencySettings.paymentTermsOptions || ['Net 15','Net 30','Due on receipt','50% advance, 50% on completion']).map(pt => (
-                  <option key={pt} value={pt}>{pt}</option>
-                ))}
-              </select>
+
+          {/* Payment Terms Row */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-gray-800">Payment Terms</h3>
+              <span className="text-sm text-gray-500">Select the payment terms for this quotation</span>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Terms & Conditions</label>
-              <textarea
-                value={data.termsConditions || safeAgencySettings.termsConditions}
-                onChange={(e) => handleInputChange('termsConditions', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                rows={4}
-                placeholder="Enter your terms and conditions here..."
-              />
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {['Net 15', 'Net 30', 'Due on receipt', '50% advance, 50% on completion'].map((term) => (
+                <button
+                  key={term}
+                  onClick={() => handleInputChange('paymentTerms', term)}
+                  className={`p-4 rounded-lg border-2 text-left transition-all ${
+                    data.paymentTerms === term
+                      ? 'border-blue-500 bg-blue-50 text-blue-700'
+                      : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="font-medium text-sm mb-1">{term}</div>
+                  <div className="text-xs text-gray-500">
+                    {term === 'Net 15' && 'Payment due within 15 days'}
+                    {term === 'Net 30' && 'Payment due within 30 days'}
+                    {term === 'Due on receipt' && 'Payment due immediately'}
+                    {term === '50% advance, 50% on completion' && '50% advance, 50% on completion'}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Terms & Conditions Management */}
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-gray-800">Terms & Conditions</h3>
+              <span className="text-sm text-gray-500">Manage your terms and conditions</span>
+            </div>
+
+            {/* Add New Term Form */}
+            
+            {/* Terms List */}
+            <div className="space-y-4">
+              {['payment', 'general', 'cancellation', 'liability'].map((category) => {
+                const categoryTerms = termsConditions.filter(t => t.category === category);
+                if (categoryTerms.length === 0) return null;
+
+                return (
+                  <div key={category} className="border border-gray-200 rounded-lg">
+                    <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
+                      <h4 className="font-semibold text-gray-800 capitalize">{categoryLabels[category as keyof typeof categoryLabels]}</h4>
+                    </div>
+                    <div className="divide-y divide-gray-100">
+                      {categoryTerms.map((term) => (
+                        <div key={term.id} className="p-4 hover:bg-gray-50 transition-colors">
+                          <div className="flex items-start gap-4">
+                            <div className="flex-1 min-w-0">
+                              <input
+                                value={term.title}
+                                onChange={(e) => updateTermsCondition(term.id, { title: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-medium text-gray-800 mb-2"
+                                placeholder="Term title"
+                              />
+                              <textarea
+                                value={term.content}
+                                onChange={(e) => updateTermsCondition(term.id, { content: e.target.value })}
+                                rows={2}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-gray-600 resize-none"
+                                placeholder="Term content"
+                              />
+                            </div>
+                            <button
+                              onClick={() => deleteTermsCondition(term.id)}
+                              className="px-3 py-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors text-sm font-medium"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+              
+              {termsConditions.length === 0 && (
+                <div className="text-center py-8 text-gray-500">
+                  <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <p className="mt-2">No terms and conditions added yet.</p>
+                  <p className="text-sm">Add your first term using the form above.</p>
+                </div>
+              )}
             </div>
           </div>
         </section>
 
-        {/* Pricing Summary */}
+        {/* Inclusions & Exclusions Section */}
+        <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="flex items-center mb-6">
+            <div className="h-10 w-10 rounded-lg bg-green-100 flex items-center justify-center mr-3">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-semibold text-gray-800">Inclusions & Exclusions</h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Inclusions */}
+            <div className="border border-green-200 rounded-lg bg-green-50">
+              <div className="bg-green-600 text-white px-4 py-3 rounded-t-lg">
+                <h3 className="font-semibold flex items-center">
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Inclusions
+                </h3>
+              </div>
+              
+              {/* Add Inclusion Form */}
+              <div className="p-4 border-b border-green-200">
+                <div className="flex gap-2 mb-3">
+                  <input
+                    value={newInclusion.text}
+                    onChange={(e) => setNewInclusion({ ...newInclusion, text: e.target.value })}
+                    className="flex-1 px-3 py-2 border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm"
+                    placeholder="Add inclusion item..."
+                  />
+                  <select
+                    value={newInclusion.category}
+                    onChange={(e) => setNewInclusion({ ...newInclusion, category: e.target.value as any })}
+                    className="px-3 py-2 border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm"
+                  >
+                    <option value="accommodation">Accommodation</option>
+                    <option value="meals">Meals</option>
+                    <option value="transport">Transport</option>
+                    <option value="activities">Activities</option>
+                    <option value="general">General</option>
+                  </select>
+                </div>
+                <button
+                  onClick={handleAddInclusion}
+                  disabled={!newInclusion.text.trim()}
+                  className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium text-sm"
+                >
+                  Add Inclusion
+                </button>
+              </div>
+
+              {/* Inclusions List */}
+              <div className="max-h-64 overflow-y-auto">
+                {getInclusions().length > 0 ? (
+                  <ul className="divide-y divide-green-100">
+                    {getInclusions().map((item) => (
+                      <li key={item.id} className="p-3 hover:bg-green-100 transition-colors">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-green-600">•</span>
+                              <input
+                                value={item.text}
+                                onChange={(e) => updateInclusionExclusion(item.id, { text: e.target.value })}
+                                className="flex-1 bg-transparent border-none focus:outline-none focus:ring-0 text-sm text-gray-800"
+                              />
+                            </div>
+                            <span className="inline-block bg-green-200 text-green-800 text-xs px-2 py-1 rounded ml-4">
+                              {inclusionCategoryLabels[item.category as keyof typeof inclusionCategoryLabels]}
+                            </span>
+                          </div>
+                          <button
+                            onClick={() => deleteInclusionExclusion(item.id)}
+                            className="ml-2 p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <svg className="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                    <p className="text-sm">No inclusions added yet</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Exclusions */}
+            <div className="border border-red-200 rounded-lg bg-red-50">
+              <div className="bg-red-600 text-white px-4 py-3 rounded-t-lg">
+                <h3 className="font-semibold flex items-center">
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  Exclusions
+                </h3>
+              </div>
+
+              {/* Add Exclusion Form */}
+              <div className="p-4 border-b border-red-200">
+                <div className="flex gap-2 mb-3">
+                  <input
+                    value={newExclusion.text}
+                    onChange={(e) => setNewExclusion({ ...newExclusion, text: e.target.value })}
+                    className="flex-1 px-3 py-2 border border-red-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 text-sm"
+                    placeholder="Add exclusion item..."
+                  />
+                  <select
+                    value={newExclusion.category}
+                    onChange={(e) => setNewExclusion({ ...newExclusion, category: e.target.value as any })}
+                    className="px-3 py-2 border border-red-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 text-sm"
+                  >
+                    <option value="accommodation">Accommodation</option>
+                    <option value="meals">Meals</option>
+                    <option value="transport">Transport</option>
+                    <option value="activities">Activities</option>
+                    <option value="general">General</option>
+                  </select>
+                </div>
+                <button
+                  onClick={handleAddExclusion}
+                  disabled={!newExclusion.text.trim()}
+                  className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium text-sm"
+                >
+                  Add Exclusion
+                </button>
+              </div>
+
+              {/* Exclusions List */}
+              <div className="max-h-64 overflow-y-auto">
+                {getExclusions().length > 0 ? (
+                  <ul className="divide-y divide-red-100">
+                    {getExclusions().map((item) => (
+                      <li key={item.id} className="p-3 hover:bg-red-100 transition-colors">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-red-600">•</span>
+                              <input
+                                value={item.text}
+                                onChange={(e) => updateInclusionExclusion(item.id, { text: e.target.value })}
+                                className="flex-1 bg-transparent border-none focus:outline-none focus:ring-0 text-sm text-gray-800"
+                              />
+                            </div>
+                            <span className="inline-block bg-red-200 text-red-800 text-xs px-2 py-1 rounded ml-4">
+                              {inclusionCategoryLabels[item.category as keyof typeof inclusionCategoryLabels]}
+                            </span>
+                          </div>
+                          <button
+                            onClick={() => deleteInclusionExclusion(item.id)}
+                            className="ml-2 p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <svg className="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                    <p className="text-sm">No exclusions added yet</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Pricing Summary Section */}
         <section className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold text-gray-800">Pricing Summary</h2>

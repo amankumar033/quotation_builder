@@ -38,10 +38,10 @@ export default function RootLayout({
         {/* Header*/}
         <Header />
 
-        {/* Fixed Sidebar */}
+        {/* Fixed Sidebar (desktop) + mobile drawer inside component) */}
         <Sidebar />
 
-        <div className="ml-64 pt-14">
+        <div className="pt-14 lg:ml-64 px-3 sm:px-4 lg:px-0">
           <ToastProvider>
             <Providers>
               <AgencySettingsProvider>
