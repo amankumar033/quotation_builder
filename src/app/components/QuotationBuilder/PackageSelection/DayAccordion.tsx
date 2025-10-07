@@ -133,7 +133,7 @@ export default function DayAccordion({
           <HotelSection
             date={date}
             daySelection={daySelection}
-            updateDaySelection={() => {}}
+            updateDaySelection={(updates) => {}}
             hotels={hotels}
             isHotelLoading={isHotelLoading}
             theme={theme}
@@ -142,18 +142,15 @@ export default function DayAccordion({
             isHotelConfirmed={isHotelConfirmed}
           />
           <TransportSection
-            date={date}
+            dayNumber={dayNumber}
             daySelection={daySelection}
-            updateDaySelection={() => {}}
             transportations={transportations}
             theme={theme}
             isSectionActive={isSectionActive('transport')}
             toggleSection={() => toggleSection('transport')}
           />
           <ActivitiesSection
-            date={date}
-            daySelection={daySelection}
-            updateDaySelection={() => {}}
+            allDays={[{date, data: daySelection}]}
             activities={activities}
             isActivitiesLoading={isActivitiesLoading}
             theme={theme}

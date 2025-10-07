@@ -287,6 +287,7 @@ export default function RoomSelect({
   const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
   const [expandedRoomIndex, setExpandedRoomIndex] = useState<number | null>(null);
   const [isTravelerInfoCollapsed, setIsTravelerInfoCollapsed] = useState<boolean>(false);
+  const [animateSelection, setAnimateSelection] = useState<boolean>(false);
 
   const { hotelInfo, travelers } = useQuotation();
   const selectedHotel = hotelInfo[0] || hotel;
@@ -504,18 +505,26 @@ export default function RoomSelect({
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-xl shadow-sm mb-8">
+        <button 
+          onClick={onBack}
+          className="flex items-center text-indigo-600 hover:text-indigo-800 transition-colors"
+        >
+          <ArrowLeft className="h-5 w-5 mr-1" />
+          <span className="font-medium">Back</span>
+        </button>
         <div className="text-center flex-1">
-          <h3 className="text-3xl font-bold text-gray-900">Select Your Rooms</h3>
+          <h3 className="text-3xl font-bold bg-gradient-to-r from-indigo-700 to-purple-700 bg-clip-text text-transparent">Select Your Rooms</h3>
           {isConfirmed && (
             <div className="flex items-center justify-center mt-2 space-x-2">
-              <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium flex items-center">
-                <Check className="h-4 w-4 mr-1" />
+              <div className="bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium flex items-center shadow-sm">
+                <Check className="h-4 w-4 mr-2" />
                 Room Selection Confirmed for Day {currentDay}
               </div>
             </div>
           )}
         </div>
+        <div className="w-20"></div> {/* Spacer for balance */}
       </div>
 
       {/* Available Room Types */}
@@ -529,33 +538,37 @@ export default function RoomSelect({
             return (
               <div
                 key={room.id}
-                className={`border-2 rounded-xl cursor-pointer transition-all duration-200 ${
+                className={`border rounded-xl cursor-pointer transition-all duration-300 overflow-hidden ${
                   isSelected
-                    ? 'border-red-500 shadow-xl scale-105 ring-2 ring-red-100 bg-red-50'
-                    : 'border-gray-200 hover:border-blue-300 hover:shadow-md bg-white'
+                    ? 'border-indigo-500 shadow-lg transform hover:scale-[1.02] bg-gradient-to-br from-indigo-50 to-white'
+                    : 'border-gray-200 hover:border-indigo-300 hover:shadow-md bg-white hover:translate-y-[-4px]'
                 }`}
-                onClick={() => handleRoomCardClick(room.id)}
+                onClick={() => {
+                  setAnimateSelection(true);
+                  setTimeout(() => setAnimateSelection(false), 500);
+                  handleRoomCardClick(room.id);
+                }}
               >
                 <div className="relative">
                   <img
                     src={room.photos[0]}
                     alt={room.type}
-                    className="w-full h-40 object-cover rounded-t-xl"
+                    className="w-full h-48 object-cover transition-transform duration-700 hover:scale-110"
                   />
                   <div className="absolute top-3 right-3">
-                    <span className="bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    <span className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium shadow-sm">
                       ₹{room.price}/night
                     </span>
                   </div>
                   <div className="absolute bottom-3 left-3">
-                    <span className="bg-blue-600 text-white px-2 py-1 rounded text-xs font-medium">
+                    <span className="bg-indigo-600 text-white px-2 py-1 rounded-md text-xs font-medium shadow-sm backdrop-blur-sm">
                       {room.bedType}
                     </span>
                   </div>
                   {isSelected && (
                     <div className="absolute top-3 left-3">
-                      <span className="bg-red-500 text-white px-2 py-1 rounded text-xs font-medium">
-                        Selected
+                      <span className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-3 py-1 rounded-md text-xs font-medium shadow-sm flex items-center">
+                        <Check className="h-3 w-3 mr-1" /> Selected
                       </span>
                     </div>
                   )}
@@ -563,32 +576,38 @@ export default function RoomSelect({
                 
                 <div className="p-5">
                   <div className="flex justify-between items-start mb-3">
-                    <h4 className="font-bold text-lg text-gray-900">{room.type}</h4>
-                    <div className="flex items-center text-sm text-gray-600">
+                    <h4 className="font-bold text-lg text-gray-900 group-hover:text-indigo-700 transition-colors">{room.type}</h4>
+                    <div className="flex items-center text-sm bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full">
                       <Users className="h-4 w-4 mr-1" />
-                      Max: {room.maxAdults + room.maxChildren}
+                      {room.maxAdults} Adults + {room.maxChildren} Kids
                     </div>
                   </div>
                   
-                  <p className="text-gray-600 text-sm mb-4">{room.description}</p>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{room.description}</p>
                   
                   <div className="flex flex-wrap gap-2 mb-4">
                     {room.amenities.slice(0, 3).map((amenity: string, idx: number) => (
-                      <span key={idx} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full font-medium">
+                      <span key={idx} className="text-xs bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 px-3 py-1 rounded-full font-medium shadow-sm">
                         {amenity}
                       </span>
                     ))}
                     {room.amenities.length > 3 && (
-                      <span className="text-xs text-gray-500">+{room.amenities.length - 3} more</span>
+                      <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">+{room.amenities.length - 3} more</span>
                     )}
                   </div>
 
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
+                      setAnimateSelection(true);
+                      setTimeout(() => setAnimateSelection(false), 500);
                       handleRoomCardClick(room.id);
                     }}
-                    className={`w-full py-2 rounded-lg font-medium transition-colors ${buttonState.className}`}
+                    className={`w-full py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-[1.02] ${
+                      isSelected 
+                        ? 'bg-gradient-to-r from-rose-500 to-red-500 text-white shadow-md hover:shadow-lg' 
+                        : 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md hover:shadow-lg'
+                    }`}
                   >
                     {isSelected ? (
                       <>
@@ -660,14 +679,14 @@ export default function RoomSelect({
 
       {/* Configure Stay Section */}
       {roomConfigurations.length > 0 && (
-        <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl p-8 border border-gray-200">
+        <div className="bg-gradient-to-br from-white to-indigo-50 rounded-2xl p-8 border border-indigo-100 shadow-md">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
-              <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
-                <Users className="h-5 w-5 text-blue-600" />
+              <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center mr-3">
+                <Users className="h-5 w-5 text-indigo-600" />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-gray-900">Configure Your Stay</h3>
+                <h3 className="text-2xl font-bold bg-gradient-to-r from-indigo-700 to-purple-700 bg-clip-text text-transparent">Configure Your Stay</h3>
                 <p className="text-gray-600">
                   {roomConfigurations.length} room type(s) selected • {calculateTotalGuests()} guests allocated
                 </p>
@@ -930,7 +949,7 @@ export default function RoomSelect({
         {roomConfigurations.length > 0 && (
           <button
             onClick={handleConfirmSelection}
-            className="px-8 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
+            className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 font-medium shadow-lg hover:shadow-xl transform hover:scale-105"
           >
             <Check className="h-4 w-4 inline mr-2" />
             Confirm Room Selection

@@ -1,5 +1,5 @@
 // components/QuotationBuilder/PreviewExportStep.tsx
-import { QuotationData } from '../../quotation-builder/page';
+import { QuotationData } from '@/types/type';
 import { Download, Mail, Star, Users, Bed, Sparkles, Edit, Plus, Trash2, Check, X, Save, X as CloseIcon, Maximize2, Minimize2 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useQuotation } from '@/context/QuotationContext';

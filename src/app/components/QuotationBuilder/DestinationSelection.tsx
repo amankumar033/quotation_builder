@@ -15,6 +15,9 @@ interface Destination {
 
 interface DestinationProps {
   nextStep: () => void;
+  prevStep?: () => void;
+  data?: any;
+  updateData?: (data: any) => void;
 }
 
 export default function DestinationSelectionStep({ nextStep }: DestinationProps) {

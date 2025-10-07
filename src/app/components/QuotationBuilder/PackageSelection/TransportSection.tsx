@@ -155,6 +155,7 @@ function DayRouteItem({
       dayNumber: dayNumber,
       vehicle: routeData.vehicle,
       price: price,
+      distance: 0, // Adding the required distance property
       isComplimentary: routeData.type === 'pickup' && price === 0
     };
     

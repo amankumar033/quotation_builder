@@ -1,5 +1,5 @@
 "use client";
-import { QuotationData } from '../../quotation-builder/page';
+import { QuotationData } from '@/types/type';
 import { MapPinned, Users, ArrowLeft, Calendar } from 'lucide-react';
 import CustomDatePicker from '../ui/CustomDatePicker';
 import { useQuotation } from "@/context/QuotationContext";

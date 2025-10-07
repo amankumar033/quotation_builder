@@ -14,7 +14,7 @@ interface HotelSummaryProps {
 }
 
 interface RoomSelectionWithDetails extends RoomSelection {
-  roomDetails?: {
+  roomDetails: {
     id: number;
     type: string;
     price: number;

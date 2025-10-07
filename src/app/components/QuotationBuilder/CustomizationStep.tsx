@@ -1,5 +1,6 @@
 // components/QuotationBuilder/CustomizationStep.tsx
-import { QuotationData } from '../../quotation-builder/page';
+"use client";
+import { QuotationData } from '@/types/type';
 import { useState, useEffect } from 'react';
 import { useAgencySettings } from '@/context/AgencySettingsContext';
 import { useQuotation } from '@/context/QuotationContext';

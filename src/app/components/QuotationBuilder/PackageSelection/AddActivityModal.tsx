@@ -187,7 +187,8 @@ export default function AddActivityAccordion({ activities, onClose }: AddActivit
                         price: 0,
                         duration: "1 hour",
                         image: "",
-                        agencyId: ""
+                        agencyId: "",
+                        category: "sightseeing"
                       });
                     }
                   }}

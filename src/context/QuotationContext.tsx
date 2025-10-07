@@ -88,6 +88,7 @@ interface QuotationContextType {
   tripDestination: string;
   setTripDestination: (destination: string) => void;
   selectedLocation: string;
+  setSelectedLocation: (location: string) => void;
 
   // Travelers
   travelers: Travelers;
@@ -439,8 +440,8 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     quoteNumber: `TQ-${new Date().getFullYear()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
   });
 
-  // Selected location (alias for tripDestination)
-  const selectedLocation = tripDestination;
+  // Selected location state
+  const [selectedLocation, setSelectedLocation] = useState<string>("");
 
   // Update quotation data when context data changes
   useEffect(() => {
@@ -899,6 +900,7 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
         vehicleType: "Pickup"
       },
       price: 0,
+      distance: 0,
       isComplimentary: true
     };
     setTransportRoutes(prev => [pickupRoute, ...prev]);
@@ -1135,6 +1137,7 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
     tripDestination,
     setTripDestination,
     selectedLocation,
+    setSelectedLocation,
 
     // Travelers
     travelers,
