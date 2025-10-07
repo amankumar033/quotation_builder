@@ -13,7 +13,7 @@ interface CustomizationStepProps {
 }
 
 export default function CustomizationStep({ data, updateData, nextStep, prevStep }: CustomizationStepProps) {
-  const { agencySettings } = useAgencySettings();
+  const { agencySettings, updatePricing, updateAgencySettings } = useAgencySettings();
   const [isEditingPricing, setIsEditingPricing] = useState(false);
   const [isEditingGrandTotal, setIsEditingGrandTotal] = useState(false);
   const { totalPackagePrice, exportQuotationData, quotationData, updateQuotationData, finalGrandTotal, setFinalGrandTotal } = useQuotation();
@@ -59,18 +59,25 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
     setTempPricing({
       markupPercentage: data.markupPercentage || safeAgencySettings.pricing.markupPercentage,
       gstPercentage: safeAgencySettings.pricing.gstPercentage,
-      discountAmount: data.discountAmount || 0
+      discountAmount: data.discountAmount || safeAgencySettings.pricing.discountAmount || 0
     });
     setIsEditingPricing(true);
   };
 
   const savePricing = () => {
     const updates = {
-      markupPercentage: parseFloat(tempPricing.markupPercentage.toFixed(2)), // Limit to 2 decimal places
-      discountAmount: parseFloat(tempPricing.discountAmount.toFixed(2)) // Limit to 2 decimal places
+      markupPercentage: parseFloat(tempPricing.markupPercentage.toFixed(2)),
+      discountAmount: parseFloat(tempPricing.discountAmount.toFixed(2))
     };
+    // Persist to quotation
     updateData(updates);
     updateQuotationData(updates);
+    // Persist to agency settings defaults so future quotes use the same
+    updatePricing({
+      markupPercentage: updates.markupPercentage,
+      discountAmount: updates.discountAmount,
+      gstPercentage: parseFloat(tempPricing.gstPercentage.toFixed(2))
+    });
     setIsEditingPricing(false);
   };
 

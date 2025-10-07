@@ -2,11 +2,30 @@
 'use client';
 
 import { useAgencySettings, defaultAgencySettings } from '@/context/AgencySettingsContext';
+import { useQuotation } from '@/context/QuotationContext';
 import { useState, useEffect } from 'react';
 
 export default function AgencySettingsPage() {
   const { agencySettings, updateAgencySettings, updatePricing } = useAgencySettings();
+  const {
+    // Inclusions & Exclusions
+    getInclusions,
+    getExclusions,
+    addInclusionExclusion,
+    updateInclusionExclusion,
+    deleteInclusionExclusion,
+    // Terms
+    termsConditions: structuredTerms,
+    addTermsCondition,
+    updateTermsCondition,
+    deleteTermsCondition
+  } = useQuotation();
   const [activeTab, setActiveTab] = useState<'branding' | 'terms' | 'pricing'>('branding');
+  const [newInclusion, setNewInclusion] = useState('');
+  const [newExclusion, setNewExclusion] = useState('');
+  const [newTermTitle, setNewTermTitle] = useState('');
+  const [newTermContent, setNewTermContent] = useState('');
+  const [newTermCategory, setNewTermCategory] = useState<'general' | 'payment' | 'cancellation' | 'liability'>('general');
   const [editingField, setEditingField] = useState<string | null>(null);
   const [tempValue, setTempValue] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
@@ -282,22 +301,141 @@ export default function AgencySettingsPage() {
                       </span>
                       Terms & Conditions
                     </h3>
-                    <textarea
-                      value={safeAgencySettings.termsConditions}
-                      onChange={(e) => updateAgencySettings({ termsConditions: e.target.value })}
-                      className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-white/50 resize-none text-sm"
-                      rows={6}
-                      placeholder="Enter your default terms and conditions..."
-                    />
-                    <div className="flex items-center justify-between mt-3">
-                      <p className="text-xs text-gray-500">Pre-filled in new quotations.</p>
-                      <button 
-                        onClick={() => updateAgencySettings({ termsConditions: defaultAgencySettings.termsConditions })}
-                        className="text-xs text-blue-600 hover:text-blue-800 font-medium"
-                      >
-                        Reset to Default
-                      </button>
+                    <div className="space-y-4">
+                      <div className="grid md:grid-cols-3 gap-3">
+                        <input
+                          type="text"
+                          value={newTermTitle}
+                          onChange={(e) => setNewTermTitle(e.target.value)}
+                          placeholder="Term title"
+                          className="px-3 py-2 border border-gray-200 rounded-lg text-sm"
+                        />
+                        <select
+                          value={newTermCategory}
+                          onChange={(e) => setNewTermCategory(e.target.value as any)}
+                          className="px-3 py-2 border border-gray-200 rounded-lg text-sm"
+                        >
+                          <option value="general">General</option>
+                          <option value="payment">Payment</option>
+                          <option value="cancellation">Cancellation</option>
+                          <option value="liability">Liability</option>
+                        </select>
+                        <button
+                          onClick={() => {
+                            if (!newTermTitle || !newTermContent) return;
+                            addTermsCondition({ title: newTermTitle, content: newTermContent, category: newTermCategory });
+                            setNewTermTitle('');
+                            setNewTermContent('');
+                          }}
+                          className="px-3 py-2 bg-blue-600 text-white rounded-lg text-sm"
+                        >
+                          Add Term
+                        </button>
+                      </div>
+                      <textarea
+                        value={newTermContent}
+                        onChange={(e) => setNewTermContent(e.target.value)}
+                        placeholder="Term content"
+                        rows={3}
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm"
+                      />
+                      <div className="space-y-2">
+                        {structuredTerms.length === 0 && (
+                          <p className="text-sm text-gray-500">No structured terms yet. Add above.</p>
+                        )}
+                        {structuredTerms.map(term => (
+                          <div key={term.id} className="border border-purple-200 bg-white rounded-lg p-3 flex items-start justify-between">
+                            <div className="pr-3">
+                              <div className="text-xs text-purple-700 font-semibold mb-1 uppercase">{term.category}</div>
+                              <div className="font-semibold text-gray-800">{term.title}</div>
+                              <div className="text-sm text-gray-600 whitespace-pre-wrap">{term.content}</div>
+                            </div>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => updateTermsCondition(term.id, { title: prompt('Update title', term.title) || term.title })}
+                                className="px-2 py-1 text-blue-600 text-sm"
+                              >Edit</button>
+                              <button
+                                onClick={() => deleteTermsCondition(term.id)}
+                                className="px-2 py-1 text-red-600 text-sm"
+                              >Delete</button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
+                  </div>
+                </div>
+
+                {/* Inclusions & Exclusions */}
+                <div className="grid lg:grid-cols-2 gap-6">
+                  <div className="bg-gradient-to-br from-white to-green-50 rounded-xl p-6 border border-green-100 shadow-sm">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4">Inclusions</h3>
+                    <div className="flex gap-2 mb-3">
+                      <input
+                        type="text"
+                        value={newInclusion}
+                        onChange={(e) => setNewInclusion(e.target.value)}
+                        placeholder="Add inclusion"
+                        className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm"
+                      />
+                      <button
+                        onClick={() => { if (!newInclusion) return; addInclusionExclusion({ text: newInclusion, type: 'inclusion', category: 'general' }); setNewInclusion(''); }}
+                        className="px-3 py-2 bg-green-600 text-white rounded-lg text-sm"
+                      >Add</button>
+                    </div>
+                    <ul className="space-y-2">
+                      {getInclusions().map(item => (
+                        <li key={item.id} className="bg-white rounded-lg p-3 border border-green-200 flex items-start justify-between">
+                          <span className="text-sm text-gray-700 pr-3">{item.text}</span>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => updateInclusionExclusion(item.id, { text: prompt('Update inclusion', item.text) || item.text })}
+                              className="text-blue-600 text-sm"
+                            >Edit</button>
+                            <button
+                              onClick={() => deleteInclusionExclusion(item.id)}
+                              className="text-red-600 text-sm"
+                            >Delete</button>
+                          </div>
+                        </li>
+                      ))}
+                      {getInclusions().length === 0 && <li className="text-sm text-gray-500">No inclusions added.</li>}
+                    </ul>
+                  </div>
+                  <div className="bg-gradient-to-br from-white to-red-50 rounded-xl p-6 border border-red-100 shadow-sm">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4">Exclusions</h3>
+                    <div className="flex gap-2 mb-3">
+                      <input
+                        type="text"
+                        value={newExclusion}
+                        onChange={(e) => setNewExclusion(e.target.value)}
+                        placeholder="Add exclusion"
+                        className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm"
+                      />
+                      <button
+                        onClick={() => { if (!newExclusion) return; addInclusionExclusion({ text: newExclusion, type: 'exclusion', category: 'general' }); setNewExclusion(''); }}
+                        className="px-3 py-2 bg-red-600 text-white rounded-lg text-sm"
+                      >Add</button>
+                    </div>
+                    <ul className="space-y-2">
+                      {getExclusions().map(item => (
+                        <li key={item.id} className="bg-white rounded-lg p-3 border border-red-200 flex items-start justify-between">
+                          <span className="text-sm text-gray-700 pr-3">{item.text}</span>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => updateInclusionExclusion(item.id, { text: prompt('Update exclusion', item.text) || item.text })}
+                              className="text-blue-600 text-sm"
+                            >Edit</button>
+                            <button
+                              onClick={() => deleteInclusionExclusion(item.id)}
+                              className="text-red-600 text-sm"
+                            >Delete</button>
+                          </div>
+                        </li>
+                      ))}
+                      {getExclusions().length === 0 && <li className="text-sm text-gray-500">No exclusions added.</li>}
+                    </ul>
                   </div>
                 </div>
               </div>

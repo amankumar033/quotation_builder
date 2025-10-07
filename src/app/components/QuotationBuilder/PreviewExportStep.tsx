@@ -195,12 +195,15 @@ export default function PreviewExportStep({ data, prevStep }: PreviewExportStepP
 
   // Handle Print
   const handlePrint = () => {
-    setPrintMode(true);
+    // Open full screen preview and auto-print all pages (A4)
+    setIsFullScreen(true);
     setTimeout(() => {
       window.print();
-      // Reset print mode after a delay
-      setTimeout(() => setPrintMode(false), 1000);
-    }, 100);
+      setTimeout(() => {
+        setIsFullScreen(false);
+        setPrintMode(false);
+      }, 800);
+    }, 300);
   };
 
   // Add keyboard shortcut for print (Ctrl+P)
