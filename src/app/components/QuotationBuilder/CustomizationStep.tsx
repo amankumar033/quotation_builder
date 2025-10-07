@@ -213,26 +213,39 @@ export default function CustomizationStep({ data, updateData, nextStep, prevStep
           </div>
         </div>
 
-        {/* Special Notes */}
+        {/* Payment Terms inline with T&C from Agency Settings */}
         <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex items-center mb-6">
             <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center mr-3">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
-            <h2 className="text-xl font-semibold text-gray-800">Special Notes</h2>
+            <h2 className="text-xl font-semibold text-gray-800">Payment Terms & T&C</h2>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Special Notes</label>
-            <textarea
-              value={data.specialNotes || ''}
-              onChange={(e) => handleInputChange('specialNotes', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-              rows={4}
-              placeholder="Add any special notes, offers, or additional information here..."
-            />
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Payment Terms</label>
+              <select
+                value={data.paymentTerms || safeAgencySettings.paymentTerms}
+                onChange={(e) => handleInputChange('paymentTerms', e.target.value)}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+              >
+                {(agencySettings.paymentTermsOptions || ['Net 15','Net 30','Due on receipt','50% advance, 50% on completion']).map(pt => (
+                  <option key={pt} value={pt}>{pt}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Terms & Conditions</label>
+              <textarea
+                value={data.termsConditions || safeAgencySettings.termsConditions}
+                onChange={(e) => handleInputChange('termsConditions', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                rows={4}
+                placeholder="Enter your terms and conditions here..."
+              />
+            </div>
           </div>
         </section>
 

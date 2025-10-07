@@ -15,6 +15,7 @@ interface AgencySettings {
   agencyName: string;
   contactInfo: string;
   paymentTerms: string;
+  paymentTermsOptions?: string[];
   termsConditions: string;
   pricing: PricingConfiguration;
 }
@@ -38,6 +39,7 @@ export const defaultAgencySettings: AgencySettings = {
   agencyName: '',
   contactInfo: '',
   paymentTerms: 'Net 30',
+  paymentTermsOptions: ['Net 15', 'Net 30', 'Due on receipt', '50% advance, 50% on completion'],
   termsConditions: `• Payment due within 30 days of invoice date
 • 50% advance required for project commencement
 • Late payments subject to 1.5% monthly interest
@@ -52,7 +54,12 @@ export function AgencySettingsProvider({ children }: { children: ReactNode }) {
   const [agencySettings, setAgencySettings] = useState<AgencySettings>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('agencySettings');
-      return saved ? JSON.parse(saved) : defaultAgencySettings;
+      const parsed = saved ? JSON.parse(saved) : defaultAgencySettings;
+      // Migrate missing fields
+      if (!parsed.paymentTermsOptions) {
+        parsed.paymentTermsOptions = defaultAgencySettings.paymentTermsOptions;
+      }
+      return parsed;
     }
     return defaultAgencySettings;
   });

@@ -281,17 +281,51 @@ export default function AgencySettingsPage() {
                       </span>
                       Payment Terms
                     </h3>
-                    <select
-                      value={safeAgencySettings.paymentTerms}
-                      onChange={(e) => updateAgencySettings({ paymentTerms: e.target.value })}
-                      className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-white/50 text-sm"
-                    >
-                      <option value="Net 15">Net 15 Days</option>
-                      <option value="Net 30">Net 30 Days</option>
-                      <option value="Due on receipt">Due on Receipt</option>
-                      <option value="50% advance, 50% on completion">50% Advance, 50% on Completion</option>
-                    </select>
-                    <p className="text-xs text-gray-500 mt-2">Default payment term for new quotations.</p>
+                    <div className="space-y-3">
+                      <select
+                        value={safeAgencySettings.paymentTerms}
+                        onChange={(e) => updateAgencySettings({ paymentTerms: e.target.value })}
+                        className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-white/50 text-sm"
+                      >
+                        {(agencySettings.paymentTermsOptions || []).map(pt => (
+                          <option key={pt} value={pt}>{pt}</option>
+                        ))}
+                      </select>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          placeholder="Add payment term (e.g. Net 45)"
+                          className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm"
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              const value = (e.target as HTMLInputElement).value.trim();
+                              if (!value) return;
+                              const next = Array.from(new Set([...(agencySettings.paymentTermsOptions || []), value]));
+                              updateAgencySettings({ paymentTermsOptions: next, paymentTerms: value });
+                              (e.target as HTMLInputElement).value = '';
+                            }
+                          }}
+                        />
+                      </div>
+                      {(agencySettings.paymentTermsOptions || []).length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {(agencySettings.paymentTermsOptions || []).map(pt => (
+                            <span key={pt} className="px-2 py-1 bg-white border border-gray-200 rounded text-xs flex items-center gap-2">
+                              {pt}
+                              <button
+                                onClick={() => {
+                                  const next = (agencySettings.paymentTermsOptions || []).filter(x => x !== pt);
+                                  updateAgencySettings({ paymentTermsOptions: next, paymentTerms: next[0] || '' });
+                                }}
+                                className="text-red-600"
+                                title="Remove"
+                              >×</button>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      <p className="text-xs text-gray-500">Default payment term for new quotations. Press Enter to add.</p>
+                    </div>
                   </div>
 
                   <div className="bg-gradient-to-br from-white to-purple-50 rounded-xl p-6 border border-purple-100 shadow-sm">

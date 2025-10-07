@@ -1579,7 +1579,7 @@ export default function PreviewExportStep({ data, prevStep }: PreviewExportStepP
         )}
 
         {/* PDF-like Pages Container */}
-        <div className={`py-8 px-4 max-w-4xl mx-auto space-y-8 ${isPrinting ? 'py-0 space-y-0' : ''}`}>
+        <div className={`py-8 px-4 max-w-[210mm] mx-auto space-y-8 ${isPrinting ? 'py-0 space-y-0' : ''}`}>
           {renderAllPagesForPrint()}
         </div>
       </div>
@@ -2217,6 +2217,8 @@ export default function PreviewExportStep({ data, prevStep }: PreviewExportStepP
           body {
             margin: 0;
             padding: 0;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
           }
           
           .print-mode * {
@@ -2249,6 +2251,11 @@ export default function PreviewExportStep({ data, prevStep }: PreviewExportStepP
             padding: 0 !important;
             box-shadow: none !important;
             border: 1px solid #ccc !important;
+          }
+          .print-mode .page-break { page-break-after: always; }
+          .print-mode [id^="page-"] {
+            min-height: 297mm !important;
+            width: 210mm !important;
           }
         }
       `}</style>
