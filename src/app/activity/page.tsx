@@ -1,22 +1,17 @@
+// src/app/activities/add/page.tsx
 "use client";
-import { useRouter, useSearchParams } from "next/navigation"; // for app router
+import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { useToast } from "../components/Toast";
-import {
-  ArrowLeft,
-  X,
-  Calendar,
-  FileText,
-  Image as ImageIcon,
-  Tag,
-} from "lucide-react";
+import { ArrowLeft, X, Calendar, FileText, Image as ImageIcon, Tag } from "lucide-react";
+import { useToast } from "@/app/components/Toast";
+
 function AddActivityInner() {
     const { success, error, info, warning } = useToast();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const id = searchParams.get("id"); // gets ?id=xyz
+    const id = searchParams.get("id");
   
   const [formData, setFormData] = useState({
     name: "",
@@ -24,8 +19,28 @@ function AddActivityInner() {
     duration: "",
     price: "",
     photos: "",
+    hotelId: "", // Added hotelId field
   });
 
+  const [hotels, setHotels] = useState<any[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+
+  // Fetch hotels for dropdown
+  useEffect(() => {
+    const fetchHotels = async () => {
+      try {
+        const res = await fetch('/api/hotels?agencyId=cmfntj4f60000nq4wt321fgsa');
+        const data = await res.json();
+        if (data.success) {
+          setHotels(data.data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch hotels:', err);
+      }
+    };
+
+    fetchHotels();
+  }, []);
 
    useEffect(() => {
     if (!id) return;
@@ -37,23 +52,18 @@ function AddActivityInner() {
   
         setFormData({
           name: data.data.name||"",
-    description: data.data.description||"",
-    duration: data.data.duration||"",
-    price: data.data.price||"",
-  photos: Array.isArray(data.data.photos) ? data.data.photos.join("\n") : "",
-
-         
-          });
-        
-        
+          description: data.data.description||"",
+          duration: data.data.duration||"",
+          price: data.data.price||"",
+          photos: Array.isArray(data.data.photos) ? data.data.photos.join("\n") : "",
+          hotelId: data.data.hotelId || "", // Added
+        });
       })
       .catch((err) => console.error(err));
   }, [id]);
 
-  const [submitting, setSubmitting] = useState(false);
-
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -70,7 +80,8 @@ const handleSubmit = async (e: React.FormEvent) => {
       photos: formData.photos
         ? formData.photos.split("\n").map((p) => p.trim()).filter(Boolean)
         : [],
-      agencyId: "YOUR_AGENCY_ID_HERE", // replace dynamically if needed
+      hotelId: formData.hotelId || null, // Added
+      agencyId: "cmfntj4f60000nq4wt321fgsa",
     };
 
     // decide endpoint + method
@@ -106,6 +117,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       duration: "",
       price: "",
       photos: "",
+      hotelId: "", // Added
     });
   };
 
@@ -137,7 +149,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               <X className="h-6 w-6" />
             </button>
           </div>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-sm text-gray-600 mt-1 ml-10">
             Create a new activity record
           </p>
         </div>
@@ -159,7 +171,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   </h2>
                 </div>
                 <p className="text-sm text-gray-600 mt-1">
-                  Enter the activity’s basic details
+                  Enter the activity's basic details
                 </p>
               </div>
               <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -172,7 +184,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                     placeholder="Enter activity name"
                     required
                   />
@@ -186,7 +198,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                     name="duration"
                     value={formData.duration}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                     placeholder="e.g. 3 hours"
                   />
                 </div>
@@ -199,10 +211,28 @@ const handleSubmit = async (e: React.FormEvent) => {
                     name="price"
                     value={formData.price}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                     placeholder="e.g. 2000"
                     required
                   />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Hotel (Optional)
+                  </label>
+                  <select
+                    name="hotelId"
+                    value={formData.hotelId}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                  >
+                    <option value="">Select Hotel</option>
+                    {hotels.map(hotel => (
+                      <option key={hotel.id} value={hotel.id}>
+                        {hotel.name} - {hotel.city}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </div>
@@ -230,7 +260,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 h-24"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition h-24"
                   placeholder="Enter activity description..."
                 />
               </div>
@@ -256,36 +286,36 @@ const handleSubmit = async (e: React.FormEvent) => {
                   name="photos"
                   value={formData.photos}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 h-32"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition h-32"
                   placeholder="https://example.com/photo1.jpg"
                 />
               </div>
             </div>
-          </form>
-        </div>
-      </div>
 
-      {/* Footer */}
-      <div className="bg-white border-t border-gray-200 px-6 py-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex gap-4">
-            <button
-              type="button"
-              onClick={()=>{router.push('/services')}}
-              disabled={submitting}
-              className="flex-1 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              onClick={handleSubmit}
-              disabled={submitting}
-              className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-50 flex items-center justify-center"
-            >
-              {submitting ? "Saving..." : "Save Activity"}
-            </button>
-          </div>
+            {/* Footer */}
+            <div className="bg-white border-t border-gray-200 px-6 py-4">
+              <div className="max-w-4xl mx-auto">
+                <div className="flex gap-4">
+                  <button
+                    type="button"
+                    onClick={()=>{router.push('/services')}}
+                    disabled={submitting}
+                    className="flex-1 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    onClick={handleSubmit}
+                    disabled={submitting}
+                    className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-50 flex items-center justify-center"
+                  >
+                    {submitting ? "Saving..." : "Save Activity"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>

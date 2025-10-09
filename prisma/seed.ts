@@ -1,6 +1,6 @@
 // prisma/seed.ts
 import { PrismaClient, Role, QuotationStatus, ServiceType } from '../src/generated/prisma';
-import { hash } from 'bcryptjs';
+import { hash } from 'bcrypt';
 
 const prisma = new PrismaClient();
 
