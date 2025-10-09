@@ -1,3 +1,4 @@
+// schema.prisma
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-3.0.x", "rhel-openssl-1.0.x"]
@@ -113,26 +114,96 @@ model Client {
 
 /// ================= HOTELS & ROOM TYPES =================
 model Hotel {
-  id              String           @id @default(cuid())
-  name            String
-  city            String
-  starCategory    Int
-  inclusions      String?
-  cancellation    String?
-  photos          String?
-  agencyId        String
+  id           String   @id @default(cuid())
+  name         String
+  city         String
+  starCategory Int
+  inclusions   String? // JSON string of inclusions array
+  cancellation String?
+  photos       String? // JSON string of photos array
+  agencyId     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
   agency          Agency           @relation(fields: [agencyId], references: [id], onDelete: Cascade)
   roomTypes       RoomType[]
+  meals           Meal[]
+  activities      Activity[]
   quotationHotels QuotationHotel[]
 }
 
 model RoomType {
-  id              String           @id @default(cuid())
-  type            String
-  price           Decimal
-  hotelId         String
+  id          String   @id @default(cuid())
+  type        String
+  price       Decimal
+  maxAdults   Int      @default(2)
+  maxChildren Int      @default(0)
+  bedType     String?
+  amenities   String? // JSON string of amenities array
+  description String?
+  image       String? // Single image URL (changed from photos array)
+  hotelId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
   hotel           Hotel            @relation(fields: [hotelId], references: [id], onDelete: Cascade)
   quotationHotels QuotationHotel[]
+}
+
+/// ================= MEALS =================
+model Meal {
+  id           String   @id @default(cuid())
+  name         String
+  type         String // e.g., Breakfast, Lunch, Dinner
+  category     String // veg, non-veg
+  vegOption    Boolean  @default(false)
+  nonVegOption Boolean  @default(false)
+  price        Float
+  image        String?
+  hotelId      String?
+  agencyId     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  hotel          Hotel?          @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  agency         Agency          @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  quotationMeals QuotationMeal[]
+}
+
+/// ================= ACTIVITIES =================
+model Activity {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  duration    String?
+  photos      String? // JSON string of photos array
+  image       String? // Main image URL
+  hotelId     String?
+  agencyId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  hotel               Hotel?              @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  agency              Agency              @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  quotationActivities QuotationActivity[]
+}
+
+/// ================= TRANSPORT =================
+model Transport {
+  id          String   @id @default(cuid())
+  vehicleType String
+  perDay      Float
+  perKm       Float
+  maxCapacity Int
+  notes       String?
+  photos      String? // JSON string of photos array
+  agencyId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  agency              Agency               @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  quotationTransports QuotationTransport[]
 }
 
 /// Junction table for Quotation & Hotel
@@ -148,20 +219,6 @@ model QuotationHotel {
   roomType  RoomType  @relation(fields: [roomTypeId], references: [id], onDelete: Cascade)
 }
 
-/// ================= TRANSPORT =================
-model Transport {
-  id                  String               @id @default(cuid())
-  vehicleType         String
-  perDay              Float
-  perKm               Float
-  maxCapacity         Int
-  notes               String?
-  photos              String?
-  agencyId            String
-  agency              Agency               @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  quotationTransports QuotationTransport[]
-}
-
 /// Junction table for Quotation & Transport
 model QuotationTransport {
   id          String @id @default(cuid())
@@ -174,18 +231,6 @@ model QuotationTransport {
   transport Transport @relation(fields: [transportId], references: [id], onDelete: Cascade)
 }
 
-/// ================= MEALS =================
-model Meal {
-  id             String          @id @default(cuid())
-  type           String
-  vegOption      Boolean
-  nonVegOption   Boolean
-  price          Float
-  agencyId       String
-  agency         Agency          @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  quotationMeals QuotationMeal[]
-}
-
 /// Junction table for Quotation & Meal
 model QuotationMeal {
   id          String @id @default(cuid())
@@ -195,19 +240,6 @@ model QuotationMeal {
 
   quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
   meal      Meal      @relation(fields: [mealId], references: [id], onDelete: Cascade)
-}
-
-/// ================= ACTIVITIES =================
-model Activity {
-  id                  String              @id @default(cuid())
-  name                String
-  description         String?
-  duration            String?
-  price               Float
-  photos              Json?
-  agencyId            String
-  agency              Agency              @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  quotationActivities QuotationActivity[]
 }
 
 /// Junction table for Quotation & Activity

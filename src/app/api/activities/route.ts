@@ -1,64 +1,130 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma"; // adjust path if different
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, description, duration, price, photos } = body;
-    const agencyId = "cmfntj4f60000nq4wt321fgsa"; // replace with session later
+    const { 
+      name, 
+      description, 
+      duration, 
+      price, 
+      photos, 
+      image, 
+      hotelId, 
+      agencyId 
+    } = body;
 
-    // Parse values
-    const parsedPrice = parseFloat(price);
-
-    if (!name || isNaN(parsedPrice) || !agencyId) {
-      return NextResponse.json({ success: false, error: "Invalid input" }, { status: 400 });
+    // Basic validation
+    if (!name || price === undefined) {
+      return NextResponse.json({ 
+        success: false, 
+        error: "Name and price are required" 
+      }, { status: 400 });
     }
 
     const activity = await prisma.activity.create({
       data: {
         name,
-        description,
-        duration,
-        price: parsedPrice,
-        photos: photos || [],
-        agencyId,
+        description: description || null,
+        duration: duration || null,
+        price: parseFloat(price),
+        photos: photos?.length ? JSON.stringify(photos) : null,
+        image: image || null,
+        hotelId: hotelId || null,
+        agencyId: agencyId || "AGC1",
       },
     });
 
-    return NextResponse.json({ success: true, activity });
+    return NextResponse.json({ 
+      success: true, 
+      data: activity 
+    }, { status: 201 });
   } catch (error: any) {
     console.error("Activity creation error:", error);
-    return NextResponse.json({ success: false, error: error.message || "Something went wrong" }, { status: 500 });
+    return NextResponse.json({ 
+      success: false, 
+      error: error.message || "Something went wrong" 
+    }, { status: 500 });
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const activities = await prisma.activity.findMany();
-    return NextResponse.json({ success: true, data: activities });
+    const { searchParams } = new URL(req.url);
+    const agencyId = searchParams.get("agencyId") || "AGC1";
+    const hotelId = searchParams.get("hotelId");
+
+    let whereClause: any = { agencyId };
+    
+    if (hotelId) {
+      whereClause = {
+        ...whereClause,
+        OR: [
+          { hotelId: hotelId },
+          { hotelId: null } // Include standalone activities
+        ]
+      };
+    }
+
+    const activities = await prisma.activity.findMany({
+      where: whereClause,
+      include: {
+        hotel: {
+          select: {
+            id: true,
+            name: true,
+            city: true
+          }
+        }
+      },
+      orderBy: { createdAt: "desc" }
+    });
+
+    // Parse JSON fields for response
+    const activitiesWithParsedData = activities.map(activity => ({
+      ...activity,
+      photos: activity.photos ? JSON.parse(activity.photos) : [],
+    }));
+
+    return NextResponse.json({ 
+      success: true, 
+      data: activitiesWithParsedData 
+    });
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error("Activities fetch error:", error);
+    return NextResponse.json({ 
+      success: false, 
+      error: error.message 
+    }, { status: 500 });
   }
 }
 
 export async function DELETE(req: NextRequest) {
   try {
-    // Get activities ID from query params
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
 
     if (!id) {
-      return NextResponse.json({ success: false, error: "Activity ID is required" }, { status: 400 });
+      return NextResponse.json({ 
+        success: false, 
+        error: "Activity ID is required" 
+      }, { status: 400 });
     }
 
-    // Delete the activity and its related room types
     const deletedActivity = await prisma.activity.delete({
       where: { id },
     });
 
-    return NextResponse.json({ success: true, hotel: deletedActivity });
-  } catch (error) {
-    console.error(" Activity error:", error);
-    return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ 
+      success: true, 
+      data: deletedActivity 
+    });
+  } catch (error: any) {
+    console.error("Activity deletion error:", error);
+    return NextResponse.json({ 
+      success: false, 
+      error: error.message || "Something went wrong" 
+    }, { status: 500 });
   }
 }

@@ -1,4 +1,4 @@
-// types/type.ts
+// types/interfaces.ts
 export interface Destination {
   id: string;
   name: string;
@@ -57,7 +57,7 @@ export interface Room {
 }
 
 export interface Transport {
-  id: number;
+  id: string;
   name: string;
   passengers: number;
   perDay: number;
@@ -70,17 +70,26 @@ export interface Transport {
   price: number;
   features: string[];
   image?: string;
+  // New fields from transport form
+  vehicleModel?: string;
+  ac?: boolean;
+  driverName?: string;
+  agencyId?: string;
 }
 
 export interface Meal {
-  id: number;
+  id: string;
   type: string;
   price: number;
   quantity: number;
+  // New fields from meal form
   name: string;
   category: string;
   image: string;
   hotelId: string;
+  vegOption: boolean;
+  nonVegOption: boolean;
+  agencyId?: string;
 }
 
 export interface DaySelection {
@@ -123,13 +132,25 @@ export interface Hotel {
   isHotelConfirmed: boolean;
   cancellation: string;
   agencyId: string;
-  roomTypes: {
-    id: string;
-    type: string;
-    price: string;
-    hotelId: string;
-  }[];
+  roomTypes: RoomType[];
   amenities?: string[];
+  // New fields from hotel form
+  meals?: any[];
+  activities?: any[];
+}
+
+export interface RoomType {
+  id: string;
+  type: string;
+  price: string;
+  hotelId: string;
+  // New fields from room form
+  maxAdults?: string;
+  maxChildren?: string;
+  bedType?: string;
+  amenities?: string[];
+  description?: string;
+  image?: string;
 }
 
 export interface Activity {
@@ -144,6 +165,8 @@ export interface Activity {
   agencyId?: string;
   isCustom?: boolean;
   selectedDays?: string[];
+  // New field from activity form
+  hotelId?: string;
 }
 
 export interface TransportRoute {

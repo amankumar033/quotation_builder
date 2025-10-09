@@ -20,6 +20,8 @@ function AddMealInner() {
     price: "",
     image: "",
     hotelId: "",
+    vegOption: false,
+    nonVegOption: false,
   });
 
   const [loading, setLoading] = useState(true);
@@ -30,7 +32,7 @@ function AddMealInner() {
   useEffect(() => {
     const fetchHotels = async () => {
       try {
-        const res = await fetch('/api/hotels?agencyId=cmfntj4f60000nq4wt321fgsa');
+        const res = await fetch('/api/hotels?agencyId=AGC1');
         const data = await res.json();
         if (data.success) {
           setHotels(data.data);
@@ -50,21 +52,33 @@ function AddMealInner() {
       return;
     }
 
-    axios
-      .get(`/api/meals/${id}`)
-      .then((res) => {
-        const data = res.data.data;
-        setFormData({
-          name: data?.name || "",
-          type: data?.type || "",
-          category: data?.category || "",
-          price: data?.price?.toString() || "",
-          image: data?.image || "",
-          hotelId: data?.hotelId || "",
-        });
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    const fetchMeal = async () => {
+      try {
+        const res = await fetch(`/api/meals/${id}`);
+        const data = await res.json();
+        
+        if (data.success) {
+          const mealData = data.data;
+          setFormData({
+            name: mealData?.name || "",
+            type: mealData?.type || "",
+            category: mealData?.category || "",
+            price: mealData?.price?.toString() || "",
+            image: mealData?.image || "",
+            hotelId: mealData?.hotelId || "",
+            vegOption: mealData?.vegOption || false,
+            nonVegOption: mealData?.nonVegOption || false,
+          });
+        }
+      } catch (err) {
+        console.error('Failed to fetch meal:', err);
+        error('Error', 'Failed to load meal data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMeal();
   }, [id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -76,12 +90,16 @@ function AddMealInner() {
     if (category === 'veg') {
       setFormData(prev => ({ 
         ...prev, 
-        category: prev.category === 'veg' ? '' : 'veg',
+        category: 'veg',
+        vegOption: true,
+        nonVegOption: false,
       }));
     } else if (category === 'non-veg') {
       setFormData(prev => ({ 
         ...prev, 
-        category: prev.category === 'non-veg' ? '' : 'non-veg',
+        category: 'non-veg',
+        vegOption: false,
+        nonVegOption: true,
       }));
     }
   };
@@ -93,24 +111,40 @@ function AddMealInner() {
       category: "", 
       price: "", 
       image: "",
-      hotelId: "" 
+      hotelId: "",
+      vegOption: false,
+      nonVegOption: false,
     });
-    if (!id) router.back();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
 
+    // Validation
+    if (!formData.name || !formData.type || !formData.price) {
+      error('Validation Error', 'Please fill all required fields');
+      setSubmitting(false);
+      return;
+    }
+
+    if (!formData.category) {
+      error('Validation Error', 'Please select a category');
+      setSubmitting(false);
+      return;
+    }
+
     try {
       const payload = {
         name: formData.name,
         type: formData.type,
         category: formData.category,
+        vegOption: formData.vegOption,
+        nonVegOption: formData.nonVegOption,
         price: parseFloat(formData.price),
         image: formData.image,
         hotelId: formData.hotelId || null,
-        agencyId: "cmfntj4f60000nq4wt321fgsa",
+        agencyId: "AGC1",
       };
 
       const method = id ? "PUT" : "POST";
@@ -123,15 +157,21 @@ function AddMealInner() {
       });
 
       const data = await res.json();
+      
       if (data.success) {
-        {id ? success('Meal Updated','Meal was updated successfully!') : success('Meal Added','Meal Was Added Successfully!')}
+        if (id) {
+          success('Meal Updated', 'Meal was updated successfully!');
+        } else {
+          success('Meal Added', 'Meal was added successfully!');
+          resetForm();
+        }
         router.push("/services");
       } else {
-        alert("Failed: " + data.error);
+        error('Error', data.error || 'Failed to save meal');
       }
     } catch (err) {
       console.error(err);
-      {id ? error('Updation Failed','Please try again later!') : error('Creation Failed','Please try again later!')}
+      error('Error', 'Please try again later');
     } finally {
       setSubmitting(false);
     }
@@ -145,16 +185,26 @@ function AddMealInner() {
       <div className="bg-white shadow-sm border-b border-gray-200 px-6 py-8">
         <div className="max-w-4xl mx-auto flex justify-between items-center">
           <div className="flex items-center">
-            <button type="button" onClick={resetForm} disabled={submitting} className="mr-4 text-gray-600 hover:text-gray-900">
+            <button 
+              type="button" 
+              onClick={() => router.push('/services')} 
+              disabled={submitting} 
+              className="mr-4 text-gray-600 hover:text-gray-900"
+            >
               <ArrowLeft className="h-6 w-6" />
             </button>
             <h1 className="text-2xl font-bold text-gray-900">{id ? "Edit Meal" : "Add New Meal"}</h1>
           </div>
-          <button type="button" onClick={() => router.push('/services')} disabled={submitting} className="text-gray-600 hover:text-gray-900">
+          <button 
+            type="button" 
+            onClick={() => router.push('/services')} 
+            disabled={submitting} 
+            className="text-gray-600 hover:text-gray-900"
+          >
             <X className="h-6 w-6" />
           </button>
         </div>
-        <p className="text-sm text-gray-600 mt-1 ml-50">{id ? "Edit existing meal" : "Create a new meal record"}</p>
+        <p className="text-sm text-gray-600 mt-1 ml-10">{id ? "Edit existing meal" : "Create a new meal record"}</p>
       </div>
 
       {/* Form */}
@@ -184,15 +234,20 @@ function AddMealInner() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Type *</label>
-                  <input 
-                    type="text" 
-                    name="type" 
-                    value={formData.type} 
-                    onChange={handleChange} 
-                    required 
-                    placeholder="e.g. Breakfast, Lunch, Dinner" 
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900" 
-                  />
+                  <select
+                    name="type"
+                    value={formData.type}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                  >
+                    <option value="">Select Type</option>
+                    <option value="breakfast">Breakfast</option>
+                    <option value="lunch">Lunch</option>
+                    <option value="dinner">Dinner</option>
+                    <option value="beverage">Beverage</option>
+                    <option value="snacks">Snacks</option>
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Price *</label>
@@ -242,12 +297,12 @@ function AddMealInner() {
                 <div className="p-2 bg-green-100 rounded-lg">
                   <ImageIcon className="w-5 h-5 text-green-600" />
                 </div>
-                <h2 className="text-lg font-semibold text-gray-900">Category</h2>
+                <h2 className="text-lg font-semibold text-gray-900">Category *</h2>
               </div>
               <div className="p-6 grid grid-cols-2 gap-6">
                 <div
                   onClick={() => handleCategoryToggle('veg')}
-                  className={`cursor-pointer border-2 rounded-xl flex items-center justify-center py-4 transition-all duration-300 ${
+                  className={`cursor-pointer border-2 rounded-xl flex items-center justify-center py-3 transition-all duration-300 ${
                     formData.category === 'veg' 
                       ? "bg-green-500 text-white border-green-500" 
                       : "border-gray-300 hover:border-green-400 bg-white"
@@ -262,7 +317,7 @@ function AddMealInner() {
                 </div>
                 <div
                   onClick={() => handleCategoryToggle('non-veg')}
-                  className={`cursor-pointer border-2 rounded-xl flex items-center justify-center py-4 transition-all duration-300 ${
+                  className={`cursor-pointer border-2 rounded-xl flex items-center justify-center py-3 transition-all duration-300 ${
                     formData.category === 'non-veg' 
                       ? "bg-red-500 text-white border-red-500" 
                       : "border-gray-300 hover:border-red-400 bg-white"
@@ -293,7 +348,6 @@ function AddMealInner() {
                 <button 
                   type="submit"
                   disabled={submitting} 
-                  onClick={handleSubmit}
                   className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-50 flex items-center justify-center"
                 >
                   {submitting ? "Saving..." : id ? "Update Meal" : "Save Meal"}

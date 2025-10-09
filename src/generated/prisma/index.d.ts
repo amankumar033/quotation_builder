@@ -59,35 +59,35 @@ export type Hotel = $Result.DefaultSelection<Prisma.$HotelPayload>
  */
 export type RoomType = $Result.DefaultSelection<Prisma.$RoomTypePayload>
 /**
- * Model QuotationHotel
- * Junction table for Quotation & Hotel
+ * Model Meal
+ * ================= MEALS =================
  */
-export type QuotationHotel = $Result.DefaultSelection<Prisma.$QuotationHotelPayload>
+export type Meal = $Result.DefaultSelection<Prisma.$MealPayload>
+/**
+ * Model Activity
+ * ================= ACTIVITIES =================
+ */
+export type Activity = $Result.DefaultSelection<Prisma.$ActivityPayload>
 /**
  * Model Transport
  * ================= TRANSPORT =================
  */
 export type Transport = $Result.DefaultSelection<Prisma.$TransportPayload>
 /**
+ * Model QuotationHotel
+ * Junction table for Quotation & Hotel
+ */
+export type QuotationHotel = $Result.DefaultSelection<Prisma.$QuotationHotelPayload>
+/**
  * Model QuotationTransport
  * Junction table for Quotation & Transport
  */
 export type QuotationTransport = $Result.DefaultSelection<Prisma.$QuotationTransportPayload>
 /**
- * Model Meal
- * ================= MEALS =================
- */
-export type Meal = $Result.DefaultSelection<Prisma.$MealPayload>
-/**
  * Model QuotationMeal
  * Junction table for Quotation & Meal
  */
 export type QuotationMeal = $Result.DefaultSelection<Prisma.$QuotationMealPayload>
-/**
- * Model Activity
- * ================= ACTIVITIES =================
- */
-export type Activity = $Result.DefaultSelection<Prisma.$ActivityPayload>
 /**
  * Model QuotationActivity
  * Junction table for Quotation & Activity
@@ -364,14 +364,24 @@ export class PrismaClient<
   get roomType(): Prisma.RoomTypeDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.quotationHotel`: Exposes CRUD operations for the **QuotationHotel** model.
+   * `prisma.meal`: Exposes CRUD operations for the **Meal** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more QuotationHotels
-    * const quotationHotels = await prisma.quotationHotel.findMany()
+    * // Fetch zero or more Meals
+    * const meals = await prisma.meal.findMany()
     * ```
     */
-  get quotationHotel(): Prisma.QuotationHotelDelegate<ExtArgs, ClientOptions>;
+  get meal(): Prisma.MealDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.activity`: Exposes CRUD operations for the **Activity** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Activities
+    * const activities = await prisma.activity.findMany()
+    * ```
+    */
+  get activity(): Prisma.ActivityDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.transport`: Exposes CRUD operations for the **Transport** model.
@@ -384,6 +394,16 @@ export class PrismaClient<
   get transport(): Prisma.TransportDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.quotationHotel`: Exposes CRUD operations for the **QuotationHotel** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more QuotationHotels
+    * const quotationHotels = await prisma.quotationHotel.findMany()
+    * ```
+    */
+  get quotationHotel(): Prisma.QuotationHotelDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.quotationTransport`: Exposes CRUD operations for the **QuotationTransport** model.
     * Example usage:
     * ```ts
@@ -394,16 +414,6 @@ export class PrismaClient<
   get quotationTransport(): Prisma.QuotationTransportDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.meal`: Exposes CRUD operations for the **Meal** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Meals
-    * const meals = await prisma.meal.findMany()
-    * ```
-    */
-  get meal(): Prisma.MealDelegate<ExtArgs, ClientOptions>;
-
-  /**
    * `prisma.quotationMeal`: Exposes CRUD operations for the **QuotationMeal** model.
     * Example usage:
     * ```ts
@@ -412,16 +422,6 @@ export class PrismaClient<
     * ```
     */
   get quotationMeal(): Prisma.QuotationMealDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.activity`: Exposes CRUD operations for the **Activity** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Activities
-    * const activities = await prisma.activity.findMany()
-    * ```
-    */
-  get activity(): Prisma.ActivityDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.quotationActivity`: Exposes CRUD operations for the **QuotationActivity** model.
@@ -911,12 +911,12 @@ export namespace Prisma {
     Client: 'Client',
     Hotel: 'Hotel',
     RoomType: 'RoomType',
-    QuotationHotel: 'QuotationHotel',
-    Transport: 'Transport',
-    QuotationTransport: 'QuotationTransport',
     Meal: 'Meal',
-    QuotationMeal: 'QuotationMeal',
     Activity: 'Activity',
+    Transport: 'Transport',
+    QuotationHotel: 'QuotationHotel',
+    QuotationTransport: 'QuotationTransport',
+    QuotationMeal: 'QuotationMeal',
     QuotationActivity: 'QuotationActivity',
     Quotation: 'Quotation',
     QuotationItem: 'QuotationItem',
@@ -939,7 +939,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "account" | "session" | "loginHistory" | "verificationToken" | "agency" | "client" | "hotel" | "roomType" | "quotationHotel" | "transport" | "quotationTransport" | "meal" | "quotationMeal" | "activity" | "quotationActivity" | "quotation" | "quotationItem" | "itinerary"
+      modelProps: "user" | "account" | "session" | "loginHistory" | "verificationToken" | "agency" | "client" | "hotel" | "roomType" | "meal" | "activity" | "transport" | "quotationHotel" | "quotationTransport" | "quotationMeal" | "quotationActivity" | "quotation" | "quotationItem" | "itinerary"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1609,77 +1609,151 @@ export namespace Prisma {
           }
         }
       }
-      QuotationHotel: {
-        payload: Prisma.$QuotationHotelPayload<ExtArgs>
-        fields: Prisma.QuotationHotelFieldRefs
+      Meal: {
+        payload: Prisma.$MealPayload<ExtArgs>
+        fields: Prisma.MealFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.QuotationHotelFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload> | null
+            args: Prisma.MealFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.QuotationHotelFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload>
+            args: Prisma.MealFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPayload>
           }
           findFirst: {
-            args: Prisma.QuotationHotelFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload> | null
+            args: Prisma.MealFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.QuotationHotelFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload>
+            args: Prisma.MealFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPayload>
           }
           findMany: {
-            args: Prisma.QuotationHotelFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload>[]
+            args: Prisma.MealFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPayload>[]
           }
           create: {
-            args: Prisma.QuotationHotelCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload>
+            args: Prisma.MealCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPayload>
           }
           createMany: {
-            args: Prisma.QuotationHotelCreateManyArgs<ExtArgs>
+            args: Prisma.MealCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.QuotationHotelCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload>[]
+            args: Prisma.MealCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPayload>[]
           }
           delete: {
-            args: Prisma.QuotationHotelDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload>
+            args: Prisma.MealDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPayload>
           }
           update: {
-            args: Prisma.QuotationHotelUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload>
+            args: Prisma.MealUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPayload>
           }
           deleteMany: {
-            args: Prisma.QuotationHotelDeleteManyArgs<ExtArgs>
+            args: Prisma.MealDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.QuotationHotelUpdateManyArgs<ExtArgs>
+            args: Prisma.MealUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.QuotationHotelUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload>[]
+            args: Prisma.MealUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPayload>[]
           }
           upsert: {
-            args: Prisma.QuotationHotelUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload>
+            args: Prisma.MealUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPayload>
           }
           aggregate: {
-            args: Prisma.QuotationHotelAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateQuotationHotel>
+            args: Prisma.MealAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMeal>
           }
           groupBy: {
-            args: Prisma.QuotationHotelGroupByArgs<ExtArgs>
-            result: $Utils.Optional<QuotationHotelGroupByOutputType>[]
+            args: Prisma.MealGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MealGroupByOutputType>[]
           }
           count: {
-            args: Prisma.QuotationHotelCountArgs<ExtArgs>
-            result: $Utils.Optional<QuotationHotelCountAggregateOutputType> | number
+            args: Prisma.MealCountArgs<ExtArgs>
+            result: $Utils.Optional<MealCountAggregateOutputType> | number
+          }
+        }
+      }
+      Activity: {
+        payload: Prisma.$ActivityPayload<ExtArgs>
+        fields: Prisma.ActivityFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ActivityFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActivityPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ActivityFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActivityPayload>
+          }
+          findFirst: {
+            args: Prisma.ActivityFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActivityPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ActivityFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActivityPayload>
+          }
+          findMany: {
+            args: Prisma.ActivityFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActivityPayload>[]
+          }
+          create: {
+            args: Prisma.ActivityCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActivityPayload>
+          }
+          createMany: {
+            args: Prisma.ActivityCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ActivityCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActivityPayload>[]
+          }
+          delete: {
+            args: Prisma.ActivityDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActivityPayload>
+          }
+          update: {
+            args: Prisma.ActivityUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActivityPayload>
+          }
+          deleteMany: {
+            args: Prisma.ActivityDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ActivityUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ActivityUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActivityPayload>[]
+          }
+          upsert: {
+            args: Prisma.ActivityUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActivityPayload>
+          }
+          aggregate: {
+            args: Prisma.ActivityAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateActivity>
+          }
+          groupBy: {
+            args: Prisma.ActivityGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ActivityGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ActivityCountArgs<ExtArgs>
+            result: $Utils.Optional<ActivityCountAggregateOutputType> | number
           }
         }
       }
@@ -1757,6 +1831,80 @@ export namespace Prisma {
           }
         }
       }
+      QuotationHotel: {
+        payload: Prisma.$QuotationHotelPayload<ExtArgs>
+        fields: Prisma.QuotationHotelFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.QuotationHotelFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.QuotationHotelFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload>
+          }
+          findFirst: {
+            args: Prisma.QuotationHotelFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.QuotationHotelFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload>
+          }
+          findMany: {
+            args: Prisma.QuotationHotelFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload>[]
+          }
+          create: {
+            args: Prisma.QuotationHotelCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload>
+          }
+          createMany: {
+            args: Prisma.QuotationHotelCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.QuotationHotelCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload>[]
+          }
+          delete: {
+            args: Prisma.QuotationHotelDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload>
+          }
+          update: {
+            args: Prisma.QuotationHotelUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload>
+          }
+          deleteMany: {
+            args: Prisma.QuotationHotelDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.QuotationHotelUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.QuotationHotelUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload>[]
+          }
+          upsert: {
+            args: Prisma.QuotationHotelUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuotationHotelPayload>
+          }
+          aggregate: {
+            args: Prisma.QuotationHotelAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateQuotationHotel>
+          }
+          groupBy: {
+            args: Prisma.QuotationHotelGroupByArgs<ExtArgs>
+            result: $Utils.Optional<QuotationHotelGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.QuotationHotelCountArgs<ExtArgs>
+            result: $Utils.Optional<QuotationHotelCountAggregateOutputType> | number
+          }
+        }
+      }
       QuotationTransport: {
         payload: Prisma.$QuotationTransportPayload<ExtArgs>
         fields: Prisma.QuotationTransportFieldRefs
@@ -1831,80 +1979,6 @@ export namespace Prisma {
           }
         }
       }
-      Meal: {
-        payload: Prisma.$MealPayload<ExtArgs>
-        fields: Prisma.MealFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.MealFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.MealFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPayload>
-          }
-          findFirst: {
-            args: Prisma.MealFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.MealFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPayload>
-          }
-          findMany: {
-            args: Prisma.MealFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPayload>[]
-          }
-          create: {
-            args: Prisma.MealCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPayload>
-          }
-          createMany: {
-            args: Prisma.MealCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.MealCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPayload>[]
-          }
-          delete: {
-            args: Prisma.MealDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPayload>
-          }
-          update: {
-            args: Prisma.MealUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPayload>
-          }
-          deleteMany: {
-            args: Prisma.MealDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.MealUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.MealUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPayload>[]
-          }
-          upsert: {
-            args: Prisma.MealUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPayload>
-          }
-          aggregate: {
-            args: Prisma.MealAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateMeal>
-          }
-          groupBy: {
-            args: Prisma.MealGroupByArgs<ExtArgs>
-            result: $Utils.Optional<MealGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.MealCountArgs<ExtArgs>
-            result: $Utils.Optional<MealCountAggregateOutputType> | number
-          }
-        }
-      }
       QuotationMeal: {
         payload: Prisma.$QuotationMealPayload<ExtArgs>
         fields: Prisma.QuotationMealFieldRefs
@@ -1976,80 +2050,6 @@ export namespace Prisma {
           count: {
             args: Prisma.QuotationMealCountArgs<ExtArgs>
             result: $Utils.Optional<QuotationMealCountAggregateOutputType> | number
-          }
-        }
-      }
-      Activity: {
-        payload: Prisma.$ActivityPayload<ExtArgs>
-        fields: Prisma.ActivityFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.ActivityFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ActivityPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.ActivityFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ActivityPayload>
-          }
-          findFirst: {
-            args: Prisma.ActivityFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ActivityPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.ActivityFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ActivityPayload>
-          }
-          findMany: {
-            args: Prisma.ActivityFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ActivityPayload>[]
-          }
-          create: {
-            args: Prisma.ActivityCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ActivityPayload>
-          }
-          createMany: {
-            args: Prisma.ActivityCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.ActivityCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ActivityPayload>[]
-          }
-          delete: {
-            args: Prisma.ActivityDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ActivityPayload>
-          }
-          update: {
-            args: Prisma.ActivityUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ActivityPayload>
-          }
-          deleteMany: {
-            args: Prisma.ActivityDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.ActivityUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.ActivityUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ActivityPayload>[]
-          }
-          upsert: {
-            args: Prisma.ActivityUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ActivityPayload>
-          }
-          aggregate: {
-            args: Prisma.ActivityAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateActivity>
-          }
-          groupBy: {
-            args: Prisma.ActivityGroupByArgs<ExtArgs>
-            result: $Utils.Optional<ActivityGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.ActivityCountArgs<ExtArgs>
-            result: $Utils.Optional<ActivityCountAggregateOutputType> | number
           }
         }
       }
@@ -2454,12 +2454,12 @@ export namespace Prisma {
     client?: ClientOmit
     hotel?: HotelOmit
     roomType?: RoomTypeOmit
-    quotationHotel?: QuotationHotelOmit
-    transport?: TransportOmit
-    quotationTransport?: QuotationTransportOmit
     meal?: MealOmit
-    quotationMeal?: QuotationMealOmit
     activity?: ActivityOmit
+    transport?: TransportOmit
+    quotationHotel?: QuotationHotelOmit
+    quotationTransport?: QuotationTransportOmit
+    quotationMeal?: QuotationMealOmit
     quotationActivity?: QuotationActivityOmit
     quotation?: QuotationOmit
     quotationItem?: QuotationItemOmit
@@ -2710,11 +2710,15 @@ export namespace Prisma {
 
   export type HotelCountOutputType = {
     roomTypes: number
+    meals: number
+    activities: number
     quotationHotels: number
   }
 
   export type HotelCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     roomTypes?: boolean | HotelCountOutputTypeCountRoomTypesArgs
+    meals?: boolean | HotelCountOutputTypeCountMealsArgs
+    activities?: boolean | HotelCountOutputTypeCountActivitiesArgs
     quotationHotels?: boolean | HotelCountOutputTypeCountQuotationHotelsArgs
   }
 
@@ -2734,6 +2738,20 @@ export namespace Prisma {
    */
   export type HotelCountOutputTypeCountRoomTypesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RoomTypeWhereInput
+  }
+
+  /**
+   * HotelCountOutputType without action
+   */
+  export type HotelCountOutputTypeCountMealsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MealWhereInput
+  }
+
+  /**
+   * HotelCountOutputType without action
+   */
+  export type HotelCountOutputTypeCountActivitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ActivityWhereInput
   }
 
   /**
@@ -2772,37 +2790,6 @@ export namespace Prisma {
    */
   export type RoomTypeCountOutputTypeCountQuotationHotelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: QuotationHotelWhereInput
-  }
-
-
-  /**
-   * Count Type TransportCountOutputType
-   */
-
-  export type TransportCountOutputType = {
-    quotationTransports: number
-  }
-
-  export type TransportCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    quotationTransports?: boolean | TransportCountOutputTypeCountQuotationTransportsArgs
-  }
-
-  // Custom InputTypes
-  /**
-   * TransportCountOutputType without action
-   */
-  export type TransportCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TransportCountOutputType
-     */
-    select?: TransportCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * TransportCountOutputType without action
-   */
-  export type TransportCountOutputTypeCountQuotationTransportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: QuotationTransportWhereInput
   }
 
 
@@ -2865,6 +2852,37 @@ export namespace Prisma {
    */
   export type ActivityCountOutputTypeCountQuotationActivitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: QuotationActivityWhereInput
+  }
+
+
+  /**
+   * Count Type TransportCountOutputType
+   */
+
+  export type TransportCountOutputType = {
+    quotationTransports: number
+  }
+
+  export type TransportCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    quotationTransports?: boolean | TransportCountOutputTypeCountQuotationTransportsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * TransportCountOutputType without action
+   */
+  export type TransportCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransportCountOutputType
+     */
+    select?: TransportCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * TransportCountOutputType without action
+   */
+  export type TransportCountOutputTypeCountQuotationTransportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: QuotationTransportWhereInput
   }
 
 
@@ -10847,6 +10865,8 @@ export namespace Prisma {
     cancellation: string | null
     photos: string | null
     agencyId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type HotelMaxAggregateOutputType = {
@@ -10858,6 +10878,8 @@ export namespace Prisma {
     cancellation: string | null
     photos: string | null
     agencyId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type HotelCountAggregateOutputType = {
@@ -10869,6 +10891,8 @@ export namespace Prisma {
     cancellation: number
     photos: number
     agencyId: number
+    createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -10890,6 +10914,8 @@ export namespace Prisma {
     cancellation?: true
     photos?: true
     agencyId?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type HotelMaxAggregateInputType = {
@@ -10901,6 +10927,8 @@ export namespace Prisma {
     cancellation?: true
     photos?: true
     agencyId?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type HotelCountAggregateInputType = {
@@ -10912,6 +10940,8 @@ export namespace Prisma {
     cancellation?: true
     photos?: true
     agencyId?: true
+    createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -11010,6 +11040,8 @@ export namespace Prisma {
     cancellation: string | null
     photos: string | null
     agencyId: string
+    createdAt: Date
+    updatedAt: Date
     _count: HotelCountAggregateOutputType | null
     _avg: HotelAvgAggregateOutputType | null
     _sum: HotelSumAggregateOutputType | null
@@ -11040,8 +11072,12 @@ export namespace Prisma {
     cancellation?: boolean
     photos?: boolean
     agencyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
     roomTypes?: boolean | Hotel$roomTypesArgs<ExtArgs>
+    meals?: boolean | Hotel$mealsArgs<ExtArgs>
+    activities?: boolean | Hotel$activitiesArgs<ExtArgs>
     quotationHotels?: boolean | Hotel$quotationHotelsArgs<ExtArgs>
     _count?: boolean | HotelCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["hotel"]>
@@ -11055,6 +11091,8 @@ export namespace Prisma {
     cancellation?: boolean
     photos?: boolean
     agencyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["hotel"]>
 
@@ -11067,6 +11105,8 @@ export namespace Prisma {
     cancellation?: boolean
     photos?: boolean
     agencyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["hotel"]>
 
@@ -11079,12 +11119,16 @@ export namespace Prisma {
     cancellation?: boolean
     photos?: boolean
     agencyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type HotelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "city" | "starCategory" | "inclusions" | "cancellation" | "photos" | "agencyId", ExtArgs["result"]["hotel"]>
+  export type HotelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "city" | "starCategory" | "inclusions" | "cancellation" | "photos" | "agencyId" | "createdAt" | "updatedAt", ExtArgs["result"]["hotel"]>
   export type HotelInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
     roomTypes?: boolean | Hotel$roomTypesArgs<ExtArgs>
+    meals?: boolean | Hotel$mealsArgs<ExtArgs>
+    activities?: boolean | Hotel$activitiesArgs<ExtArgs>
     quotationHotels?: boolean | Hotel$quotationHotelsArgs<ExtArgs>
     _count?: boolean | HotelCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -11100,6 +11144,8 @@ export namespace Prisma {
     objects: {
       agency: Prisma.$AgencyPayload<ExtArgs>
       roomTypes: Prisma.$RoomTypePayload<ExtArgs>[]
+      meals: Prisma.$MealPayload<ExtArgs>[]
+      activities: Prisma.$ActivityPayload<ExtArgs>[]
       quotationHotels: Prisma.$QuotationHotelPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -11111,6 +11157,8 @@ export namespace Prisma {
       cancellation: string | null
       photos: string | null
       agencyId: string
+      createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["hotel"]>
     composites: {}
   }
@@ -11507,6 +11555,8 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     roomTypes<T extends Hotel$roomTypesArgs<ExtArgs> = {}>(args?: Subset<T, Hotel$roomTypesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    meals<T extends Hotel$mealsArgs<ExtArgs> = {}>(args?: Subset<T, Hotel$mealsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    activities<T extends Hotel$activitiesArgs<ExtArgs> = {}>(args?: Subset<T, Hotel$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     quotationHotels<T extends Hotel$quotationHotelsArgs<ExtArgs> = {}>(args?: Subset<T, Hotel$quotationHotelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuotationHotelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -11545,6 +11595,8 @@ export namespace Prisma {
     readonly cancellation: FieldRef<"Hotel", 'String'>
     readonly photos: FieldRef<"Hotel", 'String'>
     readonly agencyId: FieldRef<"Hotel", 'String'>
+    readonly createdAt: FieldRef<"Hotel", 'DateTime'>
+    readonly updatedAt: FieldRef<"Hotel", 'DateTime'>
   }
     
 
@@ -11965,6 +12017,54 @@ export namespace Prisma {
   }
 
   /**
+   * Hotel.meals
+   */
+  export type Hotel$mealsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Meal
+     */
+    select?: MealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Meal
+     */
+    omit?: MealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MealInclude<ExtArgs> | null
+    where?: MealWhereInput
+    orderBy?: MealOrderByWithRelationInput | MealOrderByWithRelationInput[]
+    cursor?: MealWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MealScalarFieldEnum | MealScalarFieldEnum[]
+  }
+
+  /**
+   * Hotel.activities
+   */
+  export type Hotel$activitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Activity
+     */
+    select?: ActivitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Activity
+     */
+    omit?: ActivityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActivityInclude<ExtArgs> | null
+    where?: ActivityWhereInput
+    orderBy?: ActivityOrderByWithRelationInput | ActivityOrderByWithRelationInput[]
+    cursor?: ActivityWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ActivityScalarFieldEnum | ActivityScalarFieldEnum[]
+  }
+
+  /**
    * Hotel.quotationHotels
    */
   export type Hotel$quotationHotelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12021,62 +12121,118 @@ export namespace Prisma {
 
   export type RoomTypeAvgAggregateOutputType = {
     price: Decimal | null
+    maxAdults: number | null
+    maxChildren: number | null
   }
 
   export type RoomTypeSumAggregateOutputType = {
     price: Decimal | null
+    maxAdults: number | null
+    maxChildren: number | null
   }
 
   export type RoomTypeMinAggregateOutputType = {
     id: string | null
     type: string | null
     price: Decimal | null
+    maxAdults: number | null
+    maxChildren: number | null
+    bedType: string | null
+    amenities: string | null
+    description: string | null
+    image: string | null
     hotelId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type RoomTypeMaxAggregateOutputType = {
     id: string | null
     type: string | null
     price: Decimal | null
+    maxAdults: number | null
+    maxChildren: number | null
+    bedType: string | null
+    amenities: string | null
+    description: string | null
+    image: string | null
     hotelId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type RoomTypeCountAggregateOutputType = {
     id: number
     type: number
     price: number
+    maxAdults: number
+    maxChildren: number
+    bedType: number
+    amenities: number
+    description: number
+    image: number
     hotelId: number
+    createdAt: number
+    updatedAt: number
     _all: number
   }
 
 
   export type RoomTypeAvgAggregateInputType = {
     price?: true
+    maxAdults?: true
+    maxChildren?: true
   }
 
   export type RoomTypeSumAggregateInputType = {
     price?: true
+    maxAdults?: true
+    maxChildren?: true
   }
 
   export type RoomTypeMinAggregateInputType = {
     id?: true
     type?: true
     price?: true
+    maxAdults?: true
+    maxChildren?: true
+    bedType?: true
+    amenities?: true
+    description?: true
+    image?: true
     hotelId?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type RoomTypeMaxAggregateInputType = {
     id?: true
     type?: true
     price?: true
+    maxAdults?: true
+    maxChildren?: true
+    bedType?: true
+    amenities?: true
+    description?: true
+    image?: true
     hotelId?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type RoomTypeCountAggregateInputType = {
     id?: true
     type?: true
     price?: true
+    maxAdults?: true
+    maxChildren?: true
+    bedType?: true
+    amenities?: true
+    description?: true
+    image?: true
     hotelId?: true
+    createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -12170,7 +12326,15 @@ export namespace Prisma {
     id: string
     type: string
     price: Decimal
+    maxAdults: number
+    maxChildren: number
+    bedType: string | null
+    amenities: string | null
+    description: string | null
+    image: string | null
     hotelId: string
+    createdAt: Date
+    updatedAt: Date
     _count: RoomTypeCountAggregateOutputType | null
     _avg: RoomTypeAvgAggregateOutputType | null
     _sum: RoomTypeSumAggregateOutputType | null
@@ -12196,7 +12360,15 @@ export namespace Prisma {
     id?: boolean
     type?: boolean
     price?: boolean
+    maxAdults?: boolean
+    maxChildren?: boolean
+    bedType?: boolean
+    amenities?: boolean
+    description?: boolean
+    image?: boolean
     hotelId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     hotel?: boolean | HotelDefaultArgs<ExtArgs>
     quotationHotels?: boolean | RoomType$quotationHotelsArgs<ExtArgs>
     _count?: boolean | RoomTypeCountOutputTypeDefaultArgs<ExtArgs>
@@ -12206,7 +12378,15 @@ export namespace Prisma {
     id?: boolean
     type?: boolean
     price?: boolean
+    maxAdults?: boolean
+    maxChildren?: boolean
+    bedType?: boolean
+    amenities?: boolean
+    description?: boolean
+    image?: boolean
     hotelId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     hotel?: boolean | HotelDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["roomType"]>
 
@@ -12214,7 +12394,15 @@ export namespace Prisma {
     id?: boolean
     type?: boolean
     price?: boolean
+    maxAdults?: boolean
+    maxChildren?: boolean
+    bedType?: boolean
+    amenities?: boolean
+    description?: boolean
+    image?: boolean
     hotelId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     hotel?: boolean | HotelDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["roomType"]>
 
@@ -12222,10 +12410,18 @@ export namespace Prisma {
     id?: boolean
     type?: boolean
     price?: boolean
+    maxAdults?: boolean
+    maxChildren?: boolean
+    bedType?: boolean
+    amenities?: boolean
+    description?: boolean
+    image?: boolean
     hotelId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type RoomTypeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "price" | "hotelId", ExtArgs["result"]["roomType"]>
+  export type RoomTypeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "price" | "maxAdults" | "maxChildren" | "bedType" | "amenities" | "description" | "image" | "hotelId" | "createdAt" | "updatedAt", ExtArgs["result"]["roomType"]>
   export type RoomTypeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     hotel?: boolean | HotelDefaultArgs<ExtArgs>
     quotationHotels?: boolean | RoomType$quotationHotelsArgs<ExtArgs>
@@ -12248,7 +12444,15 @@ export namespace Prisma {
       id: string
       type: string
       price: Prisma.Decimal
+      maxAdults: number
+      maxChildren: number
+      bedType: string | null
+      amenities: string | null
+      description: string | null
+      image: string | null
       hotelId: string
+      createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["roomType"]>
     composites: {}
   }
@@ -12677,7 +12881,15 @@ export namespace Prisma {
     readonly id: FieldRef<"RoomType", 'String'>
     readonly type: FieldRef<"RoomType", 'String'>
     readonly price: FieldRef<"RoomType", 'Decimal'>
+    readonly maxAdults: FieldRef<"RoomType", 'Int'>
+    readonly maxChildren: FieldRef<"RoomType", 'Int'>
+    readonly bedType: FieldRef<"RoomType", 'String'>
+    readonly amenities: FieldRef<"RoomType", 'String'>
+    readonly description: FieldRef<"RoomType", 'String'>
+    readonly image: FieldRef<"RoomType", 'String'>
     readonly hotelId: FieldRef<"RoomType", 'String'>
+    readonly createdAt: FieldRef<"RoomType", 'DateTime'>
+    readonly updatedAt: FieldRef<"RoomType", 'DateTime'>
   }
     
 
@@ -13113,6 +13325,3668 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: RoomTypeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Meal
+   */
+
+  export type AggregateMeal = {
+    _count: MealCountAggregateOutputType | null
+    _avg: MealAvgAggregateOutputType | null
+    _sum: MealSumAggregateOutputType | null
+    _min: MealMinAggregateOutputType | null
+    _max: MealMaxAggregateOutputType | null
+  }
+
+  export type MealAvgAggregateOutputType = {
+    price: number | null
+  }
+
+  export type MealSumAggregateOutputType = {
+    price: number | null
+  }
+
+  export type MealMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    type: string | null
+    category: string | null
+    vegOption: boolean | null
+    nonVegOption: boolean | null
+    price: number | null
+    image: string | null
+    hotelId: string | null
+    agencyId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MealMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    type: string | null
+    category: string | null
+    vegOption: boolean | null
+    nonVegOption: boolean | null
+    price: number | null
+    image: string | null
+    hotelId: string | null
+    agencyId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MealCountAggregateOutputType = {
+    id: number
+    name: number
+    type: number
+    category: number
+    vegOption: number
+    nonVegOption: number
+    price: number
+    image: number
+    hotelId: number
+    agencyId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type MealAvgAggregateInputType = {
+    price?: true
+  }
+
+  export type MealSumAggregateInputType = {
+    price?: true
+  }
+
+  export type MealMinAggregateInputType = {
+    id?: true
+    name?: true
+    type?: true
+    category?: true
+    vegOption?: true
+    nonVegOption?: true
+    price?: true
+    image?: true
+    hotelId?: true
+    agencyId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MealMaxAggregateInputType = {
+    id?: true
+    name?: true
+    type?: true
+    category?: true
+    vegOption?: true
+    nonVegOption?: true
+    price?: true
+    image?: true
+    hotelId?: true
+    agencyId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MealCountAggregateInputType = {
+    id?: true
+    name?: true
+    type?: true
+    category?: true
+    vegOption?: true
+    nonVegOption?: true
+    price?: true
+    image?: true
+    hotelId?: true
+    agencyId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type MealAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Meal to aggregate.
+     */
+    where?: MealWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Meals to fetch.
+     */
+    orderBy?: MealOrderByWithRelationInput | MealOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MealWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Meals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Meals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Meals
+    **/
+    _count?: true | MealCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MealAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MealSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MealMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MealMaxAggregateInputType
+  }
+
+  export type GetMealAggregateType<T extends MealAggregateArgs> = {
+        [P in keyof T & keyof AggregateMeal]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMeal[P]>
+      : GetScalarType<T[P], AggregateMeal[P]>
+  }
+
+
+
+
+  export type MealGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MealWhereInput
+    orderBy?: MealOrderByWithAggregationInput | MealOrderByWithAggregationInput[]
+    by: MealScalarFieldEnum[] | MealScalarFieldEnum
+    having?: MealScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MealCountAggregateInputType | true
+    _avg?: MealAvgAggregateInputType
+    _sum?: MealSumAggregateInputType
+    _min?: MealMinAggregateInputType
+    _max?: MealMaxAggregateInputType
+  }
+
+  export type MealGroupByOutputType = {
+    id: string
+    name: string
+    type: string
+    category: string
+    vegOption: boolean
+    nonVegOption: boolean
+    price: number
+    image: string | null
+    hotelId: string | null
+    agencyId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: MealCountAggregateOutputType | null
+    _avg: MealAvgAggregateOutputType | null
+    _sum: MealSumAggregateOutputType | null
+    _min: MealMinAggregateOutputType | null
+    _max: MealMaxAggregateOutputType | null
+  }
+
+  type GetMealGroupByPayload<T extends MealGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MealGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MealGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MealGroupByOutputType[P]>
+            : GetScalarType<T[P], MealGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MealSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    type?: boolean
+    category?: boolean
+    vegOption?: boolean
+    nonVegOption?: boolean
+    price?: boolean
+    image?: boolean
+    hotelId?: boolean
+    agencyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    hotel?: boolean | Meal$hotelArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    quotationMeals?: boolean | Meal$quotationMealsArgs<ExtArgs>
+    _count?: boolean | MealCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["meal"]>
+
+  export type MealSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    type?: boolean
+    category?: boolean
+    vegOption?: boolean
+    nonVegOption?: boolean
+    price?: boolean
+    image?: boolean
+    hotelId?: boolean
+    agencyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    hotel?: boolean | Meal$hotelArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["meal"]>
+
+  export type MealSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    type?: boolean
+    category?: boolean
+    vegOption?: boolean
+    nonVegOption?: boolean
+    price?: boolean
+    image?: boolean
+    hotelId?: boolean
+    agencyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    hotel?: boolean | Meal$hotelArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["meal"]>
+
+  export type MealSelectScalar = {
+    id?: boolean
+    name?: boolean
+    type?: boolean
+    category?: boolean
+    vegOption?: boolean
+    nonVegOption?: boolean
+    price?: boolean
+    image?: boolean
+    hotelId?: boolean
+    agencyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type MealOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "type" | "category" | "vegOption" | "nonVegOption" | "price" | "image" | "hotelId" | "agencyId" | "createdAt" | "updatedAt", ExtArgs["result"]["meal"]>
+  export type MealInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    hotel?: boolean | Meal$hotelArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    quotationMeals?: boolean | Meal$quotationMealsArgs<ExtArgs>
+    _count?: boolean | MealCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type MealIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    hotel?: boolean | Meal$hotelArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }
+  export type MealIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    hotel?: boolean | Meal$hotelArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }
+
+  export type $MealPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Meal"
+    objects: {
+      hotel: Prisma.$HotelPayload<ExtArgs> | null
+      agency: Prisma.$AgencyPayload<ExtArgs>
+      quotationMeals: Prisma.$QuotationMealPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      type: string
+      category: string
+      vegOption: boolean
+      nonVegOption: boolean
+      price: number
+      image: string | null
+      hotelId: string | null
+      agencyId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["meal"]>
+    composites: {}
+  }
+
+  type MealGetPayload<S extends boolean | null | undefined | MealDefaultArgs> = $Result.GetResult<Prisma.$MealPayload, S>
+
+  type MealCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MealFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MealCountAggregateInputType | true
+    }
+
+  export interface MealDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Meal'], meta: { name: 'Meal' } }
+    /**
+     * Find zero or one Meal that matches the filter.
+     * @param {MealFindUniqueArgs} args - Arguments to find a Meal
+     * @example
+     * // Get one Meal
+     * const meal = await prisma.meal.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MealFindUniqueArgs>(args: SelectSubset<T, MealFindUniqueArgs<ExtArgs>>): Prisma__MealClient<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Meal that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MealFindUniqueOrThrowArgs} args - Arguments to find a Meal
+     * @example
+     * // Get one Meal
+     * const meal = await prisma.meal.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MealFindUniqueOrThrowArgs>(args: SelectSubset<T, MealFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MealClient<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Meal that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MealFindFirstArgs} args - Arguments to find a Meal
+     * @example
+     * // Get one Meal
+     * const meal = await prisma.meal.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MealFindFirstArgs>(args?: SelectSubset<T, MealFindFirstArgs<ExtArgs>>): Prisma__MealClient<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Meal that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MealFindFirstOrThrowArgs} args - Arguments to find a Meal
+     * @example
+     * // Get one Meal
+     * const meal = await prisma.meal.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MealFindFirstOrThrowArgs>(args?: SelectSubset<T, MealFindFirstOrThrowArgs<ExtArgs>>): Prisma__MealClient<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Meals that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MealFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Meals
+     * const meals = await prisma.meal.findMany()
+     * 
+     * // Get first 10 Meals
+     * const meals = await prisma.meal.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const mealWithIdOnly = await prisma.meal.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MealFindManyArgs>(args?: SelectSubset<T, MealFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Meal.
+     * @param {MealCreateArgs} args - Arguments to create a Meal.
+     * @example
+     * // Create one Meal
+     * const Meal = await prisma.meal.create({
+     *   data: {
+     *     // ... data to create a Meal
+     *   }
+     * })
+     * 
+     */
+    create<T extends MealCreateArgs>(args: SelectSubset<T, MealCreateArgs<ExtArgs>>): Prisma__MealClient<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Meals.
+     * @param {MealCreateManyArgs} args - Arguments to create many Meals.
+     * @example
+     * // Create many Meals
+     * const meal = await prisma.meal.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MealCreateManyArgs>(args?: SelectSubset<T, MealCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Meals and returns the data saved in the database.
+     * @param {MealCreateManyAndReturnArgs} args - Arguments to create many Meals.
+     * @example
+     * // Create many Meals
+     * const meal = await prisma.meal.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Meals and only return the `id`
+     * const mealWithIdOnly = await prisma.meal.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MealCreateManyAndReturnArgs>(args?: SelectSubset<T, MealCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Meal.
+     * @param {MealDeleteArgs} args - Arguments to delete one Meal.
+     * @example
+     * // Delete one Meal
+     * const Meal = await prisma.meal.delete({
+     *   where: {
+     *     // ... filter to delete one Meal
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MealDeleteArgs>(args: SelectSubset<T, MealDeleteArgs<ExtArgs>>): Prisma__MealClient<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Meal.
+     * @param {MealUpdateArgs} args - Arguments to update one Meal.
+     * @example
+     * // Update one Meal
+     * const meal = await prisma.meal.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MealUpdateArgs>(args: SelectSubset<T, MealUpdateArgs<ExtArgs>>): Prisma__MealClient<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Meals.
+     * @param {MealDeleteManyArgs} args - Arguments to filter Meals to delete.
+     * @example
+     * // Delete a few Meals
+     * const { count } = await prisma.meal.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MealDeleteManyArgs>(args?: SelectSubset<T, MealDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Meals.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MealUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Meals
+     * const meal = await prisma.meal.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MealUpdateManyArgs>(args: SelectSubset<T, MealUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Meals and returns the data updated in the database.
+     * @param {MealUpdateManyAndReturnArgs} args - Arguments to update many Meals.
+     * @example
+     * // Update many Meals
+     * const meal = await prisma.meal.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Meals and only return the `id`
+     * const mealWithIdOnly = await prisma.meal.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MealUpdateManyAndReturnArgs>(args: SelectSubset<T, MealUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Meal.
+     * @param {MealUpsertArgs} args - Arguments to update or create a Meal.
+     * @example
+     * // Update or create a Meal
+     * const meal = await prisma.meal.upsert({
+     *   create: {
+     *     // ... data to create a Meal
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Meal we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MealUpsertArgs>(args: SelectSubset<T, MealUpsertArgs<ExtArgs>>): Prisma__MealClient<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Meals.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MealCountArgs} args - Arguments to filter Meals to count.
+     * @example
+     * // Count the number of Meals
+     * const count = await prisma.meal.count({
+     *   where: {
+     *     // ... the filter for the Meals we want to count
+     *   }
+     * })
+    **/
+    count<T extends MealCountArgs>(
+      args?: Subset<T, MealCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MealCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Meal.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MealAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MealAggregateArgs>(args: Subset<T, MealAggregateArgs>): Prisma.PrismaPromise<GetMealAggregateType<T>>
+
+    /**
+     * Group by Meal.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MealGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MealGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MealGroupByArgs['orderBy'] }
+        : { orderBy?: MealGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MealGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMealGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Meal model
+   */
+  readonly fields: MealFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Meal.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MealClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    hotel<T extends Meal$hotelArgs<ExtArgs> = {}>(args?: Subset<T, Meal$hotelArgs<ExtArgs>>): Prisma__HotelClient<$Result.GetResult<Prisma.$HotelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    quotationMeals<T extends Meal$quotationMealsArgs<ExtArgs> = {}>(args?: Subset<T, Meal$quotationMealsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuotationMealPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Meal model
+   */
+  interface MealFieldRefs {
+    readonly id: FieldRef<"Meal", 'String'>
+    readonly name: FieldRef<"Meal", 'String'>
+    readonly type: FieldRef<"Meal", 'String'>
+    readonly category: FieldRef<"Meal", 'String'>
+    readonly vegOption: FieldRef<"Meal", 'Boolean'>
+    readonly nonVegOption: FieldRef<"Meal", 'Boolean'>
+    readonly price: FieldRef<"Meal", 'Float'>
+    readonly image: FieldRef<"Meal", 'String'>
+    readonly hotelId: FieldRef<"Meal", 'String'>
+    readonly agencyId: FieldRef<"Meal", 'String'>
+    readonly createdAt: FieldRef<"Meal", 'DateTime'>
+    readonly updatedAt: FieldRef<"Meal", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Meal findUnique
+   */
+  export type MealFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Meal
+     */
+    select?: MealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Meal
+     */
+    omit?: MealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MealInclude<ExtArgs> | null
+    /**
+     * Filter, which Meal to fetch.
+     */
+    where: MealWhereUniqueInput
+  }
+
+  /**
+   * Meal findUniqueOrThrow
+   */
+  export type MealFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Meal
+     */
+    select?: MealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Meal
+     */
+    omit?: MealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MealInclude<ExtArgs> | null
+    /**
+     * Filter, which Meal to fetch.
+     */
+    where: MealWhereUniqueInput
+  }
+
+  /**
+   * Meal findFirst
+   */
+  export type MealFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Meal
+     */
+    select?: MealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Meal
+     */
+    omit?: MealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MealInclude<ExtArgs> | null
+    /**
+     * Filter, which Meal to fetch.
+     */
+    where?: MealWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Meals to fetch.
+     */
+    orderBy?: MealOrderByWithRelationInput | MealOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Meals.
+     */
+    cursor?: MealWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Meals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Meals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Meals.
+     */
+    distinct?: MealScalarFieldEnum | MealScalarFieldEnum[]
+  }
+
+  /**
+   * Meal findFirstOrThrow
+   */
+  export type MealFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Meal
+     */
+    select?: MealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Meal
+     */
+    omit?: MealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MealInclude<ExtArgs> | null
+    /**
+     * Filter, which Meal to fetch.
+     */
+    where?: MealWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Meals to fetch.
+     */
+    orderBy?: MealOrderByWithRelationInput | MealOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Meals.
+     */
+    cursor?: MealWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Meals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Meals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Meals.
+     */
+    distinct?: MealScalarFieldEnum | MealScalarFieldEnum[]
+  }
+
+  /**
+   * Meal findMany
+   */
+  export type MealFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Meal
+     */
+    select?: MealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Meal
+     */
+    omit?: MealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MealInclude<ExtArgs> | null
+    /**
+     * Filter, which Meals to fetch.
+     */
+    where?: MealWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Meals to fetch.
+     */
+    orderBy?: MealOrderByWithRelationInput | MealOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Meals.
+     */
+    cursor?: MealWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Meals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Meals.
+     */
+    skip?: number
+    distinct?: MealScalarFieldEnum | MealScalarFieldEnum[]
+  }
+
+  /**
+   * Meal create
+   */
+  export type MealCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Meal
+     */
+    select?: MealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Meal
+     */
+    omit?: MealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MealInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Meal.
+     */
+    data: XOR<MealCreateInput, MealUncheckedCreateInput>
+  }
+
+  /**
+   * Meal createMany
+   */
+  export type MealCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Meals.
+     */
+    data: MealCreateManyInput | MealCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Meal createManyAndReturn
+   */
+  export type MealCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Meal
+     */
+    select?: MealSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Meal
+     */
+    omit?: MealOmit<ExtArgs> | null
+    /**
+     * The data used to create many Meals.
+     */
+    data: MealCreateManyInput | MealCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MealIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Meal update
+   */
+  export type MealUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Meal
+     */
+    select?: MealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Meal
+     */
+    omit?: MealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MealInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Meal.
+     */
+    data: XOR<MealUpdateInput, MealUncheckedUpdateInput>
+    /**
+     * Choose, which Meal to update.
+     */
+    where: MealWhereUniqueInput
+  }
+
+  /**
+   * Meal updateMany
+   */
+  export type MealUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Meals.
+     */
+    data: XOR<MealUpdateManyMutationInput, MealUncheckedUpdateManyInput>
+    /**
+     * Filter which Meals to update
+     */
+    where?: MealWhereInput
+    /**
+     * Limit how many Meals to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Meal updateManyAndReturn
+   */
+  export type MealUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Meal
+     */
+    select?: MealSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Meal
+     */
+    omit?: MealOmit<ExtArgs> | null
+    /**
+     * The data used to update Meals.
+     */
+    data: XOR<MealUpdateManyMutationInput, MealUncheckedUpdateManyInput>
+    /**
+     * Filter which Meals to update
+     */
+    where?: MealWhereInput
+    /**
+     * Limit how many Meals to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MealIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Meal upsert
+   */
+  export type MealUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Meal
+     */
+    select?: MealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Meal
+     */
+    omit?: MealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MealInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Meal to update in case it exists.
+     */
+    where: MealWhereUniqueInput
+    /**
+     * In case the Meal found by the `where` argument doesn't exist, create a new Meal with this data.
+     */
+    create: XOR<MealCreateInput, MealUncheckedCreateInput>
+    /**
+     * In case the Meal was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MealUpdateInput, MealUncheckedUpdateInput>
+  }
+
+  /**
+   * Meal delete
+   */
+  export type MealDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Meal
+     */
+    select?: MealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Meal
+     */
+    omit?: MealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MealInclude<ExtArgs> | null
+    /**
+     * Filter which Meal to delete.
+     */
+    where: MealWhereUniqueInput
+  }
+
+  /**
+   * Meal deleteMany
+   */
+  export type MealDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Meals to delete
+     */
+    where?: MealWhereInput
+    /**
+     * Limit how many Meals to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Meal.hotel
+   */
+  export type Meal$hotelArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Hotel
+     */
+    select?: HotelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Hotel
+     */
+    omit?: HotelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HotelInclude<ExtArgs> | null
+    where?: HotelWhereInput
+  }
+
+  /**
+   * Meal.quotationMeals
+   */
+  export type Meal$quotationMealsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuotationMeal
+     */
+    select?: QuotationMealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuotationMeal
+     */
+    omit?: QuotationMealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuotationMealInclude<ExtArgs> | null
+    where?: QuotationMealWhereInput
+    orderBy?: QuotationMealOrderByWithRelationInput | QuotationMealOrderByWithRelationInput[]
+    cursor?: QuotationMealWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: QuotationMealScalarFieldEnum | QuotationMealScalarFieldEnum[]
+  }
+
+  /**
+   * Meal without action
+   */
+  export type MealDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Meal
+     */
+    select?: MealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Meal
+     */
+    omit?: MealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MealInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Activity
+   */
+
+  export type AggregateActivity = {
+    _count: ActivityCountAggregateOutputType | null
+    _avg: ActivityAvgAggregateOutputType | null
+    _sum: ActivitySumAggregateOutputType | null
+    _min: ActivityMinAggregateOutputType | null
+    _max: ActivityMaxAggregateOutputType | null
+  }
+
+  export type ActivityAvgAggregateOutputType = {
+    price: number | null
+  }
+
+  export type ActivitySumAggregateOutputType = {
+    price: number | null
+  }
+
+  export type ActivityMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    description: string | null
+    price: number | null
+    duration: string | null
+    photos: string | null
+    image: string | null
+    hotelId: string | null
+    agencyId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ActivityMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    description: string | null
+    price: number | null
+    duration: string | null
+    photos: string | null
+    image: string | null
+    hotelId: string | null
+    agencyId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ActivityCountAggregateOutputType = {
+    id: number
+    name: number
+    description: number
+    price: number
+    duration: number
+    photos: number
+    image: number
+    hotelId: number
+    agencyId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ActivityAvgAggregateInputType = {
+    price?: true
+  }
+
+  export type ActivitySumAggregateInputType = {
+    price?: true
+  }
+
+  export type ActivityMinAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    price?: true
+    duration?: true
+    photos?: true
+    image?: true
+    hotelId?: true
+    agencyId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ActivityMaxAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    price?: true
+    duration?: true
+    photos?: true
+    image?: true
+    hotelId?: true
+    agencyId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ActivityCountAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    price?: true
+    duration?: true
+    photos?: true
+    image?: true
+    hotelId?: true
+    agencyId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ActivityAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Activity to aggregate.
+     */
+    where?: ActivityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Activities to fetch.
+     */
+    orderBy?: ActivityOrderByWithRelationInput | ActivityOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ActivityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Activities from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Activities.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Activities
+    **/
+    _count?: true | ActivityCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ActivityAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ActivitySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ActivityMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ActivityMaxAggregateInputType
+  }
+
+  export type GetActivityAggregateType<T extends ActivityAggregateArgs> = {
+        [P in keyof T & keyof AggregateActivity]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateActivity[P]>
+      : GetScalarType<T[P], AggregateActivity[P]>
+  }
+
+
+
+
+  export type ActivityGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ActivityWhereInput
+    orderBy?: ActivityOrderByWithAggregationInput | ActivityOrderByWithAggregationInput[]
+    by: ActivityScalarFieldEnum[] | ActivityScalarFieldEnum
+    having?: ActivityScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ActivityCountAggregateInputType | true
+    _avg?: ActivityAvgAggregateInputType
+    _sum?: ActivitySumAggregateInputType
+    _min?: ActivityMinAggregateInputType
+    _max?: ActivityMaxAggregateInputType
+  }
+
+  export type ActivityGroupByOutputType = {
+    id: string
+    name: string
+    description: string | null
+    price: number
+    duration: string | null
+    photos: string | null
+    image: string | null
+    hotelId: string | null
+    agencyId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: ActivityCountAggregateOutputType | null
+    _avg: ActivityAvgAggregateOutputType | null
+    _sum: ActivitySumAggregateOutputType | null
+    _min: ActivityMinAggregateOutputType | null
+    _max: ActivityMaxAggregateOutputType | null
+  }
+
+  type GetActivityGroupByPayload<T extends ActivityGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ActivityGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ActivityGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ActivityGroupByOutputType[P]>
+            : GetScalarType<T[P], ActivityGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ActivitySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    price?: boolean
+    duration?: boolean
+    photos?: boolean
+    image?: boolean
+    hotelId?: boolean
+    agencyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    hotel?: boolean | Activity$hotelArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    quotationActivities?: boolean | Activity$quotationActivitiesArgs<ExtArgs>
+    _count?: boolean | ActivityCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["activity"]>
+
+  export type ActivitySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    price?: boolean
+    duration?: boolean
+    photos?: boolean
+    image?: boolean
+    hotelId?: boolean
+    agencyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    hotel?: boolean | Activity$hotelArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["activity"]>
+
+  export type ActivitySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    price?: boolean
+    duration?: boolean
+    photos?: boolean
+    image?: boolean
+    hotelId?: boolean
+    agencyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    hotel?: boolean | Activity$hotelArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["activity"]>
+
+  export type ActivitySelectScalar = {
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    price?: boolean
+    duration?: boolean
+    photos?: boolean
+    image?: boolean
+    hotelId?: boolean
+    agencyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ActivityOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "price" | "duration" | "photos" | "image" | "hotelId" | "agencyId" | "createdAt" | "updatedAt", ExtArgs["result"]["activity"]>
+  export type ActivityInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    hotel?: boolean | Activity$hotelArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    quotationActivities?: boolean | Activity$quotationActivitiesArgs<ExtArgs>
+    _count?: boolean | ActivityCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ActivityIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    hotel?: boolean | Activity$hotelArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }
+  export type ActivityIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    hotel?: boolean | Activity$hotelArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }
+
+  export type $ActivityPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Activity"
+    objects: {
+      hotel: Prisma.$HotelPayload<ExtArgs> | null
+      agency: Prisma.$AgencyPayload<ExtArgs>
+      quotationActivities: Prisma.$QuotationActivityPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      description: string | null
+      price: number
+      duration: string | null
+      photos: string | null
+      image: string | null
+      hotelId: string | null
+      agencyId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["activity"]>
+    composites: {}
+  }
+
+  type ActivityGetPayload<S extends boolean | null | undefined | ActivityDefaultArgs> = $Result.GetResult<Prisma.$ActivityPayload, S>
+
+  type ActivityCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ActivityFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ActivityCountAggregateInputType | true
+    }
+
+  export interface ActivityDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Activity'], meta: { name: 'Activity' } }
+    /**
+     * Find zero or one Activity that matches the filter.
+     * @param {ActivityFindUniqueArgs} args - Arguments to find a Activity
+     * @example
+     * // Get one Activity
+     * const activity = await prisma.activity.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ActivityFindUniqueArgs>(args: SelectSubset<T, ActivityFindUniqueArgs<ExtArgs>>): Prisma__ActivityClient<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Activity that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ActivityFindUniqueOrThrowArgs} args - Arguments to find a Activity
+     * @example
+     * // Get one Activity
+     * const activity = await prisma.activity.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ActivityFindUniqueOrThrowArgs>(args: SelectSubset<T, ActivityFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ActivityClient<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Activity that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActivityFindFirstArgs} args - Arguments to find a Activity
+     * @example
+     * // Get one Activity
+     * const activity = await prisma.activity.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ActivityFindFirstArgs>(args?: SelectSubset<T, ActivityFindFirstArgs<ExtArgs>>): Prisma__ActivityClient<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Activity that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActivityFindFirstOrThrowArgs} args - Arguments to find a Activity
+     * @example
+     * // Get one Activity
+     * const activity = await prisma.activity.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ActivityFindFirstOrThrowArgs>(args?: SelectSubset<T, ActivityFindFirstOrThrowArgs<ExtArgs>>): Prisma__ActivityClient<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Activities that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActivityFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Activities
+     * const activities = await prisma.activity.findMany()
+     * 
+     * // Get first 10 Activities
+     * const activities = await prisma.activity.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const activityWithIdOnly = await prisma.activity.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ActivityFindManyArgs>(args?: SelectSubset<T, ActivityFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Activity.
+     * @param {ActivityCreateArgs} args - Arguments to create a Activity.
+     * @example
+     * // Create one Activity
+     * const Activity = await prisma.activity.create({
+     *   data: {
+     *     // ... data to create a Activity
+     *   }
+     * })
+     * 
+     */
+    create<T extends ActivityCreateArgs>(args: SelectSubset<T, ActivityCreateArgs<ExtArgs>>): Prisma__ActivityClient<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Activities.
+     * @param {ActivityCreateManyArgs} args - Arguments to create many Activities.
+     * @example
+     * // Create many Activities
+     * const activity = await prisma.activity.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ActivityCreateManyArgs>(args?: SelectSubset<T, ActivityCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Activities and returns the data saved in the database.
+     * @param {ActivityCreateManyAndReturnArgs} args - Arguments to create many Activities.
+     * @example
+     * // Create many Activities
+     * const activity = await prisma.activity.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Activities and only return the `id`
+     * const activityWithIdOnly = await prisma.activity.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ActivityCreateManyAndReturnArgs>(args?: SelectSubset<T, ActivityCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Activity.
+     * @param {ActivityDeleteArgs} args - Arguments to delete one Activity.
+     * @example
+     * // Delete one Activity
+     * const Activity = await prisma.activity.delete({
+     *   where: {
+     *     // ... filter to delete one Activity
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ActivityDeleteArgs>(args: SelectSubset<T, ActivityDeleteArgs<ExtArgs>>): Prisma__ActivityClient<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Activity.
+     * @param {ActivityUpdateArgs} args - Arguments to update one Activity.
+     * @example
+     * // Update one Activity
+     * const activity = await prisma.activity.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ActivityUpdateArgs>(args: SelectSubset<T, ActivityUpdateArgs<ExtArgs>>): Prisma__ActivityClient<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Activities.
+     * @param {ActivityDeleteManyArgs} args - Arguments to filter Activities to delete.
+     * @example
+     * // Delete a few Activities
+     * const { count } = await prisma.activity.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ActivityDeleteManyArgs>(args?: SelectSubset<T, ActivityDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Activities.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActivityUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Activities
+     * const activity = await prisma.activity.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ActivityUpdateManyArgs>(args: SelectSubset<T, ActivityUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Activities and returns the data updated in the database.
+     * @param {ActivityUpdateManyAndReturnArgs} args - Arguments to update many Activities.
+     * @example
+     * // Update many Activities
+     * const activity = await prisma.activity.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Activities and only return the `id`
+     * const activityWithIdOnly = await prisma.activity.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ActivityUpdateManyAndReturnArgs>(args: SelectSubset<T, ActivityUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Activity.
+     * @param {ActivityUpsertArgs} args - Arguments to update or create a Activity.
+     * @example
+     * // Update or create a Activity
+     * const activity = await prisma.activity.upsert({
+     *   create: {
+     *     // ... data to create a Activity
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Activity we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ActivityUpsertArgs>(args: SelectSubset<T, ActivityUpsertArgs<ExtArgs>>): Prisma__ActivityClient<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Activities.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActivityCountArgs} args - Arguments to filter Activities to count.
+     * @example
+     * // Count the number of Activities
+     * const count = await prisma.activity.count({
+     *   where: {
+     *     // ... the filter for the Activities we want to count
+     *   }
+     * })
+    **/
+    count<T extends ActivityCountArgs>(
+      args?: Subset<T, ActivityCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ActivityCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Activity.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActivityAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ActivityAggregateArgs>(args: Subset<T, ActivityAggregateArgs>): Prisma.PrismaPromise<GetActivityAggregateType<T>>
+
+    /**
+     * Group by Activity.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActivityGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ActivityGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ActivityGroupByArgs['orderBy'] }
+        : { orderBy?: ActivityGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ActivityGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetActivityGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Activity model
+   */
+  readonly fields: ActivityFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Activity.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ActivityClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    hotel<T extends Activity$hotelArgs<ExtArgs> = {}>(args?: Subset<T, Activity$hotelArgs<ExtArgs>>): Prisma__HotelClient<$Result.GetResult<Prisma.$HotelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    quotationActivities<T extends Activity$quotationActivitiesArgs<ExtArgs> = {}>(args?: Subset<T, Activity$quotationActivitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuotationActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Activity model
+   */
+  interface ActivityFieldRefs {
+    readonly id: FieldRef<"Activity", 'String'>
+    readonly name: FieldRef<"Activity", 'String'>
+    readonly description: FieldRef<"Activity", 'String'>
+    readonly price: FieldRef<"Activity", 'Float'>
+    readonly duration: FieldRef<"Activity", 'String'>
+    readonly photos: FieldRef<"Activity", 'String'>
+    readonly image: FieldRef<"Activity", 'String'>
+    readonly hotelId: FieldRef<"Activity", 'String'>
+    readonly agencyId: FieldRef<"Activity", 'String'>
+    readonly createdAt: FieldRef<"Activity", 'DateTime'>
+    readonly updatedAt: FieldRef<"Activity", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Activity findUnique
+   */
+  export type ActivityFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Activity
+     */
+    select?: ActivitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Activity
+     */
+    omit?: ActivityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActivityInclude<ExtArgs> | null
+    /**
+     * Filter, which Activity to fetch.
+     */
+    where: ActivityWhereUniqueInput
+  }
+
+  /**
+   * Activity findUniqueOrThrow
+   */
+  export type ActivityFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Activity
+     */
+    select?: ActivitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Activity
+     */
+    omit?: ActivityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActivityInclude<ExtArgs> | null
+    /**
+     * Filter, which Activity to fetch.
+     */
+    where: ActivityWhereUniqueInput
+  }
+
+  /**
+   * Activity findFirst
+   */
+  export type ActivityFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Activity
+     */
+    select?: ActivitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Activity
+     */
+    omit?: ActivityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActivityInclude<ExtArgs> | null
+    /**
+     * Filter, which Activity to fetch.
+     */
+    where?: ActivityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Activities to fetch.
+     */
+    orderBy?: ActivityOrderByWithRelationInput | ActivityOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Activities.
+     */
+    cursor?: ActivityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Activities from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Activities.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Activities.
+     */
+    distinct?: ActivityScalarFieldEnum | ActivityScalarFieldEnum[]
+  }
+
+  /**
+   * Activity findFirstOrThrow
+   */
+  export type ActivityFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Activity
+     */
+    select?: ActivitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Activity
+     */
+    omit?: ActivityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActivityInclude<ExtArgs> | null
+    /**
+     * Filter, which Activity to fetch.
+     */
+    where?: ActivityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Activities to fetch.
+     */
+    orderBy?: ActivityOrderByWithRelationInput | ActivityOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Activities.
+     */
+    cursor?: ActivityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Activities from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Activities.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Activities.
+     */
+    distinct?: ActivityScalarFieldEnum | ActivityScalarFieldEnum[]
+  }
+
+  /**
+   * Activity findMany
+   */
+  export type ActivityFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Activity
+     */
+    select?: ActivitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Activity
+     */
+    omit?: ActivityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActivityInclude<ExtArgs> | null
+    /**
+     * Filter, which Activities to fetch.
+     */
+    where?: ActivityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Activities to fetch.
+     */
+    orderBy?: ActivityOrderByWithRelationInput | ActivityOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Activities.
+     */
+    cursor?: ActivityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Activities from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Activities.
+     */
+    skip?: number
+    distinct?: ActivityScalarFieldEnum | ActivityScalarFieldEnum[]
+  }
+
+  /**
+   * Activity create
+   */
+  export type ActivityCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Activity
+     */
+    select?: ActivitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Activity
+     */
+    omit?: ActivityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActivityInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Activity.
+     */
+    data: XOR<ActivityCreateInput, ActivityUncheckedCreateInput>
+  }
+
+  /**
+   * Activity createMany
+   */
+  export type ActivityCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Activities.
+     */
+    data: ActivityCreateManyInput | ActivityCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Activity createManyAndReturn
+   */
+  export type ActivityCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Activity
+     */
+    select?: ActivitySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Activity
+     */
+    omit?: ActivityOmit<ExtArgs> | null
+    /**
+     * The data used to create many Activities.
+     */
+    data: ActivityCreateManyInput | ActivityCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActivityIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Activity update
+   */
+  export type ActivityUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Activity
+     */
+    select?: ActivitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Activity
+     */
+    omit?: ActivityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActivityInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Activity.
+     */
+    data: XOR<ActivityUpdateInput, ActivityUncheckedUpdateInput>
+    /**
+     * Choose, which Activity to update.
+     */
+    where: ActivityWhereUniqueInput
+  }
+
+  /**
+   * Activity updateMany
+   */
+  export type ActivityUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Activities.
+     */
+    data: XOR<ActivityUpdateManyMutationInput, ActivityUncheckedUpdateManyInput>
+    /**
+     * Filter which Activities to update
+     */
+    where?: ActivityWhereInput
+    /**
+     * Limit how many Activities to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Activity updateManyAndReturn
+   */
+  export type ActivityUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Activity
+     */
+    select?: ActivitySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Activity
+     */
+    omit?: ActivityOmit<ExtArgs> | null
+    /**
+     * The data used to update Activities.
+     */
+    data: XOR<ActivityUpdateManyMutationInput, ActivityUncheckedUpdateManyInput>
+    /**
+     * Filter which Activities to update
+     */
+    where?: ActivityWhereInput
+    /**
+     * Limit how many Activities to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActivityIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Activity upsert
+   */
+  export type ActivityUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Activity
+     */
+    select?: ActivitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Activity
+     */
+    omit?: ActivityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActivityInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Activity to update in case it exists.
+     */
+    where: ActivityWhereUniqueInput
+    /**
+     * In case the Activity found by the `where` argument doesn't exist, create a new Activity with this data.
+     */
+    create: XOR<ActivityCreateInput, ActivityUncheckedCreateInput>
+    /**
+     * In case the Activity was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ActivityUpdateInput, ActivityUncheckedUpdateInput>
+  }
+
+  /**
+   * Activity delete
+   */
+  export type ActivityDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Activity
+     */
+    select?: ActivitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Activity
+     */
+    omit?: ActivityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActivityInclude<ExtArgs> | null
+    /**
+     * Filter which Activity to delete.
+     */
+    where: ActivityWhereUniqueInput
+  }
+
+  /**
+   * Activity deleteMany
+   */
+  export type ActivityDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Activities to delete
+     */
+    where?: ActivityWhereInput
+    /**
+     * Limit how many Activities to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Activity.hotel
+   */
+  export type Activity$hotelArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Hotel
+     */
+    select?: HotelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Hotel
+     */
+    omit?: HotelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HotelInclude<ExtArgs> | null
+    where?: HotelWhereInput
+  }
+
+  /**
+   * Activity.quotationActivities
+   */
+  export type Activity$quotationActivitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuotationActivity
+     */
+    select?: QuotationActivitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuotationActivity
+     */
+    omit?: QuotationActivityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuotationActivityInclude<ExtArgs> | null
+    where?: QuotationActivityWhereInput
+    orderBy?: QuotationActivityOrderByWithRelationInput | QuotationActivityOrderByWithRelationInput[]
+    cursor?: QuotationActivityWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: QuotationActivityScalarFieldEnum | QuotationActivityScalarFieldEnum[]
+  }
+
+  /**
+   * Activity without action
+   */
+  export type ActivityDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Activity
+     */
+    select?: ActivitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Activity
+     */
+    omit?: ActivityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActivityInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Transport
+   */
+
+  export type AggregateTransport = {
+    _count: TransportCountAggregateOutputType | null
+    _avg: TransportAvgAggregateOutputType | null
+    _sum: TransportSumAggregateOutputType | null
+    _min: TransportMinAggregateOutputType | null
+    _max: TransportMaxAggregateOutputType | null
+  }
+
+  export type TransportAvgAggregateOutputType = {
+    perDay: number | null
+    perKm: number | null
+    maxCapacity: number | null
+  }
+
+  export type TransportSumAggregateOutputType = {
+    perDay: number | null
+    perKm: number | null
+    maxCapacity: number | null
+  }
+
+  export type TransportMinAggregateOutputType = {
+    id: string | null
+    vehicleType: string | null
+    perDay: number | null
+    perKm: number | null
+    maxCapacity: number | null
+    notes: string | null
+    photos: string | null
+    agencyId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TransportMaxAggregateOutputType = {
+    id: string | null
+    vehicleType: string | null
+    perDay: number | null
+    perKm: number | null
+    maxCapacity: number | null
+    notes: string | null
+    photos: string | null
+    agencyId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TransportCountAggregateOutputType = {
+    id: number
+    vehicleType: number
+    perDay: number
+    perKm: number
+    maxCapacity: number
+    notes: number
+    photos: number
+    agencyId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type TransportAvgAggregateInputType = {
+    perDay?: true
+    perKm?: true
+    maxCapacity?: true
+  }
+
+  export type TransportSumAggregateInputType = {
+    perDay?: true
+    perKm?: true
+    maxCapacity?: true
+  }
+
+  export type TransportMinAggregateInputType = {
+    id?: true
+    vehicleType?: true
+    perDay?: true
+    perKm?: true
+    maxCapacity?: true
+    notes?: true
+    photos?: true
+    agencyId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TransportMaxAggregateInputType = {
+    id?: true
+    vehicleType?: true
+    perDay?: true
+    perKm?: true
+    maxCapacity?: true
+    notes?: true
+    photos?: true
+    agencyId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TransportCountAggregateInputType = {
+    id?: true
+    vehicleType?: true
+    perDay?: true
+    perKm?: true
+    maxCapacity?: true
+    notes?: true
+    photos?: true
+    agencyId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type TransportAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Transport to aggregate.
+     */
+    where?: TransportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transports to fetch.
+     */
+    orderBy?: TransportOrderByWithRelationInput | TransportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TransportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Transports
+    **/
+    _count?: true | TransportCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TransportAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TransportSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TransportMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TransportMaxAggregateInputType
+  }
+
+  export type GetTransportAggregateType<T extends TransportAggregateArgs> = {
+        [P in keyof T & keyof AggregateTransport]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTransport[P]>
+      : GetScalarType<T[P], AggregateTransport[P]>
+  }
+
+
+
+
+  export type TransportGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransportWhereInput
+    orderBy?: TransportOrderByWithAggregationInput | TransportOrderByWithAggregationInput[]
+    by: TransportScalarFieldEnum[] | TransportScalarFieldEnum
+    having?: TransportScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TransportCountAggregateInputType | true
+    _avg?: TransportAvgAggregateInputType
+    _sum?: TransportSumAggregateInputType
+    _min?: TransportMinAggregateInputType
+    _max?: TransportMaxAggregateInputType
+  }
+
+  export type TransportGroupByOutputType = {
+    id: string
+    vehicleType: string
+    perDay: number
+    perKm: number
+    maxCapacity: number
+    notes: string | null
+    photos: string | null
+    agencyId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: TransportCountAggregateOutputType | null
+    _avg: TransportAvgAggregateOutputType | null
+    _sum: TransportSumAggregateOutputType | null
+    _min: TransportMinAggregateOutputType | null
+    _max: TransportMaxAggregateOutputType | null
+  }
+
+  type GetTransportGroupByPayload<T extends TransportGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TransportGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TransportGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TransportGroupByOutputType[P]>
+            : GetScalarType<T[P], TransportGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TransportSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    vehicleType?: boolean
+    perDay?: boolean
+    perKm?: boolean
+    maxCapacity?: boolean
+    notes?: boolean
+    photos?: boolean
+    agencyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    quotationTransports?: boolean | Transport$quotationTransportsArgs<ExtArgs>
+    _count?: boolean | TransportCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["transport"]>
+
+  export type TransportSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    vehicleType?: boolean
+    perDay?: boolean
+    perKm?: boolean
+    maxCapacity?: boolean
+    notes?: boolean
+    photos?: boolean
+    agencyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["transport"]>
+
+  export type TransportSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    vehicleType?: boolean
+    perDay?: boolean
+    perKm?: boolean
+    maxCapacity?: boolean
+    notes?: boolean
+    photos?: boolean
+    agencyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["transport"]>
+
+  export type TransportSelectScalar = {
+    id?: boolean
+    vehicleType?: boolean
+    perDay?: boolean
+    perKm?: boolean
+    maxCapacity?: boolean
+    notes?: boolean
+    photos?: boolean
+    agencyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type TransportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "vehicleType" | "perDay" | "perKm" | "maxCapacity" | "notes" | "photos" | "agencyId" | "createdAt" | "updatedAt", ExtArgs["result"]["transport"]>
+  export type TransportInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    quotationTransports?: boolean | Transport$quotationTransportsArgs<ExtArgs>
+    _count?: boolean | TransportCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type TransportIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }
+  export type TransportIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }
+
+  export type $TransportPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Transport"
+    objects: {
+      agency: Prisma.$AgencyPayload<ExtArgs>
+      quotationTransports: Prisma.$QuotationTransportPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      vehicleType: string
+      perDay: number
+      perKm: number
+      maxCapacity: number
+      notes: string | null
+      photos: string | null
+      agencyId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["transport"]>
+    composites: {}
+  }
+
+  type TransportGetPayload<S extends boolean | null | undefined | TransportDefaultArgs> = $Result.GetResult<Prisma.$TransportPayload, S>
+
+  type TransportCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TransportFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TransportCountAggregateInputType | true
+    }
+
+  export interface TransportDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Transport'], meta: { name: 'Transport' } }
+    /**
+     * Find zero or one Transport that matches the filter.
+     * @param {TransportFindUniqueArgs} args - Arguments to find a Transport
+     * @example
+     * // Get one Transport
+     * const transport = await prisma.transport.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TransportFindUniqueArgs>(args: SelectSubset<T, TransportFindUniqueArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Transport that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TransportFindUniqueOrThrowArgs} args - Arguments to find a Transport
+     * @example
+     * // Get one Transport
+     * const transport = await prisma.transport.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TransportFindUniqueOrThrowArgs>(args: SelectSubset<T, TransportFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Transport that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransportFindFirstArgs} args - Arguments to find a Transport
+     * @example
+     * // Get one Transport
+     * const transport = await prisma.transport.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TransportFindFirstArgs>(args?: SelectSubset<T, TransportFindFirstArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Transport that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransportFindFirstOrThrowArgs} args - Arguments to find a Transport
+     * @example
+     * // Get one Transport
+     * const transport = await prisma.transport.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TransportFindFirstOrThrowArgs>(args?: SelectSubset<T, TransportFindFirstOrThrowArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Transports that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransportFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Transports
+     * const transports = await prisma.transport.findMany()
+     * 
+     * // Get first 10 Transports
+     * const transports = await prisma.transport.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const transportWithIdOnly = await prisma.transport.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TransportFindManyArgs>(args?: SelectSubset<T, TransportFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Transport.
+     * @param {TransportCreateArgs} args - Arguments to create a Transport.
+     * @example
+     * // Create one Transport
+     * const Transport = await prisma.transport.create({
+     *   data: {
+     *     // ... data to create a Transport
+     *   }
+     * })
+     * 
+     */
+    create<T extends TransportCreateArgs>(args: SelectSubset<T, TransportCreateArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Transports.
+     * @param {TransportCreateManyArgs} args - Arguments to create many Transports.
+     * @example
+     * // Create many Transports
+     * const transport = await prisma.transport.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TransportCreateManyArgs>(args?: SelectSubset<T, TransportCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Transports and returns the data saved in the database.
+     * @param {TransportCreateManyAndReturnArgs} args - Arguments to create many Transports.
+     * @example
+     * // Create many Transports
+     * const transport = await prisma.transport.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Transports and only return the `id`
+     * const transportWithIdOnly = await prisma.transport.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TransportCreateManyAndReturnArgs>(args?: SelectSubset<T, TransportCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Transport.
+     * @param {TransportDeleteArgs} args - Arguments to delete one Transport.
+     * @example
+     * // Delete one Transport
+     * const Transport = await prisma.transport.delete({
+     *   where: {
+     *     // ... filter to delete one Transport
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TransportDeleteArgs>(args: SelectSubset<T, TransportDeleteArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Transport.
+     * @param {TransportUpdateArgs} args - Arguments to update one Transport.
+     * @example
+     * // Update one Transport
+     * const transport = await prisma.transport.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TransportUpdateArgs>(args: SelectSubset<T, TransportUpdateArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Transports.
+     * @param {TransportDeleteManyArgs} args - Arguments to filter Transports to delete.
+     * @example
+     * // Delete a few Transports
+     * const { count } = await prisma.transport.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TransportDeleteManyArgs>(args?: SelectSubset<T, TransportDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Transports.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransportUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Transports
+     * const transport = await prisma.transport.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TransportUpdateManyArgs>(args: SelectSubset<T, TransportUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Transports and returns the data updated in the database.
+     * @param {TransportUpdateManyAndReturnArgs} args - Arguments to update many Transports.
+     * @example
+     * // Update many Transports
+     * const transport = await prisma.transport.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Transports and only return the `id`
+     * const transportWithIdOnly = await prisma.transport.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TransportUpdateManyAndReturnArgs>(args: SelectSubset<T, TransportUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Transport.
+     * @param {TransportUpsertArgs} args - Arguments to update or create a Transport.
+     * @example
+     * // Update or create a Transport
+     * const transport = await prisma.transport.upsert({
+     *   create: {
+     *     // ... data to create a Transport
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Transport we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TransportUpsertArgs>(args: SelectSubset<T, TransportUpsertArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Transports.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransportCountArgs} args - Arguments to filter Transports to count.
+     * @example
+     * // Count the number of Transports
+     * const count = await prisma.transport.count({
+     *   where: {
+     *     // ... the filter for the Transports we want to count
+     *   }
+     * })
+    **/
+    count<T extends TransportCountArgs>(
+      args?: Subset<T, TransportCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TransportCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Transport.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransportAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TransportAggregateArgs>(args: Subset<T, TransportAggregateArgs>): Prisma.PrismaPromise<GetTransportAggregateType<T>>
+
+    /**
+     * Group by Transport.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransportGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TransportGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TransportGroupByArgs['orderBy'] }
+        : { orderBy?: TransportGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TransportGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTransportGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Transport model
+   */
+  readonly fields: TransportFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Transport.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TransportClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    quotationTransports<T extends Transport$quotationTransportsArgs<ExtArgs> = {}>(args?: Subset<T, Transport$quotationTransportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuotationTransportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Transport model
+   */
+  interface TransportFieldRefs {
+    readonly id: FieldRef<"Transport", 'String'>
+    readonly vehicleType: FieldRef<"Transport", 'String'>
+    readonly perDay: FieldRef<"Transport", 'Float'>
+    readonly perKm: FieldRef<"Transport", 'Float'>
+    readonly maxCapacity: FieldRef<"Transport", 'Int'>
+    readonly notes: FieldRef<"Transport", 'String'>
+    readonly photos: FieldRef<"Transport", 'String'>
+    readonly agencyId: FieldRef<"Transport", 'String'>
+    readonly createdAt: FieldRef<"Transport", 'DateTime'>
+    readonly updatedAt: FieldRef<"Transport", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Transport findUnique
+   */
+  export type TransportFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transport
+     */
+    select?: TransportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transport
+     */
+    omit?: TransportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransportInclude<ExtArgs> | null
+    /**
+     * Filter, which Transport to fetch.
+     */
+    where: TransportWhereUniqueInput
+  }
+
+  /**
+   * Transport findUniqueOrThrow
+   */
+  export type TransportFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transport
+     */
+    select?: TransportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transport
+     */
+    omit?: TransportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransportInclude<ExtArgs> | null
+    /**
+     * Filter, which Transport to fetch.
+     */
+    where: TransportWhereUniqueInput
+  }
+
+  /**
+   * Transport findFirst
+   */
+  export type TransportFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transport
+     */
+    select?: TransportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transport
+     */
+    omit?: TransportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransportInclude<ExtArgs> | null
+    /**
+     * Filter, which Transport to fetch.
+     */
+    where?: TransportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transports to fetch.
+     */
+    orderBy?: TransportOrderByWithRelationInput | TransportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Transports.
+     */
+    cursor?: TransportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Transports.
+     */
+    distinct?: TransportScalarFieldEnum | TransportScalarFieldEnum[]
+  }
+
+  /**
+   * Transport findFirstOrThrow
+   */
+  export type TransportFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transport
+     */
+    select?: TransportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transport
+     */
+    omit?: TransportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransportInclude<ExtArgs> | null
+    /**
+     * Filter, which Transport to fetch.
+     */
+    where?: TransportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transports to fetch.
+     */
+    orderBy?: TransportOrderByWithRelationInput | TransportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Transports.
+     */
+    cursor?: TransportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Transports.
+     */
+    distinct?: TransportScalarFieldEnum | TransportScalarFieldEnum[]
+  }
+
+  /**
+   * Transport findMany
+   */
+  export type TransportFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transport
+     */
+    select?: TransportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transport
+     */
+    omit?: TransportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransportInclude<ExtArgs> | null
+    /**
+     * Filter, which Transports to fetch.
+     */
+    where?: TransportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transports to fetch.
+     */
+    orderBy?: TransportOrderByWithRelationInput | TransportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Transports.
+     */
+    cursor?: TransportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transports.
+     */
+    skip?: number
+    distinct?: TransportScalarFieldEnum | TransportScalarFieldEnum[]
+  }
+
+  /**
+   * Transport create
+   */
+  export type TransportCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transport
+     */
+    select?: TransportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transport
+     */
+    omit?: TransportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransportInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Transport.
+     */
+    data: XOR<TransportCreateInput, TransportUncheckedCreateInput>
+  }
+
+  /**
+   * Transport createMany
+   */
+  export type TransportCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Transports.
+     */
+    data: TransportCreateManyInput | TransportCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Transport createManyAndReturn
+   */
+  export type TransportCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transport
+     */
+    select?: TransportSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transport
+     */
+    omit?: TransportOmit<ExtArgs> | null
+    /**
+     * The data used to create many Transports.
+     */
+    data: TransportCreateManyInput | TransportCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransportIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Transport update
+   */
+  export type TransportUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transport
+     */
+    select?: TransportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transport
+     */
+    omit?: TransportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransportInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Transport.
+     */
+    data: XOR<TransportUpdateInput, TransportUncheckedUpdateInput>
+    /**
+     * Choose, which Transport to update.
+     */
+    where: TransportWhereUniqueInput
+  }
+
+  /**
+   * Transport updateMany
+   */
+  export type TransportUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Transports.
+     */
+    data: XOR<TransportUpdateManyMutationInput, TransportUncheckedUpdateManyInput>
+    /**
+     * Filter which Transports to update
+     */
+    where?: TransportWhereInput
+    /**
+     * Limit how many Transports to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Transport updateManyAndReturn
+   */
+  export type TransportUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transport
+     */
+    select?: TransportSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transport
+     */
+    omit?: TransportOmit<ExtArgs> | null
+    /**
+     * The data used to update Transports.
+     */
+    data: XOR<TransportUpdateManyMutationInput, TransportUncheckedUpdateManyInput>
+    /**
+     * Filter which Transports to update
+     */
+    where?: TransportWhereInput
+    /**
+     * Limit how many Transports to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransportIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Transport upsert
+   */
+  export type TransportUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transport
+     */
+    select?: TransportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transport
+     */
+    omit?: TransportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransportInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Transport to update in case it exists.
+     */
+    where: TransportWhereUniqueInput
+    /**
+     * In case the Transport found by the `where` argument doesn't exist, create a new Transport with this data.
+     */
+    create: XOR<TransportCreateInput, TransportUncheckedCreateInput>
+    /**
+     * In case the Transport was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TransportUpdateInput, TransportUncheckedUpdateInput>
+  }
+
+  /**
+   * Transport delete
+   */
+  export type TransportDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transport
+     */
+    select?: TransportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transport
+     */
+    omit?: TransportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransportInclude<ExtArgs> | null
+    /**
+     * Filter which Transport to delete.
+     */
+    where: TransportWhereUniqueInput
+  }
+
+  /**
+   * Transport deleteMany
+   */
+  export type TransportDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Transports to delete
+     */
+    where?: TransportWhereInput
+    /**
+     * Limit how many Transports to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Transport.quotationTransports
+   */
+  export type Transport$quotationTransportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuotationTransport
+     */
+    select?: QuotationTransportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuotationTransport
+     */
+    omit?: QuotationTransportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuotationTransportInclude<ExtArgs> | null
+    where?: QuotationTransportWhereInput
+    orderBy?: QuotationTransportOrderByWithRelationInput | QuotationTransportOrderByWithRelationInput[]
+    cursor?: QuotationTransportWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: QuotationTransportScalarFieldEnum | QuotationTransportScalarFieldEnum[]
+  }
+
+  /**
+   * Transport without action
+   */
+  export type TransportDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transport
+     */
+    select?: TransportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transport
+     */
+    omit?: TransportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransportInclude<ExtArgs> | null
   }
 
 
@@ -14225,1175 +18099,6 @@ export namespace Prisma {
 
 
   /**
-   * Model Transport
-   */
-
-  export type AggregateTransport = {
-    _count: TransportCountAggregateOutputType | null
-    _avg: TransportAvgAggregateOutputType | null
-    _sum: TransportSumAggregateOutputType | null
-    _min: TransportMinAggregateOutputType | null
-    _max: TransportMaxAggregateOutputType | null
-  }
-
-  export type TransportAvgAggregateOutputType = {
-    perDay: number | null
-    perKm: number | null
-    maxCapacity: number | null
-  }
-
-  export type TransportSumAggregateOutputType = {
-    perDay: number | null
-    perKm: number | null
-    maxCapacity: number | null
-  }
-
-  export type TransportMinAggregateOutputType = {
-    id: string | null
-    vehicleType: string | null
-    perDay: number | null
-    perKm: number | null
-    maxCapacity: number | null
-    notes: string | null
-    photos: string | null
-    agencyId: string | null
-  }
-
-  export type TransportMaxAggregateOutputType = {
-    id: string | null
-    vehicleType: string | null
-    perDay: number | null
-    perKm: number | null
-    maxCapacity: number | null
-    notes: string | null
-    photos: string | null
-    agencyId: string | null
-  }
-
-  export type TransportCountAggregateOutputType = {
-    id: number
-    vehicleType: number
-    perDay: number
-    perKm: number
-    maxCapacity: number
-    notes: number
-    photos: number
-    agencyId: number
-    _all: number
-  }
-
-
-  export type TransportAvgAggregateInputType = {
-    perDay?: true
-    perKm?: true
-    maxCapacity?: true
-  }
-
-  export type TransportSumAggregateInputType = {
-    perDay?: true
-    perKm?: true
-    maxCapacity?: true
-  }
-
-  export type TransportMinAggregateInputType = {
-    id?: true
-    vehicleType?: true
-    perDay?: true
-    perKm?: true
-    maxCapacity?: true
-    notes?: true
-    photos?: true
-    agencyId?: true
-  }
-
-  export type TransportMaxAggregateInputType = {
-    id?: true
-    vehicleType?: true
-    perDay?: true
-    perKm?: true
-    maxCapacity?: true
-    notes?: true
-    photos?: true
-    agencyId?: true
-  }
-
-  export type TransportCountAggregateInputType = {
-    id?: true
-    vehicleType?: true
-    perDay?: true
-    perKm?: true
-    maxCapacity?: true
-    notes?: true
-    photos?: true
-    agencyId?: true
-    _all?: true
-  }
-
-  export type TransportAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Transport to aggregate.
-     */
-    where?: TransportWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Transports to fetch.
-     */
-    orderBy?: TransportOrderByWithRelationInput | TransportOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: TransportWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Transports from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Transports.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Transports
-    **/
-    _count?: true | TransportCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: TransportAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: TransportSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: TransportMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: TransportMaxAggregateInputType
-  }
-
-  export type GetTransportAggregateType<T extends TransportAggregateArgs> = {
-        [P in keyof T & keyof AggregateTransport]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateTransport[P]>
-      : GetScalarType<T[P], AggregateTransport[P]>
-  }
-
-
-
-
-  export type TransportGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: TransportWhereInput
-    orderBy?: TransportOrderByWithAggregationInput | TransportOrderByWithAggregationInput[]
-    by: TransportScalarFieldEnum[] | TransportScalarFieldEnum
-    having?: TransportScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: TransportCountAggregateInputType | true
-    _avg?: TransportAvgAggregateInputType
-    _sum?: TransportSumAggregateInputType
-    _min?: TransportMinAggregateInputType
-    _max?: TransportMaxAggregateInputType
-  }
-
-  export type TransportGroupByOutputType = {
-    id: string
-    vehicleType: string
-    perDay: number
-    perKm: number
-    maxCapacity: number
-    notes: string | null
-    photos: string | null
-    agencyId: string
-    _count: TransportCountAggregateOutputType | null
-    _avg: TransportAvgAggregateOutputType | null
-    _sum: TransportSumAggregateOutputType | null
-    _min: TransportMinAggregateOutputType | null
-    _max: TransportMaxAggregateOutputType | null
-  }
-
-  type GetTransportGroupByPayload<T extends TransportGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<TransportGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof TransportGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], TransportGroupByOutputType[P]>
-            : GetScalarType<T[P], TransportGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type TransportSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    vehicleType?: boolean
-    perDay?: boolean
-    perKm?: boolean
-    maxCapacity?: boolean
-    notes?: boolean
-    photos?: boolean
-    agencyId?: boolean
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
-    quotationTransports?: boolean | Transport$quotationTransportsArgs<ExtArgs>
-    _count?: boolean | TransportCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["transport"]>
-
-  export type TransportSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    vehicleType?: boolean
-    perDay?: boolean
-    perKm?: boolean
-    maxCapacity?: boolean
-    notes?: boolean
-    photos?: boolean
-    agencyId?: boolean
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["transport"]>
-
-  export type TransportSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    vehicleType?: boolean
-    perDay?: boolean
-    perKm?: boolean
-    maxCapacity?: boolean
-    notes?: boolean
-    photos?: boolean
-    agencyId?: boolean
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["transport"]>
-
-  export type TransportSelectScalar = {
-    id?: boolean
-    vehicleType?: boolean
-    perDay?: boolean
-    perKm?: boolean
-    maxCapacity?: boolean
-    notes?: boolean
-    photos?: boolean
-    agencyId?: boolean
-  }
-
-  export type TransportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "vehicleType" | "perDay" | "perKm" | "maxCapacity" | "notes" | "photos" | "agencyId", ExtArgs["result"]["transport"]>
-  export type TransportInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
-    quotationTransports?: boolean | Transport$quotationTransportsArgs<ExtArgs>
-    _count?: boolean | TransportCountOutputTypeDefaultArgs<ExtArgs>
-  }
-  export type TransportIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
-  }
-  export type TransportIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
-  }
-
-  export type $TransportPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Transport"
-    objects: {
-      agency: Prisma.$AgencyPayload<ExtArgs>
-      quotationTransports: Prisma.$QuotationTransportPayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      vehicleType: string
-      perDay: number
-      perKm: number
-      maxCapacity: number
-      notes: string | null
-      photos: string | null
-      agencyId: string
-    }, ExtArgs["result"]["transport"]>
-    composites: {}
-  }
-
-  type TransportGetPayload<S extends boolean | null | undefined | TransportDefaultArgs> = $Result.GetResult<Prisma.$TransportPayload, S>
-
-  type TransportCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<TransportFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: TransportCountAggregateInputType | true
-    }
-
-  export interface TransportDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Transport'], meta: { name: 'Transport' } }
-    /**
-     * Find zero or one Transport that matches the filter.
-     * @param {TransportFindUniqueArgs} args - Arguments to find a Transport
-     * @example
-     * // Get one Transport
-     * const transport = await prisma.transport.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends TransportFindUniqueArgs>(args: SelectSubset<T, TransportFindUniqueArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Transport that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {TransportFindUniqueOrThrowArgs} args - Arguments to find a Transport
-     * @example
-     * // Get one Transport
-     * const transport = await prisma.transport.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends TransportFindUniqueOrThrowArgs>(args: SelectSubset<T, TransportFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Transport that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TransportFindFirstArgs} args - Arguments to find a Transport
-     * @example
-     * // Get one Transport
-     * const transport = await prisma.transport.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends TransportFindFirstArgs>(args?: SelectSubset<T, TransportFindFirstArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Transport that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TransportFindFirstOrThrowArgs} args - Arguments to find a Transport
-     * @example
-     * // Get one Transport
-     * const transport = await prisma.transport.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends TransportFindFirstOrThrowArgs>(args?: SelectSubset<T, TransportFindFirstOrThrowArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Transports that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TransportFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Transports
-     * const transports = await prisma.transport.findMany()
-     * 
-     * // Get first 10 Transports
-     * const transports = await prisma.transport.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const transportWithIdOnly = await prisma.transport.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends TransportFindManyArgs>(args?: SelectSubset<T, TransportFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Transport.
-     * @param {TransportCreateArgs} args - Arguments to create a Transport.
-     * @example
-     * // Create one Transport
-     * const Transport = await prisma.transport.create({
-     *   data: {
-     *     // ... data to create a Transport
-     *   }
-     * })
-     * 
-     */
-    create<T extends TransportCreateArgs>(args: SelectSubset<T, TransportCreateArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Transports.
-     * @param {TransportCreateManyArgs} args - Arguments to create many Transports.
-     * @example
-     * // Create many Transports
-     * const transport = await prisma.transport.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends TransportCreateManyArgs>(args?: SelectSubset<T, TransportCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Transports and returns the data saved in the database.
-     * @param {TransportCreateManyAndReturnArgs} args - Arguments to create many Transports.
-     * @example
-     * // Create many Transports
-     * const transport = await prisma.transport.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Transports and only return the `id`
-     * const transportWithIdOnly = await prisma.transport.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends TransportCreateManyAndReturnArgs>(args?: SelectSubset<T, TransportCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a Transport.
-     * @param {TransportDeleteArgs} args - Arguments to delete one Transport.
-     * @example
-     * // Delete one Transport
-     * const Transport = await prisma.transport.delete({
-     *   where: {
-     *     // ... filter to delete one Transport
-     *   }
-     * })
-     * 
-     */
-    delete<T extends TransportDeleteArgs>(args: SelectSubset<T, TransportDeleteArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Transport.
-     * @param {TransportUpdateArgs} args - Arguments to update one Transport.
-     * @example
-     * // Update one Transport
-     * const transport = await prisma.transport.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends TransportUpdateArgs>(args: SelectSubset<T, TransportUpdateArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Transports.
-     * @param {TransportDeleteManyArgs} args - Arguments to filter Transports to delete.
-     * @example
-     * // Delete a few Transports
-     * const { count } = await prisma.transport.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends TransportDeleteManyArgs>(args?: SelectSubset<T, TransportDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Transports.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TransportUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Transports
-     * const transport = await prisma.transport.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends TransportUpdateManyArgs>(args: SelectSubset<T, TransportUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Transports and returns the data updated in the database.
-     * @param {TransportUpdateManyAndReturnArgs} args - Arguments to update many Transports.
-     * @example
-     * // Update many Transports
-     * const transport = await prisma.transport.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Transports and only return the `id`
-     * const transportWithIdOnly = await prisma.transport.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends TransportUpdateManyAndReturnArgs>(args: SelectSubset<T, TransportUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Transport.
-     * @param {TransportUpsertArgs} args - Arguments to update or create a Transport.
-     * @example
-     * // Update or create a Transport
-     * const transport = await prisma.transport.upsert({
-     *   create: {
-     *     // ... data to create a Transport
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Transport we want to update
-     *   }
-     * })
-     */
-    upsert<T extends TransportUpsertArgs>(args: SelectSubset<T, TransportUpsertArgs<ExtArgs>>): Prisma__TransportClient<$Result.GetResult<Prisma.$TransportPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Transports.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TransportCountArgs} args - Arguments to filter Transports to count.
-     * @example
-     * // Count the number of Transports
-     * const count = await prisma.transport.count({
-     *   where: {
-     *     // ... the filter for the Transports we want to count
-     *   }
-     * })
-    **/
-    count<T extends TransportCountArgs>(
-      args?: Subset<T, TransportCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], TransportCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Transport.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TransportAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends TransportAggregateArgs>(args: Subset<T, TransportAggregateArgs>): Prisma.PrismaPromise<GetTransportAggregateType<T>>
-
-    /**
-     * Group by Transport.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TransportGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends TransportGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: TransportGroupByArgs['orderBy'] }
-        : { orderBy?: TransportGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, TransportGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTransportGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Transport model
-   */
-  readonly fields: TransportFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Transport.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__TransportClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    quotationTransports<T extends Transport$quotationTransportsArgs<ExtArgs> = {}>(args?: Subset<T, Transport$quotationTransportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuotationTransportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Transport model
-   */
-  interface TransportFieldRefs {
-    readonly id: FieldRef<"Transport", 'String'>
-    readonly vehicleType: FieldRef<"Transport", 'String'>
-    readonly perDay: FieldRef<"Transport", 'Float'>
-    readonly perKm: FieldRef<"Transport", 'Float'>
-    readonly maxCapacity: FieldRef<"Transport", 'Int'>
-    readonly notes: FieldRef<"Transport", 'String'>
-    readonly photos: FieldRef<"Transport", 'String'>
-    readonly agencyId: FieldRef<"Transport", 'String'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Transport findUnique
-   */
-  export type TransportFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Transport
-     */
-    select?: TransportSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Transport
-     */
-    omit?: TransportOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TransportInclude<ExtArgs> | null
-    /**
-     * Filter, which Transport to fetch.
-     */
-    where: TransportWhereUniqueInput
-  }
-
-  /**
-   * Transport findUniqueOrThrow
-   */
-  export type TransportFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Transport
-     */
-    select?: TransportSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Transport
-     */
-    omit?: TransportOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TransportInclude<ExtArgs> | null
-    /**
-     * Filter, which Transport to fetch.
-     */
-    where: TransportWhereUniqueInput
-  }
-
-  /**
-   * Transport findFirst
-   */
-  export type TransportFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Transport
-     */
-    select?: TransportSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Transport
-     */
-    omit?: TransportOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TransportInclude<ExtArgs> | null
-    /**
-     * Filter, which Transport to fetch.
-     */
-    where?: TransportWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Transports to fetch.
-     */
-    orderBy?: TransportOrderByWithRelationInput | TransportOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Transports.
-     */
-    cursor?: TransportWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Transports from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Transports.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Transports.
-     */
-    distinct?: TransportScalarFieldEnum | TransportScalarFieldEnum[]
-  }
-
-  /**
-   * Transport findFirstOrThrow
-   */
-  export type TransportFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Transport
-     */
-    select?: TransportSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Transport
-     */
-    omit?: TransportOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TransportInclude<ExtArgs> | null
-    /**
-     * Filter, which Transport to fetch.
-     */
-    where?: TransportWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Transports to fetch.
-     */
-    orderBy?: TransportOrderByWithRelationInput | TransportOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Transports.
-     */
-    cursor?: TransportWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Transports from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Transports.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Transports.
-     */
-    distinct?: TransportScalarFieldEnum | TransportScalarFieldEnum[]
-  }
-
-  /**
-   * Transport findMany
-   */
-  export type TransportFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Transport
-     */
-    select?: TransportSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Transport
-     */
-    omit?: TransportOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TransportInclude<ExtArgs> | null
-    /**
-     * Filter, which Transports to fetch.
-     */
-    where?: TransportWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Transports to fetch.
-     */
-    orderBy?: TransportOrderByWithRelationInput | TransportOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Transports.
-     */
-    cursor?: TransportWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Transports from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Transports.
-     */
-    skip?: number
-    distinct?: TransportScalarFieldEnum | TransportScalarFieldEnum[]
-  }
-
-  /**
-   * Transport create
-   */
-  export type TransportCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Transport
-     */
-    select?: TransportSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Transport
-     */
-    omit?: TransportOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TransportInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Transport.
-     */
-    data: XOR<TransportCreateInput, TransportUncheckedCreateInput>
-  }
-
-  /**
-   * Transport createMany
-   */
-  export type TransportCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Transports.
-     */
-    data: TransportCreateManyInput | TransportCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Transport createManyAndReturn
-   */
-  export type TransportCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Transport
-     */
-    select?: TransportSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Transport
-     */
-    omit?: TransportOmit<ExtArgs> | null
-    /**
-     * The data used to create many Transports.
-     */
-    data: TransportCreateManyInput | TransportCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TransportIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Transport update
-   */
-  export type TransportUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Transport
-     */
-    select?: TransportSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Transport
-     */
-    omit?: TransportOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TransportInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Transport.
-     */
-    data: XOR<TransportUpdateInput, TransportUncheckedUpdateInput>
-    /**
-     * Choose, which Transport to update.
-     */
-    where: TransportWhereUniqueInput
-  }
-
-  /**
-   * Transport updateMany
-   */
-  export type TransportUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Transports.
-     */
-    data: XOR<TransportUpdateManyMutationInput, TransportUncheckedUpdateManyInput>
-    /**
-     * Filter which Transports to update
-     */
-    where?: TransportWhereInput
-    /**
-     * Limit how many Transports to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Transport updateManyAndReturn
-   */
-  export type TransportUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Transport
-     */
-    select?: TransportSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Transport
-     */
-    omit?: TransportOmit<ExtArgs> | null
-    /**
-     * The data used to update Transports.
-     */
-    data: XOR<TransportUpdateManyMutationInput, TransportUncheckedUpdateManyInput>
-    /**
-     * Filter which Transports to update
-     */
-    where?: TransportWhereInput
-    /**
-     * Limit how many Transports to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TransportIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Transport upsert
-   */
-  export type TransportUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Transport
-     */
-    select?: TransportSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Transport
-     */
-    omit?: TransportOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TransportInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Transport to update in case it exists.
-     */
-    where: TransportWhereUniqueInput
-    /**
-     * In case the Transport found by the `where` argument doesn't exist, create a new Transport with this data.
-     */
-    create: XOR<TransportCreateInput, TransportUncheckedCreateInput>
-    /**
-     * In case the Transport was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<TransportUpdateInput, TransportUncheckedUpdateInput>
-  }
-
-  /**
-   * Transport delete
-   */
-  export type TransportDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Transport
-     */
-    select?: TransportSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Transport
-     */
-    omit?: TransportOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TransportInclude<ExtArgs> | null
-    /**
-     * Filter which Transport to delete.
-     */
-    where: TransportWhereUniqueInput
-  }
-
-  /**
-   * Transport deleteMany
-   */
-  export type TransportDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Transports to delete
-     */
-    where?: TransportWhereInput
-    /**
-     * Limit how many Transports to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Transport.quotationTransports
-   */
-  export type Transport$quotationTransportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QuotationTransport
-     */
-    select?: QuotationTransportSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the QuotationTransport
-     */
-    omit?: QuotationTransportOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: QuotationTransportInclude<ExtArgs> | null
-    where?: QuotationTransportWhereInput
-    orderBy?: QuotationTransportOrderByWithRelationInput | QuotationTransportOrderByWithRelationInput[]
-    cursor?: QuotationTransportWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: QuotationTransportScalarFieldEnum | QuotationTransportScalarFieldEnum[]
-  }
-
-  /**
-   * Transport without action
-   */
-  export type TransportDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Transport
-     */
-    select?: TransportSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Transport
-     */
-    omit?: TransportOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TransportInclude<ExtArgs> | null
-  }
-
-
-  /**
    * Model QuotationTransport
    */
 
@@ -16498,1141 +19203,6 @@ export namespace Prisma {
 
 
   /**
-   * Model Meal
-   */
-
-  export type AggregateMeal = {
-    _count: MealCountAggregateOutputType | null
-    _avg: MealAvgAggregateOutputType | null
-    _sum: MealSumAggregateOutputType | null
-    _min: MealMinAggregateOutputType | null
-    _max: MealMaxAggregateOutputType | null
-  }
-
-  export type MealAvgAggregateOutputType = {
-    price: number | null
-  }
-
-  export type MealSumAggregateOutputType = {
-    price: number | null
-  }
-
-  export type MealMinAggregateOutputType = {
-    id: string | null
-    type: string | null
-    vegOption: boolean | null
-    nonVegOption: boolean | null
-    price: number | null
-    agencyId: string | null
-  }
-
-  export type MealMaxAggregateOutputType = {
-    id: string | null
-    type: string | null
-    vegOption: boolean | null
-    nonVegOption: boolean | null
-    price: number | null
-    agencyId: string | null
-  }
-
-  export type MealCountAggregateOutputType = {
-    id: number
-    type: number
-    vegOption: number
-    nonVegOption: number
-    price: number
-    agencyId: number
-    _all: number
-  }
-
-
-  export type MealAvgAggregateInputType = {
-    price?: true
-  }
-
-  export type MealSumAggregateInputType = {
-    price?: true
-  }
-
-  export type MealMinAggregateInputType = {
-    id?: true
-    type?: true
-    vegOption?: true
-    nonVegOption?: true
-    price?: true
-    agencyId?: true
-  }
-
-  export type MealMaxAggregateInputType = {
-    id?: true
-    type?: true
-    vegOption?: true
-    nonVegOption?: true
-    price?: true
-    agencyId?: true
-  }
-
-  export type MealCountAggregateInputType = {
-    id?: true
-    type?: true
-    vegOption?: true
-    nonVegOption?: true
-    price?: true
-    agencyId?: true
-    _all?: true
-  }
-
-  export type MealAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Meal to aggregate.
-     */
-    where?: MealWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Meals to fetch.
-     */
-    orderBy?: MealOrderByWithRelationInput | MealOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: MealWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Meals from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Meals.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Meals
-    **/
-    _count?: true | MealCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: MealAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: MealSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: MealMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: MealMaxAggregateInputType
-  }
-
-  export type GetMealAggregateType<T extends MealAggregateArgs> = {
-        [P in keyof T & keyof AggregateMeal]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateMeal[P]>
-      : GetScalarType<T[P], AggregateMeal[P]>
-  }
-
-
-
-
-  export type MealGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: MealWhereInput
-    orderBy?: MealOrderByWithAggregationInput | MealOrderByWithAggregationInput[]
-    by: MealScalarFieldEnum[] | MealScalarFieldEnum
-    having?: MealScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: MealCountAggregateInputType | true
-    _avg?: MealAvgAggregateInputType
-    _sum?: MealSumAggregateInputType
-    _min?: MealMinAggregateInputType
-    _max?: MealMaxAggregateInputType
-  }
-
-  export type MealGroupByOutputType = {
-    id: string
-    type: string
-    vegOption: boolean
-    nonVegOption: boolean
-    price: number
-    agencyId: string
-    _count: MealCountAggregateOutputType | null
-    _avg: MealAvgAggregateOutputType | null
-    _sum: MealSumAggregateOutputType | null
-    _min: MealMinAggregateOutputType | null
-    _max: MealMaxAggregateOutputType | null
-  }
-
-  type GetMealGroupByPayload<T extends MealGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<MealGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof MealGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], MealGroupByOutputType[P]>
-            : GetScalarType<T[P], MealGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type MealSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    type?: boolean
-    vegOption?: boolean
-    nonVegOption?: boolean
-    price?: boolean
-    agencyId?: boolean
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
-    quotationMeals?: boolean | Meal$quotationMealsArgs<ExtArgs>
-    _count?: boolean | MealCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["meal"]>
-
-  export type MealSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    type?: boolean
-    vegOption?: boolean
-    nonVegOption?: boolean
-    price?: boolean
-    agencyId?: boolean
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["meal"]>
-
-  export type MealSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    type?: boolean
-    vegOption?: boolean
-    nonVegOption?: boolean
-    price?: boolean
-    agencyId?: boolean
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["meal"]>
-
-  export type MealSelectScalar = {
-    id?: boolean
-    type?: boolean
-    vegOption?: boolean
-    nonVegOption?: boolean
-    price?: boolean
-    agencyId?: boolean
-  }
-
-  export type MealOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "vegOption" | "nonVegOption" | "price" | "agencyId", ExtArgs["result"]["meal"]>
-  export type MealInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
-    quotationMeals?: boolean | Meal$quotationMealsArgs<ExtArgs>
-    _count?: boolean | MealCountOutputTypeDefaultArgs<ExtArgs>
-  }
-  export type MealIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
-  }
-  export type MealIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
-  }
-
-  export type $MealPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Meal"
-    objects: {
-      agency: Prisma.$AgencyPayload<ExtArgs>
-      quotationMeals: Prisma.$QuotationMealPayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      type: string
-      vegOption: boolean
-      nonVegOption: boolean
-      price: number
-      agencyId: string
-    }, ExtArgs["result"]["meal"]>
-    composites: {}
-  }
-
-  type MealGetPayload<S extends boolean | null | undefined | MealDefaultArgs> = $Result.GetResult<Prisma.$MealPayload, S>
-
-  type MealCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<MealFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: MealCountAggregateInputType | true
-    }
-
-  export interface MealDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Meal'], meta: { name: 'Meal' } }
-    /**
-     * Find zero or one Meal that matches the filter.
-     * @param {MealFindUniqueArgs} args - Arguments to find a Meal
-     * @example
-     * // Get one Meal
-     * const meal = await prisma.meal.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends MealFindUniqueArgs>(args: SelectSubset<T, MealFindUniqueArgs<ExtArgs>>): Prisma__MealClient<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Meal that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {MealFindUniqueOrThrowArgs} args - Arguments to find a Meal
-     * @example
-     * // Get one Meal
-     * const meal = await prisma.meal.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends MealFindUniqueOrThrowArgs>(args: SelectSubset<T, MealFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MealClient<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Meal that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealFindFirstArgs} args - Arguments to find a Meal
-     * @example
-     * // Get one Meal
-     * const meal = await prisma.meal.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends MealFindFirstArgs>(args?: SelectSubset<T, MealFindFirstArgs<ExtArgs>>): Prisma__MealClient<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Meal that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealFindFirstOrThrowArgs} args - Arguments to find a Meal
-     * @example
-     * // Get one Meal
-     * const meal = await prisma.meal.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends MealFindFirstOrThrowArgs>(args?: SelectSubset<T, MealFindFirstOrThrowArgs<ExtArgs>>): Prisma__MealClient<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Meals that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Meals
-     * const meals = await prisma.meal.findMany()
-     * 
-     * // Get first 10 Meals
-     * const meals = await prisma.meal.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const mealWithIdOnly = await prisma.meal.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends MealFindManyArgs>(args?: SelectSubset<T, MealFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Meal.
-     * @param {MealCreateArgs} args - Arguments to create a Meal.
-     * @example
-     * // Create one Meal
-     * const Meal = await prisma.meal.create({
-     *   data: {
-     *     // ... data to create a Meal
-     *   }
-     * })
-     * 
-     */
-    create<T extends MealCreateArgs>(args: SelectSubset<T, MealCreateArgs<ExtArgs>>): Prisma__MealClient<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Meals.
-     * @param {MealCreateManyArgs} args - Arguments to create many Meals.
-     * @example
-     * // Create many Meals
-     * const meal = await prisma.meal.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends MealCreateManyArgs>(args?: SelectSubset<T, MealCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Meals and returns the data saved in the database.
-     * @param {MealCreateManyAndReturnArgs} args - Arguments to create many Meals.
-     * @example
-     * // Create many Meals
-     * const meal = await prisma.meal.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Meals and only return the `id`
-     * const mealWithIdOnly = await prisma.meal.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends MealCreateManyAndReturnArgs>(args?: SelectSubset<T, MealCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a Meal.
-     * @param {MealDeleteArgs} args - Arguments to delete one Meal.
-     * @example
-     * // Delete one Meal
-     * const Meal = await prisma.meal.delete({
-     *   where: {
-     *     // ... filter to delete one Meal
-     *   }
-     * })
-     * 
-     */
-    delete<T extends MealDeleteArgs>(args: SelectSubset<T, MealDeleteArgs<ExtArgs>>): Prisma__MealClient<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Meal.
-     * @param {MealUpdateArgs} args - Arguments to update one Meal.
-     * @example
-     * // Update one Meal
-     * const meal = await prisma.meal.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends MealUpdateArgs>(args: SelectSubset<T, MealUpdateArgs<ExtArgs>>): Prisma__MealClient<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Meals.
-     * @param {MealDeleteManyArgs} args - Arguments to filter Meals to delete.
-     * @example
-     * // Delete a few Meals
-     * const { count } = await prisma.meal.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends MealDeleteManyArgs>(args?: SelectSubset<T, MealDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Meals.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Meals
-     * const meal = await prisma.meal.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends MealUpdateManyArgs>(args: SelectSubset<T, MealUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Meals and returns the data updated in the database.
-     * @param {MealUpdateManyAndReturnArgs} args - Arguments to update many Meals.
-     * @example
-     * // Update many Meals
-     * const meal = await prisma.meal.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Meals and only return the `id`
-     * const mealWithIdOnly = await prisma.meal.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends MealUpdateManyAndReturnArgs>(args: SelectSubset<T, MealUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Meal.
-     * @param {MealUpsertArgs} args - Arguments to update or create a Meal.
-     * @example
-     * // Update or create a Meal
-     * const meal = await prisma.meal.upsert({
-     *   create: {
-     *     // ... data to create a Meal
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Meal we want to update
-     *   }
-     * })
-     */
-    upsert<T extends MealUpsertArgs>(args: SelectSubset<T, MealUpsertArgs<ExtArgs>>): Prisma__MealClient<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Meals.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealCountArgs} args - Arguments to filter Meals to count.
-     * @example
-     * // Count the number of Meals
-     * const count = await prisma.meal.count({
-     *   where: {
-     *     // ... the filter for the Meals we want to count
-     *   }
-     * })
-    **/
-    count<T extends MealCountArgs>(
-      args?: Subset<T, MealCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], MealCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Meal.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends MealAggregateArgs>(args: Subset<T, MealAggregateArgs>): Prisma.PrismaPromise<GetMealAggregateType<T>>
-
-    /**
-     * Group by Meal.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends MealGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: MealGroupByArgs['orderBy'] }
-        : { orderBy?: MealGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, MealGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMealGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Meal model
-   */
-  readonly fields: MealFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Meal.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__MealClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    quotationMeals<T extends Meal$quotationMealsArgs<ExtArgs> = {}>(args?: Subset<T, Meal$quotationMealsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuotationMealPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Meal model
-   */
-  interface MealFieldRefs {
-    readonly id: FieldRef<"Meal", 'String'>
-    readonly type: FieldRef<"Meal", 'String'>
-    readonly vegOption: FieldRef<"Meal", 'Boolean'>
-    readonly nonVegOption: FieldRef<"Meal", 'Boolean'>
-    readonly price: FieldRef<"Meal", 'Float'>
-    readonly agencyId: FieldRef<"Meal", 'String'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Meal findUnique
-   */
-  export type MealFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Meal
-     */
-    select?: MealSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Meal
-     */
-    omit?: MealOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealInclude<ExtArgs> | null
-    /**
-     * Filter, which Meal to fetch.
-     */
-    where: MealWhereUniqueInput
-  }
-
-  /**
-   * Meal findUniqueOrThrow
-   */
-  export type MealFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Meal
-     */
-    select?: MealSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Meal
-     */
-    omit?: MealOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealInclude<ExtArgs> | null
-    /**
-     * Filter, which Meal to fetch.
-     */
-    where: MealWhereUniqueInput
-  }
-
-  /**
-   * Meal findFirst
-   */
-  export type MealFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Meal
-     */
-    select?: MealSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Meal
-     */
-    omit?: MealOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealInclude<ExtArgs> | null
-    /**
-     * Filter, which Meal to fetch.
-     */
-    where?: MealWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Meals to fetch.
-     */
-    orderBy?: MealOrderByWithRelationInput | MealOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Meals.
-     */
-    cursor?: MealWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Meals from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Meals.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Meals.
-     */
-    distinct?: MealScalarFieldEnum | MealScalarFieldEnum[]
-  }
-
-  /**
-   * Meal findFirstOrThrow
-   */
-  export type MealFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Meal
-     */
-    select?: MealSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Meal
-     */
-    omit?: MealOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealInclude<ExtArgs> | null
-    /**
-     * Filter, which Meal to fetch.
-     */
-    where?: MealWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Meals to fetch.
-     */
-    orderBy?: MealOrderByWithRelationInput | MealOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Meals.
-     */
-    cursor?: MealWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Meals from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Meals.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Meals.
-     */
-    distinct?: MealScalarFieldEnum | MealScalarFieldEnum[]
-  }
-
-  /**
-   * Meal findMany
-   */
-  export type MealFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Meal
-     */
-    select?: MealSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Meal
-     */
-    omit?: MealOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealInclude<ExtArgs> | null
-    /**
-     * Filter, which Meals to fetch.
-     */
-    where?: MealWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Meals to fetch.
-     */
-    orderBy?: MealOrderByWithRelationInput | MealOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Meals.
-     */
-    cursor?: MealWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Meals from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Meals.
-     */
-    skip?: number
-    distinct?: MealScalarFieldEnum | MealScalarFieldEnum[]
-  }
-
-  /**
-   * Meal create
-   */
-  export type MealCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Meal
-     */
-    select?: MealSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Meal
-     */
-    omit?: MealOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Meal.
-     */
-    data: XOR<MealCreateInput, MealUncheckedCreateInput>
-  }
-
-  /**
-   * Meal createMany
-   */
-  export type MealCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Meals.
-     */
-    data: MealCreateManyInput | MealCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Meal createManyAndReturn
-   */
-  export type MealCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Meal
-     */
-    select?: MealSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Meal
-     */
-    omit?: MealOmit<ExtArgs> | null
-    /**
-     * The data used to create many Meals.
-     */
-    data: MealCreateManyInput | MealCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Meal update
-   */
-  export type MealUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Meal
-     */
-    select?: MealSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Meal
-     */
-    omit?: MealOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Meal.
-     */
-    data: XOR<MealUpdateInput, MealUncheckedUpdateInput>
-    /**
-     * Choose, which Meal to update.
-     */
-    where: MealWhereUniqueInput
-  }
-
-  /**
-   * Meal updateMany
-   */
-  export type MealUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Meals.
-     */
-    data: XOR<MealUpdateManyMutationInput, MealUncheckedUpdateManyInput>
-    /**
-     * Filter which Meals to update
-     */
-    where?: MealWhereInput
-    /**
-     * Limit how many Meals to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Meal updateManyAndReturn
-   */
-  export type MealUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Meal
-     */
-    select?: MealSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Meal
-     */
-    omit?: MealOmit<ExtArgs> | null
-    /**
-     * The data used to update Meals.
-     */
-    data: XOR<MealUpdateManyMutationInput, MealUncheckedUpdateManyInput>
-    /**
-     * Filter which Meals to update
-     */
-    where?: MealWhereInput
-    /**
-     * Limit how many Meals to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Meal upsert
-   */
-  export type MealUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Meal
-     */
-    select?: MealSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Meal
-     */
-    omit?: MealOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Meal to update in case it exists.
-     */
-    where: MealWhereUniqueInput
-    /**
-     * In case the Meal found by the `where` argument doesn't exist, create a new Meal with this data.
-     */
-    create: XOR<MealCreateInput, MealUncheckedCreateInput>
-    /**
-     * In case the Meal was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<MealUpdateInput, MealUncheckedUpdateInput>
-  }
-
-  /**
-   * Meal delete
-   */
-  export type MealDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Meal
-     */
-    select?: MealSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Meal
-     */
-    omit?: MealOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealInclude<ExtArgs> | null
-    /**
-     * Filter which Meal to delete.
-     */
-    where: MealWhereUniqueInput
-  }
-
-  /**
-   * Meal deleteMany
-   */
-  export type MealDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Meals to delete
-     */
-    where?: MealWhereInput
-    /**
-     * Limit how many Meals to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Meal.quotationMeals
-   */
-  export type Meal$quotationMealsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QuotationMeal
-     */
-    select?: QuotationMealSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the QuotationMeal
-     */
-    omit?: QuotationMealOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: QuotationMealInclude<ExtArgs> | null
-    where?: QuotationMealWhereInput
-    orderBy?: QuotationMealOrderByWithRelationInput | QuotationMealOrderByWithRelationInput[]
-    cursor?: QuotationMealWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: QuotationMealScalarFieldEnum | QuotationMealScalarFieldEnum[]
-  }
-
-  /**
-   * Meal without action
-   */
-  export type MealDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Meal
-     */
-    select?: MealSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Meal
-     */
-    omit?: MealOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealInclude<ExtArgs> | null
-  }
-
-
-  /**
    * Model QuotationMeal
    */
 
@@ -18716,1150 +20286,6 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: QuotationMealInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model Activity
-   */
-
-  export type AggregateActivity = {
-    _count: ActivityCountAggregateOutputType | null
-    _avg: ActivityAvgAggregateOutputType | null
-    _sum: ActivitySumAggregateOutputType | null
-    _min: ActivityMinAggregateOutputType | null
-    _max: ActivityMaxAggregateOutputType | null
-  }
-
-  export type ActivityAvgAggregateOutputType = {
-    price: number | null
-  }
-
-  export type ActivitySumAggregateOutputType = {
-    price: number | null
-  }
-
-  export type ActivityMinAggregateOutputType = {
-    id: string | null
-    name: string | null
-    description: string | null
-    duration: string | null
-    price: number | null
-    agencyId: string | null
-  }
-
-  export type ActivityMaxAggregateOutputType = {
-    id: string | null
-    name: string | null
-    description: string | null
-    duration: string | null
-    price: number | null
-    agencyId: string | null
-  }
-
-  export type ActivityCountAggregateOutputType = {
-    id: number
-    name: number
-    description: number
-    duration: number
-    price: number
-    photos: number
-    agencyId: number
-    _all: number
-  }
-
-
-  export type ActivityAvgAggregateInputType = {
-    price?: true
-  }
-
-  export type ActivitySumAggregateInputType = {
-    price?: true
-  }
-
-  export type ActivityMinAggregateInputType = {
-    id?: true
-    name?: true
-    description?: true
-    duration?: true
-    price?: true
-    agencyId?: true
-  }
-
-  export type ActivityMaxAggregateInputType = {
-    id?: true
-    name?: true
-    description?: true
-    duration?: true
-    price?: true
-    agencyId?: true
-  }
-
-  export type ActivityCountAggregateInputType = {
-    id?: true
-    name?: true
-    description?: true
-    duration?: true
-    price?: true
-    photos?: true
-    agencyId?: true
-    _all?: true
-  }
-
-  export type ActivityAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Activity to aggregate.
-     */
-    where?: ActivityWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Activities to fetch.
-     */
-    orderBy?: ActivityOrderByWithRelationInput | ActivityOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: ActivityWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Activities from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Activities.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Activities
-    **/
-    _count?: true | ActivityCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: ActivityAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: ActivitySumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: ActivityMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: ActivityMaxAggregateInputType
-  }
-
-  export type GetActivityAggregateType<T extends ActivityAggregateArgs> = {
-        [P in keyof T & keyof AggregateActivity]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateActivity[P]>
-      : GetScalarType<T[P], AggregateActivity[P]>
-  }
-
-
-
-
-  export type ActivityGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ActivityWhereInput
-    orderBy?: ActivityOrderByWithAggregationInput | ActivityOrderByWithAggregationInput[]
-    by: ActivityScalarFieldEnum[] | ActivityScalarFieldEnum
-    having?: ActivityScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: ActivityCountAggregateInputType | true
-    _avg?: ActivityAvgAggregateInputType
-    _sum?: ActivitySumAggregateInputType
-    _min?: ActivityMinAggregateInputType
-    _max?: ActivityMaxAggregateInputType
-  }
-
-  export type ActivityGroupByOutputType = {
-    id: string
-    name: string
-    description: string | null
-    duration: string | null
-    price: number
-    photos: JsonValue | null
-    agencyId: string
-    _count: ActivityCountAggregateOutputType | null
-    _avg: ActivityAvgAggregateOutputType | null
-    _sum: ActivitySumAggregateOutputType | null
-    _min: ActivityMinAggregateOutputType | null
-    _max: ActivityMaxAggregateOutputType | null
-  }
-
-  type GetActivityGroupByPayload<T extends ActivityGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<ActivityGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof ActivityGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], ActivityGroupByOutputType[P]>
-            : GetScalarType<T[P], ActivityGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type ActivitySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    description?: boolean
-    duration?: boolean
-    price?: boolean
-    photos?: boolean
-    agencyId?: boolean
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
-    quotationActivities?: boolean | Activity$quotationActivitiesArgs<ExtArgs>
-    _count?: boolean | ActivityCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["activity"]>
-
-  export type ActivitySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    description?: boolean
-    duration?: boolean
-    price?: boolean
-    photos?: boolean
-    agencyId?: boolean
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["activity"]>
-
-  export type ActivitySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    description?: boolean
-    duration?: boolean
-    price?: boolean
-    photos?: boolean
-    agencyId?: boolean
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["activity"]>
-
-  export type ActivitySelectScalar = {
-    id?: boolean
-    name?: boolean
-    description?: boolean
-    duration?: boolean
-    price?: boolean
-    photos?: boolean
-    agencyId?: boolean
-  }
-
-  export type ActivityOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "duration" | "price" | "photos" | "agencyId", ExtArgs["result"]["activity"]>
-  export type ActivityInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
-    quotationActivities?: boolean | Activity$quotationActivitiesArgs<ExtArgs>
-    _count?: boolean | ActivityCountOutputTypeDefaultArgs<ExtArgs>
-  }
-  export type ActivityIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
-  }
-  export type ActivityIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
-  }
-
-  export type $ActivityPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Activity"
-    objects: {
-      agency: Prisma.$AgencyPayload<ExtArgs>
-      quotationActivities: Prisma.$QuotationActivityPayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      name: string
-      description: string | null
-      duration: string | null
-      price: number
-      photos: Prisma.JsonValue | null
-      agencyId: string
-    }, ExtArgs["result"]["activity"]>
-    composites: {}
-  }
-
-  type ActivityGetPayload<S extends boolean | null | undefined | ActivityDefaultArgs> = $Result.GetResult<Prisma.$ActivityPayload, S>
-
-  type ActivityCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<ActivityFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: ActivityCountAggregateInputType | true
-    }
-
-  export interface ActivityDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Activity'], meta: { name: 'Activity' } }
-    /**
-     * Find zero or one Activity that matches the filter.
-     * @param {ActivityFindUniqueArgs} args - Arguments to find a Activity
-     * @example
-     * // Get one Activity
-     * const activity = await prisma.activity.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends ActivityFindUniqueArgs>(args: SelectSubset<T, ActivityFindUniqueArgs<ExtArgs>>): Prisma__ActivityClient<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Activity that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {ActivityFindUniqueOrThrowArgs} args - Arguments to find a Activity
-     * @example
-     * // Get one Activity
-     * const activity = await prisma.activity.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends ActivityFindUniqueOrThrowArgs>(args: SelectSubset<T, ActivityFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ActivityClient<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Activity that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ActivityFindFirstArgs} args - Arguments to find a Activity
-     * @example
-     * // Get one Activity
-     * const activity = await prisma.activity.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends ActivityFindFirstArgs>(args?: SelectSubset<T, ActivityFindFirstArgs<ExtArgs>>): Prisma__ActivityClient<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Activity that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ActivityFindFirstOrThrowArgs} args - Arguments to find a Activity
-     * @example
-     * // Get one Activity
-     * const activity = await prisma.activity.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends ActivityFindFirstOrThrowArgs>(args?: SelectSubset<T, ActivityFindFirstOrThrowArgs<ExtArgs>>): Prisma__ActivityClient<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Activities that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ActivityFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Activities
-     * const activities = await prisma.activity.findMany()
-     * 
-     * // Get first 10 Activities
-     * const activities = await prisma.activity.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const activityWithIdOnly = await prisma.activity.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends ActivityFindManyArgs>(args?: SelectSubset<T, ActivityFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Activity.
-     * @param {ActivityCreateArgs} args - Arguments to create a Activity.
-     * @example
-     * // Create one Activity
-     * const Activity = await prisma.activity.create({
-     *   data: {
-     *     // ... data to create a Activity
-     *   }
-     * })
-     * 
-     */
-    create<T extends ActivityCreateArgs>(args: SelectSubset<T, ActivityCreateArgs<ExtArgs>>): Prisma__ActivityClient<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Activities.
-     * @param {ActivityCreateManyArgs} args - Arguments to create many Activities.
-     * @example
-     * // Create many Activities
-     * const activity = await prisma.activity.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends ActivityCreateManyArgs>(args?: SelectSubset<T, ActivityCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Activities and returns the data saved in the database.
-     * @param {ActivityCreateManyAndReturnArgs} args - Arguments to create many Activities.
-     * @example
-     * // Create many Activities
-     * const activity = await prisma.activity.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Activities and only return the `id`
-     * const activityWithIdOnly = await prisma.activity.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends ActivityCreateManyAndReturnArgs>(args?: SelectSubset<T, ActivityCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a Activity.
-     * @param {ActivityDeleteArgs} args - Arguments to delete one Activity.
-     * @example
-     * // Delete one Activity
-     * const Activity = await prisma.activity.delete({
-     *   where: {
-     *     // ... filter to delete one Activity
-     *   }
-     * })
-     * 
-     */
-    delete<T extends ActivityDeleteArgs>(args: SelectSubset<T, ActivityDeleteArgs<ExtArgs>>): Prisma__ActivityClient<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Activity.
-     * @param {ActivityUpdateArgs} args - Arguments to update one Activity.
-     * @example
-     * // Update one Activity
-     * const activity = await prisma.activity.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends ActivityUpdateArgs>(args: SelectSubset<T, ActivityUpdateArgs<ExtArgs>>): Prisma__ActivityClient<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Activities.
-     * @param {ActivityDeleteManyArgs} args - Arguments to filter Activities to delete.
-     * @example
-     * // Delete a few Activities
-     * const { count } = await prisma.activity.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends ActivityDeleteManyArgs>(args?: SelectSubset<T, ActivityDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Activities.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ActivityUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Activities
-     * const activity = await prisma.activity.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends ActivityUpdateManyArgs>(args: SelectSubset<T, ActivityUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Activities and returns the data updated in the database.
-     * @param {ActivityUpdateManyAndReturnArgs} args - Arguments to update many Activities.
-     * @example
-     * // Update many Activities
-     * const activity = await prisma.activity.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Activities and only return the `id`
-     * const activityWithIdOnly = await prisma.activity.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends ActivityUpdateManyAndReturnArgs>(args: SelectSubset<T, ActivityUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Activity.
-     * @param {ActivityUpsertArgs} args - Arguments to update or create a Activity.
-     * @example
-     * // Update or create a Activity
-     * const activity = await prisma.activity.upsert({
-     *   create: {
-     *     // ... data to create a Activity
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Activity we want to update
-     *   }
-     * })
-     */
-    upsert<T extends ActivityUpsertArgs>(args: SelectSubset<T, ActivityUpsertArgs<ExtArgs>>): Prisma__ActivityClient<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Activities.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ActivityCountArgs} args - Arguments to filter Activities to count.
-     * @example
-     * // Count the number of Activities
-     * const count = await prisma.activity.count({
-     *   where: {
-     *     // ... the filter for the Activities we want to count
-     *   }
-     * })
-    **/
-    count<T extends ActivityCountArgs>(
-      args?: Subset<T, ActivityCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], ActivityCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Activity.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ActivityAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends ActivityAggregateArgs>(args: Subset<T, ActivityAggregateArgs>): Prisma.PrismaPromise<GetActivityAggregateType<T>>
-
-    /**
-     * Group by Activity.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ActivityGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends ActivityGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: ActivityGroupByArgs['orderBy'] }
-        : { orderBy?: ActivityGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, ActivityGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetActivityGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Activity model
-   */
-  readonly fields: ActivityFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Activity.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__ActivityClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    quotationActivities<T extends Activity$quotationActivitiesArgs<ExtArgs> = {}>(args?: Subset<T, Activity$quotationActivitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuotationActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Activity model
-   */
-  interface ActivityFieldRefs {
-    readonly id: FieldRef<"Activity", 'String'>
-    readonly name: FieldRef<"Activity", 'String'>
-    readonly description: FieldRef<"Activity", 'String'>
-    readonly duration: FieldRef<"Activity", 'String'>
-    readonly price: FieldRef<"Activity", 'Float'>
-    readonly photos: FieldRef<"Activity", 'Json'>
-    readonly agencyId: FieldRef<"Activity", 'String'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Activity findUnique
-   */
-  export type ActivityFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Activity
-     */
-    select?: ActivitySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Activity
-     */
-    omit?: ActivityOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ActivityInclude<ExtArgs> | null
-    /**
-     * Filter, which Activity to fetch.
-     */
-    where: ActivityWhereUniqueInput
-  }
-
-  /**
-   * Activity findUniqueOrThrow
-   */
-  export type ActivityFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Activity
-     */
-    select?: ActivitySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Activity
-     */
-    omit?: ActivityOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ActivityInclude<ExtArgs> | null
-    /**
-     * Filter, which Activity to fetch.
-     */
-    where: ActivityWhereUniqueInput
-  }
-
-  /**
-   * Activity findFirst
-   */
-  export type ActivityFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Activity
-     */
-    select?: ActivitySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Activity
-     */
-    omit?: ActivityOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ActivityInclude<ExtArgs> | null
-    /**
-     * Filter, which Activity to fetch.
-     */
-    where?: ActivityWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Activities to fetch.
-     */
-    orderBy?: ActivityOrderByWithRelationInput | ActivityOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Activities.
-     */
-    cursor?: ActivityWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Activities from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Activities.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Activities.
-     */
-    distinct?: ActivityScalarFieldEnum | ActivityScalarFieldEnum[]
-  }
-
-  /**
-   * Activity findFirstOrThrow
-   */
-  export type ActivityFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Activity
-     */
-    select?: ActivitySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Activity
-     */
-    omit?: ActivityOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ActivityInclude<ExtArgs> | null
-    /**
-     * Filter, which Activity to fetch.
-     */
-    where?: ActivityWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Activities to fetch.
-     */
-    orderBy?: ActivityOrderByWithRelationInput | ActivityOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Activities.
-     */
-    cursor?: ActivityWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Activities from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Activities.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Activities.
-     */
-    distinct?: ActivityScalarFieldEnum | ActivityScalarFieldEnum[]
-  }
-
-  /**
-   * Activity findMany
-   */
-  export type ActivityFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Activity
-     */
-    select?: ActivitySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Activity
-     */
-    omit?: ActivityOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ActivityInclude<ExtArgs> | null
-    /**
-     * Filter, which Activities to fetch.
-     */
-    where?: ActivityWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Activities to fetch.
-     */
-    orderBy?: ActivityOrderByWithRelationInput | ActivityOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Activities.
-     */
-    cursor?: ActivityWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Activities from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Activities.
-     */
-    skip?: number
-    distinct?: ActivityScalarFieldEnum | ActivityScalarFieldEnum[]
-  }
-
-  /**
-   * Activity create
-   */
-  export type ActivityCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Activity
-     */
-    select?: ActivitySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Activity
-     */
-    omit?: ActivityOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ActivityInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Activity.
-     */
-    data: XOR<ActivityCreateInput, ActivityUncheckedCreateInput>
-  }
-
-  /**
-   * Activity createMany
-   */
-  export type ActivityCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Activities.
-     */
-    data: ActivityCreateManyInput | ActivityCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Activity createManyAndReturn
-   */
-  export type ActivityCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Activity
-     */
-    select?: ActivitySelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Activity
-     */
-    omit?: ActivityOmit<ExtArgs> | null
-    /**
-     * The data used to create many Activities.
-     */
-    data: ActivityCreateManyInput | ActivityCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ActivityIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Activity update
-   */
-  export type ActivityUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Activity
-     */
-    select?: ActivitySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Activity
-     */
-    omit?: ActivityOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ActivityInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Activity.
-     */
-    data: XOR<ActivityUpdateInput, ActivityUncheckedUpdateInput>
-    /**
-     * Choose, which Activity to update.
-     */
-    where: ActivityWhereUniqueInput
-  }
-
-  /**
-   * Activity updateMany
-   */
-  export type ActivityUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Activities.
-     */
-    data: XOR<ActivityUpdateManyMutationInput, ActivityUncheckedUpdateManyInput>
-    /**
-     * Filter which Activities to update
-     */
-    where?: ActivityWhereInput
-    /**
-     * Limit how many Activities to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Activity updateManyAndReturn
-   */
-  export type ActivityUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Activity
-     */
-    select?: ActivitySelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Activity
-     */
-    omit?: ActivityOmit<ExtArgs> | null
-    /**
-     * The data used to update Activities.
-     */
-    data: XOR<ActivityUpdateManyMutationInput, ActivityUncheckedUpdateManyInput>
-    /**
-     * Filter which Activities to update
-     */
-    where?: ActivityWhereInput
-    /**
-     * Limit how many Activities to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ActivityIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Activity upsert
-   */
-  export type ActivityUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Activity
-     */
-    select?: ActivitySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Activity
-     */
-    omit?: ActivityOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ActivityInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Activity to update in case it exists.
-     */
-    where: ActivityWhereUniqueInput
-    /**
-     * In case the Activity found by the `where` argument doesn't exist, create a new Activity with this data.
-     */
-    create: XOR<ActivityCreateInput, ActivityUncheckedCreateInput>
-    /**
-     * In case the Activity was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<ActivityUpdateInput, ActivityUncheckedUpdateInput>
-  }
-
-  /**
-   * Activity delete
-   */
-  export type ActivityDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Activity
-     */
-    select?: ActivitySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Activity
-     */
-    omit?: ActivityOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ActivityInclude<ExtArgs> | null
-    /**
-     * Filter which Activity to delete.
-     */
-    where: ActivityWhereUniqueInput
-  }
-
-  /**
-   * Activity deleteMany
-   */
-  export type ActivityDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Activities to delete
-     */
-    where?: ActivityWhereInput
-    /**
-     * Limit how many Activities to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Activity.quotationActivities
-   */
-  export type Activity$quotationActivitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QuotationActivity
-     */
-    select?: QuotationActivitySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the QuotationActivity
-     */
-    omit?: QuotationActivityOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: QuotationActivityInclude<ExtArgs> | null
-    where?: QuotationActivityWhereInput
-    orderBy?: QuotationActivityOrderByWithRelationInput | QuotationActivityOrderByWithRelationInput[]
-    cursor?: QuotationActivityWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: QuotationActivityScalarFieldEnum | QuotationActivityScalarFieldEnum[]
-  }
-
-  /**
-   * Activity without action
-   */
-  export type ActivityDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Activity
-     */
-    select?: ActivitySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Activity
-     */
-    omit?: ActivityOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ActivityInclude<ExtArgs> | null
   }
 
 
@@ -24784,7 +25210,9 @@ export namespace Prisma {
     inclusions: 'inclusions',
     cancellation: 'cancellation',
     photos: 'photos',
-    agencyId: 'agencyId'
+    agencyId: 'agencyId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type HotelScalarFieldEnum = (typeof HotelScalarFieldEnum)[keyof typeof HotelScalarFieldEnum]
@@ -24794,10 +25222,69 @@ export namespace Prisma {
     id: 'id',
     type: 'type',
     price: 'price',
-    hotelId: 'hotelId'
+    maxAdults: 'maxAdults',
+    maxChildren: 'maxChildren',
+    bedType: 'bedType',
+    amenities: 'amenities',
+    description: 'description',
+    image: 'image',
+    hotelId: 'hotelId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type RoomTypeScalarFieldEnum = (typeof RoomTypeScalarFieldEnum)[keyof typeof RoomTypeScalarFieldEnum]
+
+
+  export const MealScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    type: 'type',
+    category: 'category',
+    vegOption: 'vegOption',
+    nonVegOption: 'nonVegOption',
+    price: 'price',
+    image: 'image',
+    hotelId: 'hotelId',
+    agencyId: 'agencyId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type MealScalarFieldEnum = (typeof MealScalarFieldEnum)[keyof typeof MealScalarFieldEnum]
+
+
+  export const ActivityScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    description: 'description',
+    price: 'price',
+    duration: 'duration',
+    photos: 'photos',
+    image: 'image',
+    hotelId: 'hotelId',
+    agencyId: 'agencyId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typeof ActivityScalarFieldEnum]
+
+
+  export const TransportScalarFieldEnum: {
+    id: 'id',
+    vehicleType: 'vehicleType',
+    perDay: 'perDay',
+    perKm: 'perKm',
+    maxCapacity: 'maxCapacity',
+    notes: 'notes',
+    photos: 'photos',
+    agencyId: 'agencyId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type TransportScalarFieldEnum = (typeof TransportScalarFieldEnum)[keyof typeof TransportScalarFieldEnum]
 
 
   export const QuotationHotelScalarFieldEnum: {
@@ -24811,20 +25298,6 @@ export namespace Prisma {
   export type QuotationHotelScalarFieldEnum = (typeof QuotationHotelScalarFieldEnum)[keyof typeof QuotationHotelScalarFieldEnum]
 
 
-  export const TransportScalarFieldEnum: {
-    id: 'id',
-    vehicleType: 'vehicleType',
-    perDay: 'perDay',
-    perKm: 'perKm',
-    maxCapacity: 'maxCapacity',
-    notes: 'notes',
-    photos: 'photos',
-    agencyId: 'agencyId'
-  };
-
-  export type TransportScalarFieldEnum = (typeof TransportScalarFieldEnum)[keyof typeof TransportScalarFieldEnum]
-
-
   export const QuotationTransportScalarFieldEnum: {
     id: 'id',
     quotationId: 'quotationId',
@@ -24836,18 +25309,6 @@ export namespace Prisma {
   export type QuotationTransportScalarFieldEnum = (typeof QuotationTransportScalarFieldEnum)[keyof typeof QuotationTransportScalarFieldEnum]
 
 
-  export const MealScalarFieldEnum: {
-    id: 'id',
-    type: 'type',
-    vegOption: 'vegOption',
-    nonVegOption: 'nonVegOption',
-    price: 'price',
-    agencyId: 'agencyId'
-  };
-
-  export type MealScalarFieldEnum = (typeof MealScalarFieldEnum)[keyof typeof MealScalarFieldEnum]
-
-
   export const QuotationMealScalarFieldEnum: {
     id: 'id',
     quotationId: 'quotationId',
@@ -24856,19 +25317,6 @@ export namespace Prisma {
   };
 
   export type QuotationMealScalarFieldEnum = (typeof QuotationMealScalarFieldEnum)[keyof typeof QuotationMealScalarFieldEnum]
-
-
-  export const ActivityScalarFieldEnum: {
-    id: 'id',
-    name: 'name',
-    description: 'description',
-    duration: 'duration',
-    price: 'price',
-    photos: 'photos',
-    agencyId: 'agencyId'
-  };
-
-  export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typeof ActivityScalarFieldEnum]
 
 
   export const QuotationActivityScalarFieldEnum: {
@@ -25069,6 +25517,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -25079,13 +25534,6 @@ export namespace Prisma {
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -25618,8 +26066,12 @@ export namespace Prisma {
     cancellation?: StringNullableFilter<"Hotel"> | string | null
     photos?: StringNullableFilter<"Hotel"> | string | null
     agencyId?: StringFilter<"Hotel"> | string
+    createdAt?: DateTimeFilter<"Hotel"> | Date | string
+    updatedAt?: DateTimeFilter<"Hotel"> | Date | string
     agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
     roomTypes?: RoomTypeListRelationFilter
+    meals?: MealListRelationFilter
+    activities?: ActivityListRelationFilter
     quotationHotels?: QuotationHotelListRelationFilter
   }
 
@@ -25632,8 +26084,12 @@ export namespace Prisma {
     cancellation?: SortOrderInput | SortOrder
     photos?: SortOrderInput | SortOrder
     agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     agency?: AgencyOrderByWithRelationInput
     roomTypes?: RoomTypeOrderByRelationAggregateInput
+    meals?: MealOrderByRelationAggregateInput
+    activities?: ActivityOrderByRelationAggregateInput
     quotationHotels?: QuotationHotelOrderByRelationAggregateInput
   }
 
@@ -25649,8 +26105,12 @@ export namespace Prisma {
     cancellation?: StringNullableFilter<"Hotel"> | string | null
     photos?: StringNullableFilter<"Hotel"> | string | null
     agencyId?: StringFilter<"Hotel"> | string
+    createdAt?: DateTimeFilter<"Hotel"> | Date | string
+    updatedAt?: DateTimeFilter<"Hotel"> | Date | string
     agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
     roomTypes?: RoomTypeListRelationFilter
+    meals?: MealListRelationFilter
+    activities?: ActivityListRelationFilter
     quotationHotels?: QuotationHotelListRelationFilter
   }, "id">
 
@@ -25663,6 +26123,8 @@ export namespace Prisma {
     cancellation?: SortOrderInput | SortOrder
     photos?: SortOrderInput | SortOrder
     agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: HotelCountOrderByAggregateInput
     _avg?: HotelAvgOrderByAggregateInput
     _max?: HotelMaxOrderByAggregateInput
@@ -25682,6 +26144,8 @@ export namespace Prisma {
     cancellation?: StringNullableWithAggregatesFilter<"Hotel"> | string | null
     photos?: StringNullableWithAggregatesFilter<"Hotel"> | string | null
     agencyId?: StringWithAggregatesFilter<"Hotel"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Hotel"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Hotel"> | Date | string
   }
 
   export type RoomTypeWhereInput = {
@@ -25691,7 +26155,15 @@ export namespace Prisma {
     id?: StringFilter<"RoomType"> | string
     type?: StringFilter<"RoomType"> | string
     price?: DecimalFilter<"RoomType"> | Decimal | DecimalJsLike | number | string
+    maxAdults?: IntFilter<"RoomType"> | number
+    maxChildren?: IntFilter<"RoomType"> | number
+    bedType?: StringNullableFilter<"RoomType"> | string | null
+    amenities?: StringNullableFilter<"RoomType"> | string | null
+    description?: StringNullableFilter<"RoomType"> | string | null
+    image?: StringNullableFilter<"RoomType"> | string | null
     hotelId?: StringFilter<"RoomType"> | string
+    createdAt?: DateTimeFilter<"RoomType"> | Date | string
+    updatedAt?: DateTimeFilter<"RoomType"> | Date | string
     hotel?: XOR<HotelScalarRelationFilter, HotelWhereInput>
     quotationHotels?: QuotationHotelListRelationFilter
   }
@@ -25700,7 +26172,15 @@ export namespace Prisma {
     id?: SortOrder
     type?: SortOrder
     price?: SortOrder
+    maxAdults?: SortOrder
+    maxChildren?: SortOrder
+    bedType?: SortOrderInput | SortOrder
+    amenities?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
+    image?: SortOrderInput | SortOrder
     hotelId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     hotel?: HotelOrderByWithRelationInput
     quotationHotels?: QuotationHotelOrderByRelationAggregateInput
   }
@@ -25712,7 +26192,15 @@ export namespace Prisma {
     NOT?: RoomTypeWhereInput | RoomTypeWhereInput[]
     type?: StringFilter<"RoomType"> | string
     price?: DecimalFilter<"RoomType"> | Decimal | DecimalJsLike | number | string
+    maxAdults?: IntFilter<"RoomType"> | number
+    maxChildren?: IntFilter<"RoomType"> | number
+    bedType?: StringNullableFilter<"RoomType"> | string | null
+    amenities?: StringNullableFilter<"RoomType"> | string | null
+    description?: StringNullableFilter<"RoomType"> | string | null
+    image?: StringNullableFilter<"RoomType"> | string | null
     hotelId?: StringFilter<"RoomType"> | string
+    createdAt?: DateTimeFilter<"RoomType"> | Date | string
+    updatedAt?: DateTimeFilter<"RoomType"> | Date | string
     hotel?: XOR<HotelScalarRelationFilter, HotelWhereInput>
     quotationHotels?: QuotationHotelListRelationFilter
   }, "id">
@@ -25721,7 +26209,15 @@ export namespace Prisma {
     id?: SortOrder
     type?: SortOrder
     price?: SortOrder
+    maxAdults?: SortOrder
+    maxChildren?: SortOrder
+    bedType?: SortOrderInput | SortOrder
+    amenities?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
+    image?: SortOrderInput | SortOrder
     hotelId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: RoomTypeCountOrderByAggregateInput
     _avg?: RoomTypeAvgOrderByAggregateInput
     _max?: RoomTypeMaxOrderByAggregateInput
@@ -25736,7 +26232,291 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"RoomType"> | string
     type?: StringWithAggregatesFilter<"RoomType"> | string
     price?: DecimalWithAggregatesFilter<"RoomType"> | Decimal | DecimalJsLike | number | string
+    maxAdults?: IntWithAggregatesFilter<"RoomType"> | number
+    maxChildren?: IntWithAggregatesFilter<"RoomType"> | number
+    bedType?: StringNullableWithAggregatesFilter<"RoomType"> | string | null
+    amenities?: StringNullableWithAggregatesFilter<"RoomType"> | string | null
+    description?: StringNullableWithAggregatesFilter<"RoomType"> | string | null
+    image?: StringNullableWithAggregatesFilter<"RoomType"> | string | null
     hotelId?: StringWithAggregatesFilter<"RoomType"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"RoomType"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"RoomType"> | Date | string
+  }
+
+  export type MealWhereInput = {
+    AND?: MealWhereInput | MealWhereInput[]
+    OR?: MealWhereInput[]
+    NOT?: MealWhereInput | MealWhereInput[]
+    id?: StringFilter<"Meal"> | string
+    name?: StringFilter<"Meal"> | string
+    type?: StringFilter<"Meal"> | string
+    category?: StringFilter<"Meal"> | string
+    vegOption?: BoolFilter<"Meal"> | boolean
+    nonVegOption?: BoolFilter<"Meal"> | boolean
+    price?: FloatFilter<"Meal"> | number
+    image?: StringNullableFilter<"Meal"> | string | null
+    hotelId?: StringNullableFilter<"Meal"> | string | null
+    agencyId?: StringFilter<"Meal"> | string
+    createdAt?: DateTimeFilter<"Meal"> | Date | string
+    updatedAt?: DateTimeFilter<"Meal"> | Date | string
+    hotel?: XOR<HotelNullableScalarRelationFilter, HotelWhereInput> | null
+    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+    quotationMeals?: QuotationMealListRelationFilter
+  }
+
+  export type MealOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    category?: SortOrder
+    vegOption?: SortOrder
+    nonVegOption?: SortOrder
+    price?: SortOrder
+    image?: SortOrderInput | SortOrder
+    hotelId?: SortOrderInput | SortOrder
+    agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    hotel?: HotelOrderByWithRelationInput
+    agency?: AgencyOrderByWithRelationInput
+    quotationMeals?: QuotationMealOrderByRelationAggregateInput
+  }
+
+  export type MealWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: MealWhereInput | MealWhereInput[]
+    OR?: MealWhereInput[]
+    NOT?: MealWhereInput | MealWhereInput[]
+    name?: StringFilter<"Meal"> | string
+    type?: StringFilter<"Meal"> | string
+    category?: StringFilter<"Meal"> | string
+    vegOption?: BoolFilter<"Meal"> | boolean
+    nonVegOption?: BoolFilter<"Meal"> | boolean
+    price?: FloatFilter<"Meal"> | number
+    image?: StringNullableFilter<"Meal"> | string | null
+    hotelId?: StringNullableFilter<"Meal"> | string | null
+    agencyId?: StringFilter<"Meal"> | string
+    createdAt?: DateTimeFilter<"Meal"> | Date | string
+    updatedAt?: DateTimeFilter<"Meal"> | Date | string
+    hotel?: XOR<HotelNullableScalarRelationFilter, HotelWhereInput> | null
+    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+    quotationMeals?: QuotationMealListRelationFilter
+  }, "id">
+
+  export type MealOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    category?: SortOrder
+    vegOption?: SortOrder
+    nonVegOption?: SortOrder
+    price?: SortOrder
+    image?: SortOrderInput | SortOrder
+    hotelId?: SortOrderInput | SortOrder
+    agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: MealCountOrderByAggregateInput
+    _avg?: MealAvgOrderByAggregateInput
+    _max?: MealMaxOrderByAggregateInput
+    _min?: MealMinOrderByAggregateInput
+    _sum?: MealSumOrderByAggregateInput
+  }
+
+  export type MealScalarWhereWithAggregatesInput = {
+    AND?: MealScalarWhereWithAggregatesInput | MealScalarWhereWithAggregatesInput[]
+    OR?: MealScalarWhereWithAggregatesInput[]
+    NOT?: MealScalarWhereWithAggregatesInput | MealScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Meal"> | string
+    name?: StringWithAggregatesFilter<"Meal"> | string
+    type?: StringWithAggregatesFilter<"Meal"> | string
+    category?: StringWithAggregatesFilter<"Meal"> | string
+    vegOption?: BoolWithAggregatesFilter<"Meal"> | boolean
+    nonVegOption?: BoolWithAggregatesFilter<"Meal"> | boolean
+    price?: FloatWithAggregatesFilter<"Meal"> | number
+    image?: StringNullableWithAggregatesFilter<"Meal"> | string | null
+    hotelId?: StringNullableWithAggregatesFilter<"Meal"> | string | null
+    agencyId?: StringWithAggregatesFilter<"Meal"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Meal"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Meal"> | Date | string
+  }
+
+  export type ActivityWhereInput = {
+    AND?: ActivityWhereInput | ActivityWhereInput[]
+    OR?: ActivityWhereInput[]
+    NOT?: ActivityWhereInput | ActivityWhereInput[]
+    id?: StringFilter<"Activity"> | string
+    name?: StringFilter<"Activity"> | string
+    description?: StringNullableFilter<"Activity"> | string | null
+    price?: FloatFilter<"Activity"> | number
+    duration?: StringNullableFilter<"Activity"> | string | null
+    photos?: StringNullableFilter<"Activity"> | string | null
+    image?: StringNullableFilter<"Activity"> | string | null
+    hotelId?: StringNullableFilter<"Activity"> | string | null
+    agencyId?: StringFilter<"Activity"> | string
+    createdAt?: DateTimeFilter<"Activity"> | Date | string
+    updatedAt?: DateTimeFilter<"Activity"> | Date | string
+    hotel?: XOR<HotelNullableScalarRelationFilter, HotelWhereInput> | null
+    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+    quotationActivities?: QuotationActivityListRelationFilter
+  }
+
+  export type ActivityOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    price?: SortOrder
+    duration?: SortOrderInput | SortOrder
+    photos?: SortOrderInput | SortOrder
+    image?: SortOrderInput | SortOrder
+    hotelId?: SortOrderInput | SortOrder
+    agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    hotel?: HotelOrderByWithRelationInput
+    agency?: AgencyOrderByWithRelationInput
+    quotationActivities?: QuotationActivityOrderByRelationAggregateInput
+  }
+
+  export type ActivityWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ActivityWhereInput | ActivityWhereInput[]
+    OR?: ActivityWhereInput[]
+    NOT?: ActivityWhereInput | ActivityWhereInput[]
+    name?: StringFilter<"Activity"> | string
+    description?: StringNullableFilter<"Activity"> | string | null
+    price?: FloatFilter<"Activity"> | number
+    duration?: StringNullableFilter<"Activity"> | string | null
+    photos?: StringNullableFilter<"Activity"> | string | null
+    image?: StringNullableFilter<"Activity"> | string | null
+    hotelId?: StringNullableFilter<"Activity"> | string | null
+    agencyId?: StringFilter<"Activity"> | string
+    createdAt?: DateTimeFilter<"Activity"> | Date | string
+    updatedAt?: DateTimeFilter<"Activity"> | Date | string
+    hotel?: XOR<HotelNullableScalarRelationFilter, HotelWhereInput> | null
+    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+    quotationActivities?: QuotationActivityListRelationFilter
+  }, "id">
+
+  export type ActivityOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    price?: SortOrder
+    duration?: SortOrderInput | SortOrder
+    photos?: SortOrderInput | SortOrder
+    image?: SortOrderInput | SortOrder
+    hotelId?: SortOrderInput | SortOrder
+    agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ActivityCountOrderByAggregateInput
+    _avg?: ActivityAvgOrderByAggregateInput
+    _max?: ActivityMaxOrderByAggregateInput
+    _min?: ActivityMinOrderByAggregateInput
+    _sum?: ActivitySumOrderByAggregateInput
+  }
+
+  export type ActivityScalarWhereWithAggregatesInput = {
+    AND?: ActivityScalarWhereWithAggregatesInput | ActivityScalarWhereWithAggregatesInput[]
+    OR?: ActivityScalarWhereWithAggregatesInput[]
+    NOT?: ActivityScalarWhereWithAggregatesInput | ActivityScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Activity"> | string
+    name?: StringWithAggregatesFilter<"Activity"> | string
+    description?: StringNullableWithAggregatesFilter<"Activity"> | string | null
+    price?: FloatWithAggregatesFilter<"Activity"> | number
+    duration?: StringNullableWithAggregatesFilter<"Activity"> | string | null
+    photos?: StringNullableWithAggregatesFilter<"Activity"> | string | null
+    image?: StringNullableWithAggregatesFilter<"Activity"> | string | null
+    hotelId?: StringNullableWithAggregatesFilter<"Activity"> | string | null
+    agencyId?: StringWithAggregatesFilter<"Activity"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Activity"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Activity"> | Date | string
+  }
+
+  export type TransportWhereInput = {
+    AND?: TransportWhereInput | TransportWhereInput[]
+    OR?: TransportWhereInput[]
+    NOT?: TransportWhereInput | TransportWhereInput[]
+    id?: StringFilter<"Transport"> | string
+    vehicleType?: StringFilter<"Transport"> | string
+    perDay?: FloatFilter<"Transport"> | number
+    perKm?: FloatFilter<"Transport"> | number
+    maxCapacity?: IntFilter<"Transport"> | number
+    notes?: StringNullableFilter<"Transport"> | string | null
+    photos?: StringNullableFilter<"Transport"> | string | null
+    agencyId?: StringFilter<"Transport"> | string
+    createdAt?: DateTimeFilter<"Transport"> | Date | string
+    updatedAt?: DateTimeFilter<"Transport"> | Date | string
+    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+    quotationTransports?: QuotationTransportListRelationFilter
+  }
+
+  export type TransportOrderByWithRelationInput = {
+    id?: SortOrder
+    vehicleType?: SortOrder
+    perDay?: SortOrder
+    perKm?: SortOrder
+    maxCapacity?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    photos?: SortOrderInput | SortOrder
+    agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agency?: AgencyOrderByWithRelationInput
+    quotationTransports?: QuotationTransportOrderByRelationAggregateInput
+  }
+
+  export type TransportWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: TransportWhereInput | TransportWhereInput[]
+    OR?: TransportWhereInput[]
+    NOT?: TransportWhereInput | TransportWhereInput[]
+    vehicleType?: StringFilter<"Transport"> | string
+    perDay?: FloatFilter<"Transport"> | number
+    perKm?: FloatFilter<"Transport"> | number
+    maxCapacity?: IntFilter<"Transport"> | number
+    notes?: StringNullableFilter<"Transport"> | string | null
+    photos?: StringNullableFilter<"Transport"> | string | null
+    agencyId?: StringFilter<"Transport"> | string
+    createdAt?: DateTimeFilter<"Transport"> | Date | string
+    updatedAt?: DateTimeFilter<"Transport"> | Date | string
+    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+    quotationTransports?: QuotationTransportListRelationFilter
+  }, "id">
+
+  export type TransportOrderByWithAggregationInput = {
+    id?: SortOrder
+    vehicleType?: SortOrder
+    perDay?: SortOrder
+    perKm?: SortOrder
+    maxCapacity?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    photos?: SortOrderInput | SortOrder
+    agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: TransportCountOrderByAggregateInput
+    _avg?: TransportAvgOrderByAggregateInput
+    _max?: TransportMaxOrderByAggregateInput
+    _min?: TransportMinOrderByAggregateInput
+    _sum?: TransportSumOrderByAggregateInput
+  }
+
+  export type TransportScalarWhereWithAggregatesInput = {
+    AND?: TransportScalarWhereWithAggregatesInput | TransportScalarWhereWithAggregatesInput[]
+    OR?: TransportScalarWhereWithAggregatesInput[]
+    NOT?: TransportScalarWhereWithAggregatesInput | TransportScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Transport"> | string
+    vehicleType?: StringWithAggregatesFilter<"Transport"> | string
+    perDay?: FloatWithAggregatesFilter<"Transport"> | number
+    perKm?: FloatWithAggregatesFilter<"Transport"> | number
+    maxCapacity?: IntWithAggregatesFilter<"Transport"> | number
+    notes?: StringNullableWithAggregatesFilter<"Transport"> | string | null
+    photos?: StringNullableWithAggregatesFilter<"Transport"> | string | null
+    agencyId?: StringWithAggregatesFilter<"Transport"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Transport"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Transport"> | Date | string
   }
 
   export type QuotationHotelWhereInput = {
@@ -25802,81 +26582,6 @@ export namespace Prisma {
     price?: FloatWithAggregatesFilter<"QuotationHotel"> | number
   }
 
-  export type TransportWhereInput = {
-    AND?: TransportWhereInput | TransportWhereInput[]
-    OR?: TransportWhereInput[]
-    NOT?: TransportWhereInput | TransportWhereInput[]
-    id?: StringFilter<"Transport"> | string
-    vehicleType?: StringFilter<"Transport"> | string
-    perDay?: FloatFilter<"Transport"> | number
-    perKm?: FloatFilter<"Transport"> | number
-    maxCapacity?: IntFilter<"Transport"> | number
-    notes?: StringNullableFilter<"Transport"> | string | null
-    photos?: StringNullableFilter<"Transport"> | string | null
-    agencyId?: StringFilter<"Transport"> | string
-    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
-    quotationTransports?: QuotationTransportListRelationFilter
-  }
-
-  export type TransportOrderByWithRelationInput = {
-    id?: SortOrder
-    vehicleType?: SortOrder
-    perDay?: SortOrder
-    perKm?: SortOrder
-    maxCapacity?: SortOrder
-    notes?: SortOrderInput | SortOrder
-    photos?: SortOrderInput | SortOrder
-    agencyId?: SortOrder
-    agency?: AgencyOrderByWithRelationInput
-    quotationTransports?: QuotationTransportOrderByRelationAggregateInput
-  }
-
-  export type TransportWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: TransportWhereInput | TransportWhereInput[]
-    OR?: TransportWhereInput[]
-    NOT?: TransportWhereInput | TransportWhereInput[]
-    vehicleType?: StringFilter<"Transport"> | string
-    perDay?: FloatFilter<"Transport"> | number
-    perKm?: FloatFilter<"Transport"> | number
-    maxCapacity?: IntFilter<"Transport"> | number
-    notes?: StringNullableFilter<"Transport"> | string | null
-    photos?: StringNullableFilter<"Transport"> | string | null
-    agencyId?: StringFilter<"Transport"> | string
-    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
-    quotationTransports?: QuotationTransportListRelationFilter
-  }, "id">
-
-  export type TransportOrderByWithAggregationInput = {
-    id?: SortOrder
-    vehicleType?: SortOrder
-    perDay?: SortOrder
-    perKm?: SortOrder
-    maxCapacity?: SortOrder
-    notes?: SortOrderInput | SortOrder
-    photos?: SortOrderInput | SortOrder
-    agencyId?: SortOrder
-    _count?: TransportCountOrderByAggregateInput
-    _avg?: TransportAvgOrderByAggregateInput
-    _max?: TransportMaxOrderByAggregateInput
-    _min?: TransportMinOrderByAggregateInput
-    _sum?: TransportSumOrderByAggregateInput
-  }
-
-  export type TransportScalarWhereWithAggregatesInput = {
-    AND?: TransportScalarWhereWithAggregatesInput | TransportScalarWhereWithAggregatesInput[]
-    OR?: TransportScalarWhereWithAggregatesInput[]
-    NOT?: TransportScalarWhereWithAggregatesInput | TransportScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Transport"> | string
-    vehicleType?: StringWithAggregatesFilter<"Transport"> | string
-    perDay?: FloatWithAggregatesFilter<"Transport"> | number
-    perKm?: FloatWithAggregatesFilter<"Transport"> | number
-    maxCapacity?: IntWithAggregatesFilter<"Transport"> | number
-    notes?: StringNullableWithAggregatesFilter<"Transport"> | string | null
-    photos?: StringNullableWithAggregatesFilter<"Transport"> | string | null
-    agencyId?: StringWithAggregatesFilter<"Transport"> | string
-  }
-
   export type QuotationTransportWhereInput = {
     AND?: QuotationTransportWhereInput | QuotationTransportWhereInput[]
     OR?: QuotationTransportWhereInput[]
@@ -25937,71 +26642,6 @@ export namespace Prisma {
     pricePerKm?: FloatNullableWithAggregatesFilter<"QuotationTransport"> | number | null
   }
 
-  export type MealWhereInput = {
-    AND?: MealWhereInput | MealWhereInput[]
-    OR?: MealWhereInput[]
-    NOT?: MealWhereInput | MealWhereInput[]
-    id?: StringFilter<"Meal"> | string
-    type?: StringFilter<"Meal"> | string
-    vegOption?: BoolFilter<"Meal"> | boolean
-    nonVegOption?: BoolFilter<"Meal"> | boolean
-    price?: FloatFilter<"Meal"> | number
-    agencyId?: StringFilter<"Meal"> | string
-    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
-    quotationMeals?: QuotationMealListRelationFilter
-  }
-
-  export type MealOrderByWithRelationInput = {
-    id?: SortOrder
-    type?: SortOrder
-    vegOption?: SortOrder
-    nonVegOption?: SortOrder
-    price?: SortOrder
-    agencyId?: SortOrder
-    agency?: AgencyOrderByWithRelationInput
-    quotationMeals?: QuotationMealOrderByRelationAggregateInput
-  }
-
-  export type MealWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: MealWhereInput | MealWhereInput[]
-    OR?: MealWhereInput[]
-    NOT?: MealWhereInput | MealWhereInput[]
-    type?: StringFilter<"Meal"> | string
-    vegOption?: BoolFilter<"Meal"> | boolean
-    nonVegOption?: BoolFilter<"Meal"> | boolean
-    price?: FloatFilter<"Meal"> | number
-    agencyId?: StringFilter<"Meal"> | string
-    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
-    quotationMeals?: QuotationMealListRelationFilter
-  }, "id">
-
-  export type MealOrderByWithAggregationInput = {
-    id?: SortOrder
-    type?: SortOrder
-    vegOption?: SortOrder
-    nonVegOption?: SortOrder
-    price?: SortOrder
-    agencyId?: SortOrder
-    _count?: MealCountOrderByAggregateInput
-    _avg?: MealAvgOrderByAggregateInput
-    _max?: MealMaxOrderByAggregateInput
-    _min?: MealMinOrderByAggregateInput
-    _sum?: MealSumOrderByAggregateInput
-  }
-
-  export type MealScalarWhereWithAggregatesInput = {
-    AND?: MealScalarWhereWithAggregatesInput | MealScalarWhereWithAggregatesInput[]
-    OR?: MealScalarWhereWithAggregatesInput[]
-    NOT?: MealScalarWhereWithAggregatesInput | MealScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Meal"> | string
-    type?: StringWithAggregatesFilter<"Meal"> | string
-    vegOption?: BoolWithAggregatesFilter<"Meal"> | boolean
-    nonVegOption?: BoolWithAggregatesFilter<"Meal"> | boolean
-    price?: FloatWithAggregatesFilter<"Meal"> | number
-    agencyId?: StringWithAggregatesFilter<"Meal"> | string
-  }
-
   export type QuotationMealWhereInput = {
     AND?: QuotationMealWhereInput | QuotationMealWhereInput[]
     OR?: QuotationMealWhereInput[]
@@ -26055,76 +26695,6 @@ export namespace Prisma {
     quotationId?: StringWithAggregatesFilter<"QuotationMeal"> | string
     mealId?: StringWithAggregatesFilter<"QuotationMeal"> | string
     price?: FloatWithAggregatesFilter<"QuotationMeal"> | number
-  }
-
-  export type ActivityWhereInput = {
-    AND?: ActivityWhereInput | ActivityWhereInput[]
-    OR?: ActivityWhereInput[]
-    NOT?: ActivityWhereInput | ActivityWhereInput[]
-    id?: StringFilter<"Activity"> | string
-    name?: StringFilter<"Activity"> | string
-    description?: StringNullableFilter<"Activity"> | string | null
-    duration?: StringNullableFilter<"Activity"> | string | null
-    price?: FloatFilter<"Activity"> | number
-    photos?: JsonNullableFilter<"Activity">
-    agencyId?: StringFilter<"Activity"> | string
-    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
-    quotationActivities?: QuotationActivityListRelationFilter
-  }
-
-  export type ActivityOrderByWithRelationInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrderInput | SortOrder
-    duration?: SortOrderInput | SortOrder
-    price?: SortOrder
-    photos?: SortOrderInput | SortOrder
-    agencyId?: SortOrder
-    agency?: AgencyOrderByWithRelationInput
-    quotationActivities?: QuotationActivityOrderByRelationAggregateInput
-  }
-
-  export type ActivityWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: ActivityWhereInput | ActivityWhereInput[]
-    OR?: ActivityWhereInput[]
-    NOT?: ActivityWhereInput | ActivityWhereInput[]
-    name?: StringFilter<"Activity"> | string
-    description?: StringNullableFilter<"Activity"> | string | null
-    duration?: StringNullableFilter<"Activity"> | string | null
-    price?: FloatFilter<"Activity"> | number
-    photos?: JsonNullableFilter<"Activity">
-    agencyId?: StringFilter<"Activity"> | string
-    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
-    quotationActivities?: QuotationActivityListRelationFilter
-  }, "id">
-
-  export type ActivityOrderByWithAggregationInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrderInput | SortOrder
-    duration?: SortOrderInput | SortOrder
-    price?: SortOrder
-    photos?: SortOrderInput | SortOrder
-    agencyId?: SortOrder
-    _count?: ActivityCountOrderByAggregateInput
-    _avg?: ActivityAvgOrderByAggregateInput
-    _max?: ActivityMaxOrderByAggregateInput
-    _min?: ActivityMinOrderByAggregateInput
-    _sum?: ActivitySumOrderByAggregateInput
-  }
-
-  export type ActivityScalarWhereWithAggregatesInput = {
-    AND?: ActivityScalarWhereWithAggregatesInput | ActivityScalarWhereWithAggregatesInput[]
-    OR?: ActivityScalarWhereWithAggregatesInput[]
-    NOT?: ActivityScalarWhereWithAggregatesInput | ActivityScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Activity"> | string
-    name?: StringWithAggregatesFilter<"Activity"> | string
-    description?: StringNullableWithAggregatesFilter<"Activity"> | string | null
-    duration?: StringNullableWithAggregatesFilter<"Activity"> | string | null
-    price?: FloatWithAggregatesFilter<"Activity"> | number
-    photos?: JsonNullableWithAggregatesFilter<"Activity">
-    agencyId?: StringWithAggregatesFilter<"Activity"> | string
   }
 
   export type QuotationActivityWhereInput = {
@@ -26996,8 +27566,12 @@ export namespace Prisma {
     inclusions?: string | null
     cancellation?: string | null
     photos?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     agency: AgencyCreateNestedOneWithoutHotelsInput
     roomTypes?: RoomTypeCreateNestedManyWithoutHotelInput
+    meals?: MealCreateNestedManyWithoutHotelInput
+    activities?: ActivityCreateNestedManyWithoutHotelInput
     quotationHotels?: QuotationHotelCreateNestedManyWithoutHotelInput
   }
 
@@ -27010,7 +27584,11 @@ export namespace Prisma {
     cancellation?: string | null
     photos?: string | null
     agencyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
     roomTypes?: RoomTypeUncheckedCreateNestedManyWithoutHotelInput
+    meals?: MealUncheckedCreateNestedManyWithoutHotelInput
+    activities?: ActivityUncheckedCreateNestedManyWithoutHotelInput
     quotationHotels?: QuotationHotelUncheckedCreateNestedManyWithoutHotelInput
   }
 
@@ -27022,8 +27600,12 @@ export namespace Prisma {
     inclusions?: NullableStringFieldUpdateOperationsInput | string | null
     cancellation?: NullableStringFieldUpdateOperationsInput | string | null
     photos?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agency?: AgencyUpdateOneRequiredWithoutHotelsNestedInput
     roomTypes?: RoomTypeUpdateManyWithoutHotelNestedInput
+    meals?: MealUpdateManyWithoutHotelNestedInput
+    activities?: ActivityUpdateManyWithoutHotelNestedInput
     quotationHotels?: QuotationHotelUpdateManyWithoutHotelNestedInput
   }
 
@@ -27036,7 +27618,11 @@ export namespace Prisma {
     cancellation?: NullableStringFieldUpdateOperationsInput | string | null
     photos?: NullableStringFieldUpdateOperationsInput | string | null
     agencyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     roomTypes?: RoomTypeUncheckedUpdateManyWithoutHotelNestedInput
+    meals?: MealUncheckedUpdateManyWithoutHotelNestedInput
+    activities?: ActivityUncheckedUpdateManyWithoutHotelNestedInput
     quotationHotels?: QuotationHotelUncheckedUpdateManyWithoutHotelNestedInput
   }
 
@@ -27049,6 +27635,8 @@ export namespace Prisma {
     cancellation?: string | null
     photos?: string | null
     agencyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type HotelUpdateManyMutationInput = {
@@ -27059,6 +27647,8 @@ export namespace Prisma {
     inclusions?: NullableStringFieldUpdateOperationsInput | string | null
     cancellation?: NullableStringFieldUpdateOperationsInput | string | null
     photos?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type HotelUncheckedUpdateManyInput = {
@@ -27070,12 +27660,22 @@ export namespace Prisma {
     cancellation?: NullableStringFieldUpdateOperationsInput | string | null
     photos?: NullableStringFieldUpdateOperationsInput | string | null
     agencyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RoomTypeCreateInput = {
     id?: string
     type: string
     price: Decimal | DecimalJsLike | number | string
+    maxAdults?: number
+    maxChildren?: number
+    bedType?: string | null
+    amenities?: string | null
+    description?: string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     hotel: HotelCreateNestedOneWithoutRoomTypesInput
     quotationHotels?: QuotationHotelCreateNestedManyWithoutRoomTypeInput
   }
@@ -27084,7 +27684,15 @@ export namespace Prisma {
     id?: string
     type: string
     price: Decimal | DecimalJsLike | number | string
+    maxAdults?: number
+    maxChildren?: number
+    bedType?: string | null
+    amenities?: string | null
+    description?: string | null
+    image?: string | null
     hotelId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
     quotationHotels?: QuotationHotelUncheckedCreateNestedManyWithoutRoomTypeInput
   }
 
@@ -27092,6 +27700,14 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    maxAdults?: IntFieldUpdateOperationsInput | number
+    maxChildren?: IntFieldUpdateOperationsInput | number
+    bedType?: NullableStringFieldUpdateOperationsInput | string | null
+    amenities?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     hotel?: HotelUpdateOneRequiredWithoutRoomTypesNestedInput
     quotationHotels?: QuotationHotelUpdateManyWithoutRoomTypeNestedInput
   }
@@ -27100,7 +27716,15 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    maxAdults?: IntFieldUpdateOperationsInput | number
+    maxChildren?: IntFieldUpdateOperationsInput | number
+    bedType?: NullableStringFieldUpdateOperationsInput | string | null
+    amenities?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     hotelId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     quotationHotels?: QuotationHotelUncheckedUpdateManyWithoutRoomTypeNestedInput
   }
 
@@ -27108,20 +27732,345 @@ export namespace Prisma {
     id?: string
     type: string
     price: Decimal | DecimalJsLike | number | string
+    maxAdults?: number
+    maxChildren?: number
+    bedType?: string | null
+    amenities?: string | null
+    description?: string | null
+    image?: string | null
     hotelId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type RoomTypeUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    maxAdults?: IntFieldUpdateOperationsInput | number
+    maxChildren?: IntFieldUpdateOperationsInput | number
+    bedType?: NullableStringFieldUpdateOperationsInput | string | null
+    amenities?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RoomTypeUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    maxAdults?: IntFieldUpdateOperationsInput | number
+    maxChildren?: IntFieldUpdateOperationsInput | number
+    bedType?: NullableStringFieldUpdateOperationsInput | string | null
+    amenities?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     hotelId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MealCreateInput = {
+    id?: string
+    name: string
+    type: string
+    category: string
+    vegOption?: boolean
+    nonVegOption?: boolean
+    price: number
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    hotel?: HotelCreateNestedOneWithoutMealsInput
+    agency: AgencyCreateNestedOneWithoutMealsInput
+    quotationMeals?: QuotationMealCreateNestedManyWithoutMealInput
+  }
+
+  export type MealUncheckedCreateInput = {
+    id?: string
+    name: string
+    type: string
+    category: string
+    vegOption?: boolean
+    nonVegOption?: boolean
+    price: number
+    image?: string | null
+    hotelId?: string | null
+    agencyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    quotationMeals?: QuotationMealUncheckedCreateNestedManyWithoutMealInput
+  }
+
+  export type MealUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    vegOption?: BoolFieldUpdateOperationsInput | boolean
+    nonVegOption?: BoolFieldUpdateOperationsInput | boolean
+    price?: FloatFieldUpdateOperationsInput | number
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    hotel?: HotelUpdateOneWithoutMealsNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutMealsNestedInput
+    quotationMeals?: QuotationMealUpdateManyWithoutMealNestedInput
+  }
+
+  export type MealUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    vegOption?: BoolFieldUpdateOperationsInput | boolean
+    nonVegOption?: BoolFieldUpdateOperationsInput | boolean
+    price?: FloatFieldUpdateOperationsInput | number
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hotelId?: NullableStringFieldUpdateOperationsInput | string | null
+    agencyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    quotationMeals?: QuotationMealUncheckedUpdateManyWithoutMealNestedInput
+  }
+
+  export type MealCreateManyInput = {
+    id?: string
+    name: string
+    type: string
+    category: string
+    vegOption?: boolean
+    nonVegOption?: boolean
+    price: number
+    image?: string | null
+    hotelId?: string | null
+    agencyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MealUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    vegOption?: BoolFieldUpdateOperationsInput | boolean
+    nonVegOption?: BoolFieldUpdateOperationsInput | boolean
+    price?: FloatFieldUpdateOperationsInput | number
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MealUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    vegOption?: BoolFieldUpdateOperationsInput | boolean
+    nonVegOption?: BoolFieldUpdateOperationsInput | boolean
+    price?: FloatFieldUpdateOperationsInput | number
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hotelId?: NullableStringFieldUpdateOperationsInput | string | null
+    agencyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ActivityCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    price: number
+    duration?: string | null
+    photos?: string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    hotel?: HotelCreateNestedOneWithoutActivitiesInput
+    agency: AgencyCreateNestedOneWithoutActivitiesInput
+    quotationActivities?: QuotationActivityCreateNestedManyWithoutActivityInput
+  }
+
+  export type ActivityUncheckedCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    price: number
+    duration?: string | null
+    photos?: string | null
+    image?: string | null
+    hotelId?: string | null
+    agencyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    quotationActivities?: QuotationActivityUncheckedCreateNestedManyWithoutActivityInput
+  }
+
+  export type ActivityUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+    duration?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    hotel?: HotelUpdateOneWithoutActivitiesNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutActivitiesNestedInput
+    quotationActivities?: QuotationActivityUpdateManyWithoutActivityNestedInput
+  }
+
+  export type ActivityUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+    duration?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hotelId?: NullableStringFieldUpdateOperationsInput | string | null
+    agencyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    quotationActivities?: QuotationActivityUncheckedUpdateManyWithoutActivityNestedInput
+  }
+
+  export type ActivityCreateManyInput = {
+    id?: string
+    name: string
+    description?: string | null
+    price: number
+    duration?: string | null
+    photos?: string | null
+    image?: string | null
+    hotelId?: string | null
+    agencyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ActivityUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+    duration?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ActivityUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+    duration?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hotelId?: NullableStringFieldUpdateOperationsInput | string | null
+    agencyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransportCreateInput = {
+    id?: string
+    vehicleType: string
+    perDay: number
+    perKm: number
+    maxCapacity: number
+    notes?: string | null
+    photos?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agency: AgencyCreateNestedOneWithoutTransportInput
+    quotationTransports?: QuotationTransportCreateNestedManyWithoutTransportInput
+  }
+
+  export type TransportUncheckedCreateInput = {
+    id?: string
+    vehicleType: string
+    perDay: number
+    perKm: number
+    maxCapacity: number
+    notes?: string | null
+    photos?: string | null
+    agencyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    quotationTransports?: QuotationTransportUncheckedCreateNestedManyWithoutTransportInput
+  }
+
+  export type TransportUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    vehicleType?: StringFieldUpdateOperationsInput | string
+    perDay?: FloatFieldUpdateOperationsInput | number
+    perKm?: FloatFieldUpdateOperationsInput | number
+    maxCapacity?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agency?: AgencyUpdateOneRequiredWithoutTransportNestedInput
+    quotationTransports?: QuotationTransportUpdateManyWithoutTransportNestedInput
+  }
+
+  export type TransportUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    vehicleType?: StringFieldUpdateOperationsInput | string
+    perDay?: FloatFieldUpdateOperationsInput | number
+    perKm?: FloatFieldUpdateOperationsInput | number
+    maxCapacity?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    agencyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    quotationTransports?: QuotationTransportUncheckedUpdateManyWithoutTransportNestedInput
+  }
+
+  export type TransportCreateManyInput = {
+    id?: string
+    vehicleType: string
+    perDay: number
+    perKm: number
+    maxCapacity: number
+    notes?: string | null
+    photos?: string | null
+    agencyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransportUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    vehicleType?: StringFieldUpdateOperationsInput | string
+    perDay?: FloatFieldUpdateOperationsInput | number
+    perKm?: FloatFieldUpdateOperationsInput | number
+    maxCapacity?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransportUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    vehicleType?: StringFieldUpdateOperationsInput | string
+    perDay?: FloatFieldUpdateOperationsInput | number
+    perKm?: FloatFieldUpdateOperationsInput | number
+    maxCapacity?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    agencyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type QuotationHotelCreateInput = {
@@ -27175,86 +28124,6 @@ export namespace Prisma {
     hotelId?: StringFieldUpdateOperationsInput | string
     roomTypeId?: StringFieldUpdateOperationsInput | string
     price?: FloatFieldUpdateOperationsInput | number
-  }
-
-  export type TransportCreateInput = {
-    id?: string
-    vehicleType: string
-    perDay: number
-    perKm: number
-    maxCapacity: number
-    notes?: string | null
-    photos?: string | null
-    agency: AgencyCreateNestedOneWithoutTransportInput
-    quotationTransports?: QuotationTransportCreateNestedManyWithoutTransportInput
-  }
-
-  export type TransportUncheckedCreateInput = {
-    id?: string
-    vehicleType: string
-    perDay: number
-    perKm: number
-    maxCapacity: number
-    notes?: string | null
-    photos?: string | null
-    agencyId: string
-    quotationTransports?: QuotationTransportUncheckedCreateNestedManyWithoutTransportInput
-  }
-
-  export type TransportUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    vehicleType?: StringFieldUpdateOperationsInput | string
-    perDay?: FloatFieldUpdateOperationsInput | number
-    perKm?: FloatFieldUpdateOperationsInput | number
-    maxCapacity?: IntFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    photos?: NullableStringFieldUpdateOperationsInput | string | null
-    agency?: AgencyUpdateOneRequiredWithoutTransportNestedInput
-    quotationTransports?: QuotationTransportUpdateManyWithoutTransportNestedInput
-  }
-
-  export type TransportUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    vehicleType?: StringFieldUpdateOperationsInput | string
-    perDay?: FloatFieldUpdateOperationsInput | number
-    perKm?: FloatFieldUpdateOperationsInput | number
-    maxCapacity?: IntFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    photos?: NullableStringFieldUpdateOperationsInput | string | null
-    agencyId?: StringFieldUpdateOperationsInput | string
-    quotationTransports?: QuotationTransportUncheckedUpdateManyWithoutTransportNestedInput
-  }
-
-  export type TransportCreateManyInput = {
-    id?: string
-    vehicleType: string
-    perDay: number
-    perKm: number
-    maxCapacity: number
-    notes?: string | null
-    photos?: string | null
-    agencyId: string
-  }
-
-  export type TransportUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    vehicleType?: StringFieldUpdateOperationsInput | string
-    perDay?: FloatFieldUpdateOperationsInput | number
-    perKm?: FloatFieldUpdateOperationsInput | number
-    maxCapacity?: IntFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    photos?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type TransportUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    vehicleType?: StringFieldUpdateOperationsInput | string
-    perDay?: FloatFieldUpdateOperationsInput | number
-    perKm?: FloatFieldUpdateOperationsInput | number
-    maxCapacity?: IntFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    photos?: NullableStringFieldUpdateOperationsInput | string | null
-    agencyId?: StringFieldUpdateOperationsInput | string
   }
 
   export type QuotationTransportCreateInput = {
@@ -27311,72 +28180,6 @@ export namespace Prisma {
     pricePerKm?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
-  export type MealCreateInput = {
-    id?: string
-    type: string
-    vegOption: boolean
-    nonVegOption: boolean
-    price: number
-    agency: AgencyCreateNestedOneWithoutMealsInput
-    quotationMeals?: QuotationMealCreateNestedManyWithoutMealInput
-  }
-
-  export type MealUncheckedCreateInput = {
-    id?: string
-    type: string
-    vegOption: boolean
-    nonVegOption: boolean
-    price: number
-    agencyId: string
-    quotationMeals?: QuotationMealUncheckedCreateNestedManyWithoutMealInput
-  }
-
-  export type MealUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    type?: StringFieldUpdateOperationsInput | string
-    vegOption?: BoolFieldUpdateOperationsInput | boolean
-    nonVegOption?: BoolFieldUpdateOperationsInput | boolean
-    price?: FloatFieldUpdateOperationsInput | number
-    agency?: AgencyUpdateOneRequiredWithoutMealsNestedInput
-    quotationMeals?: QuotationMealUpdateManyWithoutMealNestedInput
-  }
-
-  export type MealUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    type?: StringFieldUpdateOperationsInput | string
-    vegOption?: BoolFieldUpdateOperationsInput | boolean
-    nonVegOption?: BoolFieldUpdateOperationsInput | boolean
-    price?: FloatFieldUpdateOperationsInput | number
-    agencyId?: StringFieldUpdateOperationsInput | string
-    quotationMeals?: QuotationMealUncheckedUpdateManyWithoutMealNestedInput
-  }
-
-  export type MealCreateManyInput = {
-    id?: string
-    type: string
-    vegOption: boolean
-    nonVegOption: boolean
-    price: number
-    agencyId: string
-  }
-
-  export type MealUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    type?: StringFieldUpdateOperationsInput | string
-    vegOption?: BoolFieldUpdateOperationsInput | boolean
-    nonVegOption?: BoolFieldUpdateOperationsInput | boolean
-    price?: FloatFieldUpdateOperationsInput | number
-  }
-
-  export type MealUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    type?: StringFieldUpdateOperationsInput | string
-    vegOption?: BoolFieldUpdateOperationsInput | boolean
-    nonVegOption?: BoolFieldUpdateOperationsInput | boolean
-    price?: FloatFieldUpdateOperationsInput | number
-    agencyId?: StringFieldUpdateOperationsInput | string
-  }
-
   export type QuotationMealCreateInput = {
     id?: string
     price: number
@@ -27422,79 +28225,6 @@ export namespace Prisma {
     quotationId?: StringFieldUpdateOperationsInput | string
     mealId?: StringFieldUpdateOperationsInput | string
     price?: FloatFieldUpdateOperationsInput | number
-  }
-
-  export type ActivityCreateInput = {
-    id?: string
-    name: string
-    description?: string | null
-    duration?: string | null
-    price: number
-    photos?: NullableJsonNullValueInput | InputJsonValue
-    agency: AgencyCreateNestedOneWithoutActivitiesInput
-    quotationActivities?: QuotationActivityCreateNestedManyWithoutActivityInput
-  }
-
-  export type ActivityUncheckedCreateInput = {
-    id?: string
-    name: string
-    description?: string | null
-    duration?: string | null
-    price: number
-    photos?: NullableJsonNullValueInput | InputJsonValue
-    agencyId: string
-    quotationActivities?: QuotationActivityUncheckedCreateNestedManyWithoutActivityInput
-  }
-
-  export type ActivityUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    duration?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: FloatFieldUpdateOperationsInput | number
-    photos?: NullableJsonNullValueInput | InputJsonValue
-    agency?: AgencyUpdateOneRequiredWithoutActivitiesNestedInput
-    quotationActivities?: QuotationActivityUpdateManyWithoutActivityNestedInput
-  }
-
-  export type ActivityUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    duration?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: FloatFieldUpdateOperationsInput | number
-    photos?: NullableJsonNullValueInput | InputJsonValue
-    agencyId?: StringFieldUpdateOperationsInput | string
-    quotationActivities?: QuotationActivityUncheckedUpdateManyWithoutActivityNestedInput
-  }
-
-  export type ActivityCreateManyInput = {
-    id?: string
-    name: string
-    description?: string | null
-    duration?: string | null
-    price: number
-    photos?: NullableJsonNullValueInput | InputJsonValue
-    agencyId: string
-  }
-
-  export type ActivityUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    duration?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: FloatFieldUpdateOperationsInput | number
-    photos?: NullableJsonNullValueInput | InputJsonValue
-  }
-
-  export type ActivityUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    duration?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: FloatFieldUpdateOperationsInput | number
-    photos?: NullableJsonNullValueInput | InputJsonValue
-    agencyId?: StringFieldUpdateOperationsInput | string
   }
 
   export type QuotationActivityCreateInput = {
@@ -28446,6 +29176,8 @@ export namespace Prisma {
     cancellation?: SortOrder
     photos?: SortOrder
     agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type HotelAvgOrderByAggregateInput = {
@@ -28461,6 +29193,8 @@ export namespace Prisma {
     cancellation?: SortOrder
     photos?: SortOrder
     agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type HotelMinOrderByAggregateInput = {
@@ -28472,6 +29206,8 @@ export namespace Prisma {
     cancellation?: SortOrder
     photos?: SortOrder
     agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type HotelSumOrderByAggregateInput = {
@@ -28514,29 +29250,57 @@ export namespace Prisma {
     id?: SortOrder
     type?: SortOrder
     price?: SortOrder
+    maxAdults?: SortOrder
+    maxChildren?: SortOrder
+    bedType?: SortOrder
+    amenities?: SortOrder
+    description?: SortOrder
+    image?: SortOrder
     hotelId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type RoomTypeAvgOrderByAggregateInput = {
     price?: SortOrder
+    maxAdults?: SortOrder
+    maxChildren?: SortOrder
   }
 
   export type RoomTypeMaxOrderByAggregateInput = {
     id?: SortOrder
     type?: SortOrder
     price?: SortOrder
+    maxAdults?: SortOrder
+    maxChildren?: SortOrder
+    bedType?: SortOrder
+    amenities?: SortOrder
+    description?: SortOrder
+    image?: SortOrder
     hotelId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type RoomTypeMinOrderByAggregateInput = {
     id?: SortOrder
     type?: SortOrder
     price?: SortOrder
+    maxAdults?: SortOrder
+    maxChildren?: SortOrder
+    bedType?: SortOrder
+    amenities?: SortOrder
+    description?: SortOrder
+    image?: SortOrder
     hotelId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type RoomTypeSumOrderByAggregateInput = {
     price?: SortOrder
+    maxAdults?: SortOrder
+    maxChildren?: SortOrder
   }
 
   export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
@@ -28555,6 +29319,11 @@ export namespace Prisma {
     _max?: NestedDecimalFilter<$PrismaModel>
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type FloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -28564,6 +29333,219 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type HotelNullableScalarRelationFilter = {
+    is?: HotelWhereInput | null
+    isNot?: HotelWhereInput | null
+  }
+
+  export type QuotationMealListRelationFilter = {
+    every?: QuotationMealWhereInput
+    some?: QuotationMealWhereInput
+    none?: QuotationMealWhereInput
+  }
+
+  export type QuotationMealOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type MealCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    category?: SortOrder
+    vegOption?: SortOrder
+    nonVegOption?: SortOrder
+    price?: SortOrder
+    image?: SortOrder
+    hotelId?: SortOrder
+    agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MealAvgOrderByAggregateInput = {
+    price?: SortOrder
+  }
+
+  export type MealMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    category?: SortOrder
+    vegOption?: SortOrder
+    nonVegOption?: SortOrder
+    price?: SortOrder
+    image?: SortOrder
+    hotelId?: SortOrder
+    agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MealMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    category?: SortOrder
+    vegOption?: SortOrder
+    nonVegOption?: SortOrder
+    price?: SortOrder
+    image?: SortOrder
+    hotelId?: SortOrder
+    agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MealSumOrderByAggregateInput = {
+    price?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type QuotationActivityListRelationFilter = {
+    every?: QuotationActivityWhereInput
+    some?: QuotationActivityWhereInput
+    none?: QuotationActivityWhereInput
+  }
+
+  export type QuotationActivityOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ActivityCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    price?: SortOrder
+    duration?: SortOrder
+    photos?: SortOrder
+    image?: SortOrder
+    hotelId?: SortOrder
+    agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ActivityAvgOrderByAggregateInput = {
+    price?: SortOrder
+  }
+
+  export type ActivityMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    price?: SortOrder
+    duration?: SortOrder
+    photos?: SortOrder
+    image?: SortOrder
+    hotelId?: SortOrder
+    agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ActivityMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    price?: SortOrder
+    duration?: SortOrder
+    photos?: SortOrder
+    image?: SortOrder
+    hotelId?: SortOrder
+    agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ActivitySumOrderByAggregateInput = {
+    price?: SortOrder
+  }
+
+  export type QuotationTransportListRelationFilter = {
+    every?: QuotationTransportWhereInput
+    some?: QuotationTransportWhereInput
+    none?: QuotationTransportWhereInput
+  }
+
+  export type QuotationTransportOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TransportCountOrderByAggregateInput = {
+    id?: SortOrder
+    vehicleType?: SortOrder
+    perDay?: SortOrder
+    perKm?: SortOrder
+    maxCapacity?: SortOrder
+    notes?: SortOrder
+    photos?: SortOrder
+    agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TransportAvgOrderByAggregateInput = {
+    perDay?: SortOrder
+    perKm?: SortOrder
+    maxCapacity?: SortOrder
+  }
+
+  export type TransportMaxOrderByAggregateInput = {
+    id?: SortOrder
+    vehicleType?: SortOrder
+    perDay?: SortOrder
+    perKm?: SortOrder
+    maxCapacity?: SortOrder
+    notes?: SortOrder
+    photos?: SortOrder
+    agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TransportMinOrderByAggregateInput = {
+    id?: SortOrder
+    vehicleType?: SortOrder
+    perDay?: SortOrder
+    perKm?: SortOrder
+    maxCapacity?: SortOrder
+    notes?: SortOrder
+    photos?: SortOrder
+    agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TransportSumOrderByAggregateInput = {
+    perDay?: SortOrder
+    perKm?: SortOrder
+    maxCapacity?: SortOrder
   }
 
   export type QuotationScalarRelationFilter = {
@@ -28606,77 +29588,6 @@ export namespace Prisma {
 
   export type QuotationHotelSumOrderByAggregateInput = {
     price?: SortOrder
-  }
-
-  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
-  }
-
-  export type QuotationTransportListRelationFilter = {
-    every?: QuotationTransportWhereInput
-    some?: QuotationTransportWhereInput
-    none?: QuotationTransportWhereInput
-  }
-
-  export type QuotationTransportOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type TransportCountOrderByAggregateInput = {
-    id?: SortOrder
-    vehicleType?: SortOrder
-    perDay?: SortOrder
-    perKm?: SortOrder
-    maxCapacity?: SortOrder
-    notes?: SortOrder
-    photos?: SortOrder
-    agencyId?: SortOrder
-  }
-
-  export type TransportAvgOrderByAggregateInput = {
-    perDay?: SortOrder
-    perKm?: SortOrder
-    maxCapacity?: SortOrder
-  }
-
-  export type TransportMaxOrderByAggregateInput = {
-    id?: SortOrder
-    vehicleType?: SortOrder
-    perDay?: SortOrder
-    perKm?: SortOrder
-    maxCapacity?: SortOrder
-    notes?: SortOrder
-    photos?: SortOrder
-    agencyId?: SortOrder
-  }
-
-  export type TransportMinOrderByAggregateInput = {
-    id?: SortOrder
-    vehicleType?: SortOrder
-    perDay?: SortOrder
-    perKm?: SortOrder
-    maxCapacity?: SortOrder
-    notes?: SortOrder
-    photos?: SortOrder
-    agencyId?: SortOrder
-  }
-
-  export type TransportSumOrderByAggregateInput = {
-    perDay?: SortOrder
-    perKm?: SortOrder
-    maxCapacity?: SortOrder
   }
 
   export type FloatNullableFilter<$PrismaModel = never> = {
@@ -28745,64 +29656,6 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type QuotationMealListRelationFilter = {
-    every?: QuotationMealWhereInput
-    some?: QuotationMealWhereInput
-    none?: QuotationMealWhereInput
-  }
-
-  export type QuotationMealOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type MealCountOrderByAggregateInput = {
-    id?: SortOrder
-    type?: SortOrder
-    vegOption?: SortOrder
-    nonVegOption?: SortOrder
-    price?: SortOrder
-    agencyId?: SortOrder
-  }
-
-  export type MealAvgOrderByAggregateInput = {
-    price?: SortOrder
-  }
-
-  export type MealMaxOrderByAggregateInput = {
-    id?: SortOrder
-    type?: SortOrder
-    vegOption?: SortOrder
-    nonVegOption?: SortOrder
-    price?: SortOrder
-    agencyId?: SortOrder
-  }
-
-  export type MealMinOrderByAggregateInput = {
-    id?: SortOrder
-    type?: SortOrder
-    vegOption?: SortOrder
-    nonVegOption?: SortOrder
-    price?: SortOrder
-    agencyId?: SortOrder
-  }
-
-  export type MealSumOrderByAggregateInput = {
-    price?: SortOrder
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
   export type MealScalarRelationFilter = {
     is?: MealWhereInput
     isNot?: MealWhereInput
@@ -28834,52 +29687,6 @@ export namespace Prisma {
   }
 
   export type QuotationMealSumOrderByAggregateInput = {
-    price?: SortOrder
-  }
-
-  export type QuotationActivityListRelationFilter = {
-    every?: QuotationActivityWhereInput
-    some?: QuotationActivityWhereInput
-    none?: QuotationActivityWhereInput
-  }
-
-  export type QuotationActivityOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type ActivityCountOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrder
-    duration?: SortOrder
-    price?: SortOrder
-    photos?: SortOrder
-    agencyId?: SortOrder
-  }
-
-  export type ActivityAvgOrderByAggregateInput = {
-    price?: SortOrder
-  }
-
-  export type ActivityMaxOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrder
-    duration?: SortOrder
-    price?: SortOrder
-    agencyId?: SortOrder
-  }
-
-  export type ActivityMinOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrder
-    duration?: SortOrder
-    price?: SortOrder
-    agencyId?: SortOrder
-  }
-
-  export type ActivitySumOrderByAggregateInput = {
     price?: SortOrder
   }
 
@@ -29751,6 +30558,20 @@ export namespace Prisma {
     connect?: RoomTypeWhereUniqueInput | RoomTypeWhereUniqueInput[]
   }
 
+  export type MealCreateNestedManyWithoutHotelInput = {
+    create?: XOR<MealCreateWithoutHotelInput, MealUncheckedCreateWithoutHotelInput> | MealCreateWithoutHotelInput[] | MealUncheckedCreateWithoutHotelInput[]
+    connectOrCreate?: MealCreateOrConnectWithoutHotelInput | MealCreateOrConnectWithoutHotelInput[]
+    createMany?: MealCreateManyHotelInputEnvelope
+    connect?: MealWhereUniqueInput | MealWhereUniqueInput[]
+  }
+
+  export type ActivityCreateNestedManyWithoutHotelInput = {
+    create?: XOR<ActivityCreateWithoutHotelInput, ActivityUncheckedCreateWithoutHotelInput> | ActivityCreateWithoutHotelInput[] | ActivityUncheckedCreateWithoutHotelInput[]
+    connectOrCreate?: ActivityCreateOrConnectWithoutHotelInput | ActivityCreateOrConnectWithoutHotelInput[]
+    createMany?: ActivityCreateManyHotelInputEnvelope
+    connect?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
+  }
+
   export type QuotationHotelCreateNestedManyWithoutHotelInput = {
     create?: XOR<QuotationHotelCreateWithoutHotelInput, QuotationHotelUncheckedCreateWithoutHotelInput> | QuotationHotelCreateWithoutHotelInput[] | QuotationHotelUncheckedCreateWithoutHotelInput[]
     connectOrCreate?: QuotationHotelCreateOrConnectWithoutHotelInput | QuotationHotelCreateOrConnectWithoutHotelInput[]
@@ -29763,6 +30584,20 @@ export namespace Prisma {
     connectOrCreate?: RoomTypeCreateOrConnectWithoutHotelInput | RoomTypeCreateOrConnectWithoutHotelInput[]
     createMany?: RoomTypeCreateManyHotelInputEnvelope
     connect?: RoomTypeWhereUniqueInput | RoomTypeWhereUniqueInput[]
+  }
+
+  export type MealUncheckedCreateNestedManyWithoutHotelInput = {
+    create?: XOR<MealCreateWithoutHotelInput, MealUncheckedCreateWithoutHotelInput> | MealCreateWithoutHotelInput[] | MealUncheckedCreateWithoutHotelInput[]
+    connectOrCreate?: MealCreateOrConnectWithoutHotelInput | MealCreateOrConnectWithoutHotelInput[]
+    createMany?: MealCreateManyHotelInputEnvelope
+    connect?: MealWhereUniqueInput | MealWhereUniqueInput[]
+  }
+
+  export type ActivityUncheckedCreateNestedManyWithoutHotelInput = {
+    create?: XOR<ActivityCreateWithoutHotelInput, ActivityUncheckedCreateWithoutHotelInput> | ActivityCreateWithoutHotelInput[] | ActivityUncheckedCreateWithoutHotelInput[]
+    connectOrCreate?: ActivityCreateOrConnectWithoutHotelInput | ActivityCreateOrConnectWithoutHotelInput[]
+    createMany?: ActivityCreateManyHotelInputEnvelope
+    connect?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
   }
 
   export type QuotationHotelUncheckedCreateNestedManyWithoutHotelInput = {
@@ -29802,6 +30637,34 @@ export namespace Prisma {
     deleteMany?: RoomTypeScalarWhereInput | RoomTypeScalarWhereInput[]
   }
 
+  export type MealUpdateManyWithoutHotelNestedInput = {
+    create?: XOR<MealCreateWithoutHotelInput, MealUncheckedCreateWithoutHotelInput> | MealCreateWithoutHotelInput[] | MealUncheckedCreateWithoutHotelInput[]
+    connectOrCreate?: MealCreateOrConnectWithoutHotelInput | MealCreateOrConnectWithoutHotelInput[]
+    upsert?: MealUpsertWithWhereUniqueWithoutHotelInput | MealUpsertWithWhereUniqueWithoutHotelInput[]
+    createMany?: MealCreateManyHotelInputEnvelope
+    set?: MealWhereUniqueInput | MealWhereUniqueInput[]
+    disconnect?: MealWhereUniqueInput | MealWhereUniqueInput[]
+    delete?: MealWhereUniqueInput | MealWhereUniqueInput[]
+    connect?: MealWhereUniqueInput | MealWhereUniqueInput[]
+    update?: MealUpdateWithWhereUniqueWithoutHotelInput | MealUpdateWithWhereUniqueWithoutHotelInput[]
+    updateMany?: MealUpdateManyWithWhereWithoutHotelInput | MealUpdateManyWithWhereWithoutHotelInput[]
+    deleteMany?: MealScalarWhereInput | MealScalarWhereInput[]
+  }
+
+  export type ActivityUpdateManyWithoutHotelNestedInput = {
+    create?: XOR<ActivityCreateWithoutHotelInput, ActivityUncheckedCreateWithoutHotelInput> | ActivityCreateWithoutHotelInput[] | ActivityUncheckedCreateWithoutHotelInput[]
+    connectOrCreate?: ActivityCreateOrConnectWithoutHotelInput | ActivityCreateOrConnectWithoutHotelInput[]
+    upsert?: ActivityUpsertWithWhereUniqueWithoutHotelInput | ActivityUpsertWithWhereUniqueWithoutHotelInput[]
+    createMany?: ActivityCreateManyHotelInputEnvelope
+    set?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
+    disconnect?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
+    delete?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
+    connect?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
+    update?: ActivityUpdateWithWhereUniqueWithoutHotelInput | ActivityUpdateWithWhereUniqueWithoutHotelInput[]
+    updateMany?: ActivityUpdateManyWithWhereWithoutHotelInput | ActivityUpdateManyWithWhereWithoutHotelInput[]
+    deleteMany?: ActivityScalarWhereInput | ActivityScalarWhereInput[]
+  }
+
   export type QuotationHotelUpdateManyWithoutHotelNestedInput = {
     create?: XOR<QuotationHotelCreateWithoutHotelInput, QuotationHotelUncheckedCreateWithoutHotelInput> | QuotationHotelCreateWithoutHotelInput[] | QuotationHotelUncheckedCreateWithoutHotelInput[]
     connectOrCreate?: QuotationHotelCreateOrConnectWithoutHotelInput | QuotationHotelCreateOrConnectWithoutHotelInput[]
@@ -29828,6 +30691,34 @@ export namespace Prisma {
     update?: RoomTypeUpdateWithWhereUniqueWithoutHotelInput | RoomTypeUpdateWithWhereUniqueWithoutHotelInput[]
     updateMany?: RoomTypeUpdateManyWithWhereWithoutHotelInput | RoomTypeUpdateManyWithWhereWithoutHotelInput[]
     deleteMany?: RoomTypeScalarWhereInput | RoomTypeScalarWhereInput[]
+  }
+
+  export type MealUncheckedUpdateManyWithoutHotelNestedInput = {
+    create?: XOR<MealCreateWithoutHotelInput, MealUncheckedCreateWithoutHotelInput> | MealCreateWithoutHotelInput[] | MealUncheckedCreateWithoutHotelInput[]
+    connectOrCreate?: MealCreateOrConnectWithoutHotelInput | MealCreateOrConnectWithoutHotelInput[]
+    upsert?: MealUpsertWithWhereUniqueWithoutHotelInput | MealUpsertWithWhereUniqueWithoutHotelInput[]
+    createMany?: MealCreateManyHotelInputEnvelope
+    set?: MealWhereUniqueInput | MealWhereUniqueInput[]
+    disconnect?: MealWhereUniqueInput | MealWhereUniqueInput[]
+    delete?: MealWhereUniqueInput | MealWhereUniqueInput[]
+    connect?: MealWhereUniqueInput | MealWhereUniqueInput[]
+    update?: MealUpdateWithWhereUniqueWithoutHotelInput | MealUpdateWithWhereUniqueWithoutHotelInput[]
+    updateMany?: MealUpdateManyWithWhereWithoutHotelInput | MealUpdateManyWithWhereWithoutHotelInput[]
+    deleteMany?: MealScalarWhereInput | MealScalarWhereInput[]
+  }
+
+  export type ActivityUncheckedUpdateManyWithoutHotelNestedInput = {
+    create?: XOR<ActivityCreateWithoutHotelInput, ActivityUncheckedCreateWithoutHotelInput> | ActivityCreateWithoutHotelInput[] | ActivityUncheckedCreateWithoutHotelInput[]
+    connectOrCreate?: ActivityCreateOrConnectWithoutHotelInput | ActivityCreateOrConnectWithoutHotelInput[]
+    upsert?: ActivityUpsertWithWhereUniqueWithoutHotelInput | ActivityUpsertWithWhereUniqueWithoutHotelInput[]
+    createMany?: ActivityCreateManyHotelInputEnvelope
+    set?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
+    disconnect?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
+    delete?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
+    connect?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
+    update?: ActivityUpdateWithWhereUniqueWithoutHotelInput | ActivityUpdateWithWhereUniqueWithoutHotelInput[]
+    updateMany?: ActivityUpdateManyWithWhereWithoutHotelInput | ActivityUpdateManyWithWhereWithoutHotelInput[]
+    deleteMany?: ActivityScalarWhereInput | ActivityScalarWhereInput[]
   }
 
   export type QuotationHotelUncheckedUpdateManyWithoutHotelNestedInput = {
@@ -29908,22 +30799,34 @@ export namespace Prisma {
     deleteMany?: QuotationHotelScalarWhereInput | QuotationHotelScalarWhereInput[]
   }
 
-  export type QuotationCreateNestedOneWithoutHotelsInput = {
-    create?: XOR<QuotationCreateWithoutHotelsInput, QuotationUncheckedCreateWithoutHotelsInput>
-    connectOrCreate?: QuotationCreateOrConnectWithoutHotelsInput
-    connect?: QuotationWhereUniqueInput
-  }
-
-  export type HotelCreateNestedOneWithoutQuotationHotelsInput = {
-    create?: XOR<HotelCreateWithoutQuotationHotelsInput, HotelUncheckedCreateWithoutQuotationHotelsInput>
-    connectOrCreate?: HotelCreateOrConnectWithoutQuotationHotelsInput
+  export type HotelCreateNestedOneWithoutMealsInput = {
+    create?: XOR<HotelCreateWithoutMealsInput, HotelUncheckedCreateWithoutMealsInput>
+    connectOrCreate?: HotelCreateOrConnectWithoutMealsInput
     connect?: HotelWhereUniqueInput
   }
 
-  export type RoomTypeCreateNestedOneWithoutQuotationHotelsInput = {
-    create?: XOR<RoomTypeCreateWithoutQuotationHotelsInput, RoomTypeUncheckedCreateWithoutQuotationHotelsInput>
-    connectOrCreate?: RoomTypeCreateOrConnectWithoutQuotationHotelsInput
-    connect?: RoomTypeWhereUniqueInput
+  export type AgencyCreateNestedOneWithoutMealsInput = {
+    create?: XOR<AgencyCreateWithoutMealsInput, AgencyUncheckedCreateWithoutMealsInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutMealsInput
+    connect?: AgencyWhereUniqueInput
+  }
+
+  export type QuotationMealCreateNestedManyWithoutMealInput = {
+    create?: XOR<QuotationMealCreateWithoutMealInput, QuotationMealUncheckedCreateWithoutMealInput> | QuotationMealCreateWithoutMealInput[] | QuotationMealUncheckedCreateWithoutMealInput[]
+    connectOrCreate?: QuotationMealCreateOrConnectWithoutMealInput | QuotationMealCreateOrConnectWithoutMealInput[]
+    createMany?: QuotationMealCreateManyMealInputEnvelope
+    connect?: QuotationMealWhereUniqueInput | QuotationMealWhereUniqueInput[]
+  }
+
+  export type QuotationMealUncheckedCreateNestedManyWithoutMealInput = {
+    create?: XOR<QuotationMealCreateWithoutMealInput, QuotationMealUncheckedCreateWithoutMealInput> | QuotationMealCreateWithoutMealInput[] | QuotationMealUncheckedCreateWithoutMealInput[]
+    connectOrCreate?: QuotationMealCreateOrConnectWithoutMealInput | QuotationMealCreateOrConnectWithoutMealInput[]
+    createMany?: QuotationMealCreateManyMealInputEnvelope
+    connect?: QuotationMealWhereUniqueInput | QuotationMealWhereUniqueInput[]
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type FloatFieldUpdateOperationsInput = {
@@ -29934,28 +30837,122 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type QuotationUpdateOneRequiredWithoutHotelsNestedInput = {
-    create?: XOR<QuotationCreateWithoutHotelsInput, QuotationUncheckedCreateWithoutHotelsInput>
-    connectOrCreate?: QuotationCreateOrConnectWithoutHotelsInput
-    upsert?: QuotationUpsertWithoutHotelsInput
-    connect?: QuotationWhereUniqueInput
-    update?: XOR<XOR<QuotationUpdateToOneWithWhereWithoutHotelsInput, QuotationUpdateWithoutHotelsInput>, QuotationUncheckedUpdateWithoutHotelsInput>
-  }
-
-  export type HotelUpdateOneRequiredWithoutQuotationHotelsNestedInput = {
-    create?: XOR<HotelCreateWithoutQuotationHotelsInput, HotelUncheckedCreateWithoutQuotationHotelsInput>
-    connectOrCreate?: HotelCreateOrConnectWithoutQuotationHotelsInput
-    upsert?: HotelUpsertWithoutQuotationHotelsInput
+  export type HotelUpdateOneWithoutMealsNestedInput = {
+    create?: XOR<HotelCreateWithoutMealsInput, HotelUncheckedCreateWithoutMealsInput>
+    connectOrCreate?: HotelCreateOrConnectWithoutMealsInput
+    upsert?: HotelUpsertWithoutMealsInput
+    disconnect?: HotelWhereInput | boolean
+    delete?: HotelWhereInput | boolean
     connect?: HotelWhereUniqueInput
-    update?: XOR<XOR<HotelUpdateToOneWithWhereWithoutQuotationHotelsInput, HotelUpdateWithoutQuotationHotelsInput>, HotelUncheckedUpdateWithoutQuotationHotelsInput>
+    update?: XOR<XOR<HotelUpdateToOneWithWhereWithoutMealsInput, HotelUpdateWithoutMealsInput>, HotelUncheckedUpdateWithoutMealsInput>
   }
 
-  export type RoomTypeUpdateOneRequiredWithoutQuotationHotelsNestedInput = {
-    create?: XOR<RoomTypeCreateWithoutQuotationHotelsInput, RoomTypeUncheckedCreateWithoutQuotationHotelsInput>
-    connectOrCreate?: RoomTypeCreateOrConnectWithoutQuotationHotelsInput
-    upsert?: RoomTypeUpsertWithoutQuotationHotelsInput
-    connect?: RoomTypeWhereUniqueInput
-    update?: XOR<XOR<RoomTypeUpdateToOneWithWhereWithoutQuotationHotelsInput, RoomTypeUpdateWithoutQuotationHotelsInput>, RoomTypeUncheckedUpdateWithoutQuotationHotelsInput>
+  export type AgencyUpdateOneRequiredWithoutMealsNestedInput = {
+    create?: XOR<AgencyCreateWithoutMealsInput, AgencyUncheckedCreateWithoutMealsInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutMealsInput
+    upsert?: AgencyUpsertWithoutMealsInput
+    connect?: AgencyWhereUniqueInput
+    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutMealsInput, AgencyUpdateWithoutMealsInput>, AgencyUncheckedUpdateWithoutMealsInput>
+  }
+
+  export type QuotationMealUpdateManyWithoutMealNestedInput = {
+    create?: XOR<QuotationMealCreateWithoutMealInput, QuotationMealUncheckedCreateWithoutMealInput> | QuotationMealCreateWithoutMealInput[] | QuotationMealUncheckedCreateWithoutMealInput[]
+    connectOrCreate?: QuotationMealCreateOrConnectWithoutMealInput | QuotationMealCreateOrConnectWithoutMealInput[]
+    upsert?: QuotationMealUpsertWithWhereUniqueWithoutMealInput | QuotationMealUpsertWithWhereUniqueWithoutMealInput[]
+    createMany?: QuotationMealCreateManyMealInputEnvelope
+    set?: QuotationMealWhereUniqueInput | QuotationMealWhereUniqueInput[]
+    disconnect?: QuotationMealWhereUniqueInput | QuotationMealWhereUniqueInput[]
+    delete?: QuotationMealWhereUniqueInput | QuotationMealWhereUniqueInput[]
+    connect?: QuotationMealWhereUniqueInput | QuotationMealWhereUniqueInput[]
+    update?: QuotationMealUpdateWithWhereUniqueWithoutMealInput | QuotationMealUpdateWithWhereUniqueWithoutMealInput[]
+    updateMany?: QuotationMealUpdateManyWithWhereWithoutMealInput | QuotationMealUpdateManyWithWhereWithoutMealInput[]
+    deleteMany?: QuotationMealScalarWhereInput | QuotationMealScalarWhereInput[]
+  }
+
+  export type QuotationMealUncheckedUpdateManyWithoutMealNestedInput = {
+    create?: XOR<QuotationMealCreateWithoutMealInput, QuotationMealUncheckedCreateWithoutMealInput> | QuotationMealCreateWithoutMealInput[] | QuotationMealUncheckedCreateWithoutMealInput[]
+    connectOrCreate?: QuotationMealCreateOrConnectWithoutMealInput | QuotationMealCreateOrConnectWithoutMealInput[]
+    upsert?: QuotationMealUpsertWithWhereUniqueWithoutMealInput | QuotationMealUpsertWithWhereUniqueWithoutMealInput[]
+    createMany?: QuotationMealCreateManyMealInputEnvelope
+    set?: QuotationMealWhereUniqueInput | QuotationMealWhereUniqueInput[]
+    disconnect?: QuotationMealWhereUniqueInput | QuotationMealWhereUniqueInput[]
+    delete?: QuotationMealWhereUniqueInput | QuotationMealWhereUniqueInput[]
+    connect?: QuotationMealWhereUniqueInput | QuotationMealWhereUniqueInput[]
+    update?: QuotationMealUpdateWithWhereUniqueWithoutMealInput | QuotationMealUpdateWithWhereUniqueWithoutMealInput[]
+    updateMany?: QuotationMealUpdateManyWithWhereWithoutMealInput | QuotationMealUpdateManyWithWhereWithoutMealInput[]
+    deleteMany?: QuotationMealScalarWhereInput | QuotationMealScalarWhereInput[]
+  }
+
+  export type HotelCreateNestedOneWithoutActivitiesInput = {
+    create?: XOR<HotelCreateWithoutActivitiesInput, HotelUncheckedCreateWithoutActivitiesInput>
+    connectOrCreate?: HotelCreateOrConnectWithoutActivitiesInput
+    connect?: HotelWhereUniqueInput
+  }
+
+  export type AgencyCreateNestedOneWithoutActivitiesInput = {
+    create?: XOR<AgencyCreateWithoutActivitiesInput, AgencyUncheckedCreateWithoutActivitiesInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutActivitiesInput
+    connect?: AgencyWhereUniqueInput
+  }
+
+  export type QuotationActivityCreateNestedManyWithoutActivityInput = {
+    create?: XOR<QuotationActivityCreateWithoutActivityInput, QuotationActivityUncheckedCreateWithoutActivityInput> | QuotationActivityCreateWithoutActivityInput[] | QuotationActivityUncheckedCreateWithoutActivityInput[]
+    connectOrCreate?: QuotationActivityCreateOrConnectWithoutActivityInput | QuotationActivityCreateOrConnectWithoutActivityInput[]
+    createMany?: QuotationActivityCreateManyActivityInputEnvelope
+    connect?: QuotationActivityWhereUniqueInput | QuotationActivityWhereUniqueInput[]
+  }
+
+  export type QuotationActivityUncheckedCreateNestedManyWithoutActivityInput = {
+    create?: XOR<QuotationActivityCreateWithoutActivityInput, QuotationActivityUncheckedCreateWithoutActivityInput> | QuotationActivityCreateWithoutActivityInput[] | QuotationActivityUncheckedCreateWithoutActivityInput[]
+    connectOrCreate?: QuotationActivityCreateOrConnectWithoutActivityInput | QuotationActivityCreateOrConnectWithoutActivityInput[]
+    createMany?: QuotationActivityCreateManyActivityInputEnvelope
+    connect?: QuotationActivityWhereUniqueInput | QuotationActivityWhereUniqueInput[]
+  }
+
+  export type HotelUpdateOneWithoutActivitiesNestedInput = {
+    create?: XOR<HotelCreateWithoutActivitiesInput, HotelUncheckedCreateWithoutActivitiesInput>
+    connectOrCreate?: HotelCreateOrConnectWithoutActivitiesInput
+    upsert?: HotelUpsertWithoutActivitiesInput
+    disconnect?: HotelWhereInput | boolean
+    delete?: HotelWhereInput | boolean
+    connect?: HotelWhereUniqueInput
+    update?: XOR<XOR<HotelUpdateToOneWithWhereWithoutActivitiesInput, HotelUpdateWithoutActivitiesInput>, HotelUncheckedUpdateWithoutActivitiesInput>
+  }
+
+  export type AgencyUpdateOneRequiredWithoutActivitiesNestedInput = {
+    create?: XOR<AgencyCreateWithoutActivitiesInput, AgencyUncheckedCreateWithoutActivitiesInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutActivitiesInput
+    upsert?: AgencyUpsertWithoutActivitiesInput
+    connect?: AgencyWhereUniqueInput
+    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutActivitiesInput, AgencyUpdateWithoutActivitiesInput>, AgencyUncheckedUpdateWithoutActivitiesInput>
+  }
+
+  export type QuotationActivityUpdateManyWithoutActivityNestedInput = {
+    create?: XOR<QuotationActivityCreateWithoutActivityInput, QuotationActivityUncheckedCreateWithoutActivityInput> | QuotationActivityCreateWithoutActivityInput[] | QuotationActivityUncheckedCreateWithoutActivityInput[]
+    connectOrCreate?: QuotationActivityCreateOrConnectWithoutActivityInput | QuotationActivityCreateOrConnectWithoutActivityInput[]
+    upsert?: QuotationActivityUpsertWithWhereUniqueWithoutActivityInput | QuotationActivityUpsertWithWhereUniqueWithoutActivityInput[]
+    createMany?: QuotationActivityCreateManyActivityInputEnvelope
+    set?: QuotationActivityWhereUniqueInput | QuotationActivityWhereUniqueInput[]
+    disconnect?: QuotationActivityWhereUniqueInput | QuotationActivityWhereUniqueInput[]
+    delete?: QuotationActivityWhereUniqueInput | QuotationActivityWhereUniqueInput[]
+    connect?: QuotationActivityWhereUniqueInput | QuotationActivityWhereUniqueInput[]
+    update?: QuotationActivityUpdateWithWhereUniqueWithoutActivityInput | QuotationActivityUpdateWithWhereUniqueWithoutActivityInput[]
+    updateMany?: QuotationActivityUpdateManyWithWhereWithoutActivityInput | QuotationActivityUpdateManyWithWhereWithoutActivityInput[]
+    deleteMany?: QuotationActivityScalarWhereInput | QuotationActivityScalarWhereInput[]
+  }
+
+  export type QuotationActivityUncheckedUpdateManyWithoutActivityNestedInput = {
+    create?: XOR<QuotationActivityCreateWithoutActivityInput, QuotationActivityUncheckedCreateWithoutActivityInput> | QuotationActivityCreateWithoutActivityInput[] | QuotationActivityUncheckedCreateWithoutActivityInput[]
+    connectOrCreate?: QuotationActivityCreateOrConnectWithoutActivityInput | QuotationActivityCreateOrConnectWithoutActivityInput[]
+    upsert?: QuotationActivityUpsertWithWhereUniqueWithoutActivityInput | QuotationActivityUpsertWithWhereUniqueWithoutActivityInput[]
+    createMany?: QuotationActivityCreateManyActivityInputEnvelope
+    set?: QuotationActivityWhereUniqueInput | QuotationActivityWhereUniqueInput[]
+    disconnect?: QuotationActivityWhereUniqueInput | QuotationActivityWhereUniqueInput[]
+    delete?: QuotationActivityWhereUniqueInput | QuotationActivityWhereUniqueInput[]
+    connect?: QuotationActivityWhereUniqueInput | QuotationActivityWhereUniqueInput[]
+    update?: QuotationActivityUpdateWithWhereUniqueWithoutActivityInput | QuotationActivityUpdateWithWhereUniqueWithoutActivityInput[]
+    updateMany?: QuotationActivityUpdateManyWithWhereWithoutActivityInput | QuotationActivityUpdateManyWithWhereWithoutActivityInput[]
+    deleteMany?: QuotationActivityScalarWhereInput | QuotationActivityScalarWhereInput[]
   }
 
   export type AgencyCreateNestedOneWithoutTransportInput = {
@@ -30014,6 +31011,48 @@ export namespace Prisma {
     deleteMany?: QuotationTransportScalarWhereInput | QuotationTransportScalarWhereInput[]
   }
 
+  export type QuotationCreateNestedOneWithoutHotelsInput = {
+    create?: XOR<QuotationCreateWithoutHotelsInput, QuotationUncheckedCreateWithoutHotelsInput>
+    connectOrCreate?: QuotationCreateOrConnectWithoutHotelsInput
+    connect?: QuotationWhereUniqueInput
+  }
+
+  export type HotelCreateNestedOneWithoutQuotationHotelsInput = {
+    create?: XOR<HotelCreateWithoutQuotationHotelsInput, HotelUncheckedCreateWithoutQuotationHotelsInput>
+    connectOrCreate?: HotelCreateOrConnectWithoutQuotationHotelsInput
+    connect?: HotelWhereUniqueInput
+  }
+
+  export type RoomTypeCreateNestedOneWithoutQuotationHotelsInput = {
+    create?: XOR<RoomTypeCreateWithoutQuotationHotelsInput, RoomTypeUncheckedCreateWithoutQuotationHotelsInput>
+    connectOrCreate?: RoomTypeCreateOrConnectWithoutQuotationHotelsInput
+    connect?: RoomTypeWhereUniqueInput
+  }
+
+  export type QuotationUpdateOneRequiredWithoutHotelsNestedInput = {
+    create?: XOR<QuotationCreateWithoutHotelsInput, QuotationUncheckedCreateWithoutHotelsInput>
+    connectOrCreate?: QuotationCreateOrConnectWithoutHotelsInput
+    upsert?: QuotationUpsertWithoutHotelsInput
+    connect?: QuotationWhereUniqueInput
+    update?: XOR<XOR<QuotationUpdateToOneWithWhereWithoutHotelsInput, QuotationUpdateWithoutHotelsInput>, QuotationUncheckedUpdateWithoutHotelsInput>
+  }
+
+  export type HotelUpdateOneRequiredWithoutQuotationHotelsNestedInput = {
+    create?: XOR<HotelCreateWithoutQuotationHotelsInput, HotelUncheckedCreateWithoutQuotationHotelsInput>
+    connectOrCreate?: HotelCreateOrConnectWithoutQuotationHotelsInput
+    upsert?: HotelUpsertWithoutQuotationHotelsInput
+    connect?: HotelWhereUniqueInput
+    update?: XOR<XOR<HotelUpdateToOneWithWhereWithoutQuotationHotelsInput, HotelUpdateWithoutQuotationHotelsInput>, HotelUncheckedUpdateWithoutQuotationHotelsInput>
+  }
+
+  export type RoomTypeUpdateOneRequiredWithoutQuotationHotelsNestedInput = {
+    create?: XOR<RoomTypeCreateWithoutQuotationHotelsInput, RoomTypeUncheckedCreateWithoutQuotationHotelsInput>
+    connectOrCreate?: RoomTypeCreateOrConnectWithoutQuotationHotelsInput
+    upsert?: RoomTypeUpsertWithoutQuotationHotelsInput
+    connect?: RoomTypeWhereUniqueInput
+    update?: XOR<XOR<RoomTypeUpdateToOneWithWhereWithoutQuotationHotelsInput, RoomTypeUpdateWithoutQuotationHotelsInput>, RoomTypeUncheckedUpdateWithoutQuotationHotelsInput>
+  }
+
   export type QuotationCreateNestedOneWithoutTransportsInput = {
     create?: XOR<QuotationCreateWithoutTransportsInput, QuotationUncheckedCreateWithoutTransportsInput>
     connectOrCreate?: QuotationCreateOrConnectWithoutTransportsInput
@@ -30050,66 +31089,6 @@ export namespace Prisma {
     update?: XOR<XOR<TransportUpdateToOneWithWhereWithoutQuotationTransportsInput, TransportUpdateWithoutQuotationTransportsInput>, TransportUncheckedUpdateWithoutQuotationTransportsInput>
   }
 
-  export type AgencyCreateNestedOneWithoutMealsInput = {
-    create?: XOR<AgencyCreateWithoutMealsInput, AgencyUncheckedCreateWithoutMealsInput>
-    connectOrCreate?: AgencyCreateOrConnectWithoutMealsInput
-    connect?: AgencyWhereUniqueInput
-  }
-
-  export type QuotationMealCreateNestedManyWithoutMealInput = {
-    create?: XOR<QuotationMealCreateWithoutMealInput, QuotationMealUncheckedCreateWithoutMealInput> | QuotationMealCreateWithoutMealInput[] | QuotationMealUncheckedCreateWithoutMealInput[]
-    connectOrCreate?: QuotationMealCreateOrConnectWithoutMealInput | QuotationMealCreateOrConnectWithoutMealInput[]
-    createMany?: QuotationMealCreateManyMealInputEnvelope
-    connect?: QuotationMealWhereUniqueInput | QuotationMealWhereUniqueInput[]
-  }
-
-  export type QuotationMealUncheckedCreateNestedManyWithoutMealInput = {
-    create?: XOR<QuotationMealCreateWithoutMealInput, QuotationMealUncheckedCreateWithoutMealInput> | QuotationMealCreateWithoutMealInput[] | QuotationMealUncheckedCreateWithoutMealInput[]
-    connectOrCreate?: QuotationMealCreateOrConnectWithoutMealInput | QuotationMealCreateOrConnectWithoutMealInput[]
-    createMany?: QuotationMealCreateManyMealInputEnvelope
-    connect?: QuotationMealWhereUniqueInput | QuotationMealWhereUniqueInput[]
-  }
-
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
-  }
-
-  export type AgencyUpdateOneRequiredWithoutMealsNestedInput = {
-    create?: XOR<AgencyCreateWithoutMealsInput, AgencyUncheckedCreateWithoutMealsInput>
-    connectOrCreate?: AgencyCreateOrConnectWithoutMealsInput
-    upsert?: AgencyUpsertWithoutMealsInput
-    connect?: AgencyWhereUniqueInput
-    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutMealsInput, AgencyUpdateWithoutMealsInput>, AgencyUncheckedUpdateWithoutMealsInput>
-  }
-
-  export type QuotationMealUpdateManyWithoutMealNestedInput = {
-    create?: XOR<QuotationMealCreateWithoutMealInput, QuotationMealUncheckedCreateWithoutMealInput> | QuotationMealCreateWithoutMealInput[] | QuotationMealUncheckedCreateWithoutMealInput[]
-    connectOrCreate?: QuotationMealCreateOrConnectWithoutMealInput | QuotationMealCreateOrConnectWithoutMealInput[]
-    upsert?: QuotationMealUpsertWithWhereUniqueWithoutMealInput | QuotationMealUpsertWithWhereUniqueWithoutMealInput[]
-    createMany?: QuotationMealCreateManyMealInputEnvelope
-    set?: QuotationMealWhereUniqueInput | QuotationMealWhereUniqueInput[]
-    disconnect?: QuotationMealWhereUniqueInput | QuotationMealWhereUniqueInput[]
-    delete?: QuotationMealWhereUniqueInput | QuotationMealWhereUniqueInput[]
-    connect?: QuotationMealWhereUniqueInput | QuotationMealWhereUniqueInput[]
-    update?: QuotationMealUpdateWithWhereUniqueWithoutMealInput | QuotationMealUpdateWithWhereUniqueWithoutMealInput[]
-    updateMany?: QuotationMealUpdateManyWithWhereWithoutMealInput | QuotationMealUpdateManyWithWhereWithoutMealInput[]
-    deleteMany?: QuotationMealScalarWhereInput | QuotationMealScalarWhereInput[]
-  }
-
-  export type QuotationMealUncheckedUpdateManyWithoutMealNestedInput = {
-    create?: XOR<QuotationMealCreateWithoutMealInput, QuotationMealUncheckedCreateWithoutMealInput> | QuotationMealCreateWithoutMealInput[] | QuotationMealUncheckedCreateWithoutMealInput[]
-    connectOrCreate?: QuotationMealCreateOrConnectWithoutMealInput | QuotationMealCreateOrConnectWithoutMealInput[]
-    upsert?: QuotationMealUpsertWithWhereUniqueWithoutMealInput | QuotationMealUpsertWithWhereUniqueWithoutMealInput[]
-    createMany?: QuotationMealCreateManyMealInputEnvelope
-    set?: QuotationMealWhereUniqueInput | QuotationMealWhereUniqueInput[]
-    disconnect?: QuotationMealWhereUniqueInput | QuotationMealWhereUniqueInput[]
-    delete?: QuotationMealWhereUniqueInput | QuotationMealWhereUniqueInput[]
-    connect?: QuotationMealWhereUniqueInput | QuotationMealWhereUniqueInput[]
-    update?: QuotationMealUpdateWithWhereUniqueWithoutMealInput | QuotationMealUpdateWithWhereUniqueWithoutMealInput[]
-    updateMany?: QuotationMealUpdateManyWithWhereWithoutMealInput | QuotationMealUpdateManyWithWhereWithoutMealInput[]
-    deleteMany?: QuotationMealScalarWhereInput | QuotationMealScalarWhereInput[]
-  }
-
   export type QuotationCreateNestedOneWithoutMealsInput = {
     create?: XOR<QuotationCreateWithoutMealsInput, QuotationUncheckedCreateWithoutMealsInput>
     connectOrCreate?: QuotationCreateOrConnectWithoutMealsInput
@@ -30136,62 +31115,6 @@ export namespace Prisma {
     upsert?: MealUpsertWithoutQuotationMealsInput
     connect?: MealWhereUniqueInput
     update?: XOR<XOR<MealUpdateToOneWithWhereWithoutQuotationMealsInput, MealUpdateWithoutQuotationMealsInput>, MealUncheckedUpdateWithoutQuotationMealsInput>
-  }
-
-  export type AgencyCreateNestedOneWithoutActivitiesInput = {
-    create?: XOR<AgencyCreateWithoutActivitiesInput, AgencyUncheckedCreateWithoutActivitiesInput>
-    connectOrCreate?: AgencyCreateOrConnectWithoutActivitiesInput
-    connect?: AgencyWhereUniqueInput
-  }
-
-  export type QuotationActivityCreateNestedManyWithoutActivityInput = {
-    create?: XOR<QuotationActivityCreateWithoutActivityInput, QuotationActivityUncheckedCreateWithoutActivityInput> | QuotationActivityCreateWithoutActivityInput[] | QuotationActivityUncheckedCreateWithoutActivityInput[]
-    connectOrCreate?: QuotationActivityCreateOrConnectWithoutActivityInput | QuotationActivityCreateOrConnectWithoutActivityInput[]
-    createMany?: QuotationActivityCreateManyActivityInputEnvelope
-    connect?: QuotationActivityWhereUniqueInput | QuotationActivityWhereUniqueInput[]
-  }
-
-  export type QuotationActivityUncheckedCreateNestedManyWithoutActivityInput = {
-    create?: XOR<QuotationActivityCreateWithoutActivityInput, QuotationActivityUncheckedCreateWithoutActivityInput> | QuotationActivityCreateWithoutActivityInput[] | QuotationActivityUncheckedCreateWithoutActivityInput[]
-    connectOrCreate?: QuotationActivityCreateOrConnectWithoutActivityInput | QuotationActivityCreateOrConnectWithoutActivityInput[]
-    createMany?: QuotationActivityCreateManyActivityInputEnvelope
-    connect?: QuotationActivityWhereUniqueInput | QuotationActivityWhereUniqueInput[]
-  }
-
-  export type AgencyUpdateOneRequiredWithoutActivitiesNestedInput = {
-    create?: XOR<AgencyCreateWithoutActivitiesInput, AgencyUncheckedCreateWithoutActivitiesInput>
-    connectOrCreate?: AgencyCreateOrConnectWithoutActivitiesInput
-    upsert?: AgencyUpsertWithoutActivitiesInput
-    connect?: AgencyWhereUniqueInput
-    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutActivitiesInput, AgencyUpdateWithoutActivitiesInput>, AgencyUncheckedUpdateWithoutActivitiesInput>
-  }
-
-  export type QuotationActivityUpdateManyWithoutActivityNestedInput = {
-    create?: XOR<QuotationActivityCreateWithoutActivityInput, QuotationActivityUncheckedCreateWithoutActivityInput> | QuotationActivityCreateWithoutActivityInput[] | QuotationActivityUncheckedCreateWithoutActivityInput[]
-    connectOrCreate?: QuotationActivityCreateOrConnectWithoutActivityInput | QuotationActivityCreateOrConnectWithoutActivityInput[]
-    upsert?: QuotationActivityUpsertWithWhereUniqueWithoutActivityInput | QuotationActivityUpsertWithWhereUniqueWithoutActivityInput[]
-    createMany?: QuotationActivityCreateManyActivityInputEnvelope
-    set?: QuotationActivityWhereUniqueInput | QuotationActivityWhereUniqueInput[]
-    disconnect?: QuotationActivityWhereUniqueInput | QuotationActivityWhereUniqueInput[]
-    delete?: QuotationActivityWhereUniqueInput | QuotationActivityWhereUniqueInput[]
-    connect?: QuotationActivityWhereUniqueInput | QuotationActivityWhereUniqueInput[]
-    update?: QuotationActivityUpdateWithWhereUniqueWithoutActivityInput | QuotationActivityUpdateWithWhereUniqueWithoutActivityInput[]
-    updateMany?: QuotationActivityUpdateManyWithWhereWithoutActivityInput | QuotationActivityUpdateManyWithWhereWithoutActivityInput[]
-    deleteMany?: QuotationActivityScalarWhereInput | QuotationActivityScalarWhereInput[]
-  }
-
-  export type QuotationActivityUncheckedUpdateManyWithoutActivityNestedInput = {
-    create?: XOR<QuotationActivityCreateWithoutActivityInput, QuotationActivityUncheckedCreateWithoutActivityInput> | QuotationActivityCreateWithoutActivityInput[] | QuotationActivityUncheckedCreateWithoutActivityInput[]
-    connectOrCreate?: QuotationActivityCreateOrConnectWithoutActivityInput | QuotationActivityCreateOrConnectWithoutActivityInput[]
-    upsert?: QuotationActivityUpsertWithWhereUniqueWithoutActivityInput | QuotationActivityUpsertWithWhereUniqueWithoutActivityInput[]
-    createMany?: QuotationActivityCreateManyActivityInputEnvelope
-    set?: QuotationActivityWhereUniqueInput | QuotationActivityWhereUniqueInput[]
-    disconnect?: QuotationActivityWhereUniqueInput | QuotationActivityWhereUniqueInput[]
-    delete?: QuotationActivityWhereUniqueInput | QuotationActivityWhereUniqueInput[]
-    connect?: QuotationActivityWhereUniqueInput | QuotationActivityWhereUniqueInput[]
-    update?: QuotationActivityUpdateWithWhereUniqueWithoutActivityInput | QuotationActivityUpdateWithWhereUniqueWithoutActivityInput[]
-    updateMany?: QuotationActivityUpdateManyWithWhereWithoutActivityInput | QuotationActivityUpdateManyWithWhereWithoutActivityInput[]
-    deleteMany?: QuotationActivityScalarWhereInput | QuotationActivityScalarWhereInput[]
   }
 
   export type QuotationCreateNestedOneWithoutActivitiesInput = {
@@ -30797,6 +31720,19 @@ export namespace Prisma {
     _max?: NestedDecimalFilter<$PrismaModel>
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -30827,19 +31763,6 @@ export namespace Prisma {
     _sum?: NestedFloatNullableFilter<$PrismaModel>
     _min?: NestedFloatNullableFilter<$PrismaModel>
     _max?: NestedFloatNullableFilter<$PrismaModel>
-  }
-
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedEnumQuotationStatusFilter<$PrismaModel = never> = {
@@ -31378,9 +32301,13 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    duration?: string | null
     price: number
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    duration?: string | null
+    photos?: string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    hotel?: HotelCreateNestedOneWithoutActivitiesInput
     quotationActivities?: QuotationActivityCreateNestedManyWithoutActivityInput
   }
 
@@ -31388,9 +32315,13 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    duration?: string | null
     price: number
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    duration?: string | null
+    photos?: string | null
+    image?: string | null
+    hotelId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     quotationActivities?: QuotationActivityUncheckedCreateNestedManyWithoutActivityInput
   }
 
@@ -31412,6 +32343,8 @@ export namespace Prisma {
     maxCapacity: number
     notes?: string | null
     photos?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     quotationTransports?: QuotationTransportCreateNestedManyWithoutTransportInput
   }
 
@@ -31423,6 +32356,8 @@ export namespace Prisma {
     maxCapacity: number
     notes?: string | null
     photos?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     quotationTransports?: QuotationTransportUncheckedCreateNestedManyWithoutTransportInput
   }
 
@@ -31478,7 +32413,11 @@ export namespace Prisma {
     inclusions?: string | null
     cancellation?: string | null
     photos?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     roomTypes?: RoomTypeCreateNestedManyWithoutHotelInput
+    meals?: MealCreateNestedManyWithoutHotelInput
+    activities?: ActivityCreateNestedManyWithoutHotelInput
     quotationHotels?: QuotationHotelCreateNestedManyWithoutHotelInput
   }
 
@@ -31490,7 +32429,11 @@ export namespace Prisma {
     inclusions?: string | null
     cancellation?: string | null
     photos?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     roomTypes?: RoomTypeUncheckedCreateNestedManyWithoutHotelInput
+    meals?: MealUncheckedCreateNestedManyWithoutHotelInput
+    activities?: ActivityUncheckedCreateNestedManyWithoutHotelInput
     quotationHotels?: QuotationHotelUncheckedCreateNestedManyWithoutHotelInput
   }
 
@@ -31506,19 +32449,31 @@ export namespace Prisma {
 
   export type MealCreateWithoutAgencyInput = {
     id?: string
+    name: string
     type: string
-    vegOption: boolean
-    nonVegOption: boolean
+    category: string
+    vegOption?: boolean
+    nonVegOption?: boolean
     price: number
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    hotel?: HotelCreateNestedOneWithoutMealsInput
     quotationMeals?: QuotationMealCreateNestedManyWithoutMealInput
   }
 
   export type MealUncheckedCreateWithoutAgencyInput = {
     id?: string
+    name: string
     type: string
-    vegOption: boolean
-    nonVegOption: boolean
+    category: string
+    vegOption?: boolean
+    nonVegOption?: boolean
     price: number
+    image?: string | null
+    hotelId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     quotationMeals?: QuotationMealUncheckedCreateNestedManyWithoutMealInput
   }
 
@@ -31653,10 +32608,14 @@ export namespace Prisma {
     id?: StringFilter<"Activity"> | string
     name?: StringFilter<"Activity"> | string
     description?: StringNullableFilter<"Activity"> | string | null
-    duration?: StringNullableFilter<"Activity"> | string | null
     price?: FloatFilter<"Activity"> | number
-    photos?: JsonNullableFilter<"Activity">
+    duration?: StringNullableFilter<"Activity"> | string | null
+    photos?: StringNullableFilter<"Activity"> | string | null
+    image?: StringNullableFilter<"Activity"> | string | null
+    hotelId?: StringNullableFilter<"Activity"> | string | null
     agencyId?: StringFilter<"Activity"> | string
+    createdAt?: DateTimeFilter<"Activity"> | Date | string
+    updatedAt?: DateTimeFilter<"Activity"> | Date | string
   }
 
   export type TransportUpsertWithWhereUniqueWithoutAgencyInput = {
@@ -31687,6 +32646,8 @@ export namespace Prisma {
     notes?: StringNullableFilter<"Transport"> | string | null
     photos?: StringNullableFilter<"Transport"> | string | null
     agencyId?: StringFilter<"Transport"> | string
+    createdAt?: DateTimeFilter<"Transport"> | Date | string
+    updatedAt?: DateTimeFilter<"Transport"> | Date | string
   }
 
   export type ClientUpsertWithWhereUniqueWithoutAgencyInput = {
@@ -31748,6 +32709,8 @@ export namespace Prisma {
     cancellation?: StringNullableFilter<"Hotel"> | string | null
     photos?: StringNullableFilter<"Hotel"> | string | null
     agencyId?: StringFilter<"Hotel"> | string
+    createdAt?: DateTimeFilter<"Hotel"> | Date | string
+    updatedAt?: DateTimeFilter<"Hotel"> | Date | string
   }
 
   export type MealUpsertWithWhereUniqueWithoutAgencyInput = {
@@ -31771,11 +32734,17 @@ export namespace Prisma {
     OR?: MealScalarWhereInput[]
     NOT?: MealScalarWhereInput | MealScalarWhereInput[]
     id?: StringFilter<"Meal"> | string
+    name?: StringFilter<"Meal"> | string
     type?: StringFilter<"Meal"> | string
+    category?: StringFilter<"Meal"> | string
     vegOption?: BoolFilter<"Meal"> | boolean
     nonVegOption?: BoolFilter<"Meal"> | boolean
     price?: FloatFilter<"Meal"> | number
+    image?: StringNullableFilter<"Meal"> | string | null
+    hotelId?: StringNullableFilter<"Meal"> | string | null
     agencyId?: StringFilter<"Meal"> | string
+    createdAt?: DateTimeFilter<"Meal"> | Date | string
+    updatedAt?: DateTimeFilter<"Meal"> | Date | string
   }
 
   export type QuotationUpsertWithWhereUniqueWithoutAgencyInput = {
@@ -32037,6 +33006,14 @@ export namespace Prisma {
     id?: string
     type: string
     price: Decimal | DecimalJsLike | number | string
+    maxAdults?: number
+    maxChildren?: number
+    bedType?: string | null
+    amenities?: string | null
+    description?: string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     quotationHotels?: QuotationHotelCreateNestedManyWithoutRoomTypeInput
   }
 
@@ -32044,6 +33021,14 @@ export namespace Prisma {
     id?: string
     type: string
     price: Decimal | DecimalJsLike | number | string
+    maxAdults?: number
+    maxChildren?: number
+    bedType?: string | null
+    amenities?: string | null
+    description?: string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     quotationHotels?: QuotationHotelUncheckedCreateNestedManyWithoutRoomTypeInput
   }
 
@@ -32054,6 +33039,84 @@ export namespace Prisma {
 
   export type RoomTypeCreateManyHotelInputEnvelope = {
     data: RoomTypeCreateManyHotelInput | RoomTypeCreateManyHotelInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MealCreateWithoutHotelInput = {
+    id?: string
+    name: string
+    type: string
+    category: string
+    vegOption?: boolean
+    nonVegOption?: boolean
+    price: number
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agency: AgencyCreateNestedOneWithoutMealsInput
+    quotationMeals?: QuotationMealCreateNestedManyWithoutMealInput
+  }
+
+  export type MealUncheckedCreateWithoutHotelInput = {
+    id?: string
+    name: string
+    type: string
+    category: string
+    vegOption?: boolean
+    nonVegOption?: boolean
+    price: number
+    image?: string | null
+    agencyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    quotationMeals?: QuotationMealUncheckedCreateNestedManyWithoutMealInput
+  }
+
+  export type MealCreateOrConnectWithoutHotelInput = {
+    where: MealWhereUniqueInput
+    create: XOR<MealCreateWithoutHotelInput, MealUncheckedCreateWithoutHotelInput>
+  }
+
+  export type MealCreateManyHotelInputEnvelope = {
+    data: MealCreateManyHotelInput | MealCreateManyHotelInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ActivityCreateWithoutHotelInput = {
+    id?: string
+    name: string
+    description?: string | null
+    price: number
+    duration?: string | null
+    photos?: string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agency: AgencyCreateNestedOneWithoutActivitiesInput
+    quotationActivities?: QuotationActivityCreateNestedManyWithoutActivityInput
+  }
+
+  export type ActivityUncheckedCreateWithoutHotelInput = {
+    id?: string
+    name: string
+    description?: string | null
+    price: number
+    duration?: string | null
+    photos?: string | null
+    image?: string | null
+    agencyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    quotationActivities?: QuotationActivityUncheckedCreateNestedManyWithoutActivityInput
+  }
+
+  export type ActivityCreateOrConnectWithoutHotelInput = {
+    where: ActivityWhereUniqueInput
+    create: XOR<ActivityCreateWithoutHotelInput, ActivityUncheckedCreateWithoutHotelInput>
+  }
+
+  export type ActivityCreateManyHotelInputEnvelope = {
+    data: ActivityCreateManyHotelInput | ActivityCreateManyHotelInput[]
     skipDuplicates?: boolean
   }
 
@@ -32145,7 +33208,47 @@ export namespace Prisma {
     id?: StringFilter<"RoomType"> | string
     type?: StringFilter<"RoomType"> | string
     price?: DecimalFilter<"RoomType"> | Decimal | DecimalJsLike | number | string
+    maxAdults?: IntFilter<"RoomType"> | number
+    maxChildren?: IntFilter<"RoomType"> | number
+    bedType?: StringNullableFilter<"RoomType"> | string | null
+    amenities?: StringNullableFilter<"RoomType"> | string | null
+    description?: StringNullableFilter<"RoomType"> | string | null
+    image?: StringNullableFilter<"RoomType"> | string | null
     hotelId?: StringFilter<"RoomType"> | string
+    createdAt?: DateTimeFilter<"RoomType"> | Date | string
+    updatedAt?: DateTimeFilter<"RoomType"> | Date | string
+  }
+
+  export type MealUpsertWithWhereUniqueWithoutHotelInput = {
+    where: MealWhereUniqueInput
+    update: XOR<MealUpdateWithoutHotelInput, MealUncheckedUpdateWithoutHotelInput>
+    create: XOR<MealCreateWithoutHotelInput, MealUncheckedCreateWithoutHotelInput>
+  }
+
+  export type MealUpdateWithWhereUniqueWithoutHotelInput = {
+    where: MealWhereUniqueInput
+    data: XOR<MealUpdateWithoutHotelInput, MealUncheckedUpdateWithoutHotelInput>
+  }
+
+  export type MealUpdateManyWithWhereWithoutHotelInput = {
+    where: MealScalarWhereInput
+    data: XOR<MealUpdateManyMutationInput, MealUncheckedUpdateManyWithoutHotelInput>
+  }
+
+  export type ActivityUpsertWithWhereUniqueWithoutHotelInput = {
+    where: ActivityWhereUniqueInput
+    update: XOR<ActivityUpdateWithoutHotelInput, ActivityUncheckedUpdateWithoutHotelInput>
+    create: XOR<ActivityCreateWithoutHotelInput, ActivityUncheckedCreateWithoutHotelInput>
+  }
+
+  export type ActivityUpdateWithWhereUniqueWithoutHotelInput = {
+    where: ActivityWhereUniqueInput
+    data: XOR<ActivityUpdateWithoutHotelInput, ActivityUncheckedUpdateWithoutHotelInput>
+  }
+
+  export type ActivityUpdateManyWithWhereWithoutHotelInput = {
+    where: ActivityScalarWhereInput
+    data: XOR<ActivityUpdateManyMutationInput, ActivityUncheckedUpdateManyWithoutHotelInput>
   }
 
   export type QuotationHotelUpsertWithWhereUniqueWithoutHotelInput = {
@@ -32183,7 +33286,11 @@ export namespace Prisma {
     inclusions?: string | null
     cancellation?: string | null
     photos?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     agency: AgencyCreateNestedOneWithoutHotelsInput
+    meals?: MealCreateNestedManyWithoutHotelInput
+    activities?: ActivityCreateNestedManyWithoutHotelInput
     quotationHotels?: QuotationHotelCreateNestedManyWithoutHotelInput
   }
 
@@ -32196,6 +33303,10 @@ export namespace Prisma {
     cancellation?: string | null
     photos?: string | null
     agencyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    meals?: MealUncheckedCreateNestedManyWithoutHotelInput
+    activities?: ActivityUncheckedCreateNestedManyWithoutHotelInput
     quotationHotels?: QuotationHotelUncheckedCreateNestedManyWithoutHotelInput
   }
 
@@ -32247,7 +33358,11 @@ export namespace Prisma {
     inclusions?: NullableStringFieldUpdateOperationsInput | string | null
     cancellation?: NullableStringFieldUpdateOperationsInput | string | null
     photos?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agency?: AgencyUpdateOneRequiredWithoutHotelsNestedInput
+    meals?: MealUpdateManyWithoutHotelNestedInput
+    activities?: ActivityUpdateManyWithoutHotelNestedInput
     quotationHotels?: QuotationHotelUpdateManyWithoutHotelNestedInput
   }
 
@@ -32260,6 +33375,10 @@ export namespace Prisma {
     cancellation?: NullableStringFieldUpdateOperationsInput | string | null
     photos?: NullableStringFieldUpdateOperationsInput | string | null
     agencyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    meals?: MealUncheckedUpdateManyWithoutHotelNestedInput
+    activities?: ActivityUncheckedUpdateManyWithoutHotelNestedInput
     quotationHotels?: QuotationHotelUncheckedUpdateManyWithoutHotelNestedInput
   }
 
@@ -32279,60 +33398,7 @@ export namespace Prisma {
     data: XOR<QuotationHotelUpdateManyMutationInput, QuotationHotelUncheckedUpdateManyWithoutRoomTypeInput>
   }
 
-  export type QuotationCreateWithoutHotelsInput = {
-    id?: string
-    clientName?: string | null
-    phoneNumber?: number | null
-    emailAddress?: string | null
-    status?: $Enums.QuotationStatus
-    destination: JsonNullValueInput | InputJsonValue
-    startDate: Date | string
-    endDate: Date | string
-    adults: number
-    children: number
-    infants: number
-    totalAmount: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    agency?: AgencyCreateNestedOneWithoutQuotationsInput
-    client?: ClientCreateNestedOneWithoutQuotationsInput
-    items?: QuotationItemCreateNestedManyWithoutQuotationInput
-    itineraries?: ItineraryCreateNestedManyWithoutQuotationInput
-    transports?: QuotationTransportCreateNestedManyWithoutQuotationInput
-    meals?: QuotationMealCreateNestedManyWithoutQuotationInput
-    activities?: QuotationActivityCreateNestedManyWithoutQuotationInput
-  }
-
-  export type QuotationUncheckedCreateWithoutHotelsInput = {
-    id?: string
-    clientId?: string | null
-    agencyId?: string | null
-    clientName?: string | null
-    phoneNumber?: number | null
-    emailAddress?: string | null
-    status?: $Enums.QuotationStatus
-    destination: JsonNullValueInput | InputJsonValue
-    startDate: Date | string
-    endDate: Date | string
-    adults: number
-    children: number
-    infants: number
-    totalAmount: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    items?: QuotationItemUncheckedCreateNestedManyWithoutQuotationInput
-    itineraries?: ItineraryUncheckedCreateNestedManyWithoutQuotationInput
-    transports?: QuotationTransportUncheckedCreateNestedManyWithoutQuotationInput
-    meals?: QuotationMealUncheckedCreateNestedManyWithoutQuotationInput
-    activities?: QuotationActivityUncheckedCreateNestedManyWithoutQuotationInput
-  }
-
-  export type QuotationCreateOrConnectWithoutHotelsInput = {
-    where: QuotationWhereUniqueInput
-    create: XOR<QuotationCreateWithoutHotelsInput, QuotationUncheckedCreateWithoutHotelsInput>
-  }
-
-  export type HotelCreateWithoutQuotationHotelsInput = {
+  export type HotelCreateWithoutMealsInput = {
     id?: string
     name: string
     city: string
@@ -32340,11 +33406,15 @@ export namespace Prisma {
     inclusions?: string | null
     cancellation?: string | null
     photos?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     agency: AgencyCreateNestedOneWithoutHotelsInput
     roomTypes?: RoomTypeCreateNestedManyWithoutHotelInput
+    activities?: ActivityCreateNestedManyWithoutHotelInput
+    quotationHotels?: QuotationHotelCreateNestedManyWithoutHotelInput
   }
 
-  export type HotelUncheckedCreateWithoutQuotationHotelsInput = {
+  export type HotelUncheckedCreateWithoutMealsInput = {
     id?: string
     name: string
     city: string
@@ -32353,104 +33423,87 @@ export namespace Prisma {
     cancellation?: string | null
     photos?: string | null
     agencyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
     roomTypes?: RoomTypeUncheckedCreateNestedManyWithoutHotelInput
+    activities?: ActivityUncheckedCreateNestedManyWithoutHotelInput
+    quotationHotels?: QuotationHotelUncheckedCreateNestedManyWithoutHotelInput
   }
 
-  export type HotelCreateOrConnectWithoutQuotationHotelsInput = {
+  export type HotelCreateOrConnectWithoutMealsInput = {
     where: HotelWhereUniqueInput
-    create: XOR<HotelCreateWithoutQuotationHotelsInput, HotelUncheckedCreateWithoutQuotationHotelsInput>
+    create: XOR<HotelCreateWithoutMealsInput, HotelUncheckedCreateWithoutMealsInput>
   }
 
-  export type RoomTypeCreateWithoutQuotationHotelsInput = {
+  export type AgencyCreateWithoutMealsInput = {
     id?: string
-    type: string
-    price: Decimal | DecimalJsLike | number | string
-    hotel: HotelCreateNestedOneWithoutRoomTypesInput
+    name: string
+    logo?: string | null
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    activities?: ActivityCreateNestedManyWithoutAgencyInput
+    transport?: TransportCreateNestedManyWithoutAgencyInput
+    clients?: ClientCreateNestedManyWithoutAgencyInput
+    hotels?: HotelCreateNestedManyWithoutAgencyInput
+    quotations?: QuotationCreateNestedManyWithoutAgencyInput
+    users?: UserCreateNestedManyWithoutAgencyInput
   }
 
-  export type RoomTypeUncheckedCreateWithoutQuotationHotelsInput = {
+  export type AgencyUncheckedCreateWithoutMealsInput = {
     id?: string
-    type: string
-    price: Decimal | DecimalJsLike | number | string
-    hotelId: string
+    name: string
+    logo?: string | null
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    activities?: ActivityUncheckedCreateNestedManyWithoutAgencyInput
+    transport?: TransportUncheckedCreateNestedManyWithoutAgencyInput
+    clients?: ClientUncheckedCreateNestedManyWithoutAgencyInput
+    hotels?: HotelUncheckedCreateNestedManyWithoutAgencyInput
+    quotations?: QuotationUncheckedCreateNestedManyWithoutAgencyInput
+    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
   }
 
-  export type RoomTypeCreateOrConnectWithoutQuotationHotelsInput = {
-    where: RoomTypeWhereUniqueInput
-    create: XOR<RoomTypeCreateWithoutQuotationHotelsInput, RoomTypeUncheckedCreateWithoutQuotationHotelsInput>
+  export type AgencyCreateOrConnectWithoutMealsInput = {
+    where: AgencyWhereUniqueInput
+    create: XOR<AgencyCreateWithoutMealsInput, AgencyUncheckedCreateWithoutMealsInput>
   }
 
-  export type QuotationUpsertWithoutHotelsInput = {
-    update: XOR<QuotationUpdateWithoutHotelsInput, QuotationUncheckedUpdateWithoutHotelsInput>
-    create: XOR<QuotationCreateWithoutHotelsInput, QuotationUncheckedCreateWithoutHotelsInput>
-    where?: QuotationWhereInput
+  export type QuotationMealCreateWithoutMealInput = {
+    id?: string
+    price: number
+    quotation: QuotationCreateNestedOneWithoutMealsInput
   }
 
-  export type QuotationUpdateToOneWithWhereWithoutHotelsInput = {
-    where?: QuotationWhereInput
-    data: XOR<QuotationUpdateWithoutHotelsInput, QuotationUncheckedUpdateWithoutHotelsInput>
+  export type QuotationMealUncheckedCreateWithoutMealInput = {
+    id?: string
+    quotationId: string
+    price: number
   }
 
-  export type QuotationUpdateWithoutHotelsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    clientName?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    emailAddress?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumQuotationStatusFieldUpdateOperationsInput | $Enums.QuotationStatus
-    destination?: JsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    adults?: IntFieldUpdateOperationsInput | number
-    children?: IntFieldUpdateOperationsInput | number
-    infants?: IntFieldUpdateOperationsInput | number
-    totalAmount?: FloatFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    agency?: AgencyUpdateOneWithoutQuotationsNestedInput
-    client?: ClientUpdateOneWithoutQuotationsNestedInput
-    items?: QuotationItemUpdateManyWithoutQuotationNestedInput
-    itineraries?: ItineraryUpdateManyWithoutQuotationNestedInput
-    transports?: QuotationTransportUpdateManyWithoutQuotationNestedInput
-    meals?: QuotationMealUpdateManyWithoutQuotationNestedInput
-    activities?: QuotationActivityUpdateManyWithoutQuotationNestedInput
+  export type QuotationMealCreateOrConnectWithoutMealInput = {
+    where: QuotationMealWhereUniqueInput
+    create: XOR<QuotationMealCreateWithoutMealInput, QuotationMealUncheckedCreateWithoutMealInput>
   }
 
-  export type QuotationUncheckedUpdateWithoutHotelsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    clientId?: NullableStringFieldUpdateOperationsInput | string | null
-    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
-    clientName?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    emailAddress?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumQuotationStatusFieldUpdateOperationsInput | $Enums.QuotationStatus
-    destination?: JsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    adults?: IntFieldUpdateOperationsInput | number
-    children?: IntFieldUpdateOperationsInput | number
-    infants?: IntFieldUpdateOperationsInput | number
-    totalAmount?: FloatFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    items?: QuotationItemUncheckedUpdateManyWithoutQuotationNestedInput
-    itineraries?: ItineraryUncheckedUpdateManyWithoutQuotationNestedInput
-    transports?: QuotationTransportUncheckedUpdateManyWithoutQuotationNestedInput
-    meals?: QuotationMealUncheckedUpdateManyWithoutQuotationNestedInput
-    activities?: QuotationActivityUncheckedUpdateManyWithoutQuotationNestedInput
+  export type QuotationMealCreateManyMealInputEnvelope = {
+    data: QuotationMealCreateManyMealInput | QuotationMealCreateManyMealInput[]
+    skipDuplicates?: boolean
   }
 
-  export type HotelUpsertWithoutQuotationHotelsInput = {
-    update: XOR<HotelUpdateWithoutQuotationHotelsInput, HotelUncheckedUpdateWithoutQuotationHotelsInput>
-    create: XOR<HotelCreateWithoutQuotationHotelsInput, HotelUncheckedCreateWithoutQuotationHotelsInput>
+  export type HotelUpsertWithoutMealsInput = {
+    update: XOR<HotelUpdateWithoutMealsInput, HotelUncheckedUpdateWithoutMealsInput>
+    create: XOR<HotelCreateWithoutMealsInput, HotelUncheckedCreateWithoutMealsInput>
     where?: HotelWhereInput
   }
 
-  export type HotelUpdateToOneWithWhereWithoutQuotationHotelsInput = {
+  export type HotelUpdateToOneWithWhereWithoutMealsInput = {
     where?: HotelWhereInput
-    data: XOR<HotelUpdateWithoutQuotationHotelsInput, HotelUncheckedUpdateWithoutQuotationHotelsInput>
+    data: XOR<HotelUpdateWithoutMealsInput, HotelUncheckedUpdateWithoutMealsInput>
   }
 
-  export type HotelUpdateWithoutQuotationHotelsInput = {
+  export type HotelUpdateWithoutMealsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
@@ -32458,11 +33511,15 @@ export namespace Prisma {
     inclusions?: NullableStringFieldUpdateOperationsInput | string | null
     cancellation?: NullableStringFieldUpdateOperationsInput | string | null
     photos?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agency?: AgencyUpdateOneRequiredWithoutHotelsNestedInput
     roomTypes?: RoomTypeUpdateManyWithoutHotelNestedInput
+    activities?: ActivityUpdateManyWithoutHotelNestedInput
+    quotationHotels?: QuotationHotelUpdateManyWithoutHotelNestedInput
   }
 
-  export type HotelUncheckedUpdateWithoutQuotationHotelsInput = {
+  export type HotelUncheckedUpdateWithoutMealsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
@@ -32471,32 +33528,282 @@ export namespace Prisma {
     cancellation?: NullableStringFieldUpdateOperationsInput | string | null
     photos?: NullableStringFieldUpdateOperationsInput | string | null
     agencyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     roomTypes?: RoomTypeUncheckedUpdateManyWithoutHotelNestedInput
+    activities?: ActivityUncheckedUpdateManyWithoutHotelNestedInput
+    quotationHotels?: QuotationHotelUncheckedUpdateManyWithoutHotelNestedInput
   }
 
-  export type RoomTypeUpsertWithoutQuotationHotelsInput = {
-    update: XOR<RoomTypeUpdateWithoutQuotationHotelsInput, RoomTypeUncheckedUpdateWithoutQuotationHotelsInput>
-    create: XOR<RoomTypeCreateWithoutQuotationHotelsInput, RoomTypeUncheckedCreateWithoutQuotationHotelsInput>
-    where?: RoomTypeWhereInput
+  export type AgencyUpsertWithoutMealsInput = {
+    update: XOR<AgencyUpdateWithoutMealsInput, AgencyUncheckedUpdateWithoutMealsInput>
+    create: XOR<AgencyCreateWithoutMealsInput, AgencyUncheckedCreateWithoutMealsInput>
+    where?: AgencyWhereInput
   }
 
-  export type RoomTypeUpdateToOneWithWhereWithoutQuotationHotelsInput = {
-    where?: RoomTypeWhereInput
-    data: XOR<RoomTypeUpdateWithoutQuotationHotelsInput, RoomTypeUncheckedUpdateWithoutQuotationHotelsInput>
+  export type AgencyUpdateToOneWithWhereWithoutMealsInput = {
+    where?: AgencyWhereInput
+    data: XOR<AgencyUpdateWithoutMealsInput, AgencyUncheckedUpdateWithoutMealsInput>
   }
 
-  export type RoomTypeUpdateWithoutQuotationHotelsInput = {
+  export type AgencyUpdateWithoutMealsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: StringFieldUpdateOperationsInput | string
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    hotel?: HotelUpdateOneRequiredWithoutRoomTypesNestedInput
+    name?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activities?: ActivityUpdateManyWithoutAgencyNestedInput
+    transport?: TransportUpdateManyWithoutAgencyNestedInput
+    clients?: ClientUpdateManyWithoutAgencyNestedInput
+    hotels?: HotelUpdateManyWithoutAgencyNestedInput
+    quotations?: QuotationUpdateManyWithoutAgencyNestedInput
+    users?: UserUpdateManyWithoutAgencyNestedInput
   }
 
-  export type RoomTypeUncheckedUpdateWithoutQuotationHotelsInput = {
+  export type AgencyUncheckedUpdateWithoutMealsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: StringFieldUpdateOperationsInput | string
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    hotelId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activities?: ActivityUncheckedUpdateManyWithoutAgencyNestedInput
+    transport?: TransportUncheckedUpdateManyWithoutAgencyNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutAgencyNestedInput
+    hotels?: HotelUncheckedUpdateManyWithoutAgencyNestedInput
+    quotations?: QuotationUncheckedUpdateManyWithoutAgencyNestedInput
+    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type QuotationMealUpsertWithWhereUniqueWithoutMealInput = {
+    where: QuotationMealWhereUniqueInput
+    update: XOR<QuotationMealUpdateWithoutMealInput, QuotationMealUncheckedUpdateWithoutMealInput>
+    create: XOR<QuotationMealCreateWithoutMealInput, QuotationMealUncheckedCreateWithoutMealInput>
+  }
+
+  export type QuotationMealUpdateWithWhereUniqueWithoutMealInput = {
+    where: QuotationMealWhereUniqueInput
+    data: XOR<QuotationMealUpdateWithoutMealInput, QuotationMealUncheckedUpdateWithoutMealInput>
+  }
+
+  export type QuotationMealUpdateManyWithWhereWithoutMealInput = {
+    where: QuotationMealScalarWhereInput
+    data: XOR<QuotationMealUpdateManyMutationInput, QuotationMealUncheckedUpdateManyWithoutMealInput>
+  }
+
+  export type QuotationMealScalarWhereInput = {
+    AND?: QuotationMealScalarWhereInput | QuotationMealScalarWhereInput[]
+    OR?: QuotationMealScalarWhereInput[]
+    NOT?: QuotationMealScalarWhereInput | QuotationMealScalarWhereInput[]
+    id?: StringFilter<"QuotationMeal"> | string
+    quotationId?: StringFilter<"QuotationMeal"> | string
+    mealId?: StringFilter<"QuotationMeal"> | string
+    price?: FloatFilter<"QuotationMeal"> | number
+  }
+
+  export type HotelCreateWithoutActivitiesInput = {
+    id?: string
+    name: string
+    city: string
+    starCategory: number
+    inclusions?: string | null
+    cancellation?: string | null
+    photos?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agency: AgencyCreateNestedOneWithoutHotelsInput
+    roomTypes?: RoomTypeCreateNestedManyWithoutHotelInput
+    meals?: MealCreateNestedManyWithoutHotelInput
+    quotationHotels?: QuotationHotelCreateNestedManyWithoutHotelInput
+  }
+
+  export type HotelUncheckedCreateWithoutActivitiesInput = {
+    id?: string
+    name: string
+    city: string
+    starCategory: number
+    inclusions?: string | null
+    cancellation?: string | null
+    photos?: string | null
+    agencyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    roomTypes?: RoomTypeUncheckedCreateNestedManyWithoutHotelInput
+    meals?: MealUncheckedCreateNestedManyWithoutHotelInput
+    quotationHotels?: QuotationHotelUncheckedCreateNestedManyWithoutHotelInput
+  }
+
+  export type HotelCreateOrConnectWithoutActivitiesInput = {
+    where: HotelWhereUniqueInput
+    create: XOR<HotelCreateWithoutActivitiesInput, HotelUncheckedCreateWithoutActivitiesInput>
+  }
+
+  export type AgencyCreateWithoutActivitiesInput = {
+    id?: string
+    name: string
+    logo?: string | null
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    transport?: TransportCreateNestedManyWithoutAgencyInput
+    clients?: ClientCreateNestedManyWithoutAgencyInput
+    hotels?: HotelCreateNestedManyWithoutAgencyInput
+    meals?: MealCreateNestedManyWithoutAgencyInput
+    quotations?: QuotationCreateNestedManyWithoutAgencyInput
+    users?: UserCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyUncheckedCreateWithoutActivitiesInput = {
+    id?: string
+    name: string
+    logo?: string | null
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    transport?: TransportUncheckedCreateNestedManyWithoutAgencyInput
+    clients?: ClientUncheckedCreateNestedManyWithoutAgencyInput
+    hotels?: HotelUncheckedCreateNestedManyWithoutAgencyInput
+    meals?: MealUncheckedCreateNestedManyWithoutAgencyInput
+    quotations?: QuotationUncheckedCreateNestedManyWithoutAgencyInput
+    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyCreateOrConnectWithoutActivitiesInput = {
+    where: AgencyWhereUniqueInput
+    create: XOR<AgencyCreateWithoutActivitiesInput, AgencyUncheckedCreateWithoutActivitiesInput>
+  }
+
+  export type QuotationActivityCreateWithoutActivityInput = {
+    id?: string
+    price: number
+    quotation: QuotationCreateNestedOneWithoutActivitiesInput
+  }
+
+  export type QuotationActivityUncheckedCreateWithoutActivityInput = {
+    id?: string
+    quotationId: string
+    price: number
+  }
+
+  export type QuotationActivityCreateOrConnectWithoutActivityInput = {
+    where: QuotationActivityWhereUniqueInput
+    create: XOR<QuotationActivityCreateWithoutActivityInput, QuotationActivityUncheckedCreateWithoutActivityInput>
+  }
+
+  export type QuotationActivityCreateManyActivityInputEnvelope = {
+    data: QuotationActivityCreateManyActivityInput | QuotationActivityCreateManyActivityInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type HotelUpsertWithoutActivitiesInput = {
+    update: XOR<HotelUpdateWithoutActivitiesInput, HotelUncheckedUpdateWithoutActivitiesInput>
+    create: XOR<HotelCreateWithoutActivitiesInput, HotelUncheckedCreateWithoutActivitiesInput>
+    where?: HotelWhereInput
+  }
+
+  export type HotelUpdateToOneWithWhereWithoutActivitiesInput = {
+    where?: HotelWhereInput
+    data: XOR<HotelUpdateWithoutActivitiesInput, HotelUncheckedUpdateWithoutActivitiesInput>
+  }
+
+  export type HotelUpdateWithoutActivitiesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    starCategory?: IntFieldUpdateOperationsInput | number
+    inclusions?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellation?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agency?: AgencyUpdateOneRequiredWithoutHotelsNestedInput
+    roomTypes?: RoomTypeUpdateManyWithoutHotelNestedInput
+    meals?: MealUpdateManyWithoutHotelNestedInput
+    quotationHotels?: QuotationHotelUpdateManyWithoutHotelNestedInput
+  }
+
+  export type HotelUncheckedUpdateWithoutActivitiesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    starCategory?: IntFieldUpdateOperationsInput | number
+    inclusions?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellation?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    agencyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    roomTypes?: RoomTypeUncheckedUpdateManyWithoutHotelNestedInput
+    meals?: MealUncheckedUpdateManyWithoutHotelNestedInput
+    quotationHotels?: QuotationHotelUncheckedUpdateManyWithoutHotelNestedInput
+  }
+
+  export type AgencyUpsertWithoutActivitiesInput = {
+    update: XOR<AgencyUpdateWithoutActivitiesInput, AgencyUncheckedUpdateWithoutActivitiesInput>
+    create: XOR<AgencyCreateWithoutActivitiesInput, AgencyUncheckedCreateWithoutActivitiesInput>
+    where?: AgencyWhereInput
+  }
+
+  export type AgencyUpdateToOneWithWhereWithoutActivitiesInput = {
+    where?: AgencyWhereInput
+    data: XOR<AgencyUpdateWithoutActivitiesInput, AgencyUncheckedUpdateWithoutActivitiesInput>
+  }
+
+  export type AgencyUpdateWithoutActivitiesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transport?: TransportUpdateManyWithoutAgencyNestedInput
+    clients?: ClientUpdateManyWithoutAgencyNestedInput
+    hotels?: HotelUpdateManyWithoutAgencyNestedInput
+    meals?: MealUpdateManyWithoutAgencyNestedInput
+    quotations?: QuotationUpdateManyWithoutAgencyNestedInput
+    users?: UserUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type AgencyUncheckedUpdateWithoutActivitiesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transport?: TransportUncheckedUpdateManyWithoutAgencyNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutAgencyNestedInput
+    hotels?: HotelUncheckedUpdateManyWithoutAgencyNestedInput
+    meals?: MealUncheckedUpdateManyWithoutAgencyNestedInput
+    quotations?: QuotationUncheckedUpdateManyWithoutAgencyNestedInput
+    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type QuotationActivityUpsertWithWhereUniqueWithoutActivityInput = {
+    where: QuotationActivityWhereUniqueInput
+    update: XOR<QuotationActivityUpdateWithoutActivityInput, QuotationActivityUncheckedUpdateWithoutActivityInput>
+    create: XOR<QuotationActivityCreateWithoutActivityInput, QuotationActivityUncheckedCreateWithoutActivityInput>
+  }
+
+  export type QuotationActivityUpdateWithWhereUniqueWithoutActivityInput = {
+    where: QuotationActivityWhereUniqueInput
+    data: XOR<QuotationActivityUpdateWithoutActivityInput, QuotationActivityUncheckedUpdateWithoutActivityInput>
+  }
+
+  export type QuotationActivityUpdateManyWithWhereWithoutActivityInput = {
+    where: QuotationActivityScalarWhereInput
+    data: XOR<QuotationActivityUpdateManyMutationInput, QuotationActivityUncheckedUpdateManyWithoutActivityInput>
+  }
+
+  export type QuotationActivityScalarWhereInput = {
+    AND?: QuotationActivityScalarWhereInput | QuotationActivityScalarWhereInput[]
+    OR?: QuotationActivityScalarWhereInput[]
+    NOT?: QuotationActivityScalarWhereInput | QuotationActivityScalarWhereInput[]
+    id?: StringFilter<"QuotationActivity"> | string
+    quotationId?: StringFilter<"QuotationActivity"> | string
+    activityId?: StringFilter<"QuotationActivity"> | string
+    price?: FloatFilter<"QuotationActivity"> | number
   }
 
   export type AgencyCreateWithoutTransportInput = {
@@ -32626,6 +33933,274 @@ export namespace Prisma {
     pricePerKm?: FloatNullableFilter<"QuotationTransport"> | number | null
   }
 
+  export type QuotationCreateWithoutHotelsInput = {
+    id?: string
+    clientName?: string | null
+    phoneNumber?: number | null
+    emailAddress?: string | null
+    status?: $Enums.QuotationStatus
+    destination: JsonNullValueInput | InputJsonValue
+    startDate: Date | string
+    endDate: Date | string
+    adults: number
+    children: number
+    infants: number
+    totalAmount: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agency?: AgencyCreateNestedOneWithoutQuotationsInput
+    client?: ClientCreateNestedOneWithoutQuotationsInput
+    items?: QuotationItemCreateNestedManyWithoutQuotationInput
+    itineraries?: ItineraryCreateNestedManyWithoutQuotationInput
+    transports?: QuotationTransportCreateNestedManyWithoutQuotationInput
+    meals?: QuotationMealCreateNestedManyWithoutQuotationInput
+    activities?: QuotationActivityCreateNestedManyWithoutQuotationInput
+  }
+
+  export type QuotationUncheckedCreateWithoutHotelsInput = {
+    id?: string
+    clientId?: string | null
+    agencyId?: string | null
+    clientName?: string | null
+    phoneNumber?: number | null
+    emailAddress?: string | null
+    status?: $Enums.QuotationStatus
+    destination: JsonNullValueInput | InputJsonValue
+    startDate: Date | string
+    endDate: Date | string
+    adults: number
+    children: number
+    infants: number
+    totalAmount: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    items?: QuotationItemUncheckedCreateNestedManyWithoutQuotationInput
+    itineraries?: ItineraryUncheckedCreateNestedManyWithoutQuotationInput
+    transports?: QuotationTransportUncheckedCreateNestedManyWithoutQuotationInput
+    meals?: QuotationMealUncheckedCreateNestedManyWithoutQuotationInput
+    activities?: QuotationActivityUncheckedCreateNestedManyWithoutQuotationInput
+  }
+
+  export type QuotationCreateOrConnectWithoutHotelsInput = {
+    where: QuotationWhereUniqueInput
+    create: XOR<QuotationCreateWithoutHotelsInput, QuotationUncheckedCreateWithoutHotelsInput>
+  }
+
+  export type HotelCreateWithoutQuotationHotelsInput = {
+    id?: string
+    name: string
+    city: string
+    starCategory: number
+    inclusions?: string | null
+    cancellation?: string | null
+    photos?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agency: AgencyCreateNestedOneWithoutHotelsInput
+    roomTypes?: RoomTypeCreateNestedManyWithoutHotelInput
+    meals?: MealCreateNestedManyWithoutHotelInput
+    activities?: ActivityCreateNestedManyWithoutHotelInput
+  }
+
+  export type HotelUncheckedCreateWithoutQuotationHotelsInput = {
+    id?: string
+    name: string
+    city: string
+    starCategory: number
+    inclusions?: string | null
+    cancellation?: string | null
+    photos?: string | null
+    agencyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    roomTypes?: RoomTypeUncheckedCreateNestedManyWithoutHotelInput
+    meals?: MealUncheckedCreateNestedManyWithoutHotelInput
+    activities?: ActivityUncheckedCreateNestedManyWithoutHotelInput
+  }
+
+  export type HotelCreateOrConnectWithoutQuotationHotelsInput = {
+    where: HotelWhereUniqueInput
+    create: XOR<HotelCreateWithoutQuotationHotelsInput, HotelUncheckedCreateWithoutQuotationHotelsInput>
+  }
+
+  export type RoomTypeCreateWithoutQuotationHotelsInput = {
+    id?: string
+    type: string
+    price: Decimal | DecimalJsLike | number | string
+    maxAdults?: number
+    maxChildren?: number
+    bedType?: string | null
+    amenities?: string | null
+    description?: string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    hotel: HotelCreateNestedOneWithoutRoomTypesInput
+  }
+
+  export type RoomTypeUncheckedCreateWithoutQuotationHotelsInput = {
+    id?: string
+    type: string
+    price: Decimal | DecimalJsLike | number | string
+    maxAdults?: number
+    maxChildren?: number
+    bedType?: string | null
+    amenities?: string | null
+    description?: string | null
+    image?: string | null
+    hotelId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RoomTypeCreateOrConnectWithoutQuotationHotelsInput = {
+    where: RoomTypeWhereUniqueInput
+    create: XOR<RoomTypeCreateWithoutQuotationHotelsInput, RoomTypeUncheckedCreateWithoutQuotationHotelsInput>
+  }
+
+  export type QuotationUpsertWithoutHotelsInput = {
+    update: XOR<QuotationUpdateWithoutHotelsInput, QuotationUncheckedUpdateWithoutHotelsInput>
+    create: XOR<QuotationCreateWithoutHotelsInput, QuotationUncheckedCreateWithoutHotelsInput>
+    where?: QuotationWhereInput
+  }
+
+  export type QuotationUpdateToOneWithWhereWithoutHotelsInput = {
+    where?: QuotationWhereInput
+    data: XOR<QuotationUpdateWithoutHotelsInput, QuotationUncheckedUpdateWithoutHotelsInput>
+  }
+
+  export type QuotationUpdateWithoutHotelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientName?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    emailAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumQuotationStatusFieldUpdateOperationsInput | $Enums.QuotationStatus
+    destination?: JsonNullValueInput | InputJsonValue
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    adults?: IntFieldUpdateOperationsInput | number
+    children?: IntFieldUpdateOperationsInput | number
+    infants?: IntFieldUpdateOperationsInput | number
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agency?: AgencyUpdateOneWithoutQuotationsNestedInput
+    client?: ClientUpdateOneWithoutQuotationsNestedInput
+    items?: QuotationItemUpdateManyWithoutQuotationNestedInput
+    itineraries?: ItineraryUpdateManyWithoutQuotationNestedInput
+    transports?: QuotationTransportUpdateManyWithoutQuotationNestedInput
+    meals?: QuotationMealUpdateManyWithoutQuotationNestedInput
+    activities?: QuotationActivityUpdateManyWithoutQuotationNestedInput
+  }
+
+  export type QuotationUncheckedUpdateWithoutHotelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientName?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    emailAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumQuotationStatusFieldUpdateOperationsInput | $Enums.QuotationStatus
+    destination?: JsonNullValueInput | InputJsonValue
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    adults?: IntFieldUpdateOperationsInput | number
+    children?: IntFieldUpdateOperationsInput | number
+    infants?: IntFieldUpdateOperationsInput | number
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: QuotationItemUncheckedUpdateManyWithoutQuotationNestedInput
+    itineraries?: ItineraryUncheckedUpdateManyWithoutQuotationNestedInput
+    transports?: QuotationTransportUncheckedUpdateManyWithoutQuotationNestedInput
+    meals?: QuotationMealUncheckedUpdateManyWithoutQuotationNestedInput
+    activities?: QuotationActivityUncheckedUpdateManyWithoutQuotationNestedInput
+  }
+
+  export type HotelUpsertWithoutQuotationHotelsInput = {
+    update: XOR<HotelUpdateWithoutQuotationHotelsInput, HotelUncheckedUpdateWithoutQuotationHotelsInput>
+    create: XOR<HotelCreateWithoutQuotationHotelsInput, HotelUncheckedCreateWithoutQuotationHotelsInput>
+    where?: HotelWhereInput
+  }
+
+  export type HotelUpdateToOneWithWhereWithoutQuotationHotelsInput = {
+    where?: HotelWhereInput
+    data: XOR<HotelUpdateWithoutQuotationHotelsInput, HotelUncheckedUpdateWithoutQuotationHotelsInput>
+  }
+
+  export type HotelUpdateWithoutQuotationHotelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    starCategory?: IntFieldUpdateOperationsInput | number
+    inclusions?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellation?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agency?: AgencyUpdateOneRequiredWithoutHotelsNestedInput
+    roomTypes?: RoomTypeUpdateManyWithoutHotelNestedInput
+    meals?: MealUpdateManyWithoutHotelNestedInput
+    activities?: ActivityUpdateManyWithoutHotelNestedInput
+  }
+
+  export type HotelUncheckedUpdateWithoutQuotationHotelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    starCategory?: IntFieldUpdateOperationsInput | number
+    inclusions?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellation?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    agencyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    roomTypes?: RoomTypeUncheckedUpdateManyWithoutHotelNestedInput
+    meals?: MealUncheckedUpdateManyWithoutHotelNestedInput
+    activities?: ActivityUncheckedUpdateManyWithoutHotelNestedInput
+  }
+
+  export type RoomTypeUpsertWithoutQuotationHotelsInput = {
+    update: XOR<RoomTypeUpdateWithoutQuotationHotelsInput, RoomTypeUncheckedUpdateWithoutQuotationHotelsInput>
+    create: XOR<RoomTypeCreateWithoutQuotationHotelsInput, RoomTypeUncheckedCreateWithoutQuotationHotelsInput>
+    where?: RoomTypeWhereInput
+  }
+
+  export type RoomTypeUpdateToOneWithWhereWithoutQuotationHotelsInput = {
+    where?: RoomTypeWhereInput
+    data: XOR<RoomTypeUpdateWithoutQuotationHotelsInput, RoomTypeUncheckedUpdateWithoutQuotationHotelsInput>
+  }
+
+  export type RoomTypeUpdateWithoutQuotationHotelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    maxAdults?: IntFieldUpdateOperationsInput | number
+    maxChildren?: IntFieldUpdateOperationsInput | number
+    bedType?: NullableStringFieldUpdateOperationsInput | string | null
+    amenities?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    hotel?: HotelUpdateOneRequiredWithoutRoomTypesNestedInput
+  }
+
+  export type RoomTypeUncheckedUpdateWithoutQuotationHotelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    maxAdults?: IntFieldUpdateOperationsInput | number
+    maxChildren?: IntFieldUpdateOperationsInput | number
+    bedType?: NullableStringFieldUpdateOperationsInput | string | null
+    amenities?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hotelId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type QuotationCreateWithoutTransportsInput = {
     id?: string
     clientName?: string | null
@@ -32687,6 +34262,8 @@ export namespace Prisma {
     maxCapacity: number
     notes?: string | null
     photos?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     agency: AgencyCreateNestedOneWithoutTransportInput
   }
 
@@ -32699,6 +34276,8 @@ export namespace Prisma {
     notes?: string | null
     photos?: string | null
     agencyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type TransportCreateOrConnectWithoutQuotationTransportsInput = {
@@ -32784,6 +34363,8 @@ export namespace Prisma {
     maxCapacity?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     photos?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agency?: AgencyUpdateOneRequiredWithoutTransportNestedInput
   }
 
@@ -32796,130 +34377,8 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     photos?: NullableStringFieldUpdateOperationsInput | string | null
     agencyId?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type AgencyCreateWithoutMealsInput = {
-    id?: string
-    name: string
-    logo?: string | null
-    settings?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    activities?: ActivityCreateNestedManyWithoutAgencyInput
-    transport?: TransportCreateNestedManyWithoutAgencyInput
-    clients?: ClientCreateNestedManyWithoutAgencyInput
-    hotels?: HotelCreateNestedManyWithoutAgencyInput
-    quotations?: QuotationCreateNestedManyWithoutAgencyInput
-    users?: UserCreateNestedManyWithoutAgencyInput
-  }
-
-  export type AgencyUncheckedCreateWithoutMealsInput = {
-    id?: string
-    name: string
-    logo?: string | null
-    settings?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    activities?: ActivityUncheckedCreateNestedManyWithoutAgencyInput
-    transport?: TransportUncheckedCreateNestedManyWithoutAgencyInput
-    clients?: ClientUncheckedCreateNestedManyWithoutAgencyInput
-    hotels?: HotelUncheckedCreateNestedManyWithoutAgencyInput
-    quotations?: QuotationUncheckedCreateNestedManyWithoutAgencyInput
-    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-  }
-
-  export type AgencyCreateOrConnectWithoutMealsInput = {
-    where: AgencyWhereUniqueInput
-    create: XOR<AgencyCreateWithoutMealsInput, AgencyUncheckedCreateWithoutMealsInput>
-  }
-
-  export type QuotationMealCreateWithoutMealInput = {
-    id?: string
-    price: number
-    quotation: QuotationCreateNestedOneWithoutMealsInput
-  }
-
-  export type QuotationMealUncheckedCreateWithoutMealInput = {
-    id?: string
-    quotationId: string
-    price: number
-  }
-
-  export type QuotationMealCreateOrConnectWithoutMealInput = {
-    where: QuotationMealWhereUniqueInput
-    create: XOR<QuotationMealCreateWithoutMealInput, QuotationMealUncheckedCreateWithoutMealInput>
-  }
-
-  export type QuotationMealCreateManyMealInputEnvelope = {
-    data: QuotationMealCreateManyMealInput | QuotationMealCreateManyMealInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type AgencyUpsertWithoutMealsInput = {
-    update: XOR<AgencyUpdateWithoutMealsInput, AgencyUncheckedUpdateWithoutMealsInput>
-    create: XOR<AgencyCreateWithoutMealsInput, AgencyUncheckedCreateWithoutMealsInput>
-    where?: AgencyWhereInput
-  }
-
-  export type AgencyUpdateToOneWithWhereWithoutMealsInput = {
-    where?: AgencyWhereInput
-    data: XOR<AgencyUpdateWithoutMealsInput, AgencyUncheckedUpdateWithoutMealsInput>
-  }
-
-  export type AgencyUpdateWithoutMealsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
-    settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    activities?: ActivityUpdateManyWithoutAgencyNestedInput
-    transport?: TransportUpdateManyWithoutAgencyNestedInput
-    clients?: ClientUpdateManyWithoutAgencyNestedInput
-    hotels?: HotelUpdateManyWithoutAgencyNestedInput
-    quotations?: QuotationUpdateManyWithoutAgencyNestedInput
-    users?: UserUpdateManyWithoutAgencyNestedInput
-  }
-
-  export type AgencyUncheckedUpdateWithoutMealsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
-    settings?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    activities?: ActivityUncheckedUpdateManyWithoutAgencyNestedInput
-    transport?: TransportUncheckedUpdateManyWithoutAgencyNestedInput
-    clients?: ClientUncheckedUpdateManyWithoutAgencyNestedInput
-    hotels?: HotelUncheckedUpdateManyWithoutAgencyNestedInput
-    quotations?: QuotationUncheckedUpdateManyWithoutAgencyNestedInput
-    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-  }
-
-  export type QuotationMealUpsertWithWhereUniqueWithoutMealInput = {
-    where: QuotationMealWhereUniqueInput
-    update: XOR<QuotationMealUpdateWithoutMealInput, QuotationMealUncheckedUpdateWithoutMealInput>
-    create: XOR<QuotationMealCreateWithoutMealInput, QuotationMealUncheckedCreateWithoutMealInput>
-  }
-
-  export type QuotationMealUpdateWithWhereUniqueWithoutMealInput = {
-    where: QuotationMealWhereUniqueInput
-    data: XOR<QuotationMealUpdateWithoutMealInput, QuotationMealUncheckedUpdateWithoutMealInput>
-  }
-
-  export type QuotationMealUpdateManyWithWhereWithoutMealInput = {
-    where: QuotationMealScalarWhereInput
-    data: XOR<QuotationMealUpdateManyMutationInput, QuotationMealUncheckedUpdateManyWithoutMealInput>
-  }
-
-  export type QuotationMealScalarWhereInput = {
-    AND?: QuotationMealScalarWhereInput | QuotationMealScalarWhereInput[]
-    OR?: QuotationMealScalarWhereInput[]
-    NOT?: QuotationMealScalarWhereInput | QuotationMealScalarWhereInput[]
-    id?: StringFilter<"QuotationMeal"> | string
-    quotationId?: StringFilter<"QuotationMeal"> | string
-    mealId?: StringFilter<"QuotationMeal"> | string
-    price?: FloatFilter<"QuotationMeal"> | number
   }
 
   export type QuotationCreateWithoutMealsInput = {
@@ -32977,20 +34436,32 @@ export namespace Prisma {
 
   export type MealCreateWithoutQuotationMealsInput = {
     id?: string
+    name: string
     type: string
-    vegOption: boolean
-    nonVegOption: boolean
+    category: string
+    vegOption?: boolean
+    nonVegOption?: boolean
     price: number
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    hotel?: HotelCreateNestedOneWithoutMealsInput
     agency: AgencyCreateNestedOneWithoutMealsInput
   }
 
   export type MealUncheckedCreateWithoutQuotationMealsInput = {
     id?: string
+    name: string
     type: string
-    vegOption: boolean
-    nonVegOption: boolean
+    category: string
+    vegOption?: boolean
+    nonVegOption?: boolean
     price: number
+    image?: string | null
+    hotelId?: string | null
     agencyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type MealCreateOrConnectWithoutQuotationMealsInput = {
@@ -33070,144 +34541,32 @@ export namespace Prisma {
 
   export type MealUpdateWithoutQuotationMealsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
     vegOption?: BoolFieldUpdateOperationsInput | boolean
     nonVegOption?: BoolFieldUpdateOperationsInput | boolean
     price?: FloatFieldUpdateOperationsInput | number
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    hotel?: HotelUpdateOneWithoutMealsNestedInput
     agency?: AgencyUpdateOneRequiredWithoutMealsNestedInput
   }
 
   export type MealUncheckedUpdateWithoutQuotationMealsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
     vegOption?: BoolFieldUpdateOperationsInput | boolean
     nonVegOption?: BoolFieldUpdateOperationsInput | boolean
     price?: FloatFieldUpdateOperationsInput | number
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hotelId?: NullableStringFieldUpdateOperationsInput | string | null
     agencyId?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type AgencyCreateWithoutActivitiesInput = {
-    id?: string
-    name: string
-    logo?: string | null
-    settings?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    transport?: TransportCreateNestedManyWithoutAgencyInput
-    clients?: ClientCreateNestedManyWithoutAgencyInput
-    hotels?: HotelCreateNestedManyWithoutAgencyInput
-    meals?: MealCreateNestedManyWithoutAgencyInput
-    quotations?: QuotationCreateNestedManyWithoutAgencyInput
-    users?: UserCreateNestedManyWithoutAgencyInput
-  }
-
-  export type AgencyUncheckedCreateWithoutActivitiesInput = {
-    id?: string
-    name: string
-    logo?: string | null
-    settings?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    transport?: TransportUncheckedCreateNestedManyWithoutAgencyInput
-    clients?: ClientUncheckedCreateNestedManyWithoutAgencyInput
-    hotels?: HotelUncheckedCreateNestedManyWithoutAgencyInput
-    meals?: MealUncheckedCreateNestedManyWithoutAgencyInput
-    quotations?: QuotationUncheckedCreateNestedManyWithoutAgencyInput
-    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-  }
-
-  export type AgencyCreateOrConnectWithoutActivitiesInput = {
-    where: AgencyWhereUniqueInput
-    create: XOR<AgencyCreateWithoutActivitiesInput, AgencyUncheckedCreateWithoutActivitiesInput>
-  }
-
-  export type QuotationActivityCreateWithoutActivityInput = {
-    id?: string
-    price: number
-    quotation: QuotationCreateNestedOneWithoutActivitiesInput
-  }
-
-  export type QuotationActivityUncheckedCreateWithoutActivityInput = {
-    id?: string
-    quotationId: string
-    price: number
-  }
-
-  export type QuotationActivityCreateOrConnectWithoutActivityInput = {
-    where: QuotationActivityWhereUniqueInput
-    create: XOR<QuotationActivityCreateWithoutActivityInput, QuotationActivityUncheckedCreateWithoutActivityInput>
-  }
-
-  export type QuotationActivityCreateManyActivityInputEnvelope = {
-    data: QuotationActivityCreateManyActivityInput | QuotationActivityCreateManyActivityInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type AgencyUpsertWithoutActivitiesInput = {
-    update: XOR<AgencyUpdateWithoutActivitiesInput, AgencyUncheckedUpdateWithoutActivitiesInput>
-    create: XOR<AgencyCreateWithoutActivitiesInput, AgencyUncheckedCreateWithoutActivitiesInput>
-    where?: AgencyWhereInput
-  }
-
-  export type AgencyUpdateToOneWithWhereWithoutActivitiesInput = {
-    where?: AgencyWhereInput
-    data: XOR<AgencyUpdateWithoutActivitiesInput, AgencyUncheckedUpdateWithoutActivitiesInput>
-  }
-
-  export type AgencyUpdateWithoutActivitiesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
-    settings?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    transport?: TransportUpdateManyWithoutAgencyNestedInput
-    clients?: ClientUpdateManyWithoutAgencyNestedInput
-    hotels?: HotelUpdateManyWithoutAgencyNestedInput
-    meals?: MealUpdateManyWithoutAgencyNestedInput
-    quotations?: QuotationUpdateManyWithoutAgencyNestedInput
-    users?: UserUpdateManyWithoutAgencyNestedInput
-  }
-
-  export type AgencyUncheckedUpdateWithoutActivitiesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
-    settings?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    transport?: TransportUncheckedUpdateManyWithoutAgencyNestedInput
-    clients?: ClientUncheckedUpdateManyWithoutAgencyNestedInput
-    hotels?: HotelUncheckedUpdateManyWithoutAgencyNestedInput
-    meals?: MealUncheckedUpdateManyWithoutAgencyNestedInput
-    quotations?: QuotationUncheckedUpdateManyWithoutAgencyNestedInput
-    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-  }
-
-  export type QuotationActivityUpsertWithWhereUniqueWithoutActivityInput = {
-    where: QuotationActivityWhereUniqueInput
-    update: XOR<QuotationActivityUpdateWithoutActivityInput, QuotationActivityUncheckedUpdateWithoutActivityInput>
-    create: XOR<QuotationActivityCreateWithoutActivityInput, QuotationActivityUncheckedCreateWithoutActivityInput>
-  }
-
-  export type QuotationActivityUpdateWithWhereUniqueWithoutActivityInput = {
-    where: QuotationActivityWhereUniqueInput
-    data: XOR<QuotationActivityUpdateWithoutActivityInput, QuotationActivityUncheckedUpdateWithoutActivityInput>
-  }
-
-  export type QuotationActivityUpdateManyWithWhereWithoutActivityInput = {
-    where: QuotationActivityScalarWhereInput
-    data: XOR<QuotationActivityUpdateManyMutationInput, QuotationActivityUncheckedUpdateManyWithoutActivityInput>
-  }
-
-  export type QuotationActivityScalarWhereInput = {
-    AND?: QuotationActivityScalarWhereInput | QuotationActivityScalarWhereInput[]
-    OR?: QuotationActivityScalarWhereInput[]
-    NOT?: QuotationActivityScalarWhereInput | QuotationActivityScalarWhereInput[]
-    id?: StringFilter<"QuotationActivity"> | string
-    quotationId?: StringFilter<"QuotationActivity"> | string
-    activityId?: StringFilter<"QuotationActivity"> | string
-    price?: FloatFilter<"QuotationActivity"> | number
   }
 
   export type QuotationCreateWithoutActivitiesInput = {
@@ -33267,9 +34626,13 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    duration?: string | null
     price: number
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    duration?: string | null
+    photos?: string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    hotel?: HotelCreateNestedOneWithoutActivitiesInput
     agency: AgencyCreateNestedOneWithoutActivitiesInput
   }
 
@@ -33277,10 +34640,14 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    duration?: string | null
     price: number
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    duration?: string | null
+    photos?: string | null
+    image?: string | null
+    hotelId?: string | null
     agencyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ActivityCreateOrConnectWithoutQuotationActivitiesInput = {
@@ -33362,9 +34729,13 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    duration?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    duration?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    hotel?: HotelUpdateOneWithoutActivitiesNestedInput
     agency?: AgencyUpdateOneRequiredWithoutActivitiesNestedInput
   }
 
@@ -33372,10 +34743,14 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    duration?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    duration?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hotelId?: NullableStringFieldUpdateOperationsInput | string | null
     agencyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AgencyCreateWithoutQuotationsInput = {
@@ -34130,9 +35505,13 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    duration?: string | null
     price: number
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    duration?: string | null
+    photos?: string | null
+    image?: string | null
+    hotelId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type TransportCreateManyAgencyInput = {
@@ -34143,6 +35522,8 @@ export namespace Prisma {
     maxCapacity: number
     notes?: string | null
     photos?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ClientCreateManyAgencyInput = {
@@ -34164,14 +35545,22 @@ export namespace Prisma {
     inclusions?: string | null
     cancellation?: string | null
     photos?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type MealCreateManyAgencyInput = {
     id?: string
+    name: string
     type: string
-    vegOption: boolean
-    nonVegOption: boolean
+    category: string
+    vegOption?: boolean
+    nonVegOption?: boolean
     price: number
+    image?: string | null
+    hotelId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type QuotationCreateManyAgencyInput = {
@@ -34208,9 +35597,13 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    duration?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    duration?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    hotel?: HotelUpdateOneWithoutActivitiesNestedInput
     quotationActivities?: QuotationActivityUpdateManyWithoutActivityNestedInput
   }
 
@@ -34218,9 +35611,13 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    duration?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    duration?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hotelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     quotationActivities?: QuotationActivityUncheckedUpdateManyWithoutActivityNestedInput
   }
 
@@ -34228,9 +35625,13 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    duration?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
-    photos?: NullableJsonNullValueInput | InputJsonValue
+    duration?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hotelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TransportUpdateWithoutAgencyInput = {
@@ -34241,6 +35642,8 @@ export namespace Prisma {
     maxCapacity?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     photos?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     quotationTransports?: QuotationTransportUpdateManyWithoutTransportNestedInput
   }
 
@@ -34252,6 +35655,8 @@ export namespace Prisma {
     maxCapacity?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     photos?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     quotationTransports?: QuotationTransportUncheckedUpdateManyWithoutTransportNestedInput
   }
 
@@ -34263,6 +35668,8 @@ export namespace Prisma {
     maxCapacity?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     photos?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ClientUpdateWithoutAgencyInput = {
@@ -34308,7 +35715,11 @@ export namespace Prisma {
     inclusions?: NullableStringFieldUpdateOperationsInput | string | null
     cancellation?: NullableStringFieldUpdateOperationsInput | string | null
     photos?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     roomTypes?: RoomTypeUpdateManyWithoutHotelNestedInput
+    meals?: MealUpdateManyWithoutHotelNestedInput
+    activities?: ActivityUpdateManyWithoutHotelNestedInput
     quotationHotels?: QuotationHotelUpdateManyWithoutHotelNestedInput
   }
 
@@ -34320,7 +35731,11 @@ export namespace Prisma {
     inclusions?: NullableStringFieldUpdateOperationsInput | string | null
     cancellation?: NullableStringFieldUpdateOperationsInput | string | null
     photos?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     roomTypes?: RoomTypeUncheckedUpdateManyWithoutHotelNestedInput
+    meals?: MealUncheckedUpdateManyWithoutHotelNestedInput
+    activities?: ActivityUncheckedUpdateManyWithoutHotelNestedInput
     quotationHotels?: QuotationHotelUncheckedUpdateManyWithoutHotelNestedInput
   }
 
@@ -34332,32 +35747,52 @@ export namespace Prisma {
     inclusions?: NullableStringFieldUpdateOperationsInput | string | null
     cancellation?: NullableStringFieldUpdateOperationsInput | string | null
     photos?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MealUpdateWithoutAgencyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
     vegOption?: BoolFieldUpdateOperationsInput | boolean
     nonVegOption?: BoolFieldUpdateOperationsInput | boolean
     price?: FloatFieldUpdateOperationsInput | number
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    hotel?: HotelUpdateOneWithoutMealsNestedInput
     quotationMeals?: QuotationMealUpdateManyWithoutMealNestedInput
   }
 
   export type MealUncheckedUpdateWithoutAgencyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
     vegOption?: BoolFieldUpdateOperationsInput | boolean
     nonVegOption?: BoolFieldUpdateOperationsInput | boolean
     price?: FloatFieldUpdateOperationsInput | number
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hotelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     quotationMeals?: QuotationMealUncheckedUpdateManyWithoutMealNestedInput
   }
 
   export type MealUncheckedUpdateManyWithoutAgencyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
     vegOption?: BoolFieldUpdateOperationsInput | boolean
     nonVegOption?: BoolFieldUpdateOperationsInput | boolean
     price?: FloatFieldUpdateOperationsInput | number
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hotelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type QuotationUpdateWithoutAgencyInput = {
@@ -34556,6 +35991,41 @@ export namespace Prisma {
     id?: string
     type: string
     price: Decimal | DecimalJsLike | number | string
+    maxAdults?: number
+    maxChildren?: number
+    bedType?: string | null
+    amenities?: string | null
+    description?: string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MealCreateManyHotelInput = {
+    id?: string
+    name: string
+    type: string
+    category: string
+    vegOption?: boolean
+    nonVegOption?: boolean
+    price: number
+    image?: string | null
+    agencyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ActivityCreateManyHotelInput = {
+    id?: string
+    name: string
+    description?: string | null
+    price: number
+    duration?: string | null
+    photos?: string | null
+    image?: string | null
+    agencyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type QuotationHotelCreateManyHotelInput = {
@@ -34569,6 +36039,14 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    maxAdults?: IntFieldUpdateOperationsInput | number
+    maxChildren?: IntFieldUpdateOperationsInput | number
+    bedType?: NullableStringFieldUpdateOperationsInput | string | null
+    amenities?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     quotationHotels?: QuotationHotelUpdateManyWithoutRoomTypeNestedInput
   }
 
@@ -34576,6 +36054,14 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    maxAdults?: IntFieldUpdateOperationsInput | number
+    maxChildren?: IntFieldUpdateOperationsInput | number
+    bedType?: NullableStringFieldUpdateOperationsInput | string | null
+    amenities?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     quotationHotels?: QuotationHotelUncheckedUpdateManyWithoutRoomTypeNestedInput
   }
 
@@ -34583,6 +36069,99 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    maxAdults?: IntFieldUpdateOperationsInput | number
+    maxChildren?: IntFieldUpdateOperationsInput | number
+    bedType?: NullableStringFieldUpdateOperationsInput | string | null
+    amenities?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MealUpdateWithoutHotelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    vegOption?: BoolFieldUpdateOperationsInput | boolean
+    nonVegOption?: BoolFieldUpdateOperationsInput | boolean
+    price?: FloatFieldUpdateOperationsInput | number
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agency?: AgencyUpdateOneRequiredWithoutMealsNestedInput
+    quotationMeals?: QuotationMealUpdateManyWithoutMealNestedInput
+  }
+
+  export type MealUncheckedUpdateWithoutHotelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    vegOption?: BoolFieldUpdateOperationsInput | boolean
+    nonVegOption?: BoolFieldUpdateOperationsInput | boolean
+    price?: FloatFieldUpdateOperationsInput | number
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    agencyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    quotationMeals?: QuotationMealUncheckedUpdateManyWithoutMealNestedInput
+  }
+
+  export type MealUncheckedUpdateManyWithoutHotelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    vegOption?: BoolFieldUpdateOperationsInput | boolean
+    nonVegOption?: BoolFieldUpdateOperationsInput | boolean
+    price?: FloatFieldUpdateOperationsInput | number
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    agencyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ActivityUpdateWithoutHotelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+    duration?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agency?: AgencyUpdateOneRequiredWithoutActivitiesNestedInput
+    quotationActivities?: QuotationActivityUpdateManyWithoutActivityNestedInput
+  }
+
+  export type ActivityUncheckedUpdateWithoutHotelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+    duration?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    agencyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    quotationActivities?: QuotationActivityUncheckedUpdateManyWithoutActivityNestedInput
+  }
+
+  export type ActivityUncheckedUpdateManyWithoutHotelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+    duration?: NullableStringFieldUpdateOperationsInput | string | null
+    photos?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    agencyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type QuotationHotelUpdateWithoutHotelInput = {
@@ -34634,34 +36213,6 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
   }
 
-  export type QuotationTransportCreateManyTransportInput = {
-    id?: string
-    quotationId: string
-    pricePerDay?: number | null
-    pricePerKm?: number | null
-  }
-
-  export type QuotationTransportUpdateWithoutTransportInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    pricePerDay?: NullableFloatFieldUpdateOperationsInput | number | null
-    pricePerKm?: NullableFloatFieldUpdateOperationsInput | number | null
-    quotation?: QuotationUpdateOneRequiredWithoutTransportsNestedInput
-  }
-
-  export type QuotationTransportUncheckedUpdateWithoutTransportInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    quotationId?: StringFieldUpdateOperationsInput | string
-    pricePerDay?: NullableFloatFieldUpdateOperationsInput | number | null
-    pricePerKm?: NullableFloatFieldUpdateOperationsInput | number | null
-  }
-
-  export type QuotationTransportUncheckedUpdateManyWithoutTransportInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    quotationId?: StringFieldUpdateOperationsInput | string
-    pricePerDay?: NullableFloatFieldUpdateOperationsInput | number | null
-    pricePerKm?: NullableFloatFieldUpdateOperationsInput | number | null
-  }
-
   export type QuotationMealCreateManyMealInput = {
     id?: string
     quotationId: string
@@ -34708,6 +36259,34 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     quotationId?: StringFieldUpdateOperationsInput | string
     price?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type QuotationTransportCreateManyTransportInput = {
+    id?: string
+    quotationId: string
+    pricePerDay?: number | null
+    pricePerKm?: number | null
+  }
+
+  export type QuotationTransportUpdateWithoutTransportInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pricePerDay?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricePerKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    quotation?: QuotationUpdateOneRequiredWithoutTransportsNestedInput
+  }
+
+  export type QuotationTransportUncheckedUpdateWithoutTransportInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quotationId?: StringFieldUpdateOperationsInput | string
+    pricePerDay?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricePerKm?: NullableFloatFieldUpdateOperationsInput | number | null
+  }
+
+  export type QuotationTransportUncheckedUpdateManyWithoutTransportInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quotationId?: StringFieldUpdateOperationsInput | string
+    pricePerDay?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricePerKm?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type QuotationItemCreateManyQuotationInput = {

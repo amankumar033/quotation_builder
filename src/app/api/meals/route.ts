@@ -1,72 +1,126 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma"; // adjust path if needed
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-
-    const { type, vegOption, nonVegOption, price } = body;
-    const agencyId = "cmfntj4f60000nq4wt321fgsa";
-
-    // Convert inputs to correct types
-    const parsedVeg = vegOption === true || vegOption === "true";
-    const parsedNonVeg = nonVegOption === true || nonVegOption === "true";
-    const parsedPrice = parseFloat(price);
+    const { 
+      name, 
+      type, 
+      category, 
+      vegOption, 
+      nonVegOption, 
+      price, 
+      image, 
+      hotelId, 
+      agencyId 
+    } = body;
 
     // Basic validation
-    if (!type || isNaN(parsedPrice) || !agencyId) {
-      return NextResponse.json({ success: false, error: "Invalid input" }, { status: 400 });
-    }
-
-    // Ensure only one option
-    if (parsedVeg && parsedNonVeg) {
-      return NextResponse.json({ success: false, error: "Cannot select both Veg and Non-Veg" }, { status: 400 });
+    if (!name || !type || !category || price === undefined) {
+      return NextResponse.json({ 
+        success: false, 
+        error: "Name, type, category, and price are required" 
+      }, { status: 400 });
     }
 
     const meal = await prisma.meal.create({
       data: {
+        name,
         type,
-        vegOption: parsedVeg,
-        nonVegOption: parsedNonVeg,
-        price: parsedPrice,
-        agencyId,
+        category,
+        vegOption: Boolean(vegOption),
+        nonVegOption: Boolean(nonVegOption),
+        price: parseFloat(price),
+        image: image || null,
+        hotelId: hotelId || null,
+        agencyId: agencyId || "AGC1",
       },
     });
 
-    return NextResponse.json({ success: true, meal });
+    return NextResponse.json({ 
+      success: true, 
+      data: meal 
+    }, { status: 201 });
   } catch (error: any) {
     console.error("Meal creation error:", error);
-    return NextResponse.json({ success: false, error: error.message || "Something went wrong" }, { status: 500 });
+    return NextResponse.json({ 
+      success: false, 
+      error: error.message || "Something went wrong" 
+    }, { status: 500 });
   }
 }
-export async function GET() {
+
+export async function GET(req: NextRequest) {
   try {
-    const meals = await prisma.meal.findMany();
-    console.log("tptal meals available:",meals)
-    return NextResponse.json({ success: true, data: meals });
+    const { searchParams } = new URL(req.url);
+    const agencyId = searchParams.get("agencyId") || "AGC1";
+    const hotelId = searchParams.get("hotelId");
+
+    let whereClause: any = { agencyId };
+    
+    if (hotelId) {
+      whereClause = {
+        ...whereClause,
+        OR: [
+          { hotelId: hotelId },
+          { hotelId: null } // Include standalone meals
+        ]
+      };
+    }
+
+    const meals = await prisma.meal.findMany({
+      where: whereClause,
+      include: {
+        hotel: {
+          select: {
+            id: true,
+            name: true,
+            city: true
+          }
+        }
+      },
+      orderBy: { createdAt: "desc" }
+    });
+
+    return NextResponse.json({ 
+      success: true, 
+      data: meals 
+    });
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error("Meals fetch error:", error);
+    return NextResponse.json({ 
+      success: false, 
+      error: error.message 
+    }, { status: 500 });
   }
 }
 
 export async function DELETE(req: NextRequest) {
   try {
-    // Get meals ID from query params
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
 
     if (!id) {
-      return NextResponse.json({ success: false, error: "Meal ID is required" }, { status: 400 });
+      return NextResponse.json({ 
+        success: false, 
+        error: "Meal ID is required" 
+      }, { status: 400 });
     }
 
-    // Delete the meal and its related room types
     const deletedMeal = await prisma.meal.delete({
       where: { id },
     });
 
-    return NextResponse.json({ success: true, hotel: deletedMeal });
-  } catch (error) {
+    return NextResponse.json({ 
+      success: true, 
+      data: deletedMeal 
+    });
+  } catch (error: any) {
     console.error("Meal deletion error:", error);
-    return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ 
+      success: false, 
+      error: error.message || "Something went wrong" 
+    }, { status: 500 });
   }
 }

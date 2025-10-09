@@ -28,7 +28,7 @@ interface RoomType {
   bedType: string;
   amenities: string[];
   description: string;
-  photos: string[];
+  image: string;
 }
 
 interface Meal {
@@ -66,6 +66,7 @@ function AddHotelInner() {
   const [meals, setMeals] = useState<Meal[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Accordion states
   const [openSections, setOpenSections] = useState({
@@ -86,7 +87,7 @@ function AddHotelInner() {
     bedType: "",
     amenities: [],
     description: "",
-    photos: [],
+    image: "",
   });
 
   // Meal Form
@@ -111,6 +112,79 @@ function AddHotelInner() {
   const [inclusionInput, setInclusionInput] = useState("");
   const [photoInput, setPhotoInput] = useState("");
   const [amenityInput, setAmenityInput] = useState("");
+  const [roomImageInput, setRoomImageInput] = useState("");
+
+  // Fetch hotel data when editing
+  useEffect(() => {
+    if (id) {
+      fetchHotelData();
+    }
+  }, [id]);
+
+  const fetchHotelData = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/hotels/${id}`);
+      const result = await response.json();
+      
+      if (result.success && result.data) {
+        const hotel = result.data;
+        
+        // Populate basic form data
+        setFormData({
+          name: hotel.name || "",
+          city: hotel.city || "",
+          starCategory: hotel.starCategory?.toString() || "",
+          cancellation: hotel.cancellation || "",
+          inclusions: hotel.inclusions || [],
+          photos: hotel.photos || [],
+        });
+
+        // Populate room types
+        if (hotel.roomTypes && hotel.roomTypes.length > 0) {
+          setRoomTypes(hotel.roomTypes.map((room: any) => ({
+            type: room.type || "",
+            price: room.price?.toString() || "",
+            maxAdults: room.maxAdults?.toString() || "2",
+            maxChildren: room.maxChildren?.toString() || "0",
+            bedType: room.bedType || "",
+            amenities: room.amenities || [],
+            description: room.description || "",
+            image: room.image || "",
+          })));
+        }
+
+        // Populate meals
+        if (hotel.meals && hotel.meals.length > 0) {
+          setMeals(hotel.meals.map((meal: any) => ({
+            name: meal.name || "",
+            type: meal.type || "",
+            category: meal.category || "",
+            price: meal.price?.toString() || "",
+            image: meal.image || "",
+          })));
+        }
+
+        // Populate activities
+        if (hotel.activities && hotel.activities.length > 0) {
+          setActivities(hotel.activities.map((activity: any) => ({
+            name: activity.name || "",
+            description: activity.description || "",
+            price: activity.price?.toString() || "",
+            duration: activity.duration || "",
+            image: activity.image || "",
+          })));
+        }
+      } else {
+        error('Error', 'Failed to fetch hotel data');
+      }
+    } catch (err) {
+      console.error('Error fetching hotel:', err);
+      error('Error', 'Failed to load hotel data');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Toggle accordion sections
   const toggleSection = (section: keyof typeof openSections) => {
@@ -132,8 +206,9 @@ function AddHotelInner() {
         bedType: "",
         amenities: [],
         description: "",
-        photos: [],
+        image: "",
       });
+      setRoomImageInput("");
     }
   };
 
@@ -198,6 +273,17 @@ function AddHotelInner() {
     }
   };
 
+  // Add Room Image
+  const addRoomImage = () => {
+    if (roomImageInput.trim()) {
+      setRoomForm({
+        ...roomForm,
+        image: roomImageInput.trim()
+      });
+      setRoomImageInput("");
+    }
+  };
+
   // Remove functions
   const removeInclusion = (inc: string) => {
     setFormData({
@@ -239,22 +325,22 @@ function AddHotelInner() {
     try {
       const payload = {
         ...formData,
-        starCategory: parseInt(formData.starCategory),
+        starCategory: parseInt(formData.starCategory) || 3,
         roomTypes: roomTypes.map(room => ({
           ...room,
-          price: parseFloat(room.price),
+          price: parseFloat(room.price) || 0,
           maxAdults: parseInt(room.maxAdults) || 2,
           maxChildren: parseInt(room.maxChildren) || 0,
         })),
         meals: meals.map(meal => ({
           ...meal,
-          price: parseFloat(meal.price),
+          price: parseFloat(meal.price) || 0,
         })),
         activities: activities.map(activity => ({
           ...activity,
-          price: parseFloat(activity.price),
+          price: parseFloat(activity.price) || 0,
         })),
-        agencyId: "cmfntj4f60000nq4wt321fgsa",
+        agencyId: "AGC1",
       };
 
       const url = id ? `/api/hotels/${id}` : "/api/hotels";
@@ -284,6 +370,55 @@ function AddHotelInner() {
       setSubmitting(false);
     }
   };
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      city: "",
+      starCategory: "",
+      cancellation: "",
+      inclusions: [],
+      photos: [],
+    });
+    setRoomTypes([]);
+    setMeals([]);
+    setActivities([]);
+    setRoomForm({
+      type: "",
+      price: "",
+      maxAdults: "",
+      maxChildren: "",
+      bedType: "",
+      amenities: [],
+      description: "",
+      image: "",
+    });
+    setMealForm({
+      name: "",
+      type: "",
+      category: "",
+      price: "",
+      image: "",
+    });
+    setActivityForm({
+      name: "",
+      description: "",
+      price: "",
+      duration: "",
+      image: "",
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading hotel data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -315,7 +450,7 @@ function AddHotelInner() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1  px-8 py-8 overflow-y-auto">
+      <div className="flex-1 px-8 py-8 overflow-y-auto">
         <div className="max-w-7xl mx-auto space-y-8">
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Basic Information - Always Open */}
@@ -529,9 +664,15 @@ function AddHotelInner() {
                         </div>
                       )}
                       {room.amenities.length > 0 && (
-                        <div>
+                        <div className="mb-3">
                           <strong className="text-sm text-gray-600">Amenities: </strong>
                           <span className="text-sm">{room.amenities.join(', ')}</span>
+                        </div>
+                      )}
+                      {room.image && (
+                        <div>
+                          <strong className="text-sm text-gray-600">Image: </strong>
+                          <span className="text-sm text-blue-600">{room.image.substring(0, 50)}...</span>
                         </div>
                       )}
                     </div>
@@ -642,6 +783,34 @@ function AddHotelInner() {
                           Add
                         </button>
                       </div>
+                    </div>
+
+                    {/* Room Image */}
+                    <div className="mb-6">
+                      <label className="block text-sm font-semibold text-gray-700 mb-3">Room Image URL</label>
+                      <div className="flex gap-3">
+                        <input
+                          type="text"
+                          value={roomImageInput}
+                          onChange={(e) => setRoomImageInput(e.target.value)}
+                          onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addRoomImage())}
+                          className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                          placeholder="Add room image URL (press Enter)"
+                        />
+                        <button
+                          type="button"
+                          onClick={addRoomImage}
+                          className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center gap-2"
+                        >
+                          <Plus className="h-4 w-4" />
+                          Add Image
+                        </button>
+                      </div>
+                      {roomForm.image && (
+                        <div className="mt-2">
+                          <span className="text-sm text-green-600">Current image: {roomForm.image}</span>
+                        </div>
+                      )}
                     </div>
 
                     <button
