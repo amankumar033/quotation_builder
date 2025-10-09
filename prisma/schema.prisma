@@ -118,9 +118,9 @@ model Hotel {
   name           String
   city           String
   starCategory   Int
-  inclusions     String?
+  inclusions     String?        // JSON string of inclusions array
   cancellation   String?
-  photos         String?
+  photos         String?        // JSON string of photos array
   agencyId       String
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
@@ -136,12 +136,12 @@ model RoomType {
   id             String   @id @default(cuid())
   type           String
   price          Decimal
-  maxAdults      Int
-  maxChildren    Int
+  maxAdults      Int      @default(2)
+  maxChildren    Int      @default(0)
   bedType        String?
-  amenities      String?
+  amenities      String?  // JSON string of amenities array
   description    String?
-  photos         String?
+  image          String?  // Single image URL (changed from photos array)
   hotelId        String
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
@@ -154,8 +154,10 @@ model RoomType {
 model Meal {
   id             String   @id @default(cuid())
   name           String
-  type           String
-  category       String
+  type           String   // e.g., Breakfast, Lunch, Dinner
+  category       String   // veg, non-veg
+  vegOption      Boolean  @default(false)
+  nonVegOption   Boolean  @default(false)
   price          Float
   image          String?
   hotelId        String?
@@ -175,8 +177,8 @@ model Activity {
   description    String?
   price          Float
   duration       String?
-  category       String
-  image          String?
+  photos         String?  // JSON string of photos array
+  image          String?  // Main image URL
   hotelId        String?
   agencyId       String
   createdAt      DateTime @default(now())
@@ -195,7 +197,7 @@ model Transport {
   perKm               Float
   maxCapacity         Int
   notes               String?
-  photos              String?
+  photos              String?  // JSON string of photos array
   agencyId            String
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
@@ -264,7 +266,7 @@ model Quotation {
   startDate   DateTime
   endDate     DateTime
   adults      Int
-  children    Int
+  children      Int
   infants     Int
   totalAmount Float
   createdAt   DateTime        @default(now())
