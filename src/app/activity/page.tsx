@@ -2,34 +2,35 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import axios from "axios";
 import { useState, useEffect } from "react";
-import { ArrowLeft, X, Calendar, FileText, Image as ImageIcon, Tag } from "lucide-react";
+import { ArrowLeft, X, FileText, Image as ImageIcon, Tag } from "lucide-react";
 import { useToast } from "@/app/components/Toast";
 
 function AddActivityInner() {
-    const { success, error, info, warning } = useToast();
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const id = searchParams.get("id");
-  
+  const { success, error, info, warning } = useToast();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     duration: "",
     price: "",
     photos: "",
-    hotelId: "", // Added hotelId field
+    image: "",
+    hotelId: "",
   });
 
   const [hotels, setHotels] = useState<any[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Fetch hotels for dropdown
   useEffect(() => {
     const fetchHotels = async () => {
       try {
-        const res = await fetch('/api/hotels?agencyId=cmfntj4f60000nq4wt321fgsa');
+        const res = await fetch('/api/hotels?agencyId=AGC1');
         const data = await res.json();
         if (data.success) {
           setHotels(data.data);
@@ -42,24 +43,37 @@ function AddActivityInner() {
     fetchHotels();
   }, []);
 
-   useEffect(() => {
+  // Fetch activity for edit
+  useEffect(() => {
     if (!id) return;
-  
-    axios
-      .get(`/api/activities/${id}`)
-      .then((res) => {
-        const data = res.data;
-  
-        setFormData({
-          name: data.data.name||"",
-          description: data.data.description||"",
-          duration: data.data.duration||"",
-          price: data.data.price||"",
-          photos: Array.isArray(data.data.photos) ? data.data.photos.join("\n") : "",
-          hotelId: data.data.hotelId || "", // Added
-        });
-      })
-      .catch((err) => console.error(err));
+
+    const fetchActivity = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/activities/${id}`);
+        const data = await res.json();
+
+        if (data.success) {
+          const activityData = data.data;
+          setFormData({
+            name: activityData?.name || "",
+            description: activityData?.description || "",
+            duration: activityData?.duration || "",
+            price: activityData?.price?.toString() || "",
+            photos: activityData?.photos ? JSON.parse(activityData.photos).join("\n") : "",
+            image: activityData?.image || "",
+            hotelId: activityData?.hotelId || "",
+          });
+        }
+      } catch (err) {
+        console.error('Failed to fetch activity:', err);
+        error('Error', 'Failed to load activity data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchActivity();
   }, [id]);
 
   const handleChange = (
@@ -69,46 +83,60 @@ function AddActivityInner() {
     setFormData({ ...formData, [name]: value });
   };
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setSubmitting(true);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
 
-  try {
-    const payload = {
-      ...formData,
-      price: parseFloat(formData.price),
-      photos: formData.photos
-        ? formData.photos.split("\n").map((p) => p.trim()).filter(Boolean)
-        : [],
-      hotelId: formData.hotelId || null, // Added
-      agencyId: "cmfntj4f60000nq4wt321fgsa",
-    };
-
-    // decide endpoint + method
-    const url = id ? `/api/activities/${id}` : "/api/activities";
-    const method = id ? "PUT" : "POST";
-
-    const res = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await res.json();
-    if (data.success) {
-      {id?success('Activity Updated','Activity was updated successfully'):success('Activity Added','Activity was added successfully')}
-      resetForm();
-    } else {
-     {id?error('Updation Failed','Please try again later'):error('Creation Failed','Please try again later ')}
-      alert(`Failed to ${id ? "update" : "create"} activity: ` + data.error);
+    // Validation
+    if (!formData.name || !formData.price) {
+      error('Validation Error', 'Please fill all required fields');
+      setSubmitting(false);
+      return;
     }
-  } catch (err) {
-    console.error(err);
-    error("Something went wrong!","Please try again later");
-  } finally {
-    setSubmitting(false);
-  }
-};
+
+    try {
+      const payload = {
+        name: formData.name,
+        description: formData.description,
+        duration: formData.duration,
+        price: parseFloat(formData.price),
+        photos: formData.photos
+          ? formData.photos.split("\n").map((p) => p.trim()).filter(Boolean)
+          : [],
+        image: formData.image,
+        hotelId: formData.hotelId || null,
+        agencyId: "AGC1",
+      };
+
+      const url = id ? `/api/activities/${id}` : "/api/activities";
+      const method = id ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      
+      if (data.success) {
+        if (id) {
+          success('Activity Updated', 'Activity was updated successfully');
+        } else {
+          success('Activity Added', 'Activity was added successfully');
+          resetForm();
+        }
+        router.push("/services");
+      } else {
+        error('Error', data.error || `Failed to ${id ? "update" : "create"} activity`);
+      }
+    } catch (err) {
+      console.error(err);
+      error("Something went wrong!", "Please try again later");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const resetForm = () => {
     setFormData({
@@ -117,9 +145,12 @@ const handleSubmit = async (e: React.FormEvent) => {
       duration: "",
       price: "",
       photos: "",
-      hotelId: "", // Added
+      image: "",
+      hotelId: "",
     });
   };
+
+  if (loading) return <div className="p-6 text-center">Loading...</div>;
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -130,19 +161,19 @@ const handleSubmit = async (e: React.FormEvent) => {
             <div className="flex items-center">
               <button
                 type="button"
-                onClick={resetForm}
+                onClick={() => router.push('/services')}
                 className="mr-4 text-gray-600 hover:text-gray-900"
                 disabled={submitting}
               >
                 <ArrowLeft className="h-6 w-6" />
               </button>
               <h1 className="text-2xl font-bold text-gray-900">
-                Add New Activity
+                {id ? "Edit Activity" : "Add New Activity"}
               </h1>
             </div>
             <button
               type="button"
-              onClick={()=>{router.push('/services')}}
+              onClick={() => router.push('/services')}
               className="text-gray-600 hover:text-gray-900"
               disabled={submitting}
             >
@@ -150,7 +181,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             </button>
           </div>
           <p className="text-sm text-gray-600 mt-1 ml-10">
-            Create a new activity record
+            {id ? "Edit existing activity" : "Create a new activity record"}
           </p>
         </div>
       </div>
@@ -177,7 +208,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Activity Name
+                    Activity Name *
                   </label>
                   <input
                     type="text"
@@ -204,7 +235,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Price
+                    Price *
                   </label>
                   <input
                     type="number"
@@ -292,13 +323,43 @@ const handleSubmit = async (e: React.FormEvent) => {
               </div>
             </div>
 
+            {/* Main Image Section */}
+            <div className="bg-white lg:rounded-xl shadow-sm border border-gray-200">
+              <div className="p-6 border-b border-gray-200">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-orange-100 rounded-lg">
+                    <ImageIcon className="w-5 h-5 text-orange-600" />
+                  </div>
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    Main Image
+                  </h2>
+                </div>
+                <p className="text-sm text-gray-600 mt-1">
+                  Add the main image URL for the activity
+                </p>
+              </div>
+              <div className="p-6">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Image URL
+                </label>
+                <input
+                  type="text"
+                  name="image"
+                  value={formData.image}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                  placeholder="https://example.com/main-image.jpg"
+                />
+              </div>
+            </div>
+
             {/* Footer */}
             <div className="bg-white border-t border-gray-200 px-6 py-4">
               <div className="max-w-4xl mx-auto">
                 <div className="flex gap-4">
                   <button
                     type="button"
-                    onClick={()=>{router.push('/services')}}
+                    onClick={() => router.push('/services')}
                     disabled={submitting}
                     className="flex-1 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                   >
@@ -306,11 +367,10 @@ const handleSubmit = async (e: React.FormEvent) => {
                   </button>
                   <button
                     type="submit"
-                    onClick={handleSubmit}
                     disabled={submitting}
                     className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-50 flex items-center justify-center"
                   >
-                    {submitting ? "Saving..." : "Save Activity"}
+                    {submitting ? "Saving..." : (id ? "Update Activity" : "Save Activity")}
                   </button>
                 </div>
               </div>
