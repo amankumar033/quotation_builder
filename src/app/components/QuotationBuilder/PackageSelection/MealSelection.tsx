@@ -27,8 +27,22 @@ export default function MealSelection({ hotel, meals, onMealsChange, onProceed, 
   const [mealTypeFilter, setMealTypeFilter] = useState<"all" | "breakfast" | "lunch" | "dinner">("all");
   const [showFilters, setShowFilters] = useState<boolean>(false);
 
-  // Filter meals based on hotel ID
-  const filteredMeals = meals.filter((meal: Meal) => meal.hotelId === hotel?.id);
+  // FIXED: Properly filter meals based on hotel ID - handle both string and number IDs
+  const filteredMeals = meals.filter((meal: Meal) => {
+    // Handle different ID formats - both meal.hotelId and hotel.id could be string or number
+    const mealHotelId = String(meal.hotelId || '');
+    const currentHotelId = String(hotel?.id || '');
+    
+    return mealHotelId === currentHotelId;
+  });
+
+  console.log('Meal Selection Debug:', {
+    hotelId: hotel?.id,
+    allMealsCount: meals.length,
+    filteredMealsCount: filteredMeals.length,
+    filteredMeals: filteredMeals,
+    hotel: hotel
+  });
 
   // Apply search and filters
   const filteredAndSearchedMeals = filteredMeals.filter((meal: Meal) => {
@@ -39,14 +53,15 @@ export default function MealSelection({ hotel, meals, onMealsChange, onProceed, 
     return matchesSearch && matchesCategory && matchesMealType;
   });
 
-  // Get quantity from current day meals
-  const getMealQuantity = (mealId: number): number => {
-    const selectedMeal = currentDayMeals.find((meal: Meal) => meal.id === mealId);
+  // FIXED: Handle both string and number meal IDs
+  const getMealQuantity = (mealId: string | number): number => {
+    const selectedMeal = currentDayMeals.find((meal: Meal) => String(meal.id) === String(mealId));
     return selectedMeal ? selectedMeal.quantity : 0;
   };
 
-  const handleUpdateMealQuantity = (mealId: number, newQuantity: number): void => {
-    const mealData = filteredMeals.find((meal: Meal) => meal.id === mealId);
+  // FIXED: Handle both string and number meal IDs
+  const handleUpdateMealQuantity = (mealId: string | number, newQuantity: number): void => {
+    const mealData = filteredMeals.find((meal: Meal) => String(meal.id) === String(mealId));
     
     if (mealData) {
       // Update the meal quantity directly in the context
@@ -65,34 +80,37 @@ export default function MealSelection({ hotel, meals, onMealsChange, onProceed, 
     setMealTypeFilter("all");
   }, [hotel?.id]);
 
-  // Initialize current day meals when component mounts
+  // FIXED: Initialize current day meals when component mounts or hotel changes
   useEffect(() => {
     if (currentEditingDay && filteredMeals.length > 0) {
-      // Check if we need to initialize any meals
+      // Create meals with proper initialization
       const mealsWithQuantity = filteredMeals.map((meal: Meal) => {
-        const existingMeal = currentDayMeals.find((m: Meal) => m.id === meal.id);
+        const existingMeal = currentDayMeals.find((m: Meal) => String(m.id) === String(meal.id));
         return existingMeal || { ...meal, quantity: 0 };
       });
       
       // Only update if there are changes
-      if (mealsWithQuantity.length !== currentDayMeals.length) {
+      const hasChanges = mealsWithQuantity.length !== currentDayMeals.length || 
+        mealsWithQuantity.some((meal, index) => 
+          meal.id !== currentDayMeals[index]?.id || meal.quantity !== currentDayMeals[index]?.quantity
+        );
+      
+      if (hasChanges) {
         setCurrentDayMeals(mealsWithQuantity);
       }
     }
-  }, [currentEditingDay, filteredMeals]);
+  }, [currentEditingDay, filteredMeals, hotel?.id]);
 
-  // Add this function at the top of MealSelection component
-const scrollToTop = () => {
-  window.scrollTo({ top: 800, behavior: 'smooth' });
-};
+  const scrollToTop = () => {
+    window.scrollTo({ top: 800, behavior: 'smooth' });
+  };
 
-// Update handleProceed to include scroll
-const handleProceed = (): void => {
-  // Pass the current day meals to parent
-  onMealsChange(currentDayMeals.filter((meal: Meal) => meal.quantity > 0));
-  onProceed();
-  scrollToTop(); // Add this line
-};
+  const handleProceed = (): void => {
+    // Pass the current day meals to parent
+    onMealsChange(currentDayMeals.filter((meal: Meal) => meal.quantity > 0));
+    onProceed();
+    scrollToTop();
+  };
 
   const handleBack = (): void => {
     onBack();
@@ -110,13 +128,23 @@ const handleProceed = (): void => {
     );
   }
 
+  // FIXED: Better empty state with debug information
   if (filteredMeals.length === 0) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="text-center">
           <Utensils className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">No Meals Available</h3>
-          <p className="text-gray-500">No meal options found for {hotel.name}.</p>
+          <p className="text-gray-500 mb-2">No meal options found for {hotel.name}.</p>
+          <p className="text-sm text-gray-400">
+            Hotel ID: {hotel.id} • Available meals: {meals.length}
+          </p>
+          <button
+            onClick={handleBack}
+            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          >
+            Back to Hotel Selection
+          </button>
         </div>
       </div>
     );
@@ -136,6 +164,21 @@ const handleProceed = (): void => {
         <div className="text-right">
           <div className="text-2xl font-bold text-green-600">₹{totalMealPrice}</div>
           <div className="text-sm text-gray-500">Total Meal Cost</div>
+        </div>
+      </div>
+
+      {/* Hotel Info Banner */}
+      <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="font-bold text-gray-900">{hotel.name}</h3>
+            <p className="text-sm text-gray-600">
+              Select meals for this hotel • {filteredMeals.length} meal options available
+            </p>
+          </div>
+          <div className="text-right text-sm text-gray-500">
+            Hotel ID: {hotel.id}
+          </div>
         </div>
       </div>
 

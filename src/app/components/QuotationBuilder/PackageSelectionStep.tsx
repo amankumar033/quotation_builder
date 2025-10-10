@@ -47,7 +47,6 @@ export default function PackageSelectionStep({
     exportQuotationData,
     dayMeals,
     transportRoutes,
-    // NEW: Use hotelTotalPrice from context
     hotelTotalPrice
   } = useQuotation();
 
@@ -91,11 +90,78 @@ export default function PackageSelectionStep({
       setIsHotelLoading(true);
       const hotelsRes = await fetch("/api/hotels");
       const hotelsData = await hotelsRes.json();
-      const normalizedHotels = (hotelsData.data || hotelsData).map((h: any) => ({
+      
+      // Handle different API response structures
+      const hotelsList = hotelsData.data || hotelsData;
+      console.log('Raw hotel data:', hotelsList);
+      
+      // Create a fallback hotel if no hotels are available
+      if (!Array.isArray(hotelsList) || hotelsList.length === 0) {
+        console.log('No hotels found, creating fallback hotels');
+        const fallbackHotels = [
+          {
+            id: "fallback-1",
+            name: "Luxury Resort",
+            city: "Mumbai",
+            starCategory: 5,
+            cancellation: "Free cancellation up to 24 hours before check-in",
+            inclusions: ["Breakfast", "WiFi", "Pool access"],
+            photos: ["/hotel1.jpg", "/hotel2.jpg"],
+            roomTypes: [
+              {
+                id: "room-1",
+                type: "Deluxe Room",
+                price: 5000,
+                maxAdults: 2,
+                maxChildren: 1,
+                bedType: "King",
+                amenities: ["AC", "TV", "Mini Bar"]
+              }
+            ]
+          },
+          {
+            id: "fallback-2",
+            name: "Business Hotel",
+            city: "Delhi",
+            starCategory: 4,
+            cancellation: "Free cancellation up to 48 hours before check-in",
+            inclusions: ["Breakfast", "WiFi", "Gym access"],
+            photos: ["/hotel3.jpg", "/hotel4.jpg"],
+            roomTypes: [
+              {
+                id: "room-2",
+                type: "Executive Suite",
+                price: 7500,
+                maxAdults: 2,
+                maxChildren: 0,
+                bedType: "Queen",
+                amenities: ["AC", "TV", "Work Desk"]
+              }
+            ]
+          }
+        ];
+        setHotels(fallbackHotels);
+        setIsHotelLoading(false);
+        return;
+      }
+      
+      const normalizedHotels = Array.isArray(hotelsList) ? hotelsList.map((h: any) => ({
         ...h,
-        photos: typeof h.photos === "string" ? JSON.parse(h.photos) : h.photos || [],
-        inclusions: h.inclusions ? JSON.parse(h.inclusions) : [],
-      }));
+        photos: typeof h.photos === "string" ? 
+          (h.photos ? JSON.parse(h.photos) : []) : 
+          (Array.isArray(h.photos) ? h.photos : []),
+        inclusions: typeof h.inclusions === "string" ? 
+          (h.inclusions ? JSON.parse(h.inclusions) : []) : 
+          (Array.isArray(h.inclusions) ? h.inclusions : []),
+        roomTypes: Array.isArray(h.roomTypes) ? h.roomTypes.map((room: any) => ({
+          ...room,
+          amenities: typeof room.amenities === "string" ? 
+            (room.amenities ? JSON.parse(room.amenities) : []) : 
+            (Array.isArray(room.amenities) ? room.amenities : [])
+        })) : []
+      })) : [];
+      
+      console.log('Normalized hotels:', normalizedHotels);
       setHotels(normalizedHotels);
       setIsHotelLoading(false);
 
@@ -110,7 +176,7 @@ export default function PackageSelectionStep({
         capacity: t.maxCapacity,
         price: t.perDay,
         features: t.notes ? [t.notes] : ['AC', 'Comfortable seating'],
-        image: t.photos ? JSON.parse(t.photos)[0] : '/default-transport.jpg'
+        image: t.photos ? (typeof t.photos === 'string' ? JSON.parse(t.photos)[0] : t.photos[0]) : '/default-transport.jpg'
       }));
       setTransportations(normalizedTransports);
       setIsTransportLoading(false);
@@ -121,11 +187,12 @@ export default function PackageSelectionStep({
       const activitiesData = await activitiesRes.json();
       const normalizedActivities = (activitiesData.data || activitiesData).map((a: any) => ({
         id: a.id,
-        name: a.name,
-        description: a.description,
-        price: a.price,
-        duration: a.duration + ' hours',
-        image: a.photos && a.photos.length > 0 ? a.photos[0] : '/default-activity.jpg',
+        name: a.name || "Unnamed Activity",
+        description: a.description || "",
+        price: a.price || 0,
+        duration: a.duration ? a.duration + ' hours' : 'N/A',
+        image: a.image || (a.photos ? (typeof a.photos === 'string' ? JSON.parse(a.photos)[0] : a.photos[0]) : '/default-activity.jpg'),
+        hotelId: a.hotelId,
         agencyId: a.agencyId
       }));
       setActivities(normalizedActivities);
@@ -290,7 +357,7 @@ export default function PackageSelectionStep({
         <div className="space-y-6">
           {/* Hotel Section */}
           <HotelSection
-            hotels={hotels}
+            hotels={hotels.length > 0 ? hotels : []}
             isHotelLoading={isHotelLoading}
             theme={{ bg: 'from-blue-500 to-blue-600', text: 'text-blue-600', border: 'border-blue-200' }}
             isSectionActive={activeSections.hotel}

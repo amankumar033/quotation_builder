@@ -16,199 +16,6 @@ interface HotelSectionProps {
   allDays: Array<{ date: string; data: DaySelection }>;
 }
 
-// Enhanced hotel meals data with proper hotel-specific meals
-const hotelMeals: Meal[] = [
-  // Hotel HTL1 - Luxury Hotel meals
-  // {
-  //   id: "1",
-  //   hotelId: "HTL1",
-  //   name: "Continental Breakfast Buffet",
-  //   type: "breakfast",
-  //   category: "veg",
-  //   price: 450,
-  //   image: "https://images.unsplash.com/photo-1551782450-17144efb9c50?w=400&h=300&fit=crop",
-  //   quantity: 0,
-  // },
-  // {
-  //   id: 2,
-  //   hotelId: "HTL1",
-  //   name: "Indian Breakfast Platter",
-  //   type: "breakfast",
-  //   category: "veg",
-  //   price: 500,
-  //   image: "https://images.unsplash.com/photo-1551782450-17144efb9c50?w=400&h=300&fit=crop",
-  //   quantity: 0,
-  // },
-  // {
-  //   id: 3,
-  //   hotelId: "HTL1",
-  //   name: "Gourmet Lunch Buffet",
-  //   type: "lunch",
-  //   category: "veg",
-  //   price: 900,
-  //   image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop",
-  //   quantity: 0,
-  // },
-  // {
-  //   id: 4,
-  //   hotelId: "HTL1",
-  //   name: "Premium Vegetarian Dinner",
-  //   type: "dinner",
-  //   category: "veg",
-  //   price: 850,
-  //   image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop",
-  //   quantity: 0,
-  // },
-  // {
-  //   id: 5,
-  //   hotelId: "HTL1",
-  //   name: "Non-Veg Special Dinner",
-  //   type: "dinner",
-  //   category: "non-veg",
-  //   price: 1200,
-  //   image: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=400&h=300&fit=crop",
-  //   quantity: 0,
-  // },
-
-  // // Hotel HTL2 - Business Hotel meals
-  // {
-  //   id: 6,
-  //   hotelId: "HTL2",
-  //   name: "Executive Breakfast",
-  //   type: "breakfast",
-  //   category: "veg",
-  //   price: 400,
-  //   image: "https://images.unsplash.com/photo-1551782450-17144efb9c50?w=400&h=300&fit=crop",
-  //   quantity: 0,
-  // },
-  // {
-  //   id: 7,
-  //   hotelId: "HTL2",
-  //   name: "Business Lunch",
-  //   type: "lunch",
-  //   category: "veg",
-  //   price: 750,
-  //   image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop",
-  //   quantity: 0,
-  // },
-  // {
-  //   id: 8,
-  //   hotelId: "HTL2",
-  //   name: "Dinner Buffet",
-  //   type: "dinner",
-  //   category: "veg",
-  //   price: 800,
-  //   image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop",
-  //   quantity: 0,
-  // },
-
-  // // Hotel HTL3 - Resort meals
-  // {
-  //   id: 9,
-  //   hotelId: "HTL3",
-  //   name: "Luxury Breakfast Spread",
-  //   type: "breakfast",
-  //   category: "veg",
-  //   price: 600,
-  //   image: "https://images.unsplash.com/photo-1551782450-17144efb9c50?w=400&h=300&fit=crop",
-  //   quantity: 0,
-  // },
-  // {
-  //   id: 10,
-  //   hotelId: "HTL3",
-  //   name: "Resort Lunch Special",
-  //   type: "lunch",
-  //   category: "veg",
-  //   price: 1100,
-  //   image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop",
-  //   quantity: 0,
-  // },
-  // {
-  //   id: 11,
-  //   hotelId: "HTL3",
-  //   name: "Gourmet Dinner Experience",
-  //   type: "dinner",
-  //   category: "veg",
-  //   price: 1300,
-  //   image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop",
-  //   quantity: 0,
-  // },
-];
-
-// Hotel-specific activities
-const hotelActivities: Activity[] = [
-  {
-    id: "act-1",
-    name: "Welcome Cake Cutting",
-    description: "Special welcome cake cutting ceremony with personalized message",
-    price: 1500,
-    duration: "30 minutes",
-    category: "celebration",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnCEAUa1MTb3uxLO7n6NUrti-8f9_l4VhuWQ&s",
-    agencyId: "HTL1"
-  },
-  {
-    id: "act-2",
-    name: "Grand Welcome Entry",
-    description: "Royal welcome with traditional music and flower shower",
-    price: 2500,
-    duration: "45 minutes",
-    category: "welcome",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQp5LA4nWC3x0Zir6mrFARB8LQ07w2S_A8skg&s",
-    agencyId: "HTL1"
-  },
-  {
-    id: "act-3",
-    name: "Room Decoration",
-    description: "Special room setup with flowers and candles",
-    price: 2000,
-    duration: "1 hour",
-    category: "romance",
-    image: "https://cheetah.cherishx.com/uploads/1557818214_large.jpg",
-    agencyId: "HTL1"
-  },
-  {
-    id: "act-4",
-    name: "Business Center Access",
-    description: "Premium business center access with meeting facilities",
-    price: 1000,
-    duration: "4 hours",
-    category: "business",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsFIg9TgCUMlYb2zdBKY6euyEAZhBRhqpngA&s",
-    agencyId: "HTL2"
-  },
-  {
-    id: "act-5",
-    name: "Executive Lounge Access",
-    description: "Exclusive executive lounge with complimentary snacks",
-    price: 1800,
-    duration: "3 hours",
-    category: "business",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuNA9OAii6p8-IgUjt11ZGRN6SUEhAQM_u-g&s",
-    agencyId: "HTL2"
-  },
-  {
-    id: "act-6",
-    name: "Spa Welcome Package",
-    description: "Relaxing spa welcome with aromatherapy and massage",
-    price: 3000,
-    duration: "1.5 hours",
-    category: "wellness",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQimb2RvCKgElmeAepVK60B8gfMdhnyQQ5hrg&s",
-    agencyId: "HTL3"
-  },
-  {
-    id: "act-7",
-    name: "Poolside Celebration",
-    description: "Exclusive poolside celebration with drinks and snacks",
-    price: 3500,
-    duration: "2 hours",
-    category: "celebration",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoNvHHkbvCWZG9drQmLbGuB0vcYg85oMOt4w&s",
-    agencyId: "HTL3"
-  }
-];
-
 // FIXED: Unified type for selection modes
 type SelectionStep = 'hotel' | 'meals' | 'rooms' | 'activities' | 'completed';
 type HotelSelectionMode = 'overview' | SelectionStep;
@@ -257,12 +64,68 @@ export default function HotelSection({
     dayMeals,
     calculateDayPrice,
     professionalRooms,
-    // Use hotelTotalPrice from context - this should be the sum of ALL days
     hotelTotalPrice
   } = useQuotation();
 
   const [selectionMode, setSelectionMode] = useState<HotelSelectionMode>('overview');
   const [dayProgress, setDayProgress] = useState<DayHotelProgress | null>(null);
+  const [hotelActivities, setHotelActivities] = useState<Activity[]>([]);
+  const [hotelMeals, setHotelMeals] = useState<Meal[]>([]);
+  const [isActivitiesLoading, setIsActivitiesLoading] = useState(false);
+  const [isMealsLoading, setIsMealsLoading] = useState(false);
+
+  // Fetch activities and meals data
+  useEffect(() => {
+    const fetchActivitiesAndMeals = async () => {
+      try {
+        setIsActivitiesLoading(true);
+        setIsMealsLoading(true);
+
+        const [activitiesRes, mealsRes] = await Promise.all([
+          fetch("/api/activities"),
+          fetch("/api/meals")
+        ]);
+
+        const activitiesData = await activitiesRes.json();
+        const mealsData = await mealsRes.json();
+
+        // Normalize activities data
+        const normalizedActivities = (activitiesData.data || activitiesData).map((a: any) => ({
+          id: a.id,
+          name: a.name || "Unnamed Activity",
+          description: a.description || "",
+          price: a.price || 0,
+          duration: a.duration ? a.duration + ' hours' : 'N/A',
+          category: a.category || 'general',
+          image: a.image || (a.photos ? (typeof a.photos === 'string' ? JSON.parse(a.photos)[0] : a.photos[0]) : '/default-activity.jpg'),
+          hotelId: a.hotelId,
+          agencyId: a.agencyId
+        }));
+
+        // Normalize meals data
+        const normalizedMeals = (mealsData.data || mealsData).map((m: any) => ({
+          id: m.id,
+          name: m.name || "Unnamed Meal",
+          type: m.type || "breakfast",
+          category: m.category || "veg",
+          price: m.price || 0,
+          hotelId: m.hotelId,
+          image: m.image || '/default-meal.jpg',
+          quantity: 0
+        }));
+
+        setHotelActivities(normalizedActivities);
+        setHotelMeals(normalizedMeals);
+      } catch (error) {
+        console.error("Failed to fetch activities and meals:", error);
+      } finally {
+        setIsActivitiesLoading(false);
+        setIsMealsLoading(false);
+      }
+    };
+
+    fetchActivitiesAndMeals();
+  }, []);
 
   // FIXED: Calculate individual day totals for display
   const calculateDayTotalWithMeals = (date: string): { 
@@ -302,7 +165,7 @@ export default function HotelSection({
       totalRooms,
       totalMeals,
       totalActivities,
-      grandTotal: hotelTotalPrice // Use the context value directly
+      grandTotal: hotelTotalPrice
     };
   };
 
@@ -314,14 +177,11 @@ export default function HotelSection({
       hotelTotalPrice,
       breakdown,
       allDaysCount: allDays.length,
-      daySelectionsCount: Object.keys(daySelections).length
+      daySelectionsCount: Object.keys(daySelections).length,
+      hotelActivities: hotelActivities.length,
+      hotelMeals: hotelMeals.length
     });
-    
-    allDays.forEach(({ date }, index) => {
-      const dayTotal = calculateDayTotalWithMeals(date);
-      console.log(`Day ${index + 1} (${date}):`, dayTotal);
-    });
-  }, [hotelTotalPrice, daySelections, allDays]);
+  }, [hotelTotalPrice, daySelections, allDays, hotelActivities, hotelMeals]);
 
   // Initialize day progress from existing selections
   const initializeDayProgress = (date: string, dayNumber: number): void => {
@@ -488,7 +348,16 @@ export default function HotelSection({
 
   // Get hotel-specific activities
   const getHotelActivities = (hotelId: string): Activity[] => {
-    return hotelActivities.filter(activity => activity.agencyId === hotelId);
+    return hotelActivities.filter(activity => 
+      String(activity.hotelId) === String(hotelId)
+    );
+  };
+
+  // Get hotel-specific meals
+  const getHotelMeals = (hotelId: string): Meal[] => {
+    return hotelMeals.filter(meal => 
+      String(meal.hotelId) === String(hotelId)
+    );
   };
 
   // Handle undefined category safely
@@ -1054,17 +923,23 @@ export default function HotelSection({
               {/* Meal Selection */}
               {selectionMode === 'meals' && dayProgress.selectedHotel && (
                 <div className="space-y-6">
-                  <MealSelection
-                    hotel={dayProgress.selectedHotel}
-                    meals={hotelMeals.filter(meal => meal.hotelId === dayProgress.selectedHotel?.id)}
-                    onMealsChange={handleMealsConfirm}
-                    onProceed={() => {
-                      // Proceed to room selection
-                      setSelectionMode('rooms');
-                    }}
-                    onBack={handleBackToHotelSelection}
-                    theme={theme}
-                  />
+                  {isMealsLoading ? (
+                    <div className="text-center py-12">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+                      <p className="text-gray-500 mt-4 text-lg">Loading meals...</p>
+                    </div>
+                  ) : (
+                    <MealSelection
+                      hotel={dayProgress.selectedHotel}
+                      meals={getHotelMeals(dayProgress.selectedHotel.id)}
+                      onMealsChange={handleMealsConfirm}
+                      onProceed={() => {
+                        setSelectionMode('rooms');
+                      }}
+                      onBack={handleBackToHotelSelection}
+                      theme={theme}
+                    />
+                  )}
                 </div>
               )}
 
@@ -1086,147 +961,156 @@ export default function HotelSection({
               {/* Activities Selection */}
               {selectionMode === 'activities' && dayProgress && dayProgress.selectedHotel && (
                 <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {getHotelActivities(dayProgress.selectedHotel.id).map((activity) => {
-                      const isSelected = dayProgress.activitySelections.some(
-                        selected => selected.id === activity.id
-                      );
-                      
-                      return (
-                        <div
-                          key={activity.id}
-                          className={`border-2 rounded-xl overflow-hidden transition-all duration-200 cursor-pointer ${
-                            isSelected 
-                              ? 'border-purple-500 bg-purple-50 shadow-lg' 
-                              : 'border-gray-200 bg-white hover:border-purple-300 hover:shadow-md'
-                          }`}
-                          onClick={() => {
-                            // Only toggle selection, don't auto-proceed
-                            let updatedActivities: Activity[];
-                            if (isSelected) {
-                              updatedActivities = dayProgress.activitySelections.filter(
-                                selected => selected.id !== activity.id
-                              );
-                            } else {
-                              updatedActivities = [...dayProgress.activitySelections, activity];
-                            }
-                            
-                            // Update progress but don't proceed to next step
-                            const updatedProgress: DayHotelProgress = {
-                              ...dayProgress,
-                              activitySelections: updatedActivities
-                            };
-                            
-                            setDayProgress(updatedProgress);
-                            
-                            // Update global state but don't mark as completed
-                            updateDaySelection(dayProgress.date, {
-                              activities: updatedActivities
-                            });
-                          }}
-                        >
-                          <div className="h-40 relative overflow-hidden">
-                            <img 
-                              src={activity.image} 
-                              alt={activity.name}
-                              className="w-full h-full object-cover"
-                            />
-                            <div className="absolute top-3 right-3">
-                              {getActivityIcon(activity.category)}
-                            </div>
-                            <div className="absolute bottom-3 left-3 text-white">
-                              <span className="text-xs bg-purple-700 px-2 py-1 rounded-full">
-                                {activity.category}
-                              </span>
-                            </div>
-                          </div>
+                  {isActivitiesLoading ? (
+                    <div className="text-center py-12">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+                      <p className="text-gray-500 mt-4 text-lg">Loading activities...</p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {getHotelActivities(dayProgress.selectedHotel.id).map((activity) => {
+                          const isSelected = dayProgress.activitySelections.some(
+                            selected => selected.id === activity.id
+                          );
                           
-                          <div className="p-4">
-                            <div className="flex items-start justify-between mb-2">
-                              <h5 className="font-bold text-gray-900 text-sm flex-1">{activity.name}</h5>
-                              <div className={`h-5 w-5 rounded-full border-2 flex items-center justify-center ml-2 ${
+                          return (
+                            <div
+                              key={activity.id}
+                              className={`border-2 rounded-xl overflow-hidden transition-all duration-200 cursor-pointer ${
                                 isSelected 
-                                  ? 'bg-purple-500 border-purple-500 text-white' 
-                                  : 'border-gray-300'
-                              }`}>
-                                {isSelected && '✓'}
+                                  ? 'border-purple-500 bg-purple-50 shadow-lg' 
+                                  : 'border-gray-200 bg-white hover:border-purple-300 hover:shadow-md'
+                              }`}
+                              onClick={() => {
+                                // Only toggle selection, don't auto-proceed
+                                let updatedActivities: Activity[];
+                                if (isSelected) {
+                                  updatedActivities = dayProgress.activitySelections.filter(
+                                    selected => selected.id !== activity.id
+                                  );
+                                } else {
+                                  updatedActivities = [...dayProgress.activitySelections, activity];
+                                }
+                                
+                                // Update progress but don't proceed to next step
+                                const updatedProgress: DayHotelProgress = {
+                                  ...dayProgress,
+                                  activitySelections: updatedActivities
+                                };
+                                
+                                setDayProgress(updatedProgress);
+                                
+                                // Update global state but don't mark as completed
+                                updateDaySelection(dayProgress.date, {
+                                  activities: updatedActivities
+                                });
+                              }}
+                            >
+                              <div className="h-40 relative overflow-hidden">
+                                <img 
+                                  src={activity.image} 
+                                  alt={activity.name}
+                                  className="w-full h-full object-cover"
+                                />
+                                <div className="absolute top-3 right-3">
+                                  {getActivityIcon(activity.category)}
+                                </div>
+                                <div className="absolute bottom-3 left-3 text-white">
+                                  <span className="text-xs bg-purple-700 px-2 py-1 rounded-full">
+                                    {activity.category}
+                                  </span>
+                                </div>
+                              </div>
+                              
+                              <div className="p-4">
+                                <div className="flex items-start justify-between mb-2">
+                                  <h5 className="font-bold text-gray-900 text-sm flex-1">{activity.name}</h5>
+                                  <div className={`h-5 w-5 rounded-full border-2 flex items-center justify-center ml-2 ${
+                                    isSelected 
+                                      ? 'bg-purple-500 border-purple-500 text-white' 
+                                      : 'border-gray-300'
+                                  }`}>
+                                    {isSelected && '✓'}
+                                  </div>
+                                </div>
+                                
+                                <p className="text-xs text-gray-600 mb-3 line-clamp-2">
+                                  {activity.description}
+                                </p>
+                                
+                                <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+                                  <span className="flex items-center">
+                                    <Sparkles className="h-3 w-3 mr-1" />
+                                    {activity.duration}
+                                  </span>
+                                </div>
+                                
+                                <div className="flex items-center justify-between">
+                                  <span className="text-lg font-bold text-purple-600">
+                                    ₹{activity.price}
+                                  </span>
+                                  <span className={`text-xs px-2 py-1 rounded-full ${
+                                    isSelected 
+                                      ? 'bg-purple-100 text-purple-700' 
+                                      : 'bg-gray-100 text-gray-600'
+                                  }`}>
+                                    {isSelected ? 'Selected' : 'Add Activity'}
+                                  </span>
+                                </div>
                               </div>
                             </div>
-                            
-                            <p className="text-xs text-gray-600 mb-3 line-clamp-2">
-                              {activity.description}
-                            </p>
-                            
-                            <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
-                              <span className="flex items-center">
-                                <Sparkles className="h-3 w-3 mr-1" />
-                                {activity.duration}
-                              </span>
-                            </div>
-                            
-                            <div className="flex items-center justify-between">
-                              <span className="text-lg font-bold text-purple-600">
-                                ₹{activity.price}
-                              </span>
-                              <span className={`text-xs px-2 py-1 rounded-full ${
-                                isSelected 
-                                  ? 'bg-purple-100 text-purple-700' 
-                                  : 'bg-gray-100 text-gray-600'
-                              }`}>
-                                {isSelected ? 'Selected' : 'Add Activity'}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Selected Activities Summary */}
-                  {dayProgress.activitySelections.length > 0 && (
-                    <div className="mt-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-200">
-                      <h5 className="font-semibold text-gray-900 mb-3 flex items-center">
-                        <Sparkles className="h-4 w-4 mr-2 text-purple-600" />
-                        Selected Activities ({dayProgress.activitySelections.length})
-                      </h5>
-                      <div className="space-y-2">
-                        {dayProgress.activitySelections.map((activity) => (
-                          <div key={activity.id} className="flex justify-between items-center bg-white p-3 rounded-lg">
-                            <div className="flex items-center">
-                              {getActivityIcon(activity.category)}
-                              <span className="ml-2 font-medium text-sm">{activity.name}</span>
-                            </div>
-                            <div className="text-right">
-                              <div className="font-semibold text-purple-600">₹{activity.price}</div>
-                              <div className="text-xs text-gray-500">{activity.duration}</div>
-                            </div>
-                          </div>
-                        ))}
-                        <div className="border-t border-purple-200 pt-2 mt-2 flex justify-between font-semibold">
-                          <span>Activities Total:</span>
-                          <span className="text-purple-600">
-                            ₹{dayProgress.activitySelections.reduce((sum: number, activity: Activity) => sum + activity.price, 0)}
-                          </span>
-                        </div>
+                          );
+                        })}
                       </div>
-                    </div>
-                  )}
 
-                  {/* Confirm Button */}
-                  <div className="flex justify-end space-x-3 pt-4">
-                    <button
-                      onClick={handleBackToRoomSelection}
-                      className="px-6 py-2.5 text-gray-700 hover:text-gray-900 font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      Back to Rooms
-                    </button>
-                    <button
-                      onClick={() => handleActivitiesConfirm(dayProgress.activitySelections)}
-                      className="px-8 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg"
-                    >
-                      Confirm Activities
-                    </button>
-                  </div>
+                      {/* Selected Activities Summary */}
+                      {dayProgress.activitySelections.length > 0 && (
+                        <div className="mt-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-200">
+                          <h5 className="font-semibold text-gray-900 mb-3 flex items-center">
+                            <Sparkles className="h-4 w-4 mr-2 text-purple-600" />
+                            Selected Activities ({dayProgress.activitySelections.length})
+                          </h5>
+                          <div className="space-y-2">
+                            {dayProgress.activitySelections.map((activity) => (
+                              <div key={activity.id} className="flex justify-between items-center bg-white p-3 rounded-lg">
+                                <div className="flex items-center">
+                                  {getActivityIcon(activity.category)}
+                                  <span className="ml-2 font-medium text-sm">{activity.name}</span>
+                                </div>
+                                <div className="text-right">
+                                  <div className="font-semibold text-purple-600">₹{activity.price}</div>
+                                  <div className="text-xs text-gray-500">{activity.duration}</div>
+                                </div>
+                              </div>
+                            ))}
+                            <div className="border-t border-purple-200 pt-2 mt-2 flex justify-between font-semibold">
+                              <span>Activities Total:</span>
+                              <span className="text-purple-600">
+                                ₹{dayProgress.activitySelections.reduce((sum: number, activity: Activity) => sum + activity.price, 0)}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Confirm Button */}
+                      <div className="flex justify-end space-x-3 pt-4">
+                        <button
+                          onClick={handleBackToRoomSelection}
+                          className="px-6 py-2.5 text-gray-700 hover:text-gray-900 font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                          Back to Rooms
+                        </button>
+                        <button
+                          onClick={() => handleActivitiesConfirm(dayProgress.activitySelections)}
+                          className="px-8 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg"
+                        >
+                          Confirm Activities
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
             </div>

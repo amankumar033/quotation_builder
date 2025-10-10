@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Hotel, RoomSelection as RoomSelectionType } from "@/types/type";
+import { Hotel, RoomSelection as RoomSelectionType, RoomType } from "@/types/type";
 import { ArrowLeft, Check, Users, Bed, Plus, X, ChevronDown, ChevronUp, User, Minus } from "lucide-react";
 import { useQuotation } from "@/context/QuotationContext";
 
@@ -15,251 +15,23 @@ interface RoomSelectionProps {
   currentDay: number;
 }
 
-// Define Room interface
+// Define Room interface that matches your Prisma schema
 interface Room {
-  id: number;
-  hotelId: string;
+  id: string; // Changed from number to string to match Prisma
   type: string;
-  price: number;
+  price: string; // Prisma uses Decimal which becomes string in TypeScript
   maxAdults: number;
   maxChildren: number;
   bedType: string;
   amenities: string[];
   description: string;
   photos: string[];
+  hotelId: string;
 }
-
-// Define professionalRooms array with proper typing
-const professionalRooms: Room[] = [
-  {
-    id: 1,
-    hotelId: "HTL1",
-    type: "Deluxe Room",
-    price: 3000,
-    maxAdults: 2,
-    maxChildren: 2,
-    bedType: "King Size Bed",
-    amenities: ["Free WiFi", "AC", "TV", "Breakfast", "King Bed"],
-    description: "Spacious room with modern amenities and comfortable bedding",
-    photos: [
-      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=400&h=250&fit=crop",
-    ],
-  },
-  {
-    id: 2,
-    hotelId: "HTL1",
-    type: "Super Deluxe Room",
-    price: 4500,
-    maxAdults: 3,
-    maxChildren: 2,
-    bedType: "Queen Size Bed",
-    amenities: [
-      "Free WiFi",
-      "AC",
-      "TV",
-      "Breakfast",
-      "Balcony",
-      "Sea View",
-    ],
-    description: "Luxurious room with premium features and stunning views",
-    photos: [
-      "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=400&h=250&fit=crop",
-    ],
-  },
-  {
-    id: 3,
-    hotelId: "HTL1",
-    type: "Suite Room",
-    price: 6500,
-    maxAdults: 4,
-    maxChildren: 3,
-    bedType: "King Size + Extra Bed",
-    amenities: [
-      "Free WiFi",
-      "AC",
-      "TV",
-      "Breakfast",
-      "Balcony",
-      "Living Room",
-      "Mini Bar",
-    ],
-    description:
-      "Executive suite with separate living area and premium amenities",
-    photos: [
-      "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=400&h=250&fit=crop",
-    ],
-  },
-  {
-    id: 4,
-    hotelId: "HTL2",
-    type: "Standard Room",
-    price: 2500,
-    maxAdults: 2,
-    maxChildren: 1,
-    bedType: "Double Bed",
-    amenities: ["Free WiFi", "AC", "TV", "Breakfast"],
-    description: "Affordable room with essential amenities for short stays",
-    photos: [
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT67zQD7L-AtLFIIpH_kbZLRb_QeU3zwQGXBw&s",
-    ],
-  },
-  {
-    id: 5,
-    hotelId: "HTL2",
-    type: "Executive Room",
-    price: 5200,
-    maxAdults: 3,
-    maxChildren: 2,
-    bedType: "King Bed",
-    amenities: [
-      "Free WiFi",
-      "AC",
-      "TV",
-      "Breakfast",
-      "Work Desk",
-      "Mini Bar",
-    ],
-    description:
-      "Designed for business travelers with work-friendly amenities and comfort",
-    photos: [
-      "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=400&h=250&fit=crop",
-    ],
-  },
-  {
-    id: 6,
-    hotelId: "HTL2",
-    type: "Family Room",
-    price: 5800,
-    maxAdults: 4,
-    maxChildren: 2,
-    bedType: "Two Queen Beds",
-    amenities: [
-      "Free WiFi",
-      "AC",
-      "TV",
-      "Breakfast",
-      "Balcony",
-      "Sofa",
-    ],
-    description:
-      "Spacious family-friendly room with multiple beds and extra seating",
-    photos: [
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7BUZcZ6BJZZCgYfGaHaggqOz8i9k2OlSwKQ&s",
-    ],
-  },
-  {
-    id: 7,
-    hotelId: "HTL3",
-    type: "Presidential Suite",
-    price: 12000,
-    maxAdults: 5,
-    maxChildren: 3,
-    bedType: "Super King Bed",
-    amenities: [
-      "Free WiFi",
-      "AC",
-      "TV",
-      "Breakfast",
-      "Jacuzzi",
-      "Private Lounge",
-      "Butler Service",
-    ],
-    description:
-      "Ultimate luxury experience with private lounge, jacuzzi, and butler service",
-    photos: [
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRyPq_7UEy9rRKjuGEzFjuRlgOQVG4_W8Szg&s",
-    ],
-  },
-  {
-    id: 8,
-    hotelId: "HTL3",
-    type: "Garden View Room",
-    price: 4000,
-    maxAdults: 2,
-    maxChildren: 1,
-    bedType: "Queen Bed",
-    amenities: [
-      "Free WiFi",
-      "AC",
-      "TV",
-      "Breakfast",
-      "Garden Access",
-    ],
-    description:
-      "Relax with a serene garden view and cozy modern furnishing",
-    photos: [
-      "https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=400&h=250&fit=crop",
-    ],
-  },
-  {
-    id: 9,
-    hotelId: "HTL3",
-    type: "Poolside Room",
-    price: 4800,
-    maxAdults: 2,
-    maxChildren: 2,
-    bedType: "Double Bed",
-    amenities: [
-      "Free WiFi",
-      "AC",
-      "TV",
-      "Breakfast",
-      "Pool Access",
-    ],
-    description:
-      "Stay close to the pool with easy access and refreshing vibes",
-    photos: [
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=250&fit=crop",
-    ],
-  },
-  // FIXED: Added more rooms to support future IDs
-  {
-    id: 10,
-    hotelId: "HTL1",
-    type: "Executive Suite",
-    price: 8000,
-    maxAdults: 3,
-    maxChildren: 2,
-    bedType: "King Size Bed",
-    amenities: ["Free WiFi", "AC", "TV", "Breakfast", "Executive Lounge"],
-    description: "Premium executive suite with lounge access",
-    photos: [
-      "https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=400&h=250&fit=crop",
-    ],
-  },
-  {
-    id: 11,
-    hotelId: "HTL2",
-    type: "Premium Room",
-    price: 6000,
-    maxAdults: 3,
-    maxChildren: 2,
-    bedType: "Queen Size Bed",
-    amenities: ["Free WiFi", "AC", "TV", "Breakfast", "Mini Bar", "City View"],
-    description: "Premium room with city view and enhanced amenities",
-    photos: [
-      "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=250&fit=crop",
-    ],
-  },
-  {
-    id: 12,
-    hotelId: "HTL3",
-    type: "Luxury Villa",
-    price: 15000,
-    maxAdults: 6,
-    maxChildren: 4,
-    bedType: "Multiple King Beds",
-    amenities: ["Free WiFi", "AC", "TV", "Breakfast", "Private Pool", "Garden"],
-    description: "Private luxury villa with exclusive amenities",
-    photos: [
-      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=250&fit=crop",
-    ],
-  },
-];
 
 // Interface for individual room configuration
 interface RoomConfiguration {
-  roomId: number;
+  roomId: string; // Changed from number to string
   roomCount: number;
   adults: number;
   childrenWithBed: number;
@@ -282,7 +54,7 @@ export default function RoomSelect({
   theme, 
   currentDay 
 }: RoomSelectionProps) {
-  const [selectedRoomType, setSelectedRoomType] = useState<number | null>(null);
+  const [selectedRoomType, setSelectedRoomType] = useState<string | null>(null); // Changed to string
   const [roomConfigurations, setRoomConfigurations] = useState<RoomConfiguration[]>([]);
   const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
   const [expandedRoomIndex, setExpandedRoomIndex] = useState<number | null>(null);
@@ -292,10 +64,20 @@ export default function RoomSelect({
   const { hotelInfo, travelers } = useQuotation();
   const selectedHotel = hotelInfo[0] || hotel;
 
-  // Filter rooms to show only hotel-specific rooms
-  const filteredRooms = professionalRooms.filter(
-    (room: Room) => room.hotelId === selectedHotel?.id
-  );
+  // FIXED: Use hotel's roomTypes and normalize the data
+  const filteredRooms: Room[] = (hotel?.roomTypes || []).map((roomType: RoomType) => ({
+    id: roomType.id,
+    type: roomType.type,
+    price: roomType.price, // This is string from Prisma Decimal
+    maxAdults: parseInt(roomType.maxAdults?.toString() || '2'),
+    maxChildren: parseInt(roomType.maxChildren?.toString() || '0'),
+    bedType: roomType.bedType || 'Double Bed',
+    amenities: Array.isArray(roomType.amenities) ? roomType.amenities : 
+              typeof roomType.amenities === 'string' ? JSON.parse(roomType.amenities || '[]') : [],
+    description: roomType.description || 'Comfortable accommodation',
+    photos: roomType.image ? [roomType.image] : ['/default-room.jpg'],
+    hotelId: roomType.hotelId
+  }));
 
   // Calculate total travelers from client info
   const totalTravelers = travelers.adults + travelers.children + travelers.infants;
@@ -304,7 +86,7 @@ export default function RoomSelect({
   useEffect(() => {
     if (selections.length > 0) {
       const configs = selections.map(selection => ({
-        roomId: selection.roomId,
+        roomId: selection.roomId.toString(), // Convert to string
         roomCount: selection.roomCount,
         adults: selection.adults,
         childrenWithBed: selection.childrenWithBed,
@@ -320,7 +102,7 @@ export default function RoomSelect({
   const selectedRoom = filteredRooms.find((room: Room) => room.id === selectedRoomType);
 
   // FIXED: Enhanced room card click handler - select/deselect on card click
-  const handleRoomCardClick = (roomId: number) => {
+  const handleRoomCardClick = (roomId: string) => { // Changed to string
     const existingConfigIndex = roomConfigurations.findIndex(config => config.roomId === roomId);
     
     if (existingConfigIndex >= 0) {
@@ -395,7 +177,7 @@ export default function RoomSelect({
     setIsTravelerInfoCollapsed(!isTravelerInfoCollapsed);
   };
 
-  // Calculate capacity for a specific room configuration
+  // FIXED: Calculate capacity for a specific room configuration with proper type handling
   const calculateRoomCapacity = (config: RoomConfiguration): { 
     maxTotal: number; 
     currentTotal: number; 
@@ -411,13 +193,14 @@ export default function RoomSelect({
     return { maxTotal, currentTotal, remaining };
   };
 
-  // Calculate total price for all room configurations
+  // FIXED: Calculate total price for all room configurations with proper type handling
   const calculateTotalPrice = (): number => {
     return roomConfigurations.reduce((total: number, config: RoomConfiguration) => {
       const room = filteredRooms.find(r => r.id === config.roomId);
       if (!room) return total;
       
-      const roomPrice = room.price * config.roomCount;
+      // Convert string price to number
+      const roomPrice = parseFloat(room.price) * config.roomCount;
       const extraBedPrice = (config.childrenWithBed * 500) + (config.adultsWithExtraBed * 800);
       
       return total + roomPrice + extraBedPrice;
@@ -442,9 +225,9 @@ export default function RoomSelect({
     return groups;
   }, {});
 
-  // FIXED: Get room type name from professionalRooms
-  const getRoomTypeName = (roomId: number): string => {
-    const room = professionalRooms.find(r => r.id === roomId);
+  // FIXED: Get room type name from filteredRooms
+  const getRoomTypeName = (roomId: string): string => { // Changed to string
+    const room = filteredRooms.find(r => r.id === roomId);
     return room?.type || `Room Type ${roomId}`;
   };
 
@@ -453,12 +236,13 @@ export default function RoomSelect({
     
     const newSelections: RoomSelectionType[] = roomConfigurations.map(config => {
       const room = filteredRooms.find(r => r.id === config.roomId);
-      const roomPrice = room?.price || 3000; // FIXED: Default price for any room
+      // Convert string price to number
+      const roomPrice = room ? parseFloat(room.price) : 3000;
       const totalPrice = (roomPrice * config.roomCount) + (config.childrenWithBed * 500) + (config.adultsWithExtraBed * 800);
       
-      // FIXED: Store roomType in the selection
+      // FIXED: Store roomType in the selection and convert roomId to number if needed
       return {
-        roomId: config.roomId,
+        roomId: parseInt(config.roomId) || 0, // Convert back to number for compatibility
         roomCount: config.roomCount,
         adults: config.adults,
         childrenWithBed: config.childrenWithBed,
@@ -468,7 +252,7 @@ export default function RoomSelect({
         isConfirmed: true,
         confirmedAt: new Date().toISOString(),
         dayNumber: currentDay,
-        roomType: getRoomTypeName(config.roomId) // NEW: Store room type name
+        roomType: getRoomTypeName(config.roomId)
       };
     });
     
@@ -479,27 +263,8 @@ export default function RoomSelect({
   };
 
   // Check if a room type is already selected in configurations
-  const isRoomSelected = (roomId: number): boolean => {
+  const isRoomSelected = (roomId: string): boolean => { // Changed to string
     return roomConfigurations.some(config => config.roomId === roomId);
-  };
-
-  // Get button text and state based on selection status
-  const getButtonState = (roomId: number) => {
-    const isSelected = isRoomSelected(roomId);
-    
-    if (isSelected) {
-      return {
-        text: "Selected",
-        className: "bg-red-600 text-white hover:bg-red-700",
-        disabled: false
-      };
-    }
-    
-    return {
-      text: "Select",
-      className: "bg-gray-200 text-gray-500 cursor-not-allowed",
-      disabled: true
-    };
   };
 
   return (
@@ -530,99 +295,106 @@ export default function RoomSelect({
       {/* Available Room Types */}
       <div>
         <h3 className="text-2xl font-bold text-gray-900 mb-6">Available Room Types at {selectedHotel.name}</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredRooms.map((room: Room) => {
-            const buttonState = getButtonState(room.id);
-            const isSelected = isRoomSelected(room.id);
-            
-            return (
-              <div
-                key={room.id}
-                className={`border rounded-xl cursor-pointer transition-all duration-300 overflow-hidden ${
-                  isSelected
-                    ? 'border-indigo-500 shadow-lg transform hover:scale-[1.02] bg-gradient-to-br from-indigo-50 to-white'
-                    : 'border-gray-200 hover:border-indigo-300 hover:shadow-md bg-white hover:translate-y-[-4px]'
-                }`}
-                onClick={() => {
-                  setAnimateSelection(true);
-                  setTimeout(() => setAnimateSelection(false), 500);
-                  handleRoomCardClick(room.id);
-                }}
-              >
-                <div className="relative">
-                  <img
-                    src={room.photos[0]}
-                    alt={room.type}
-                    className="w-full h-48 object-cover transition-transform duration-700 hover:scale-110"
-                  />
-                  <div className="absolute top-3 right-3">
-                    <span className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium shadow-sm">
-                      ₹{room.price}/night
-                    </span>
-                  </div>
-                  <div className="absolute bottom-3 left-3">
-                    <span className="bg-indigo-600 text-white px-2 py-1 rounded-md text-xs font-medium shadow-sm backdrop-blur-sm">
-                      {room.bedType}
-                    </span>
-                  </div>
-                  {isSelected && (
-                    <div className="absolute top-3 left-3">
-                      <span className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-3 py-1 rounded-md text-xs font-medium shadow-sm flex items-center">
-                        <Check className="h-3 w-3 mr-1" /> Selected
+        {filteredRooms.length === 0 ? (
+          <div className="text-center py-12 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300">
+            <Bed className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">No Rooms Available</h3>
+            <p className="text-gray-500">No room types found for this hotel.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredRooms.map((room: Room) => {
+              const isSelected = isRoomSelected(room.id);
+              
+              return (
+                <div
+                  key={room.id}
+                  className={`border rounded-xl cursor-pointer transition-all duration-300 overflow-hidden ${
+                    isSelected
+                      ? 'border-indigo-500 shadow-lg transform hover:scale-[1.02] bg-gradient-to-br from-indigo-50 to-white'
+                      : 'border-gray-200 hover:border-indigo-300 hover:shadow-md bg-white hover:translate-y-[-4px]'
+                  }`}
+                  onClick={() => {
+                    setAnimateSelection(true);
+                    setTimeout(() => setAnimateSelection(false), 500);
+                    handleRoomCardClick(room.id);
+                  }}
+                >
+                  <div className="relative">
+                    <img
+                      src={room.photos[0]}
+                      alt={room.type}
+                      className="w-full h-48 object-cover transition-transform duration-700 hover:scale-110"
+                    />
+                    <div className="absolute top-3 right-3">
+                      <span className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium shadow-sm">
+                        ₹{parseFloat(room.price).toLocaleString()}/night
                       </span>
                     </div>
-                  )}
-                </div>
-                
-                <div className="p-5">
-                  <div className="flex justify-between items-start mb-3">
-                    <h4 className="font-bold text-lg text-gray-900 group-hover:text-indigo-700 transition-colors">{room.type}</h4>
-                    <div className="flex items-center text-sm bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full">
-                      <Users className="h-4 w-4 mr-1" />
-                      {room.maxAdults} Adults + {room.maxChildren} Kids
-                    </div>
-                  </div>
-                  
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{room.description}</p>
-                  
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {room.amenities.slice(0, 3).map((amenity: string, idx: number) => (
-                      <span key={idx} className="text-xs bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 px-3 py-1 rounded-full font-medium shadow-sm">
-                        {amenity}
+                    <div className="absolute bottom-3 left-3">
+                      <span className="bg-indigo-600 text-white px-2 py-1 rounded-md text-xs font-medium shadow-sm backdrop-blur-sm">
+                        {room.bedType}
                       </span>
-                    ))}
-                    {room.amenities.length > 3 && (
-                      <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">+{room.amenities.length - 3} more</span>
+                    </div>
+                    {isSelected && (
+                      <div className="absolute top-3 left-3">
+                        <span className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-3 py-1 rounded-md text-xs font-medium shadow-sm flex items-center">
+                          <Check className="h-3 w-3 mr-1" /> Selected
+                        </span>
+                      </div>
                     )}
                   </div>
+                  
+                  <div className="p-5">
+                    <div className="flex justify-between items-start mb-3">
+                      <h4 className="font-bold text-lg text-gray-900 group-hover:text-indigo-700 transition-colors">{room.type}</h4>
+                      <div className="flex items-center text-sm bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full">
+                        <Users className="h-4 w-4 mr-1" />
+                        {room.maxAdults} Adults + {room.maxChildren} Kids
+                      </div>
+                    </div>
+                    
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{room.description}</p>
+                    
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {room.amenities.slice(0, 3).map((amenity: string, idx: number) => (
+                        <span key={idx} className="text-xs bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 px-3 py-1 rounded-full font-medium shadow-sm">
+                          {amenity}
+                        </span>
+                      ))}
+                      {room.amenities.length > 3 && (
+                        <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">+{room.amenities.length - 3} more</span>
+                      )}
+                    </div>
 
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setAnimateSelection(true);
-                      setTimeout(() => setAnimateSelection(false), 500);
-                      handleRoomCardClick(room.id);
-                    }}
-                    className={`w-full py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-[1.02] ${
-                      isSelected 
-                        ? 'bg-gradient-to-r from-rose-500 to-red-500 text-white shadow-md hover:shadow-lg' 
-                        : 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md hover:shadow-lg'
-                    }`}
-                  >
-                    {isSelected ? (
-                      <>
-                        <X className="h-4 w-4 inline mr-1" />
-                         Remove
-                      </>
-                    ) : (
-                      "Select"
-                    )}
-                  </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setAnimateSelection(true);
+                        setTimeout(() => setAnimateSelection(false), 500);
+                        handleRoomCardClick(room.id);
+                      }}
+                      className={`w-full py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-[1.02] ${
+                        isSelected 
+                          ? 'bg-gradient-to-r from-rose-500 to-red-500 text-white shadow-md hover:shadow-lg' 
+                          : 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md hover:shadow-lg'
+                      }`}
+                    >
+                      {isSelected ? (
+                        <>
+                          <X className="h-4 w-4 inline mr-1" />
+                           Remove
+                        </>
+                      ) : (
+                        "Select"
+                      )}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Traveler Information Card - Collapsible */}
@@ -693,7 +465,7 @@ export default function RoomSelect({
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-green-600">₹{calculateTotalPrice()}</div>
+              <div className="text-2xl font-bold text-green-600">₹{calculateTotalPrice().toLocaleString()}</div>
               <div className="text-sm text-gray-600">Total per night</div>
             </div>
           </div>
@@ -714,9 +486,9 @@ export default function RoomSelect({
                       <div className="font-semibold text-blue-600">
                         ₹{configs.reduce((sum: number, config: RoomConfiguration) => {
                           const room = filteredRooms.find(r => r.id === config.roomId);
-                          const roomPrice = room?.price || 0;
+                          const roomPrice = room ? parseFloat(room.price) : 0;
                           return sum + (roomPrice * config.roomCount) + (config.childrenWithBed * 500) + (config.adultsWithExtraBed * 800);
-                        }, 0)}
+                        }, 0).toLocaleString()}
                       </div>
                       <div className="text-sm text-gray-600">Subtotal</div>
                     </div>
@@ -753,7 +525,7 @@ export default function RoomSelect({
                           <div className="flex items-center space-x-4">
                             <div className="text-right">
                               <div className="font-semibold text-green-600">
-                                ₹{(room.price * config.roomCount) + (config.childrenWithBed * 500) + (config.adultsWithExtraBed * 800)}
+                                ₹{((parseFloat(room.price) * config.roomCount) + (config.childrenWithBed * 500) + (config.adultsWithExtraBed * 800)).toLocaleString()}
                               </div>
                               <div className="text-xs text-gray-500">Total</div>
                             </div>
@@ -849,24 +621,24 @@ export default function RoomSelect({
                                 <div className="space-y-2 text-sm">
                                   <div className="flex justify-between">
                                     <span>{config.roomCount} × {room.type}</span>
-                                    <span>₹{room.price * config.roomCount}</span>
+                                    <span>₹{(parseFloat(room.price) * config.roomCount).toLocaleString()}</span>
                                   </div>
                                   {config.childrenWithBed > 0 && (
                                     <div className="flex justify-between text-green-600">
                                       <span>Children with bed × {config.childrenWithBed}</span>
-                                      <span>₹{config.childrenWithBed * 500}</span>
+                                      <span>₹{(config.childrenWithBed * 500).toLocaleString()}</span>
                                     </div>
                                   )}
                                   {config.adultsWithExtraBed > 0 && (
                                     <div className="flex justify-between text-orange-600">
                                       <span>Adults with extra bed × {config.adultsWithExtraBed}</span>
-                                      <span>₹{config.adultsWithExtraBed * 800}</span>
+                                      <span>₹{(config.adultsWithExtraBed * 800).toLocaleString()}</span>
                                     </div>
                                   )}
                                   <div className="border-t border-gray-300 pt-2 mt-2 font-semibold">
                                     <div className="flex justify-between">
                                       <span>Subtotal:</span>
-                                      <span>₹{(room.price * config.roomCount) + (config.childrenWithBed * 500) + (config.adultsWithExtraBed * 800)}</span>
+                                      <span>₹{((parseFloat(room.price) * config.roomCount) + (config.childrenWithBed * 500) + (config.adultsWithExtraBed * 800)).toLocaleString()}</span>
                                     </div>
                                   </div>
                                   <div className="text-xs text-gray-500 mt-2">
@@ -909,7 +681,7 @@ export default function RoomSelect({
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold text-green-600">₹{calculateTotalPrice()}</div>
+                <div className="text-2xl font-bold text-green-600">₹{calculateTotalPrice().toLocaleString()}</div>
                 <div className="text-sm text-gray-600">Total per night</div>
               </div>
             </div>
@@ -928,7 +700,7 @@ export default function RoomSelect({
       )}
 
       {/* Empty State */}
-      {roomConfigurations.length === 0 && (
+      {roomConfigurations.length === 0 && filteredRooms.length > 0 && (
         <div className="text-center py-12 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300">
           <Users className="h-16 w-16 text-gray-400 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-gray-700 mb-2">No Rooms Selected</h3>

@@ -51,7 +51,8 @@ export default function ServicesLibraryPage() {
   const [activities, setActivities] = useState<ApiActivity[]>([]);
 
   // Function to get hotel name by ID
-  const getHotelNameById = (hotelId: string): string => {
+  const getHotelNameById = (hotelId: string | null | undefined): string => {
+    if (!hotelId) return "Standalone";
     const hotel = hotels.find(h => h.id === hotelId);
     return hotel ? hotel.name : "Unknown Hotel";
   };
@@ -72,26 +73,30 @@ export default function ServicesLibraryPage() {
 
         // Cast the API data to our extended interfaces
         const hotelsData = (hotelsRes.data || []) as ApiHotel[];
+        const transportsData = (transportsRes.data || []) as ApiTransport[];
         const mealsData = (mealsRes.data || []) as ApiMeal[];
         const activitiesData = (activitiesRes.data || []) as ApiActivity[];
 
-        // Enhance meals and activities with hotel names
+        // Set hotels first to ensure hotel names are available
+        setHotels(hotelsData);
+        setTransports(transportsData);
+        
+        // Enhance meals with hotel names
         const enhancedMeals = mealsData.map(meal => ({
           ...meal,
           hotelName: meal.hotelId ? getHotelNameById(meal.hotelId) : "Standalone"
         }));
+        setMeals(enhancedMeals);
 
+        // Enhance activities with hotel names
         const enhancedActivities = activitiesData.map(activity => ({
           ...activity,
           hotelName: activity.hotelId ? getHotelNameById(activity.hotelId) : "Standalone"
         }));
-
-        setHotels(hotelsData);
-        setTransports((transportsRes.data || []) as ApiTransport[]);
-        setMeals(enhancedMeals);
         setActivities(enhancedActivities);
       } catch (err) {
         console.log("Table Rendering Error:", err);
+        error("Error", "Failed to load data from the database");
       } finally {
         setIsLoading(false);
       }
@@ -180,49 +185,55 @@ export default function ServicesLibraryPage() {
 
   // Filtered data with safe property access
   const filteredHotels = hotels.filter(h =>
-    h.name.toLowerCase().includes(search.toLowerCase()) ||
-    h.city.toLowerCase().includes(search.toLowerCase())
+    (h.name?.toLowerCase() || "").includes(search.toLowerCase()) ||
+    (h.city?.toLowerCase() || "").includes(search.toLowerCase())
   ).filter(h => {
     if (!filter) return true;
     if (filter === "3 Star") return h.starCategory === 3;
     if (filter === "4 Star") return h.starCategory === 4;
     if (filter === "5 Star") return h.starCategory === 5;
-    if (filter === "With Activities") return h.activities && h.activities.length > 0;
-    if (filter === "With Meals") return h.meals && h.meals.length > 0;
+    if (filter === "With Activities") {
+      // Check if activities exist and are associated with this hotel
+      return activities.some(activity => activity.hotelId === h.id);
+    }
+    if (filter === "With Meals") {
+      // Check if meals exist and are associated with this hotel
+      return meals.some(meal => meal.hotelId === h.id);
+    }
     return true;
   });
 
   const filteredTransports = transports.filter(t =>
-    t.vehicleType.toLowerCase().includes(search.toLowerCase()) ||
-    (t.vehicleModel && t.vehicleModel.toLowerCase().includes(search.toLowerCase()))
+    ((t.vehicleType?.toLowerCase() || "").includes(search.toLowerCase()) ||
+    (t.vehicleModel?.toLowerCase() || "").includes(search.toLowerCase()))
   ).filter(t => {
     if (!filter) return true;
-    if (filter === "SUV") return t.vehicleType.toLowerCase() === "suv";
-    if (filter === "Bus") return t.vehicleType.toLowerCase() === "bus";
-    if (filter === "Tempo Traveller") return t.vehicleType.toLowerCase() === "tempo traveller";
+    if (filter === "SUV") return (t.vehicleType?.toLowerCase() || "") === "suv";
+    if (filter === "Bus") return (t.vehicleType?.toLowerCase() || "") === "bus";
+    if (filter === "Tempo Traveller") return (t.vehicleType?.toLowerCase() || "") === "tempo traveller";
     if (filter === "AC") return t.ac === true;
     if (filter === "Non-AC") return t.ac === false;
     return true;
   });
 
   const filteredMeals = meals.filter(m =>
-    m.name.toLowerCase().includes(search.toLowerCase()) ||
-    m.type.toLowerCase().includes(search.toLowerCase()) ||
-    (m.hotelName && m.hotelName.toLowerCase().includes(search.toLowerCase()))
+    (m.name?.toLowerCase() || "").includes(search.toLowerCase()) ||
+    (m.type?.toLowerCase() || "").includes(search.toLowerCase()) ||
+    (m.hotelName?.toLowerCase() || "").includes(search.toLowerCase())
   ).filter(m => {
     if (!filter) return true;
-    if (filter === "Veg") return m.vegOption;
-    if (filter === "Non-Veg") return m.nonVegOption;
-    if (filter === "Breakfast") return m.type.toLowerCase() === "breakfast";
-    if (filter === "Lunch") return m.type.toLowerCase() === "lunch";
-    if (filter === "Dinner") return m.type.toLowerCase() === "dinner";
+    if (filter === "Veg") return m.vegOption === true;
+    if (filter === "Non-Veg") return m.nonVegOption === true;
+    if (filter === "Breakfast") return (m.type?.toLowerCase() || "") === "breakfast";
+    if (filter === "Lunch") return (m.type?.toLowerCase() || "") === "lunch";
+    if (filter === "Dinner") return (m.type?.toLowerCase() || "") === "dinner";
     return true;
   });
 
   const filteredActivities = activities.filter(a =>
-    a.name.toLowerCase().includes(search.toLowerCase()) ||
-    (a.description && a.description.toLowerCase().includes(search.toLowerCase())) ||
-    (a.hotelName && a.hotelName.toLowerCase().includes(search.toLowerCase()))
+    (a.name?.toLowerCase() || "").includes(search.toLowerCase()) ||
+    (a.description?.toLowerCase() || "").includes(search.toLowerCase()) ||
+    (a.hotelName?.toLowerCase() || "").includes(search.toLowerCase())
   ).filter(a => {
     if (!filter) return true;
     const duration = parseInt(a.duration ?? "0");
@@ -274,16 +285,31 @@ export default function ServicesLibraryPage() {
         return (
           <Table
             headers={["Hotel Name", "City", "Category", "Inclusions", "Room Types", "Price/Night", "Actions"]}
-            rows={filteredHotels.map(h => [
-              h.name,
-              h.city,
-              `${h.starCategory} ⭐`,
-              Array.isArray(h.inclusions) ? h.inclusions.slice(0, 2).join(", ") + (h.inclusions.length > 2 ? "..." : "") : "N/A",
-              h.roomTypes ? h.roomTypes.map(r => r.type).join(", ").substring(0, 30) + (h.roomTypes.map(r => r.type).join(", ").length > 30 ? "..." : "") : "N/A",
-              `₹${h.roomTypes && h.roomTypes.length > 0 ? Math.min(...h.roomTypes.map(r => Number(r.price))) : "N/A"}`,
-              "actions",
-              h.id,
-            ])}
+            rows={filteredHotels.map(h => {
+              // Parse inclusions if it's a string (from database)
+              const inclusionsArray = h.inclusions 
+                ? (typeof h.inclusions === 'string' ? JSON.parse(h.inclusions) : h.inclusions) 
+                : [];
+              
+              // Ensure roomTypes is properly handled
+              const roomTypes = Array.isArray(h.roomTypes) ? h.roomTypes : [];
+              
+              // Get minimum price from room types
+              const minPrice = roomTypes.length > 0 
+                ? Math.min(...roomTypes.map(r => Number(r.price)))
+                : "N/A";
+              
+              return [
+                h.name,
+                h.city,
+                `${h.starCategory} ⭐`,
+                Array.isArray(inclusionsArray) ? inclusionsArray.slice(0, 2).join(", ") + (inclusionsArray.length > 2 ? "..." : "") : "N/A",
+                roomTypes.length > 0 ? roomTypes.map(r => r.type).join(", ").substring(0, 30) + (roomTypes.map(r => r.type).join(", ").length > 30 ? "..." : "") : "N/A",
+                minPrice !== "N/A" ? `₹${minPrice}` : "N/A",
+                "actions",
+                h.id,
+              ];
+            })}
           />
         );
       case "transports":
@@ -293,10 +319,10 @@ export default function ServicesLibraryPage() {
             rows={filteredTransports.map(t => [
               t.vehicleType,
               t.vehicleModel || "N/A",
-              t.maxCapacity.toString(),
-              t.ac ? "Yes" : "No",
-              t.perDay > 0 ? `₹${t.perDay}` : "N/A",
-              t.perKm > 0 ? `₹${t.perKm}` : "N/A",
+              t.maxCapacity ? t.maxCapacity.toString() : "N/A",
+              t.ac !== undefined ? (t.ac ? "Yes" : "No") : "N/A",
+              t.perDay && t.perDay > 0 ? `₹${t.perDay}` : "N/A",
+              t.perKm && t.perKm > 0 ? `₹${t.perKm}` : "N/A",
               t.driverName || "N/A",
               "actions",
               t.id,
@@ -308,11 +334,11 @@ export default function ServicesLibraryPage() {
           <Table
             headers={["Meal Name", "Type", "Category", "Hotel", "Price", "Veg", "Non-Veg", "Actions"]}
             rows={filteredMeals.map(m => [
-              m.name,
-              m.type,
+              m.name || "Unnamed Meal",
+              m.type || "N/A",
               m.category === 'veg' ? 'Vegetarian' : m.category === 'non-veg' ? 'Non-Vegetarian' : 'N/A',
-              m.hotelName || "Standalone", // Now shows actual hotel name
-              `₹${m.price}`,
+              m.hotelName || "Standalone",
+              m.price ? `₹${m.price}` : "N/A",
               m.vegOption ? "Yes" : "No",
               m.nonVegOption ? "Yes" : "No",
               "actions",
@@ -325,10 +351,10 @@ export default function ServicesLibraryPage() {
           <Table
             headers={["Activity", "Duration", "Hotel", "Price", "Actions"]}
             rows={filteredActivities.map(a => [
-              a.name,
+              a.name || "Unnamed Activity",
               a.duration || "N/A",
-              a.hotelName || "Standalone", // Now shows actual hotel name
-              `₹${a.price}`,
+              a.hotelName || "Standalone",
+              a.price ? `₹${a.price}` : "N/A",
               "actions",
               a.id,
             ])}

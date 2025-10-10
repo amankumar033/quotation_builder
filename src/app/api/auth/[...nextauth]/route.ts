@@ -4,15 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
 
-// Set the NEXTAUTH_URL if not already set in environment
-if (!process.env.NEXTAUTH_URL) {
-  process.env.NEXTAUTH_URL = process.env.NODE_ENV === 'production' 
-    ? 'https://crm.narayanavacation.com' 
-    : 'http://localhost:3000';
-}
-
 export const handler = NextAuth({
-  secret: process.env.NEXTAUTH_SECRET || "your-secret-key-change-in-production",
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -48,19 +40,6 @@ export const handler = NextAuth({
   ],
   pages: { signIn: "/login" },
   session: { strategy: "jwt" },
-  // Add trusted host configuration for production
-  cookies: {
-    sessionToken: {
-      name: `${process.env.NODE_ENV === 'production' ? '__Secure-' : ''}next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        domain: process.env.NODE_ENV === 'production' ? '.narayanavacation.com' : undefined,
-      },
-    },
-  },
   callbacks: {
     async signIn({ user, account, profile }) {
       // Allow credentials provider as-is (already validated)

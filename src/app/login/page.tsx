@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 import Googlelogin from "@/app/components/GoogleLoginButton";
 import { useSearchParams } from "next/navigation";
 import Spinner from "@/app/components/ui/RadialSpinner";
@@ -28,23 +27,24 @@ const LoginInner = () => {
     setLoading(true);
 
     try {
-      // Use NextAuth's signIn function directly
-      const result = await signIn("credentials", {
-        redirect: false,
-        email,
-        password,
-        callbackUrl: "/"
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
       });
 
-      if (result?.error) {
-        setError("Invalid credentials");
-      } else if (result?.url) {
-        // Successful login with redirect URL
-        window.location.href = result.url;
-      } else {
-        // Fallback redirect to home
-        window.location.href = "/";
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "Invalid Credentials");
+        return;
       }
+
+      // Login successful - redirect to home
+      window.location.href = "/";
+      
     } catch (error) {
       console.error('Login error:', error);
       setError("Something went wrong");
@@ -72,8 +72,8 @@ const LoginInner = () => {
 
         {/* Right Side - Login Form */}
         <div className="flex-1  p-8 justify-center items-center  flex flex-col">
-          <img src="/plane.png" alt="Logo" className="absolute top-10 right-38" />
-          <div className="w-full mb-10 max-w-md">
+          <img src="/plane.png" alt="Logo" className="absolute top-15 right-38" />
+          <div className="w-full  max-w-md">
             <h2 className="text-4xl font-extrabold mb-6 text-blue-400 text-center">
               Welcome Back
             </h2>
@@ -82,7 +82,7 @@ const LoginInner = () => {
               <p className="text-red-600 mb-4 text-center font-medium">{error}</p>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-5 ">
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-700">
                   Email
@@ -117,6 +117,7 @@ const LoginInner = () => {
                 <button
                   type="submit"
                   className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                  onClick={(e) => { setLoading(true); handleSubmit(e); }}
                 >
                   Login
                 </button>
@@ -140,7 +141,7 @@ const LoginInner = () => {
             )}
           </div>
           <div>
-          <img src="/tajmahal.png" alt="Logo" className="absolute bottom-13 right-150 h-[100px] " />
+          <img src="/tajmahal.png" alt="Logo" className="absolute bottom-13 right-150 h-[100px]" />
           <img src="/building.png" alt="Logo" className="absolute bottom-13 right-38 h-[100px]" />
           </div>
         </div>
