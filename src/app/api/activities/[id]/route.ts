@@ -39,8 +39,11 @@ export async function GET(
     // Parse JSON fields for response
     const activityWithParsedData = {
       ...activity,
-      photos: activity.photos ? JSON.parse(activity.photos) : [],
+
     };
+
+    // Print activity data to console
+    console.log("GET Activity Data:", activityWithParsedData);
 
     return NextResponse.json({
       success: true,
@@ -68,7 +71,7 @@ export async function PUT(
       description, 
       duration, 
       price, 
-      photos, 
+    
       image, 
       hotelId 
     } = body;
@@ -92,6 +95,10 @@ export async function PUT(
       }, { status: 404 });
     }
 
+    // Print existing activity data and update data to console
+    console.log("PUT - Existing Activity Data:", existingActivity);
+    console.log("PUT - Update Data:", body);
+
     const updatedActivity = await prisma.activity.update({
       where: { id },
       data: {
@@ -99,7 +106,7 @@ export async function PUT(
         description: description !== undefined ? description : existingActivity.description,
         duration: duration !== undefined ? duration : existingActivity.duration,
         price: price !== undefined ? parseFloat(price) : existingActivity.price,
-        photos: photos !== undefined ? JSON.stringify(photos) : existingActivity.photos,
+
         image: image !== undefined ? image : existingActivity.image,
         hotelId: hotelId !== undefined ? hotelId : existingActivity.hotelId,
       },
@@ -117,8 +124,11 @@ export async function PUT(
     // Parse JSON fields for response
     const activityWithParsedData = {
       ...updatedActivity,
-      photos: updatedActivity.photos ? JSON.parse(updatedActivity.photos) : [],
+    
     };
+
+    // Print updated activity data to console
+    console.log("PUT - Updated Activity Data:", activityWithParsedData);
 
     return NextResponse.json({ 
       success: true, 
@@ -148,9 +158,39 @@ export async function DELETE(
       }, { status: 400 });
     }
 
+    // Get activity data before deletion to print it
+    const activityToDelete = await prisma.activity.findUnique({
+      where: { id },
+      include: {
+        hotel: {
+          select: {
+            id: true,
+            name: true,
+            city: true
+          }
+        }
+      }
+    });
+
+    if (!activityToDelete) {
+      return NextResponse.json({ 
+        success: false, 
+        error: "Activity not found" 
+      }, { status: 404 });
+    }
+
     const deletedActivity = await prisma.activity.delete({
       where: { id },
     });
+
+    // Parse JSON fields for console output
+    const activityWithParsedData = {
+      ...activityToDelete,
+   
+    };
+
+    // Print deleted activity data to console
+    console.log("DELETE - Deleted Activity Data:", activityWithParsedData);
 
     return NextResponse.json({ 
       success: true, 
