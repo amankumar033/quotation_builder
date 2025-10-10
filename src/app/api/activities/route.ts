@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
       description, 
       duration, 
       price, 
-      photos, 
+     
       image, 
       hotelId, 
       agencyId 
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
         description: description || null,
         duration: duration || null,
         price: parseFloat(price),
-        photos: photos?.length ? JSON.stringify(photos) : null,
+       
         image: image || null,
         hotelId: hotelId || null,
         agencyId: agencyId || "AGC1",

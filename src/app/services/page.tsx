@@ -24,10 +24,12 @@ interface ApiMeal extends Meal {
   hotelId: string;
   vegOption: boolean;
   nonVegOption: boolean;
+  hotelName?: string; // Added for hotel name display
 }
 
 interface ApiActivity extends Activity {
   hotelId?: string;
+  hotelName?: string; // Added for hotel name display
 }
 
 export default function ServicesLibraryPage() {
@@ -48,6 +50,12 @@ export default function ServicesLibraryPage() {
   const [meals, setMeals] = useState<ApiMeal[]>([]);
   const [activities, setActivities] = useState<ApiActivity[]>([]);
 
+  // Function to get hotel name by ID
+  const getHotelNameById = (hotelId: string): string => {
+    const hotel = hotels.find(h => h.id === hotelId);
+    return hotel ? hotel.name : "Unknown Hotel";
+  };
+
   // Fetch data
   useEffect(() => {
     const fetchData = async () => {
@@ -63,10 +71,25 @@ export default function ServicesLibraryPage() {
           ]);
 
         // Cast the API data to our extended interfaces
-        setHotels((hotelsRes.data || []) as ApiHotel[]);
+        const hotelsData = (hotelsRes.data || []) as ApiHotel[];
+        const mealsData = (mealsRes.data || []) as ApiMeal[];
+        const activitiesData = (activitiesRes.data || []) as ApiActivity[];
+
+        // Enhance meals and activities with hotel names
+        const enhancedMeals = mealsData.map(meal => ({
+          ...meal,
+          hotelName: meal.hotelId ? getHotelNameById(meal.hotelId) : "Standalone"
+        }));
+
+        const enhancedActivities = activitiesData.map(activity => ({
+          ...activity,
+          hotelName: activity.hotelId ? getHotelNameById(activity.hotelId) : "Standalone"
+        }));
+
+        setHotels(hotelsData);
         setTransports((transportsRes.data || []) as ApiTransport[]);
-        setMeals((mealsRes.data || []) as ApiMeal[]);
-        setActivities((activitiesRes.data || []) as ApiActivity[]);
+        setMeals(enhancedMeals);
+        setActivities(enhancedActivities);
       } catch (err) {
         console.log("Table Rendering Error:", err);
       } finally {
@@ -76,6 +99,27 @@ export default function ServicesLibraryPage() {
 
     fetchData();
   }, []);
+
+  // Update hotel names when hotels data changes
+  useEffect(() => {
+    if (hotels.length > 0) {
+      // Update meal hotel names
+      setMeals(prevMeals => 
+        prevMeals.map(meal => ({
+          ...meal,
+          hotelName: meal.hotelId ? getHotelNameById(meal.hotelId) : "Standalone"
+        }))
+      );
+
+      // Update activity hotel names
+      setActivities(prevActivities => 
+        prevActivities.map(activity => ({
+          ...activity,
+          hotelName: activity.hotelId ? getHotelNameById(activity.hotelId) : "Standalone"
+        }))
+      );
+    }
+  }, [hotels]);
 
   // Generic delete function
   const handleDelete = async (type: "hotels" | "transports" | "meals" | "activities", id: string) => {
@@ -163,7 +207,8 @@ export default function ServicesLibraryPage() {
 
   const filteredMeals = meals.filter(m =>
     m.name.toLowerCase().includes(search.toLowerCase()) ||
-    m.type.toLowerCase().includes(search.toLowerCase())
+    m.type.toLowerCase().includes(search.toLowerCase()) ||
+    (m.hotelName && m.hotelName.toLowerCase().includes(search.toLowerCase()))
   ).filter(m => {
     if (!filter) return true;
     if (filter === "Veg") return m.vegOption;
@@ -176,7 +221,8 @@ export default function ServicesLibraryPage() {
 
   const filteredActivities = activities.filter(a =>
     a.name.toLowerCase().includes(search.toLowerCase()) ||
-    (a.description && a.description.toLowerCase().includes(search.toLowerCase()))
+    (a.description && a.description.toLowerCase().includes(search.toLowerCase())) ||
+    (a.hotelName && a.hotelName.toLowerCase().includes(search.toLowerCase()))
   ).filter(a => {
     if (!filter) return true;
     const duration = parseInt(a.duration ?? "0");
@@ -265,7 +311,7 @@ export default function ServicesLibraryPage() {
               m.name,
               m.type,
               m.category === 'veg' ? 'Vegetarian' : m.category === 'non-veg' ? 'Non-Vegetarian' : 'N/A',
-              m.hotelId ? "Associated" : "Standalone",
+              m.hotelName || "Standalone", // Now shows actual hotel name
               `₹${m.price}`,
               m.vegOption ? "Yes" : "No",
               m.nonVegOption ? "Yes" : "No",
@@ -281,7 +327,7 @@ export default function ServicesLibraryPage() {
             rows={filteredActivities.map(a => [
               a.name,
               a.duration || "N/A",
-              a.hotelId ? "Associated" : "Standalone",
+              a.hotelName || "Standalone", // Now shows actual hotel name
               `₹${a.price}`,
               "actions",
               a.id,
@@ -408,8 +454,8 @@ export default function ServicesLibraryPage() {
               placeholder={
                 activeTab === "hotels" ? "Search by hotel name, city..." :
                 activeTab === "transports" ? "Search by vehicle type, model..." :
-                activeTab === "meals" ? "Search by meal name, type..." :
-                "Search by activity name..."
+                activeTab === "meals" ? "Search by meal name, type, hotel..." :
+                "Search by activity name, hotel..."
               }
               className="outline-none w-full"
               value={search}

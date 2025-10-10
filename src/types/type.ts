@@ -45,7 +45,7 @@ export interface QuotationData {
 }
 
 export interface Room {
-  id: number;
+  id: string;
   type: string;
   price: number;
   maxAdults: number;
@@ -161,7 +161,7 @@ export interface Activity {
   duration: string;
   category: string;
   image: string;
-  photos?: string[];
+
   agencyId?: string;
   isCustom?: boolean;
   selectedDays?: string[];
