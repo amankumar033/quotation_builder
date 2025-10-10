@@ -297,32 +297,7 @@ function AddActivityInner() {
               </div>
             </div>
 
-            {/* Photos Section */}
-            <div className="bg-white lg:rounded-xl shadow-sm border border-gray-200">
-              <div className="p-6 border-b border-gray-200">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-purple-100 rounded-lg">
-                    <ImageIcon className="w-5 h-5 text-purple-600" />
-                  </div>
-                  <h2 className="text-lg font-semibold text-gray-900">
-                    Photos
-                  </h2>
-                </div>
-                <p className="text-sm text-gray-600 mt-1">
-                  Enter photo URLs (one per line)
-                </p>
-              </div>
-              <div className="p-6">
-                <textarea
-                  name="photos"
-                  value={formData.photos}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition h-32"
-                  placeholder="https://example.com/photo1.jpg"
-                />
-              </div>
-            </div>
-
+          
             {/* Main Image Section */}
             <div className="bg-white lg:rounded-xl shadow-sm border border-gray-200">
               <div className="p-6 border-b border-gray-200">
